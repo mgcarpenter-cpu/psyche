@@ -1,6 +1,9 @@
 // Vercel serverless function — keeps the Anthropic API key secret.
 // The browser calls /api/chat instead of api.anthropic.com directly.
 
+// Allow up to 60s — the personalised reveal is a big generation.
+export const config = { maxDuration: 60 };
+
 export default async function handler(req, res) {
   // Only allow POST
   if (req.method !== "POST") {
