@@ -1877,10 +1877,10 @@ function buildProfileContext() {
   // Add the most revealing picks for probing
   const probingPicks = userPicks.filter(p => p.detail).slice(-4);
   if (probingPicks.length) {
-    lines.push("\nA few things they picked during the assessment:");
-    probingPicks.forEach(p => lines.push(`- For ${p.theme}: "${p.choice}" — specifically "${p.detail}"`));
+    lines.push("\nFor your private understanding only (do NOT mention these images or choices back to them — they can't see them and it confuses):");
+    probingPicks.forEach(p => lines.push(`- ${p.theme}: leaned toward "${p.choice}"${p.detail ? ' / "'+p.detail+'"' : ''}`));
   }
-  lines.push("\nSpeak from this knowledge but never list it back. Refer to ONE thing at a time, with restraint.");
+  lines.push("\nLet this knowledge quietly inform how you understand them, but never list it back or cite a specific image.");
   return lines.join("\n");
 }
 
@@ -2005,22 +2005,22 @@ function hideSmoke() { document.getElementById("smokeThink").classList.remove("s
 async function seedChatOpener() {
   showSmoke();
   const profile = buildProfileContext();
-  const sysWithProfile = SYS_BASE + "\n\n" + profile + PROBE_STYLE;
-  const opener = await callClaude([{ role: "user", content: "The assessment is complete. Open the conversation in one or two sentences. Reference ONE specific thing they picked during the assessment, and ask them one real, concrete question about it — what was happening, what it touched. No greeting. Warm, direct." }], sysWithProfile);
+  const sysWithProfile = SYS_BASE + "\n\n" + profile + PROBE_STYLE +
+    "\n\nDo NOT reference the assessment images — the person can no longer see them, and referencing them is confusing. The assessment already told you what you need. Open the conversation by inviting them to name what matters most to them right now.";
+  const opener = await callClaude([{ role: "user", content: "Open the conversation with one warm, direct invitation for them to name the biggest thing they'd like to work through, solve, or understand in their life right now. One or two sentences. Make it feel like a real person asking, not a form. Do not reference the assessment or any images. No greeting needed." }], sysWithProfile);
   hideSmoke();
-  // If API fails, fall back to probing one of the things they actually picked
   let text;
   if (opener) {
     text = opener;
-  } else if (userPicks.length > 0) {
-    const lastPick = userPicks[userPicks.length - 1];
-    if (lastPick.detail) {
-      text = `Earlier you saw the image about ${lastPick.theme.toLowerCase()} and chose "${lastPick.detail}". What was happening for you when you picked that? Don't tidy it up — what was actually there?`;
-    } else {
-      text = `You said "${lastPick.choice}" to the ${lastPick.theme.toLowerCase()} image. What pulled you toward that one? What did it touch?`;
-    }
   } else {
-    text = "Take a moment. What's actually here for you right now — beneath whatever you'd usually say first?";
+    // Varied fallbacks if API is unreachable
+    const openers = [
+      "Let's begin where it matters. What's the biggest thing you'd like to work through or understand in your life right now?",
+      "If there were one thing in your life you could finally see clearly — or change — what would it be?",
+      "What's the thing that's been sitting with you lately? The one you'd most like to make sense of.",
+      "Tell me what's really on your mind. What would you most like to work through?"
+    ];
+    text = openers[Math.floor(Math.random() * openers.length)];
   }
   addChatMsg("psyche", text);
 }
