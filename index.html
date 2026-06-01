@@ -160,6 +160,19 @@ html, body {
 .assess-logo { font-family: Cinzel, serif; font-size: 13px; letter-spacing: .3em; color: var(--ink); text-transform: uppercase; }
 .assess-info { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: .95rem; color: var(--ink-soft); }
 .assess-pager { font-family: Cinzel, serif; font-size: 10px; letter-spacing: .2em; color: var(--ink-soft); }
+.assess-prompt {
+  flex-shrink: 0;
+  text-align: center;
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  line-height: 1.35;
+  color: var(--ink);
+  background: rgba(245,239,221,.92);
+  padding: 16px 22px 18px;
+  border-bottom: 1px solid var(--line);
+}
+@media (max-width: 600px) { .assess-prompt { font-size: 1.15rem; padding: 12px 16px 14px; } }
 
 /* 2x2 grid of images */
 .grid {
@@ -235,7 +248,8 @@ html, body {
 }
 .sec-btn:hover { background: rgba(245,239,221,.15); border-color: rgba(245,239,221,.4); }
 .sec-btn.picked { background: var(--indigo); border-color: var(--indigo-light); color: var(--cream); font-weight: 500; box-shadow: 0 0 12px rgba(25,48,90,.45); }
-.sec-btn.dim { opacity: .25; pointer-events: none; }
+.sec-btn.dim { opacity: .42; }
+.sec-btn.dim:hover { opacity: .7; }
 
 .pri-bar {
   flex-shrink: 0;
@@ -262,7 +276,8 @@ html, body {
 }
 .pri-btn:hover { background: rgba(245,239,221,.18); border-color: rgba(245,239,221,.45); }
 .pri-btn.picked { background: var(--indigo); border-color: var(--indigo-light); color: var(--cream); font-weight: 500; box-shadow: 0 0 12px rgba(25,48,90,.45); }
-.pri-btn.dim { opacity: .22; pointer-events: none; }
+.pri-btn.dim { opacity: .42; }
+.pri-btn.dim:hover { opacity: .7; }
 
 /* Continue button — TOP RIGHT (v13 change) */
 .cont {
@@ -1153,9 +1168,10 @@ html, body {
 <div class="screen" id="assess">
   <div class="assess-topbar">
     <span class="assess-logo">Psyche</span>
-    <span class="assess-info" id="pageInfo">Notice what you feel</span>
+    <span class="assess-info" id="pageInfo"></span>
     <span class="assess-pager" id="pager">1 of 8</span>
   </div>
+  <div class="assess-prompt" id="assessPrompt">Go deep inside yourself and notice how each picture makes you feel.</div>
   <div class="grid" id="grid">
     <div class="quad" id="q0"><div class="qbg" id="bg0"></div><div class="qoverlay"></div><div class="qtick" id="tick0">&#10003;</div><div class="spacer"></div><div class="sec-bar" id="sec0"><div class="sec-label" id="secLabel0"></div><div class="sec-row" id="secRow0"></div></div><div class="pri-bar"><div class="pri-row" id="priRow0"></div></div></div>
     <div class="quad" id="q1"><div class="qbg" id="bg1"></div><div class="qoverlay"></div><div class="qtick" id="tick1">&#10003;</div><div class="spacer"></div><div class="sec-bar" id="sec1"><div class="sec-label" id="secLabel1"></div><div class="sec-row" id="secRow1"></div></div><div class="pri-bar"><div class="pri-row" id="priRow1"></div></div></div>
@@ -1624,6 +1640,41 @@ let done = [false, false, false, false];
 let page = 0;
 let convAnswers = [];
 let userPicks = []; // For chat probing: tracks what they picked across images
+let applied = {};   // Per-image applied score objects, so re-picks can be reversed cleanly
+
+/* ── Reversible scoring (lets users change their answer before Continue) ── */
+function addScore(obj) { if (obj) Object.entries(obj).forEach(([k, v]) => { scores[k] = (scores[k] || 0) + v; }); }
+function subScore(obj) { if (obj) Object.entries(obj).forEach(([k, v]) => { scores[k] = (scores[k] || 0) - v; }); }
+// Fold the derived craving/open2 into one object so reversal stays exact.
+function effective(opt) {
+  if (!opt || !opt.sc) return {};
+  const e = Object.assign({}, opt.sc);
+  if (opt.sc.lobha) e.craving = (e.craving || 0) + opt.sc.lobha;
+  if (opt.sc.open)  e.open2  = (e.open2  || 0) + opt.sc.open;
+  return e;
+}
+// Apply a score for (imageKey, slot), reversing whatever was there before.
+function applyScore(key, slot, obj) {
+  if (!applied[key]) applied[key] = {};
+  if (applied[key][slot]) subScore(applied[key][slot]);
+  addScore(obj);
+  applied[key][slot] = obj;
+}
+function clearScore(key, slot) {
+  if (applied[key] && applied[key][slot]) { subScore(applied[key][slot]); applied[key][slot] = null; }
+}
+function setPick(key, obj) {
+  const i = userPicks.findIndex(p => p.image === key);
+  if (i >= 0) userPicks[i] = obj; else userPicks.push(obj);
+}
+function updatePickDetail(key, detail) {
+  const i = userPicks.findIndex(p => p.image === key);
+  if (i >= 0) userPicks[i].detail = detail;
+}
+function setDone(qi, val) {
+  done[qi] = val;
+  document.getElementById("cont").classList.toggle("show", done.every(Boolean));
+}
 
 /* ═══════════════════════════════════════════════════════════
    SCREEN SWITCHING
@@ -1709,49 +1760,44 @@ function loadPage(pi) {
       btn.className = "pri-btn";
       btn.textContent = opt.l;
       btn.onclick = function() {
-        priRow.querySelectorAll(".pri-btn").forEach(b => {
-          b.classList.remove("picked");
-          b.classList.add("dim");
-          b.disabled = true;
-        });
+        // Visual: this one picked, the rest dimmed but still clickable
+        priRow.querySelectorAll(".pri-btn").forEach(b => { b.classList.remove("picked"); b.classList.add("dim"); });
         btn.classList.remove("dim");
         btn.classList.add("picked");
-        btn.disabled = false;
-        sc(opt.sc);
-        if (opt.sc && opt.sc.lobha) scores.craving = (scores.craving || 0) + opt.sc.lobha;
-        if (opt.sc && opt.sc.open) scores.open2 = (scores.open2 || 0) + opt.sc.open;
 
-        // Track for chat probing
-        userPicks.push({ image: img.k, theme: img.t, choice: opt.l });
+        // Apply this primary's score, reversing any previous primary for this image
+        applyScore(img.k, "pri", effective(opt));
+        // Changing primary invalidates any earlier secondary on this image
+        clearScore(img.k, "sec");
+
+        // Track for chat probing (replace, don't duplicate)
+        setPick(img.k, { image: img.k, theme: img.t, choice: opt.l });
 
         const secOpts = img.sec ? img.sec[oi] : null;
+        const secRow = document.getElementById("secRow" + qi);
+        secRow.innerHTML = "";
         if (secOpts && secOpts.length > 0) {
           document.getElementById("secLabel" + qi).textContent = opt.l + " — what specifically?";
-          const secRow = document.getElementById("secRow" + qi);
-          secRow.innerHTML = "";
           secOpts.forEach(sopt => {
             const sb = document.createElement("button");
             sb.className = "sec-btn";
             sb.textContent = sopt.l;
             sb.onclick = function() {
-              secRow.querySelectorAll(".sec-btn").forEach(b => {
-                b.classList.remove("picked");
-                b.classList.add("dim");
-                b.disabled = true;
-              });
+              secRow.querySelectorAll(".sec-btn").forEach(b => { b.classList.remove("picked"); b.classList.add("dim"); });
               sb.classList.remove("dim");
               sb.classList.add("picked");
-              sb.disabled = false;
-              sc(sopt.sc);
-              // Add detail to pick
-              userPicks[userPicks.length - 1].detail = sopt.l;
-              markDone(qi);
+              applyScore(img.k, "sec", effective(sopt));
+              updatePickDetail(img.k, sopt.l);
+              setDone(qi, true);
             };
             secRow.appendChild(sb);
           });
           secBar.classList.add("show");
+          // A specific is now required again → not complete until they pick one
+          setDone(qi, false);
         } else {
-          markDone(qi);
+          secBar.classList.remove("show");
+          setDone(qi, true);
         }
         document.getElementById("tick" + qi).classList.add("show");
       };
@@ -1984,7 +2030,7 @@ function getVal(key, lo = 2, hi = 24, outLo = 18, outHi = 92) {
    ═══════════════════════════════════════════════════════════ */
 const chatHistory = [];
 let chatBusy = false;
-const CHAT_LIMIT = 10; // user messages before showing membership CTA
+const CHAT_LIMIT = 20; // user messages before showing membership CTA
 let userMessageCount = 0;
 
 function openChat() {
@@ -2008,7 +2054,7 @@ async function seedChatOpener() {
   const profile = buildProfileContext();
   const sysWithProfile = SYS_BASE + "\n\n" + profile + PROBE_STYLE +
     "\n\nDo NOT reference the assessment images — the person can no longer see them, and referencing them is confusing. The assessment already told you what you need. Open the conversation by inviting them to name what matters most to them right now.";
-  const opener = await callClaude([{ role: "user", content: "Open the conversation with one warm, direct invitation for them to name the biggest thing they'd like to work through, solve, or understand in their life right now. One or two sentences. Make it feel like a real person asking, not a form. Do not reference the assessment or any images. No greeting needed." }], sysWithProfile);
+  const opener = await callClaude([{ role: "user", content: "Open the conversation with one warm, direct invitation for them to name the ONE thing in their life they'd most like to solve, to see differently, or to get past. One or two sentences. Make it feel like a real person asking, not a form. Do not reference the assessment or any images. No greeting needed." }], sysWithProfile);
   hideSmoke();
   let text;
   if (opener) {
@@ -2016,10 +2062,10 @@ async function seedChatOpener() {
   } else {
     // Varied fallbacks if API is unreachable
     const openers = [
-      "Let's begin where it matters. What's the biggest thing you'd like to work through or understand in your life right now?",
-      "If there were one thing in your life you could finally see clearly — or change — what would it be?",
-      "What's the thing that's been sitting with you lately? The one you'd most like to make sense of.",
-      "Tell me what's really on your mind. What would you most like to work through?"
+      "Let's begin where it matters. What's the one thing in your life you'd most like to solve, see differently, or get past?",
+      "If there were one thing you could finally see clearly — or get past — what would it be?",
+      "What's the one thing that's been sitting with you lately — the one you'd most like to work through or see differently?",
+      "Tell me the one thing that's really on your mind. The thing you'd most like to solve or get past."
     ];
     text = openers[Math.floor(Math.random() * openers.length)];
   }
@@ -2292,13 +2338,13 @@ ${scoreLines}
 ───────────────────────────────────────────────────
 HOW TO WRITE THE BARS
 
-Each bar has three fields. The first two TEACH (what it is / what most get wrong) and can be general wisdom. The third — "improve" — must be PERSONAL: speak to where THEY sit on that bar and, where natural, tie to something they chose. Vary your sentence rhythm across bars so they don't read like a template.
+For each of the twelve bars, write ONE personal paragraph — the "how to improve" for THEM. Speak to where THEY sit on that bar and, where natural, tie it to something they actually chose or said. This is the only field you generate per bar; the teaching text is already on the page. Vary your sentence rhythm across bars so they don't read like a template. Keep each to 2-3 sentences so all twelve finish.
 
-WEAK improve (never write like this):
+WEAK (never write like this):
   "Try to be more present in your daily life. Presence is important for wellbeing."
   → generic, forgettable, could be anyone.
 
-STRONG improve (write like this):
+STRONG (write like this):
   "At 43, presence flickers for you — and notice you chose the empty shoreline over the crowded room. Part of you already knows where it goes quiet. Start there: one minute on that shoreline, fully, before the next thing pulls you."
   → names their score, names their pick, gives one real step.
 
@@ -2319,18 +2365,18 @@ Return a JSON object and NOTHING else — no markdown fences, no preamble. Exact
   "archName": "2-4 word archetype name, evocative, fits them",
   "archLine": "one short line capturing who they are right now",
   "bars": {
-    "pres":{"what":"","wrong":"","improve":""},
-    "craving":{"what":"","wrong":"","improve":""},
-    "dosa":{"what":"","wrong":"","improve":""},
-    "confusion":{"what":"","wrong":"","improve":""},
-    "comp":{"what":"","wrong":"","improve":""},
-    "selfcomp":{"what":"","wrong":"","improve":""},
-    "equan":{"what":"","wrong":"","improve":""},
-    "aware":{"what":"","wrong":"","improve":""},
-    "depth":{"what":"","wrong":"","improve":""},
-    "warm":{"what":"","wrong":"","improve":""},
-    "aes":{"what":"","wrong":"","improve":""},
-    "open2":{"what":"","wrong":"","improve":""}
+    "pres":"their personal improve paragraph",
+    "craving":"their personal improve paragraph",
+    "dosa":"their personal improve paragraph",
+    "confusion":"their personal improve paragraph",
+    "comp":"their personal improve paragraph",
+    "selfcomp":"their personal improve paragraph",
+    "equan":"their personal improve paragraph",
+    "aware":"their personal improve paragraph",
+    "depth":"their personal improve paragraph",
+    "warm":"their personal improve paragraph",
+    "aes":"their personal improve paragraph",
+    "open2":"their personal improve paragraph"
   },
   "oneThing":{
     "title":"one direct sentence naming their core obstruction",
@@ -2367,19 +2413,18 @@ NON-NEGOTIABLES:
   if (data.archName) document.getElementById("revName").textContent = data.archName;
   if (data.archLine) document.getElementById("revArch").textContent = data.archLine;
 
-  // Overwrite each bar's three lines (fade for a gentle transition)
+  // Overwrite only each bar's personal "improve" paragraph.
+  // (what/wrong stay as the static teaching — keeps the generation small enough to finish.)
   if (data.bars) {
     SPIRIT_DIMS.forEach(sd => {
       const b = data.bars[sd.k];
       if (!b) return;
+      const improve = (typeof b === "string") ? b : b.improve;
+      if (!improve) return;
       const block = document.querySelector(`#s_${sd.k}`)?.closest(".bar-block");
       if (!block) return;
-      const whatEl = block.querySelector(".bar-what");
-      const wrongEl = block.querySelector(".bar-wrong");
       const impEl = block.querySelector(".bar-improve");
-      if (whatEl && b.what) whatEl.textContent = b.what;
-      if (wrongEl && b.wrong) wrongEl.innerHTML = "<span class='bar-line-eye'>What most get wrong</span>" + b.wrong;
-      if (impEl && b.improve) impEl.innerHTML = "<span class='bar-line-eye'>How to improve</span>" + b.improve;
+      if (impEl) impEl.innerHTML = "<span class='bar-line-eye'>How to improve</span>" + improve;
     });
   }
 
