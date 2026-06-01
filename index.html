@@ -1235,6 +1235,7 @@ html, body {
   <div class="rev-inner">
     <p class="rev-eye">Your Psyche Profile</p>
     <div id="personalizingBanner" style="display:none;text-align:center;font-style:italic;color:var(--indigo);font-size:.95rem;margin:0 auto 16px;padding:10px 18px;background:rgba(25,48,90,.06);border:1px solid rgba(25,48,90,.18);border-radius:24px;max-width:380px;">Reading your responses, writing your profile…</div>
+    <div style="text-align:center;margin:0 auto 20px;"><button id="regenBtn" style="display:none;font-family:Cinzel,serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--indigo);background:transparent;border:1px solid rgba(25,48,90,.35);border-radius:24px;padding:9px 20px;cursor:pointer;">Regenerate with fresh insight</button></div>
     <h1 class="rev-name" id="revName"></h1>
     <p class="rev-arch" id="revArch"></p>
 
@@ -2295,9 +2296,11 @@ function buildReveal() {
    Generic content stays as fallback if the API is unreachable.
    ═══════════════════════════════════════════════════════════ */
 async function personalizeReveal() {
-  // Show the "personalising" banner
+  // Show the "personalising" banner; reset to processing state each run
   var banner = document.getElementById("personalizingBanner");
-  if (banner) banner.style.display = "block";
+  var regen = document.getElementById("regenBtn");
+  if (regen) regen.style.display = "none";
+  if (banner) { banner.style.color = "var(--indigo)"; banner.textContent = "Reading your responses, writing your profile…"; banner.style.display = "block"; }
   // Build the full picture of this person
   const picks = userPicks.map(p =>
     p.detail ? `· ${p.theme}: chose "${p.choice}", specifically "${p.detail}"`
@@ -2406,6 +2409,7 @@ NON-NEGOTIABLES:
   if (!raw) {
     console.log("[Psyche] reveal call failed:", lastApiError);
     if (banner) { banner.style.display = "block"; banner.style.color = "#a33"; banner.textContent = "Couldn't write your profile just now — " + (lastApiError || "no response") + ". Showing the general version."; }
+    if (regen) regen.style.display = "inline-block";
     return; // keep generic
   }
 
@@ -2419,6 +2423,7 @@ NON-NEGOTIABLES:
   } catch (e) {
     console.log("[Psyche] reveal JSON parse failed. Raw response:", raw);
     if (banner) { banner.style.display = "block"; banner.style.color = "#a33"; banner.textContent = "Your profile came back in an unexpected format — showing the general version. (Details in console.)"; }
+    if (regen) regen.style.display = "inline-block";
     return; // keep generic
   }
 
@@ -2451,8 +2456,9 @@ NON-NEGOTIABLES:
     if (o.prac) document.getElementById("insightPrac").textContent = o.prac;
   }
 
-  // Done — hide the banner
+  // Done — hide the banner, offer a regenerate option for iterating
   if (banner) banner.style.display = "none";
+  if (regen) regen.style.display = "inline-block";
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -2462,6 +2468,8 @@ document.addEventListener("DOMContentLoaded", function() {
   const send = document.getElementById("chatSend");
   const input = document.getElementById("chatInput");
   const back = document.getElementById("chatBack");
+  const regen = document.getElementById("regenBtn");
+  if (regen) regen.onclick = function() { personalizeReveal(); };
   if (send) send.onclick = sendChatMsg;
   if (input) {
     input.addEventListener("keydown", e => {
