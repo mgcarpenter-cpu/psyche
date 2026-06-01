@@ -1885,7 +1885,9 @@ VOICE:
 — You see the engine underneath — the reaching, pushing, going-dim in response to a feeling — but you point at it only through their own words and examples, never as theory.
 — End facing forward, with an opening, not a lecture.`;
 
+let lastApiError = null;
 async function callClaude(messages, systemOverride, maxTokens) {
+  lastApiError = null;
   try {
     const r = await fetch("/api/chat", {
       method: "POST",
@@ -1897,9 +1899,12 @@ async function callClaude(messages, systemOverride, maxTokens) {
       })
     });
     const d = await r.json();
-    if (!d || !d.content) return null;
+    if (!d || !d.content) {
+      lastApiError = "HTTP " + r.status + " — " + JSON.stringify(d).slice(0, 240);
+      return null;
+    }
     return d.content.filter(x => x.type === "text").map(x => x.text).join("\n").trim() || null;
-  } catch (e) { return null; }
+  } catch (e) { lastApiError = String(e); return null; }
 }
 
 function buildProfileContext() {
@@ -2398,15 +2403,23 @@ NON-NEGOTIABLES:
     sys,
     3000
   );
-  if (!raw) { if (banner) banner.style.display = "none"; return; } // API unreachable — keep generic
+  if (!raw) {
+    console.log("[Psyche] reveal call failed:", lastApiError);
+    if (banner) { banner.style.display = "block"; banner.style.color = "#a33"; banner.textContent = "Couldn't write your profile just now — " + (lastApiError || "no response") + ". Showing the general version."; }
+    return; // keep generic
+  }
 
   let data;
   try {
-    const clean = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
+    // Robust: strip fences, then take the outermost { ... } in case the model adds any stray text.
+    let clean = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
+    const a = clean.indexOf("{"), b = clean.lastIndexOf("}");
+    if (a !== -1 && b !== -1 && b > a) clean = clean.slice(a, b + 1);
     data = JSON.parse(clean);
   } catch (e) {
-    if (banner) banner.style.display = "none";
-    return; // bad JSON — keep generic
+    console.log("[Psyche] reveal JSON parse failed. Raw response:", raw);
+    if (banner) { banner.style.display = "block"; banner.style.color = "#a33"; banner.textContent = "Your profile came back in an unexpected format — showing the general version. (Details in console.)"; }
+    return; // keep generic
   }
 
   // Overwrite archetype
