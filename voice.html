@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Psyche — voice test</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#eeeae4;color:#241f17;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:24px;}
+  h1{font-weight:500;letter-spacing:.28em;text-transform:uppercase;font-size:1.1rem;color:#1d3891;margin-bottom:8px;}
+  .sub{font-style:italic;color:#6b6256;margin-bottom:36px;font-size:1.05rem;}
+  button{padding:16px 44px;border-radius:32px;border:none;cursor:pointer;font-size:13px;letter-spacing:.18em;
+    text-transform:uppercase;color:#f3efe7;background:linear-gradient(180deg,#2a49ad,#1d3891 45%,#16296b);transition:opacity .2s;}
+  button:disabled{opacity:.4;cursor:default;}
+  .stop{background:#7a2a2a;margin-left:10px;}
+  .status{margin-top:28px;font-size:.95rem;color:#6b6256;min-height:24px;}
+  .smoke{margin-top:30px;height:30px;display:flex;gap:7px;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;}
+  .smoke.show{opacity:1;}
+  .smoke .dot{width:7px;height:7px;border-radius:50%;background:#1d3891;animation:rise 1.3s infinite ease-in-out;}
+  .smoke .dot:nth-child(2){animation-delay:.18s;} .smoke .dot:nth-child(3){animation-delay:.36s;}
+  @keyframes rise{0%,100%{transform:translateY(0);opacity:.4;}50%{transform:translateY(-8px);opacity:1;}}
+  .log{margin-top:24px;font-size:.78rem;color:#9a9081;max-width:460px;white-space:pre-wrap;line-height:1.6;text-align:left;font-family:monospace;}
+</style>
+</head>
+<body>
+  <h1>Psyche</h1>
+  <div class="sub">voice test</div>
+  <div>
+    <button id="start">Begin</button>
+    <button id="stop" class="stop" disabled>End</button>
+  </div>
+  <div class="smoke" id="smoke"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+  <div class="status" id="status">Use Chrome. Tap Begin and allow the microphone.</div>
+  <div class="log" id="log"></div>
+
+<script type="module">
+import { GoogleGenAI, Modality } from "https://cdn.jsdelivr.net/npm/@google/genai/+esm";
+
+const MODEL = "gemini-2.5-flash-native-audio-preview-09-2025";
+const VOICE = "Aoede";
+const SYSTEM = "You are Psyche, a contemplative guide grounded in the Buddha's teachings as found in the suttas. You speak in plain, modern English \u2014 never use Pali or jargon, never name-drop scripture. The wisdom sits quietly underneath.\n\nYou help the person see how suffering actually works through one simple engine: contact (something touches you) gives rise to a feeling-tone (pleasant, unpleasant, or neutral), which gives rise to a reaction (grasping at the pleasant, pushing away the unpleasant, or dimming out in confusion), which is where suffering begins. The way through is to meet the feeling-tone without grabbing, pushing, or dimming \u2014 and over time this matures into equanimity: a settled peace that depends on nothing and still meets the suffering of others with care.\n\nMeet them wherever they are today. Keep the conversation anchored to what is actually alive for them right now.\n\nYour manner is a quiet teacher, not a chatbot. Say less, ask more. Often a single short question is enough. Leave space. Point them back to their own direct experience rather than concluding for them. Warm, spare, unhurried. Never lecture or give long explanations. Replies are usually one to three short sentences, at most one gentle question at a time.\n\nYou remember this person across conversations \u2014 refer naturally to what they have told you before when relevant.\n\nYou are not a therapist and do not diagnose. If the person seems to be in real distress or crisis, gently and warmly encourage them to reach out to someone they trust or to professional support \u2014 without alarm, and without losing warmth.\n\nThis is a spoken conversation. Your words will be heard, not read. Keep replies short and natural to the ear \u2014 usually one or two sentences, sometimes just a single quiet question. Open by warmly welcoming them and inviting them to share what is present for them right now.";
+
+const $ = id => document.getElementById(id);
+const log = m => { $("log").textContent += m + "\n"; console.log("[psyche]", m); };
+const setStatus = m => $("status").textContent = m;
+const smoke = on => $("smoke").classList.toggle("show", on);
+
+let session, micCtx, playCtx, processor, micStream, playHead = 0, sources = [];
+
+function floatTo16Base64(float32, inRate, outRate){
+  const ratio = inRate / outRate;
+  const outLen = Math.floor(float32.length / ratio);
+  const buf = new Int16Array(outLen);
+  for(let i=0;i<outLen;i++){
+    const s = Math.max(-1, Math.min(1, float32[Math.floor(i*ratio)]));
+    buf[i] = s < 0 ? s*0x8000 : s*0x7FFF;
+  }
+  let bin=""; const bytes=new Uint8Array(buf.buffer);
+  for(let i=0;i<bytes.length;i++) bin+=String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+function playPCM(base64){
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  const pcm = new Int16Array(bytes.buffer);
+  const buf = playCtx.createBuffer(1, pcm.length, 24000);
+  const ch = buf.getChannelData(0);
+  for(let i=0;i<pcm.length;i++) ch[i]=pcm[i]/32768;
+  const src = playCtx.createBufferSource();
+  src.buffer = buf; src.connect(playCtx.destination);
+  const now = playCtx.currentTime;
+  if(playHead < now) playHead = now;
+  src.start(playHead); playHead += buf.duration;
+  sources.push(src);
+}
+function stopPlayback(){ sources.forEach(s=>{try{s.stop()}catch(e){}}); sources=[]; playHead=0; }
+
+async function begin(){
+  $("start").disabled = true; $("log").textContent="";
+  setStatus("Connecting…"); smoke(true);
+  try{
+    log("1. fetching token…");
+    const r = await fetch("/api/gemini-token", {method:"POST"});
+    const data = await r.json();
+    if(!data.token){ throw new Error("no token: "+JSON.stringify(data)); }
+    log("2. token ok");
+
+    log("3. creating client…");
+    const ai = new GoogleGenAI({ apiKey: data.token, httpOptions:{ apiVersion:"v1alpha" } });
+    playCtx = new (window.AudioContext||window.webkitAudioContext)();
+
+    log("4. connecting to live ("+MODEL+")…");
+    session = await ai.live.connect({
+      model: MODEL,
+      config: {
+        responseModalities: [Modality.AUDIO],
+        systemInstruction: SYSTEM,
+        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE } } },
+      },
+      callbacks: {
+        onopen: () => { log("5. LIVE OPEN ✓"); setStatus("Listening… speak to Psyche."); smoke(false); $("stop").disabled=false; },
+        onmessage: (msg) => {
+          const parts = msg.serverContent?.modelTurn?.parts || [];
+          for(const p of parts){ if(p.inlineData?.data){ smoke(false); playPCM(p.inlineData.data); } }
+          if(msg.serverContent?.interrupted){ stopPlayback(); }
+        },
+        onerror: (e) => { log("LIVE ERROR: "+(e?.message||JSON.stringify(e))); setStatus("Live error — see log."); smoke(false); },
+        onclose: (e) => { log("closed: "+(e?.reason||"")); },
+      },
+    });
+
+    log("6. opening mic…");
+    micStream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true } });
+    micCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const source = micCtx.createMediaStreamSource(micStream);
+    processor = micCtx.createScriptProcessor(4096, 1, 1);
+    source.connect(processor); processor.connect(micCtx.destination);
+    processor.onaudioprocess = (e) => {
+      const input = e.inputBuffer.getChannelData(0);
+      const b64 = floatTo16Base64(input, micCtx.sampleRate, 16000);
+      try{ session.sendRealtimeInput({ media:{ data:b64, mimeType:"audio/pcm;rate=16000" } }); }catch(err){}
+    };
+    log("7. mic streaming");
+  }catch(err){
+    log("FAIL: "+(err?.message||err));
+    setStatus("Couldn't start — see log."); smoke(false); $("start").disabled=false;
+  }
+}
+function end(){
+  try{ processor && processor.disconnect(); }catch(e){}
+  try{ micStream && micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
+  try{ session && session.close(); }catch(e){}
+  stopPlayback(); smoke(false); setStatus("Ended."); $("start").disabled=false; $("stop").disabled=true;
+}
+$("start").onclick = begin;
+$("stop").onclick = end;
+</script>
+</body>
+</html>
