@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sign in · Psyche</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf9f5; --ink:#2c2a25; --muted:#8a8378; --line:#e7e3d9;
+    --hover:#eae7dd; --indigo:#1d3891; --indigo-deep:#16296b; --field:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;display:flex;flex-direction:column;min-height:100dvh;}
+
+  header{padding:22px 26px;}
+  .wordmark{font-family:"Cinzel",serif;font-weight:500;letter-spacing:.32em;text-transform:uppercase;font-size:1.18rem;color:var(--indigo);text-decoration:none;}
+
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .card{width:100%;max-width:392px;text-align:center;}
+  .card h1{font-size:1.5rem;font-weight:500;letter-spacing:-.01em;margin-bottom:8px;color:#23201a;}
+  .card .lede{font-size:.95rem;color:var(--muted);margin-bottom:30px;line-height:1.5;}
+
+  .btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:13px;padding:13px 16px;font-size:.96rem;cursor:pointer;border:1px solid var(--line);background:var(--field);color:var(--ink);transition:background .15s,border-color .15s;}
+  .btn:hover{background:var(--hover);}
+  .btn.google{font-weight:500;}
+  .btn svg{width:18px;height:18px;flex:none;}
+
+  .divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.8rem;margin:18px 0;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+
+  .field{width:100%;border:1px solid var(--line);background:var(--field);border-radius:13px;padding:13px 15px;font:inherit;color:var(--ink);outline:none;margin-bottom:10px;transition:border-color .15s,box-shadow .15s;}
+  .field:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(29,56,145,.10);}
+  .btn.primary{background:var(--indigo);color:#fff;border-color:var(--indigo);font-weight:500;}
+  .btn.primary:hover{background:var(--indigo-deep);}
+
+  .fine{font-size:.76rem;color:var(--muted);line-height:1.55;margin-top:22px;}
+  .fine a{color:var(--muted);text-decoration:underline;}
+
+  footer{padding:20px 26px;text-align:center;font-size:.78rem;color:var(--muted);}
+  footer a{color:var(--muted);text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+
+  .note{margin-top:18px;font-size:.72rem;color:#b3ab9c;}
+</style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="wordmark">Psyche</a>
+  </header>
+
+  <main>
+    <div class="card">
+      <h1>Welcome to Psyche</h1>
+      <div class="lede">Log in or create your account to continue.</div>
+
+      <button class="btn google" id="google">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38Z"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="divider">or</div>
+
+      <input class="field" id="email" type="email" placeholder="you@example.com" autocomplete="email">
+      <button class="btn primary" id="emailBtn">Continue with email</button>
+
+      <div class="fine">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</div>
+      <div class="note">Sign-in isn’t connected yet — this is the page design.</div>
+    </div>
+  </main>
+
+  <footer>
+    <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · Questions? <a href="mailto:support@psyche.ai">support@psyche.ai</a>
+  </footer>
+
+<script>
+  // Placeholder behaviour until Supabase is wired.
+  document.getElementById("google").onclick=()=>alert("Google sign-in — coming soon.");
+  document.getElementById("emailBtn").onclick=()=>{
+    const e=document.getElementById("email").value.trim();
+    if(!e || !e.includes("@")){ alert("Please enter a valid email."); return; }
+    alert("Magic-link sign-in — coming soon. (Will email a secure link to "+e+".)");
+  };
+  document.getElementById("email").addEventListener("keydown",ev=>{ if(ev.key==="Enter") document.getElementById("emailBtn").click(); });
+</script>
+</body>
+</html>

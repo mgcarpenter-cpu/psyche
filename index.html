@@ -263,6 +263,11 @@
   .cta-promise{ margin-bottom:6px !important; }
 
   .cta-promise{ font-size:clamp(1.15rem,2.4vw,1.45rem) !important; max-width:620px; margin:0 auto 22px !important; line-height:1.5; }
+
+  /* ── LANDING FOOTER ── */
+  .land-footer{padding:34px 22px 46px;text-align:center;color:var(--ink-ghost);}
+  .land-footer a{font-family:Cinzel,serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);text-decoration:none;margin:0 8px;}
+  .land-footer a:hover{color:var(--indigo);}
 </style>
 </head>
 <body>
@@ -270,7 +275,7 @@
   <!-- LANDING -->
   <div class="screen active" id="land">
     <div class="hero">
-      <a class="hero-login" onclick="enter()">Log in</a>
+      <a class="hero-login" href="auth.html">Log in</a>
       <div class="hero-statement">
         <div class="hero-wordmark">Psyche</div>
       </div>
@@ -296,10 +301,11 @@
           <li>Guided reflections that show how far you've come</li>
           <li>Guided meditations tuned to what's alive for you</li>
         </ul>
-        <button class="join-btn grad" onclick="enter()">Begin the path</button>
+        <button class="join-btn grad" onclick="location.href='auth.html'">Begin the path</button>
         <div class="join-free">or <b onclick="enter()">try it free</b> — no email, 15 minutes</div>
       </div>
     </div>
+    <div class="land-footer"><a href="privacy.html">Privacy</a>·<a href="terms.html">Terms</a></div>
   </div>
 
   <!-- CHAT -->
