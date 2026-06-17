@@ -57,8 +57,8 @@
       <!-- PROFILE -->
       <div class="card">
         <h2>Profile</h2>
-        <div class="row"><span class="lbl">Email</span><span class="val">you@example.com</span></div>
-        <div class="row"><span class="lbl">Signed in with</span><span class="val">Email link</span></div>
+        <div class="row"><span class="lbl">Email</span><span class="val" id="acctEmail">…</span></div>
+        <div class="row"><span class="lbl">Signed in with</span><span class="val" id="acctProvider">Email link</span></div>
       </div>
 
       <!-- PLAN -->
@@ -83,7 +83,7 @@
         </div>
       </div>
 
-      <div class="note">Account actions aren’t connected yet — this is the page design.</div>
+      <div class="note">Account deletion isn’t connected yet — coming soon.</div>
     </div>
   </main>
 
@@ -91,9 +91,27 @@
     <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · Questions? <a href="mailto:support@psyche.ai">support@psyche.ai</a>
   </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  document.getElementById("logout").onclick=()=>alert("Log out — coming soon.");
-  document.getElementById("del").onclick=()=>{
+  const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
+  const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
+  const sb=supabase.createClient(SB_URL,SB_KEY);
+  const $=id=>document.getElementById(id);
+
+  // Load the real session; if there's none, send them to sign in.
+  sb.auth.getSession().then(({data})=>{
+    const s=data.session;
+    if(!s || !s.user){ location.replace("auth.html"); return; }
+    $("acctEmail").textContent=s.user.email||"—";
+    const prov=(s.user.app_metadata&&s.user.app_metadata.provider)||"email";
+    $("acctProvider").textContent=prov==="email"?"Email link":prov.charAt(0).toUpperCase()+prov.slice(1);
+  });
+
+  $("logout").onclick=async()=>{
+    await sb.auth.signOut();
+    location.href="index.html";
+  };
+  $("del").onclick=()=>{
     if(confirm("Delete your account and all conversations? This can’t be undone.")) alert("Delete account — coming soon.");
   };
 </script>

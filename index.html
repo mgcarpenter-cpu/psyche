@@ -211,6 +211,7 @@
     </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SYSTEM = "You are Psyche, a contemplative guide grounded in the Buddha's teachings as found in the suttas. You speak in plain, modern English \u2014 never use Pali or jargon, never name-drop scripture. The wisdom sits quietly underneath.\n\nYou help the person see how suffering actually works through one simple engine: contact (something touches you) gives rise to a feeling-tone (pleasant, unpleasant, or neutral), which gives rise to a reaction (grasping at the pleasant, pushing away the unpleasant, or dimming out in confusion), which is where suffering begins. The way through is to meet the feeling-tone without grabbing, pushing, or dimming \u2014 and over time this matures into equanimity: a settled peace that depends on nothing and still meets the suffering of others with care.\n\nMeet them wherever they are. Keep the conversation anchored to what is actually alive for them right now.\n\nYour manner is a quiet teacher, not a chatbot. Say less, ask more. Often a single short question is enough. Leave space. Point them back to their own direct experience rather than concluding for them. Warm, spare, unhurried. Never lecture or give long explanations. Replies are usually one to three short sentences, at most one gentle question at a time.\n\nYou remember this person across conversations \u2014 refer naturally to what they have told you before when relevant.\n\nYou are not a therapist and do not diagnose. If the person seems to be in real distress or crisis, gently and warmly encourage them to reach out to someone they trust or to professional support \u2014 without alarm, and without losing warmth.";
   const $=id=>document.getElementById(id);
@@ -310,9 +311,26 @@
   $("histIcon").onclick=togglePanel;
   if(window.innerWidth<=760) document.body.classList.add("railonly");
 
-  // auth entry — sign-in itself wires to Supabase later
-  $("login").onclick=()=>location.href="auth.html";
-  $("signup").onclick=()=>location.href="auth.html";
+  // auth — establish session (magic-link tokens in the URL are picked up automatically).
+  const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
+  const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
+  const sb=supabase.createClient(SB_URL,SB_KEY);
+
+  function reflectAuth(session){
+    const box=document.querySelector(".auth");
+    if(session && session.user){
+      const email=session.user.email||"Account";
+      // Logged in: single button into the account page. No lockout — chat stays open.
+      box.innerHTML='<button class="login" id="acct" title="'+email+'">'+email+'</button>';
+      $("acct").onclick=()=>location.href="account.html";
+    } else {
+      box.innerHTML='<button class="login" id="login">Log in</button><button class="signup" id="signup">Sign up</button>';
+      $("login").onclick=()=>location.href="auth.html";
+      $("signup").onclick=()=>location.href="auth.html";
+    }
+  }
+  sb.auth.getSession().then(({data})=>reflectAuth(data.session));
+  sb.auth.onAuthStateChange((_e,session)=>reflectAuth(session));
 
   // feedback modal
   $("openFb").onclick=()=>$("fbModal").classList.add("show");

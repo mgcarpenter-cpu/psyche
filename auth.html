@@ -51,7 +51,8 @@
   </header>
 
   <main>
-    <div class="card">
+    <!-- SIGN-IN -->
+    <div class="card" id="signinCard">
       <h1>Welcome to Psyche</h1>
       <div class="lede">Log in or create your account to continue.</div>
 
@@ -66,7 +67,15 @@
       <button class="btn primary" id="emailBtn">Continue with email</button>
 
       <div class="fine">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</div>
-      <div class="note">Sign-in isn’t connected yet — this is the page design.</div>
+      <div class="note" id="authMsg">We’ll email you a secure link — no password needed.</div>
+    </div>
+
+    <!-- CHECK YOUR EMAIL -->
+    <div class="card" id="sentCard" style="display:none;">
+      <h1>Check your email</h1>
+      <div class="lede">We’ve sent a secure sign-in link to <strong id="sentTo"></strong>. Open it on this device to continue.</div>
+      <button class="btn" id="resend">Use a different email</button>
+      <div class="note">The link expires after a short while. Didn’t arrive? Check spam, or try again.</div>
     </div>
   </main>
 
@@ -74,15 +83,39 @@
     <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · Questions? <a href="mailto:support@psyche.ai">support@psyche.ai</a>
   </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // Placeholder behaviour until Supabase is wired.
-  document.getElementById("google").onclick=()=>alert("Google sign-in — coming soon.");
-  document.getElementById("emailBtn").onclick=()=>{
-    const e=document.getElementById("email").value.trim();
-    if(!e || !e.includes("@")){ alert("Please enter a valid email."); return; }
-    alert("Magic-link sign-in — coming soon. (Will email a secure link to "+e+".)");
-  };
-  document.getElementById("email").addEventListener("keydown",ev=>{ if(ev.key==="Enter") document.getElementById("emailBtn").click(); });
+  const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
+  const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
+  const sb=supabase.createClient(SB_URL,SB_KEY);
+  const $=id=>document.getElementById(id);
+
+  // Already signed in? Skip straight to the app.
+  sb.auth.getSession().then(({data})=>{ if(data.session) location.replace("index.html"); });
+
+  // Google — clearly coming soon for now.
+  $("google").onclick=()=>alert("Continue with Google — coming soon. Use email for now.");
+
+  // Email magic link.
+  async function sendLink(){
+    const email=$("email").value.trim();
+    if(!email || !email.includes("@")){ $("authMsg").textContent="Please enter a valid email address."; return; }
+    const btn=$("emailBtn"); btn.disabled=true; btn.textContent="Sending…";
+    const { error } = await sb.auth.signInWithOtp({
+      email,
+      options:{ emailRedirectTo: location.origin + "/index.html" }
+    });
+    btn.disabled=false; btn.textContent="Continue with email";
+    if(error){ $("authMsg").textContent=error.message||"Couldn’t send the link — please try again."; return; }
+    $("sentTo").textContent=email;
+    $("signinCard").style.display="none";
+    $("sentCard").style.display="block";
+  }
+  $("emailBtn").onclick=sendLink;
+  $("email").addEventListener("keydown",ev=>{ if(ev.key==="Enter") sendLink(); });
+
+  // Back to the email entry from the confirmation state.
+  $("resend").onclick=()=>{ $("sentCard").style.display="none"; $("signinCard").style.display="block"; $("email").focus(); };
 </script>
 </body>
 </html>
