@@ -328,11 +328,13 @@
   let profile=null; // {id, plan, message_count} for the logged-in user, else null
   function planLimit(){ return PLAN_LIMITS[profile&&profile.plan]||PLAN_LIMITS.free; }
   async function loadProfile(session){
-    profile=null;
-    if(!(session&&session.user)) return;
+    // Logged out is the ONLY case where we clear a loaded profile.
+    if(!(session&&session.user)){ profile=null; return; }
     const uid=session.user.id;
+    // Already loaded for this user — ignore duplicate/late auth events so we never clobber a good profile back to null.
+    if(profile&&profile.id===uid) return;
     const {data,error}=await sb.from("profiles").select("plan,message_count,count_reset_at").eq("id",uid).single();
-    if(error||!data) return;
+    if(error||!data){ console.error("profile fetch failed (keeping existing profile):", error); return; }
     profile={id:uid,plan:data.plan||"free",message_count:data.message_count||0};
     console.log("profile loaded:", profile);
     // monthly reset: if the window opened more than 30 days ago, zero the count.
@@ -364,7 +366,7 @@
     }
   }
   sb.auth.getSession().then(({data})=>{ reflectAuth(data.session); loadProfile(data.session); });
-  sb.auth.onAuthStateChange((_e,session)=>{ reflectAuth(session); loadProfile(session); });
+  sb.auth.onAuthStateChange((_e,session)=>{ reflectAuth(session); setTimeout(()=>loadProfile(session),0); });
 
   // feedback modal
   $("openFb").onclick=()=>$("fbModal").classList.add("show");
