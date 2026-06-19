@@ -290,8 +290,9 @@
     if(profile){
       if(profile.message_count>=planLimit()){ showLimit(); return; }
       profile.message_count++;
-      const {error:upErr} = await sb.from("profiles").update({message_count:profile.message_count}).eq("id",profile.id);
+      const {data:upRows,error:upErr} = await sb.from("profiles").update({message_count:profile.message_count}).eq("id",profile.id).select();
       if(upErr) console.error("profile message_count update failed:", upErr);
+      else if(!upRows||!upRows.length) console.error("profile update affected 0 rows — the profiles table is missing an RLS UPDATE policy for the owner; the count cannot persist until that policy is added.");
     }
     let c=current();
     if(!c){ c={id:String(Date.now()),title:text.slice(0,38),messages:[]}; chats.push(c); currentId=c.id; }
