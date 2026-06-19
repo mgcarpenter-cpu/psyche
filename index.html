@@ -287,6 +287,11 @@
 
   async function send(text){
     text=text.trim(); if(!text) return;
+    if(profile){
+      if(profile.message_count>=planLimit()){ showLimit(); return; }
+      profile.message_count++;
+      sb.from("profiles").update({message_count:profile.message_count}).eq("id",profile.id);
+    }
     let c=current();
     if(!c){ c={id:String(Date.now()),title:text.slice(0,38),messages:[]}; chats.push(c); currentId=c.id; }
     if(!c.title||c.title==="New conversation") c.title=text.slice(0,38);
@@ -316,6 +321,32 @@
   const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
   const sb=supabase.createClient(SB_URL,SB_KEY);
 
+  // message limits — per-plan monthly caps tracked in the profiles table.
+  const PLAN_LIMITS={free:30,plus:300,pro:1000};
+  let profile=null; // {id, plan, message_count} for the logged-in user, else null
+  function planLimit(){ return PLAN_LIMITS[profile&&profile.plan]||PLAN_LIMITS.free; }
+  async function loadProfile(session){
+    profile=null;
+    if(!(session&&session.user)) return;
+    const uid=session.user.id;
+    const {data,error}=await sb.from("profiles").select("plan,message_count,count_reset_at").eq("id",uid).single();
+    if(error||!data) return;
+    profile={id:uid,plan:data.plan||"free",message_count:data.message_count||0};
+    // monthly reset: if the window opened more than 30 days ago, zero the count.
+    const last=data.count_reset_at?new Date(data.count_reset_at).getTime():0;
+    if(Date.now()-last>30*24*60*60*1000){
+      const now=new Date().toISOString();
+      profile.message_count=0;
+      await sb.from("profiles").update({message_count:0,count_reset_at:now}).eq("id",uid);
+    }
+  }
+  function showLimit(){
+    const t=$("thread"); let el=$("limitNote");
+    if(!el){ el=document.createElement("div"); el.id="limitNote"; el.className="msg psy"; t.appendChild(el); }
+    el.innerHTML='<div class="body">You\'ve reached your monthly limit. <a href="pricing.html">Upgrade for more.</a></div>';
+    scrollDown();
+  }
+
   function reflectAuth(session){
     const box=document.querySelector(".auth");
     if(session && session.user){
@@ -329,8 +360,8 @@
       $("signup").onclick=()=>location.href="auth.html";
     }
   }
-  sb.auth.getSession().then(({data})=>reflectAuth(data.session));
-  sb.auth.onAuthStateChange((_e,session)=>reflectAuth(session));
+  sb.auth.getSession().then(({data})=>{ reflectAuth(data.session); loadProfile(data.session); });
+  sb.auth.onAuthStateChange((_e,session)=>{ reflectAuth(session); loadProfile(session); });
 
   // feedback modal
   $("openFb").onclick=()=>$("fbModal").classList.add("show");
