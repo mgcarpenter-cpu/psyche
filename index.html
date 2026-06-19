@@ -286,6 +286,7 @@
   function showThinking(on){ let el=$("thinking"); if(on&&!el){ el=document.createElement("div"); el.id="thinking"; el.className="think"; el.innerHTML='<span class="dot"></span><span class="dot"></span><span class="dot"></span>'; $("thread").appendChild(el); scrollDown(); } else if(!on&&el) el.remove(); }
 
   async function send(text){
+    console.log("SEND() CALLED — profile at send-time is:", profile);
     text=text.trim(); if(!text) return;
     if(profile){
       if(profile.message_count>=planLimit()){ showLimit(); return; }
