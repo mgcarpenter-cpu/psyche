@@ -335,13 +335,18 @@
     if(profile&&profile.id===uid) return;
     const {data,error}=await sb.from("profiles").select("plan,message_count,count_reset_at").eq("id",uid).single();
     if(error||!data){ console.error("profile fetch failed (keeping existing profile):", error); return; }
-    profile={id:uid,plan:data.plan||"free",message_count:data.message_count||0};
-    // monthly reset: if the window opened more than 30 days ago, zero the count.
-    const last=data.count_reset_at?new Date(data.count_reset_at).getTime():0;
-    if(Date.now()-last>30*24*60*60*1000){
-      const now=new Date().toISOString();
+    profile={id:uid,plan:data.plan||"free",message_count:Number(data.message_count)||0};
+    // Monthly reset — ONLY when a real reset timestamp exists and is older than 30 days.
+    // A missing timestamp means the window simply hasn't been stamped yet: stamp it now WITHOUT zeroing
+    // the count. (The old code treated null as epoch 1970, so the reset fired on every load and the count
+    // never survived a refresh.)
+    const THIRTY_DAYS=30*24*60*60*1000;
+    const last=data.count_reset_at?new Date(data.count_reset_at).getTime():null;
+    if(last===null){
+      await sb.from("profiles").update({count_reset_at:new Date().toISOString()}).eq("id",uid);
+    } else if(Date.now()-last>THIRTY_DAYS){
       profile.message_count=0;
-      await sb.from("profiles").update({message_count:0,count_reset_at:now}).eq("id",uid);
+      await sb.from("profiles").update({message_count:0,count_reset_at:new Date().toISOString()}).eq("id",uid);
     }
   }
   function showLimit(){
