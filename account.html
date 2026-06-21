@@ -57,6 +57,7 @@
       <!-- PROFILE -->
       <div class="card">
         <h2>Profile</h2>
+        <div class="row"><span class="lbl">Name</span><span class="val" style="display:flex;gap:8px;align-items:center;justify-content:flex-end;"><input id="acctName" type="text" maxlength="60" placeholder="Not set" style="font:inherit;text-align:right;border:1px solid var(--line);border-radius:9px;padding:6px 10px;background:var(--field);color:var(--ink);max-width:190px;"><button class="btn" id="saveName" style="padding:6px 12px;">Save</button></span></div>
         <div class="row"><span class="lbl">Email</span><span class="val" id="acctEmail">…</span></div>
         <div class="row"><span class="lbl">Signed in with</span><span class="val" id="acctProvider">Email link</span></div>
       </div>
@@ -98,14 +99,33 @@
   const sb=supabase.createClient(SB_URL,SB_KEY);
   const $=id=>document.getElementById(id);
 
+  let acctUid=null;
   // Load the real session; if there's none, send them to sign in.
-  sb.auth.getSession().then(({data})=>{
+  sb.auth.getSession().then(async({data})=>{
     const s=data.session;
     if(!s || !s.user){ location.replace("auth.html"); return; }
+    acctUid=s.user.id;
     $("acctEmail").textContent=s.user.email||"—";
     const prov=(s.user.app_metadata&&s.user.app_metadata.provider)||"email";
     $("acctProvider").textContent=prov==="email"?"Email link":prov.charAt(0).toUpperCase()+prov.slice(1);
+    const {data:p,error}=await sb.from("profiles").select("display_name").eq("id",acctUid).single();
+    if(error){ console.error("profile fetch failed:", error); return; }
+    if(p&&p.display_name) $("acctName").value=p.display_name;
   });
+
+  $("saveName").onclick=async()=>{
+    if(!acctUid) return;
+    const name=$("acctName").value.trim().slice(0,60);
+    const btn=$("saveName"), label=btn.textContent;
+    btn.disabled=true; btn.textContent="Saving…";
+    const {data:rows,error}=await sb.from("profiles").update({display_name:name}).eq("id",acctUid).select();
+    btn.disabled=false;
+    if(error||!rows||!rows.length){
+      console.error("display_name save failed (check the RLS UPDATE policy):", error);
+      btn.textContent="Try again"; setTimeout(()=>btn.textContent=label,1800); return;
+    }
+    btn.textContent="Saved ✓"; setTimeout(()=>btn.textContent=label,1800);
+  };
 
   $("logout").onclick=async()=>{
     await sb.auth.signOut();

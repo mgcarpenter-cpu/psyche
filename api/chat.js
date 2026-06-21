@@ -16,7 +16,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { messages, system, max_tokens } = req.body;
+    const { messages, system, max_tokens, name } = req.body;
+
+    // Personalisation: if the client sent the person's saved name, let Psyche address them by it.
+    // Sanitised (single line, trimmed, capped) so a stray value can't reshape the prompt.
+    let sys = system || "";
+    const who = typeof name === "string" ? name.trim().replace(/\s+/g, " ").slice(0, 60) : "";
+    if (who) {
+      sys += `\n\nThe person you are speaking with is called "${who}". Address them by name naturally and sparingly — when it feels warm, not in every message.`;
+    }
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -28,7 +36,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
         max_tokens: max_tokens || 400,
-        system: system || "",
+        system: sys,
         messages: messages || []
       })
     });

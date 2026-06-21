@@ -84,6 +84,7 @@
   .card h3{font-size:1.05rem;margin-bottom:6px;}
   .card p{font-size:.86rem;color:var(--muted);margin-bottom:14px;}
   .card textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;min-height:110px;font:inherit;background:#fff;}
+  .card input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;background:#fff;color:var(--ink);}
   .card .row{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;}
   .card .ghost{background:none;border:1px solid var(--line);border-radius:18px;padding:9px 16px;cursor:pointer;color:var(--ink);}
   .card .primary{background:var(--indigo);border:none;color:#fff;border-radius:18px;padding:9px 18px;cursor:pointer;}
@@ -198,6 +199,19 @@
     </div>
   </div>
 
+  <!-- NAME CAPTURE MODAL (shown once, after first login, when no display_name is set) -->
+  <div class="modal" id="nameModal">
+    <div class="card">
+      <h3>What should I call you?</h3>
+      <p>So I can speak to you by name. You can change this anytime in your account.</p>
+      <input id="nameInput" type="text" maxlength="60" placeholder="Your name" autocomplete="given-name">
+      <div class="row">
+        <button class="ghost" id="nameSkip">Not now</button>
+        <button class="primary" id="nameSave">Save</button>
+      </div>
+    </div>
+  </div>
+
   <!-- FEEDBACK MODAL -->
   <div class="modal" id="fbModal">
     <div class="card">
@@ -230,7 +244,7 @@
     check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>'
   };
   async function fetchReply(msgs){
-    const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:SYSTEM,max_tokens:1024,messages:msgs.map(m=>({role:m.role,content:m.content}))})});
+    const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:SYSTEM,max_tokens:1024,name:(profile&&profile.display_name)||"",messages:msgs.map(m=>({role:m.role,content:m.content}))})});
     const data=await res.json();
     return (data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:(data.error?("("+(data.error.message||data.error)+")"):"(no reply)");
   }
@@ -333,9 +347,10 @@
     const uid=session.user.id;
     // Already loaded for this user — ignore duplicate/late auth events so we never clobber a good profile back to null.
     if(profile&&profile.id===uid) return;
-    const {data,error}=await sb.from("profiles").select("plan,message_count,count_reset_at").eq("id",uid).single();
+    const {data,error}=await sb.from("profiles").select("plan,message_count,count_reset_at,display_name").eq("id",uid).single();
     if(error||!data){ console.error("profile fetch failed (keeping existing profile):", error); return; }
-    profile={id:uid,plan:data.plan||"free",message_count:Number(data.message_count)||0};
+    profile={id:uid,plan:data.plan||"free",message_count:Number(data.message_count)||0,display_name:data.display_name||""};
+    maybeAskName();
     // Monthly reset — ONLY when a real reset timestamp exists and is older than 30 days.
     // A missing timestamp means the window simply hasn't been stamped yet: stamp it now WITHOUT zeroing
     // the count. (The old code treated null as epoch 1970, so the reset fired on every load and the count
@@ -371,6 +386,33 @@
   }
   sb.auth.getSession().then(({data})=>{ reflectAuth(data.session); loadProfile(data.session); });
   sb.auth.onAuthStateChange((_e,session)=>{ reflectAuth(session); setTimeout(()=>loadProfile(session),0); });
+
+  // name capture — ask once, after first login, when no display_name is set yet.
+  function namedKey(uid){ return "psyche:named:"+uid; }
+  function maybeAskName(){
+    if(!profile || !profile.id) return;
+    if(profile.display_name) return;                            // already named — never ask again
+    if(localStorage.getItem(namedKey(profile.id))) return;      // already asked on this device
+    $("nameModal").classList.add("show");
+    setTimeout(()=>{ const i=$("nameInput"); if(i) i.focus(); },60);
+  }
+  function closeNameModal(){
+    $("nameModal").classList.remove("show");
+    if(profile&&profile.id) try{ localStorage.setItem(namedKey(profile.id),"1"); }catch(e){}
+  }
+  $("nameSkip").onclick=closeNameModal;
+  $("nameSave").onclick=async()=>{
+    const name=$("nameInput").value.trim().slice(0,60);
+    if(!name){ closeNameModal(); return; }
+    if(profile){
+      profile.display_name=name;
+      const {data:rows,error}=await sb.from("profiles").update({display_name:name}).eq("id",profile.id).select();
+      if(error) console.error("display_name save failed:", error);
+      else if(!rows||!rows.length) console.error("display_name update affected 0 rows — the profiles table is missing an RLS UPDATE policy for the owner.");
+    }
+    closeNameModal();
+  };
+  $("nameInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); $("nameSave").click(); } });
 
   // feedback modal
   $("openFb").onclick=()=>$("fbModal").classList.add("show");
