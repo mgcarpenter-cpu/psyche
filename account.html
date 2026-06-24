@@ -4,93 +4,130 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Account · Psyche</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital@1&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#faf9f5;--ink:#2c2a25;--muted:#8a8378;--line:#e7e3d9;--hover:#eae7dd;--indigo:#1d3891;--indigo-deep:#16296b;--field:#ffffff;--danger:#a8443a;}
+  :root{
+    --page:#efece4; --card:#faf8f3; --ink:#2a261f; --soft:#615c52; --muted:#9a948a;
+    --line:#ece7da; --fieldline:#e6e0d4; --indigo:#1d3891; --indigo-deep:#16296b; --danger:#a8443a;
+  }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{min-height:100%;}
-  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;display:flex;flex-direction:column;min-height:100dvh;}
-  header{padding:22px 26px;display:flex;align-items:center;justify-content:space-between;}
-  .wordmark{font-family:"Cinzel",serif;font-weight:500;letter-spacing:.32em;text-transform:uppercase;font-size:1.18rem;color:var(--indigo);text-decoration:none;}
-  .back{font-size:.88rem;color:var(--muted);text-decoration:none;}
-  .back:hover{color:var(--ink);}
-  main{flex:1;display:flex;align-items:center;justify-content:center;padding:18px 20px 50px;}
-  .wrap{width:100%;max-width:560px;}
-  h1{font-size:1.5rem;font-weight:500;letter-spacing:-.01em;color:#23201a;margin-bottom:4px;}
-  .sub{font-size:.9rem;color:var(--muted);margin-bottom:26px;}
-  .card{background:var(--field);border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-bottom:18px;}
-  .card h2{font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
-  .row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid #f0ede5;}
-  .row:last-child{border-bottom:none;}
-  .row .lbl{font-size:.92rem;color:var(--muted);}
-  .row .val{font-size:.95rem;color:var(--ink);font-weight:500;text-align:right;}
-  .pill{display:inline-block;background:#eef0f8;color:var(--indigo);font-size:.78rem;font-weight:600;padding:4px 12px;border-radius:20px;}
-  /* usage bar */
-  .usage{margin-top:6px;}
-  .bar{height:8px;border-radius:6px;background:#ece8df;overflow:hidden;margin:10px 0 6px;}
-  .bar i{display:block;height:100%;width:42%;background:var(--indigo);border-radius:6px;}
-  .usage .meta{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);}
-  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;}
-  .btn{border-radius:11px;padding:10px 16px;font-size:.9rem;font-weight:500;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink);transition:background .15s;text-decoration:none;display:inline-flex;align-items:center;}
-  .btn:hover{background:var(--hover);}
-  .btn.primary{background:var(--indigo);color:#fff;border-color:var(--indigo);}
-  .btn.primary:hover{background:var(--indigo-deep);}
-  .btn.danger{color:var(--danger);border-color:#e6d2cd;background:#fbf4f2;}
-  .btn.danger:hover{background:#f6e7e3;}
-  .note{font-size:.72rem;color:#b3ab9c;text-align:center;margin-top:18px;}
-  footer{padding:20px 26px;text-align:center;font-size:.78rem;color:var(--muted);}
-  footer a{color:var(--muted);text-decoration:none;}
-  footer a:hover{text-decoration:underline;}
+  body{background:var(--page);color:var(--ink);font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;padding:44px 20px 70px;}
+  .sans{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
+  a{color:inherit;}
+
+  .eyebrow{text-align:center;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 14px;}
+  .frame{max-width:520px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 12px 36px rgba(42,38,31,.07);}
+  .barhead{display:flex;justify-content:space-between;align-items:center;padding:16px 26px;border-bottom:1px solid var(--line);}
+  .barhead .wm{letter-spacing:.32em;color:var(--indigo);font-size:.86rem;text-decoration:none;}
+  .barhead .back{font-size:.78rem;color:var(--soft);text-decoration:none;}
+  .barhead .back:hover{color:var(--ink);}
+
+  .inner{padding:34px 30px 38px;}
+  .profile{display:flex;align-items:center;gap:16px;margin-bottom:30px;}
+  .avatar{width:54px;height:54px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex:none;text-transform:uppercase;}
+  .profile .nm{font-size:1.15rem;color:var(--ink);}
+  .profile .em{font-size:.84rem;color:var(--muted);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;margin-top:2px;}
+
+  .row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:18px 0;border-bottom:1px solid var(--line);}
+  .row:last-of-type{border-bottom:none;}
+  .row .k{font-size:.92rem;color:var(--ink);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;display:flex;align-items:center;gap:9px;}
+  .row .s{font-size:.78rem;color:var(--muted);margin-top:4px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .row .act{font-size:.86rem;color:var(--indigo);font-weight:500;cursor:pointer;background:none;border:none;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;white-space:nowrap;}
+  .row .act:hover{text-decoration:underline;}
+  .planbadge{font-size:.7rem;background:var(--indigo);color:#fff;border-radius:12px;padding:3px 11px;font-weight:600;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+
+  .bar{display:block;height:7px;background:var(--line);border-radius:4px;overflow:hidden;width:170px;margin-top:9px;}
+  .bar i{display:block;height:100%;width:0;background:var(--indigo);border-radius:4px;transition:width .3s;}
+
+  .nameedit{display:flex;gap:8px;align-items:center;}
+  .nameedit input{font:inherit;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.86rem;text-align:right;border:1px solid var(--fieldline);border-radius:10px;padding:6px 10px;background:#fff;color:var(--ink);max-width:150px;outline:none;}
+  .nameedit input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(29,56,145,.10);}
+  .nameedit .save{font-size:.8rem;font-weight:500;color:#fff;background:var(--indigo);border:none;border-radius:14px;padding:7px 13px;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .nameedit .save:hover{background:var(--indigo-deep);}
+
+  .signout{text-align:center;color:var(--soft);font-size:.84rem;margin-top:28px;cursor:pointer;background:none;border:none;width:100%;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .signout:hover{color:var(--ink);}
+  .del{display:block;margin:14px auto 0;text-align:center;color:var(--danger);font-size:.78rem;cursor:pointer;background:none;border:none;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .del:hover{text-decoration:underline;}
+
+  .crisis{text-align:center;font-size:.66rem;color:var(--muted);padding:18px 30px 24px;border-top:1px solid var(--line);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .crisis a{color:var(--indigo);}
 </style>
 </head>
 <body>
-  <header>
-    <a href="index.html" class="wordmark">Psyche</a>
-    <a href="index.html" class="back">← Back to Psyche</a>
-  </header>
 
-  <main>
-    <div class="wrap">
-      <h1>Account</h1>
-      <div class="sub">Manage your plan, usage, and sign-in.</div>
+  <p class="eyebrow sans">Account</p>
+  <div class="frame">
+    <div class="barhead">
+      <a href="index.html" class="wm">PSYCHE</a>
+      <a href="chat.html" class="back sans">← Back to chat</a>
+    </div>
+    <div class="inner">
 
-      <!-- PROFILE -->
-      <div class="card">
-        <h2>Profile</h2>
-        <div class="row"><span class="lbl">Name</span><span class="val" style="display:flex;gap:8px;align-items:center;justify-content:flex-end;"><input id="acctName" type="text" maxlength="60" placeholder="Not set" style="font:inherit;text-align:right;border:1px solid var(--line);border-radius:9px;padding:6px 10px;background:var(--field);color:var(--ink);max-width:190px;"><button class="btn" id="saveName" style="padding:6px 12px;">Save</button></span></div>
-        <div class="row"><span class="lbl">Email</span><span class="val" id="acctEmail">…</span></div>
-        <div class="row"><span class="lbl">Signed in with</span><span class="val" id="acctProvider">Email link</span></div>
+      <div class="profile">
+        <div class="avatar" id="avatarInit">·</div>
+        <div>
+          <p class="nm" id="acctNameDisplay">…</p>
+          <p class="em" id="acctEmail">…</p>
+        </div>
       </div>
 
       <!-- PLAN -->
-      <div class="card">
-        <h2>Plan</h2>
-        <div class="row"><span class="lbl">Current plan</span><span class="val"><span class="pill">Free</span></span></div>
-        <div class="usage">
-          <div class="bar"><i></i></div>
-          <div class="meta"><span>13 of 30 messages used</span><span>Resets 1 Jul</span></div>
+      <div class="row">
+        <div>
+          <div class="k">Plan <span class="planbadge" id="planBadge">Free</span></div>
+          <div class="s" id="planMsgs">30 messages a month</div>
         </div>
-        <div class="actions" style="margin-top:16px;">
-          <a href="pricing.html" class="btn primary">Upgrade plan</a>
+        <a href="pricing.html" class="act">Upgrade</a>
+      </div>
+
+      <!-- USAGE -->
+      <div class="row" style="align-items:flex-start;">
+        <div>
+          <div class="k">Usage this month</div>
+          <div class="s" id="usageText">— of 30 messages used</div>
+          <span class="bar"><i id="usageBar"></i></span>
         </div>
       </div>
 
-      <!-- SESSION -->
-      <div class="card">
-        <h2>Session</h2>
-        <div class="actions">
-          <button class="btn" id="logout">Log out</button>
-          <button class="btn danger" id="del">Delete account</button>
+      <!-- NAME -->
+      <div class="row">
+        <div>
+          <div class="k">What Psyche calls you</div>
+          <div class="s">How Psyche addresses you in chat</div>
+        </div>
+        <div class="nameedit">
+          <input id="acctName" type="text" maxlength="60" placeholder="Not set" autocomplete="given-name">
+          <button class="save" id="saveName">Save</button>
         </div>
       </div>
 
-      <div class="note">Account deletion isn’t connected yet — coming soon.</div>
+      <!-- EMAIL -->
+      <div class="row">
+        <div>
+          <div class="k">Email</div>
+          <div class="s" id="acctEmail2">…</div>
+        </div>
+        <button class="act" id="changeEmail">Change</button>
+      </div>
+
+      <!-- PRIVACY -->
+      <div class="row">
+        <div>
+          <div class="k">Privacy &amp; data</div>
+          <div class="s">Manage your conversations and data</div>
+        </div>
+        <a href="privacy.html" class="act">Manage</a>
+      </div>
+
+      <button class="signout" id="logout">Sign out</button>
+      <button class="del" id="del">Delete account</button>
+
     </div>
-  </main>
-
-  <footer>
-    <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · Questions? <a href="mailto:support@psyche.ai">support@psyche.ai</a>
-  </footer>
+    <p class="crisis">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
+  </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -98,6 +135,8 @@
   const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
   const sb=supabase.createClient(SB_URL,SB_KEY);
   const $=id=>document.getElementById(id);
+  const PLAN_LIMITS={free:30,plus:300,pro:1000};
+  const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
 
   let acctUid=null;
   // Load the real session; if there's none, send them to sign in.
@@ -105,12 +144,24 @@
     const s=data.session;
     if(!s || !s.user){ location.replace("auth.html"); return; }
     acctUid=s.user.id;
-    $("acctEmail").textContent=s.user.email||"—";
-    const prov=(s.user.app_metadata&&s.user.app_metadata.provider)||"email";
-    $("acctProvider").textContent=prov==="email"?"Email link":prov.charAt(0).toUpperCase()+prov.slice(1);
-    const {data:p,error}=await sb.from("profiles").select("display_name").eq("id",acctUid).single();
+    const email=s.user.email||"—";
+    $("acctEmail").textContent=email;
+    $("acctEmail2").textContent=email;
+    $("avatarInit").textContent=(email[0]||"·");
+
+    const {data:p,error}=await sb.from("profiles").select("display_name,plan,message_count").eq("id",acctUid).single();
     if(error){ console.error("profile fetch failed:", error); return; }
-    if(p&&p.display_name) $("acctName").value=p.display_name;
+    const name=(p&&p.display_name)||"";
+    if(name){ $("acctName").value=name; $("acctNameDisplay").textContent=name; $("avatarInit").textContent=name[0]; }
+    else { $("acctNameDisplay").textContent="Friend"; }
+
+    const plan=(p&&p.plan)||"free";
+    const limit=PLAN_LIMITS[plan]||PLAN_LIMITS.free;
+    const used=Math.max(0,Number(p&&p.message_count)||0);
+    $("planBadge").textContent=cap(plan);
+    $("planMsgs").textContent=limit.toLocaleString()+" messages a month";
+    $("usageText").textContent=used.toLocaleString()+" of "+limit.toLocaleString()+" messages used";
+    $("usageBar").style.width=Math.min(100,Math.round(used/limit*100))+"%";
   });
 
   $("saveName").onclick=async()=>{
@@ -124,8 +175,12 @@
       console.error("display_name save failed (check the RLS UPDATE policy):", error);
       btn.textContent="Try again"; setTimeout(()=>btn.textContent=label,1800); return;
     }
+    $("acctNameDisplay").textContent=name||"Friend";
+    if(name) $("avatarInit").textContent=name[0];
     btn.textContent="Saved ✓"; setTimeout(()=>btn.textContent=label,1800);
   };
+
+  $("changeEmail").onclick=()=>alert("Email change — coming soon.");
 
   $("logout").onclick=async()=>{
     await sb.auth.signOut();
