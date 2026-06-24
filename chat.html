@@ -9,74 +9,71 @@
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#faf8f3; --side:#f4f1e9; --side2:#f7f4ec; --hover:#ece7da; --ink:#2a261f;
+    --bg:#faf8f3; --side:#f4f1e9; --hover:#ece7da; --ink:#2a261f;
     --soft:#615c52; --muted:#9a948a; --line:#ece7da; --fieldline:#e6e0d4;
     --indigo:#1d3891; --indigo-deep:#16296b; --psybub:#efeae0;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
-  body{background:var(--bg);color:var(--ink);font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;display:flex;height:100dvh;overflow:hidden;}
+  body{background:var(--bg);color:var(--ink);font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
   .sans{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
   a{color:inherit;}
 
-  /* RAIL */
-  .rail{width:56px;flex:none;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:4px;z-index:25;}
-  .rail .ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:none;}
-  .rail .ic:hover{background:var(--hover);}
-  .rail .ic.primary{background:var(--hover);}
-  .rail .ic svg{width:20px;height:20px;}
-  .rail .grow{flex:1;}
-
-  /* PANEL (thread list) */
-  .panel{width:240px;flex:none;background:var(--side2);border-right:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column;transition:width .2s;}
-  body.railonly .panel{width:0;border-right:none;}
-  .panel-head{padding:18px 18px 8px;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
-  .chats{flex:1;overflow-y:auto;padding:4px 10px 12px;}
-  .chat-item{padding:9px 12px;border-radius:9px;cursor:pointer;font-size:.9rem;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .chat-item:hover{background:var(--hover);}
-  .chat-item.active{background:var(--hover);color:var(--indigo);}
-
-  /* MAIN */
-  .main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;}
-  .topbar{height:54px;flex:none;display:flex;align-items:center;gap:14px;padding:0 24px;border-bottom:1px solid var(--line);}
-  .topbar .wordmark{letter-spacing:.32em;color:var(--indigo);font-size:.92rem;}
-  .topbar .spacer{flex:1;}
-  .topbar .urgent{font-size:.74rem;color:var(--soft);}
-  .topbar .urgent a{color:var(--indigo);text-decoration:none;}
-  .topbar .urgent a:hover{text-decoration:underline;}
+  /* TOP BAR */
+  .topbar{flex:none;display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--line);}
+  .topbar .left,.topbar .right{display:flex;align-items:center;gap:18px;}
+  .menu{background:none;border:none;cursor:pointer;color:var(--soft);padding:4px;border-radius:8px;display:inline-flex;line-height:1;}
+  .menu:hover{background:var(--hover);}
+  .menu svg{width:21px;height:21px;}
+  .wordmark{letter-spacing:.32em;color:var(--indigo);font-size:.92rem;}
+  .urgent{font-size:.74rem;color:var(--soft);}
+  .urgent a{color:var(--indigo);text-decoration:none;}
+  .urgent a:hover{text-decoration:underline;}
   .auth{display:flex;align-items:center;gap:6px;}
-  .acct-btn{display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:4px 8px 4px 4px;border-radius:20px;font-family:inherit;color:var(--ink);}
-  .acct-btn:hover{background:var(--hover);}
-  .acct-btn .av{width:30px;height:30px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.78rem;font-weight:600;flex:none;text-transform:uppercase;}
-  .acct-btn .nm{font-size:.86rem;}
   .login{background:none;border:none;color:var(--ink);font-size:.84rem;cursor:pointer;padding:8px 12px;border-radius:18px;font-family:inherit;}
   .login:hover{background:var(--hover);}
   .signup{background:var(--indigo);border:none;color:#fff;font-size:.84rem;cursor:pointer;padding:8px 16px;border-radius:18px;font-family:inherit;}
   .signup:hover{background:var(--indigo-deep);}
+  .acct-btn{display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:4px 8px 4px 4px;border-radius:20px;font-family:inherit;color:var(--ink);}
+  .acct-btn:hover{background:var(--hover);}
+  .acct-btn .av{width:30px;height:30px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.78rem;font-weight:600;flex:none;text-transform:uppercase;}
+  .acct-btn .nm{font-size:.86rem;}
+
+  /* DRAWER (conversation history) */
+  .overlay{position:fixed;inset:0;background:rgba(40,36,30,.32);opacity:0;pointer-events:none;transition:opacity .22s;z-index:35;}
+  body.drawer-open .overlay{opacity:1;pointer-events:auto;}
+  .drawer{position:fixed;top:0;left:0;height:100%;width:284px;background:var(--side);border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .22s;z-index:40;display:flex;flex-direction:column;}
+  body.drawer-open .drawer{transform:none;box-shadow:2px 0 22px rgba(40,36,30,.14);}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 10px;}
+  .drawer-head .ttl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+  .newbtn{display:flex;align-items:center;gap:7px;background:none;border:1px solid var(--fieldline);border-radius:18px;padding:7px 12px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.8rem;color:var(--indigo);cursor:pointer;}
+  .newbtn:hover{background:var(--hover);}
+  .newbtn svg{width:14px;height:14px;}
+  .chats{flex:1;overflow-y:auto;padding:4px 10px 12px;}
+  .chat-item{padding:9px 12px;border-radius:9px;cursor:pointer;font-size:.9rem;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .chat-item:hover{background:var(--hover);}
+  .chat-item.active{background:var(--hover);color:var(--indigo);}
+  .drawer-foot{border-top:1px solid var(--line);padding:12px 16px;}
+  .drawer-foot button{display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;color:var(--soft);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.84rem;padding:6px;border-radius:8px;width:100%;}
+  .drawer-foot button:hover{background:var(--hover);}
+  .drawer-foot svg{width:16px;height:16px;}
 
   /* CONVERSATION */
-  .scroll{flex:1;overflow-y:auto;}
+  .scroll{flex:1;overflow-y:auto;position:relative;padding:30px 0;}
   .scroll::-webkit-scrollbar{width:8px;}
   .scroll::-webkit-scrollbar-thumb{background:rgba(29,56,145,.15);border-radius:4px;}
-  .thread{max-width:680px;margin:0 auto;padding:18px 24px 30px;}
-  .msg{margin:22px 0;display:flex;flex-direction:column;}
+  .thread{max-width:680px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:22px;}
+  .msg{display:flex;flex-direction:column;}
   .msg::before{font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;}
   .msg.user{align-items:flex-end;}
   .msg.user::before{content:"You";color:#bdb7aa;}
   .msg.psy{align-items:flex-start;}
   .msg.psy::before{content:"Psyche";color:var(--muted);}
-  .msg.user .bubble{background:var(--indigo);color:#fff;border-radius:18px 18px 5px 18px;padding:13px 17px;max-width:80%;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.92rem;line-height:1.55;white-space:pre-wrap;}
-  .msg.psy .body{background:var(--psybub);color:var(--ink);border-radius:18px 18px 18px 5px;padding:14px 18px;max-width:80%;font-size:1rem;line-height:1.6;white-space:pre-wrap;}
+  .msg.user .bubble{background:var(--indigo);color:#fff;border-radius:18px 18px 5px 18px;padding:13px 17px;max-width:78%;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.92rem;line-height:1.55;white-space:pre-wrap;}
+  .msg.psy .body{background:var(--psybub);color:var(--ink);border-radius:18px 18px 18px 5px;padding:14px 18px;max-width:78%;font-size:1rem;line-height:1.6;white-space:pre-wrap;}
   .msg.psy .body a{color:var(--indigo);}
 
-  .actions{margin-top:8px;display:flex;gap:1px;}
-  .actions button{background:none;border:none;cursor:pointer;color:#a59e90;padding:6px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;transition:color .15s,background .15s;}
-  .actions button:hover{background:var(--hover);color:var(--soft);}
-  .actions button.on{color:var(--indigo);}
-  .actions button.done{color:var(--indigo);}
-  .actions svg{width:16px;height:16px;}
-
-  .think{display:flex;gap:6px;margin:22px 0;}
+  .think{display:flex;gap:6px;}
   .think .dot{width:7px;height:7px;border-radius:50%;background:var(--indigo);opacity:.5;animation:b 1.2s infinite ease-in-out;}
   .think .dot:nth-child(2){animation-delay:.18s;}
   .think .dot:nth-child(3){animation-delay:.36s;}
@@ -84,20 +81,31 @@
 
   /* COMPOSER */
   .composer{flex:none;border-top:1px solid var(--line);padding:16px 24px 20px;background:var(--bg);}
-  .box{max-width:680px;margin:0 auto;display:flex;align-items:flex-end;gap:11px;border:1px solid var(--fieldline);border-radius:22px;padding:10px 10px 10px 20px;background:#fff;box-shadow:0 4px 18px rgba(42,38,31,.05);}
-  .box textarea{flex:1;border:none;background:none;resize:none;outline:none;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.92rem;color:var(--ink);max-height:170px;line-height:1.5;padding:6px 0;}
-  .send{flex:none;width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;background:var(--indigo);display:flex;align-items:center;justify-content:center;transition:opacity .2s,background .2s;}
+  .box{max-width:680px;margin:0 auto;display:flex;align-items:flex-end;gap:11px;}
+  .box .field{flex:1;border:1px solid var(--fieldline);border-radius:22px;padding:14px 20px;background:#fff;display:flex;align-items:flex-end;}
+  .box textarea{flex:1;border:none;background:none;resize:none;outline:none;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.92rem;color:var(--ink);max-height:160px;line-height:1.5;min-height:48px;}
+  .send{flex:none;width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;background:var(--indigo);display:flex;align-items:center;justify-content:center;transition:background .2s;}
   .send:hover:not(:disabled){background:var(--indigo-deep);}
   .send:disabled{background:#e3ddd0;cursor:default;}
   .send:disabled svg{stroke:#b3ab9c;}
   .send svg{width:17px;height:17px;}
+
+  /* feedback row under composer */
+  .fbrow{max-width:680px;margin:14px auto 0;}
+  .fbline{display:flex;align-items:center;gap:14px;justify-content:flex-end;}
+  .fbq{font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.74rem;color:var(--muted);}
+  .vote{background:none;border:none;cursor:pointer;font-size:.98rem;line-height:1;padding:2px;opacity:.45;transition:opacity .2s;}
+  .vote.on{opacity:1;}
+  .fbcomment{display:flex;gap:11px;align-items:center;margin:11px 0 0;}
+  .fbcomment input{flex:1;border:1px solid var(--fieldline);border-radius:16px;padding:11px 16px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.84rem;background:#fff;outline:none;}
+  .fbcomment button{background:transparent;border:1px solid var(--indigo);color:var(--indigo);border-radius:18px;padding:10px 18px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;white-space:nowrap;}
+
   .disc{max-width:680px;margin:14px auto 0;text-align:center;color:var(--muted);font-size:.68rem;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
   .disc a{color:var(--soft);}
 
   /* EMPTY STATE */
-  .empty{position:absolute;inset:54px 0 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:0 24px;}
-  .empty .pitch{text-align:center;max-width:520px;}
-  .empty .pitch h1{font-weight:300;font-size:1.9rem;letter-spacing:-.01em;line-height:1.2;color:var(--ink);}
+  .empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:0 24px;}
+  .empty .pitch h1{font-weight:300;font-size:1.9rem;letter-spacing:-.01em;line-height:1.2;color:var(--ink);text-align:center;}
   .empty .composer{position:static;border-top:none;padding:0;width:100%;max-width:600px;background:none;}
 
   /* MODALS */
@@ -113,68 +121,69 @@
   .modal .card .ghost{background:none;border:1px solid var(--fieldline);border-radius:18px;padding:9px 16px;cursor:pointer;color:var(--ink);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
   .modal .card .primary{background:var(--indigo);border:none;color:#fff;border-radius:18px;padding:9px 18px;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
 
-  @media(max-width:760px){
-    .panel{position:fixed;left:56px;top:0;height:100%;z-index:30;width:240px;transform:translateX(-115%);box-shadow:2px 0 16px rgba(0,0,0,.12);transition:transform .2s;}
-    body.railonly .panel{width:240px;border-right:1px solid var(--line);}
-    body.panelopen .panel{transform:none;}
+  @media(max-width:560px){
+    .topbar{padding:12px 16px;}
+    .topbar .left,.topbar .right{gap:12px;}
+    .urgent{display:none;}
     .empty .pitch h1{font-size:1.5rem;}
-    .login,.signup{font-size:.8rem;padding:7px 12px;}
-    .topbar .urgent{display:none;}
   }
 </style>
 </head>
 <body>
-  <!-- RAIL -->
-  <aside class="rail">
-    <button class="ic" id="railToggle" title="Toggle conversations"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6256" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg></button>
-    <button class="ic primary" id="newIcon" title="New conversation"><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
-    <button class="ic" id="histIcon" title="Conversations"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6256" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-6l-4 3v-3H8a2 2 0 0 1-2-2"/><path d="M3 4h10a2 2 0 0 1 2 2"/></svg></button>
-    <div class="grow"></div>
-    <button class="ic" id="openFb" title="Give feedback"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6256" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.8-.9L3 20l1-4.2A8.4 8.4 0 1 1 21 11.5Z"/></svg></button>
-  </aside>
 
-  <!-- PANEL -->
-  <aside class="panel" id="panel">
-    <div class="panel-head sans">Recent</div>
+  <!-- DRAWER -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <span class="ttl">Recent</span>
+      <button class="newbtn" id="newBtn"><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>New</button>
+    </div>
     <div class="chats" id="chats"></div>
+    <div class="drawer-foot">
+      <button id="openFb"><svg viewBox="0 0 24 24" fill="none" stroke="#6b6256" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.4 8.4 0 0 1-3.8-.9L3 20l1-4.2A8.4 8.4 0 1 1 21 11.5Z"/></svg>Give feedback</button>
+    </div>
   </aside>
 
-  <!-- MAIN -->
-  <div class="main">
-    <div class="topbar">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="left">
+      <button class="menu" id="menuBtn" title="Conversations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
       <span class="wordmark">PSYCHE</span>
-      <div class="spacer"></div>
+    </div>
+    <div class="right">
       <span class="urgent sans"><a href="urgent.html">Need urgent help?</a></span>
       <div class="auth">
         <button class="login" id="login">Log in</button>
         <button class="signup" id="signup">Sign up</button>
       </div>
     </div>
+  </div>
 
-    <div class="scroll" id="scroll"><div class="thread" id="thread"></div></div>
+  <!-- CONVERSATION -->
+  <div class="scroll" id="scroll">
+    <div class="thread" id="thread"></div>
 
     <!-- EMPTY STATE -->
     <div class="empty" id="empty">
-      <div class="pitch">
-        <h1>Begin where you are.</h1>
-      </div>
+      <div class="pitch"><h1>Begin where you are.</h1></div>
       <div class="composer">
         <div class="box">
-          <textarea id="input2" rows="1" placeholder="What’s weighing on you?"></textarea>
+          <div class="field"><textarea id="input2" rows="1" placeholder="What’s weighing on you?"></textarea></div>
           <button class="send" id="send2" disabled><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6 12 12 6 18 12"/></svg></button>
         </div>
         <div class="disc">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></div>
       </div>
     </div>
+  </div>
 
-    <!-- DOCKED COMPOSER -->
-    <div class="composer" id="dockComposer" style="display:none;">
-      <div class="box">
-        <textarea id="input" rows="1" placeholder="Share what’s on your mind…"></textarea>
-        <button class="send" id="send" disabled><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6 12 12 6 18 12"/></svg></button>
-      </div>
-      <div class="disc">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></div>
+  <!-- DOCKED COMPOSER -->
+  <div class="composer" id="dockComposer" style="display:none;">
+    <div class="box">
+      <div class="field"><textarea id="input" rows="1" placeholder="Share what’s on your mind…"></textarea></div>
+      <button class="send" id="send" disabled><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6 12 12 6 18 12"/></svg></button>
     </div>
+    <div class="fbrow" id="fbRow" style="display:none;"></div>
+    <div class="disc">Psyche is a space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></div>
   </div>
 
   <!-- NAME CAPTURE MODAL -->
@@ -207,30 +216,17 @@
 <script>
   const SYSTEM = "You are Psyche, a contemplative guide grounded in the Buddha's teachings as found in the suttas. You speak in plain, modern English — never use Pali or jargon, never name-drop scripture. The wisdom sits quietly underneath.\n\nYou help the person see how suffering actually works through one simple engine: contact (something touches you) gives rise to a feeling-tone (pleasant, unpleasant, or neutral), which gives rise to a reaction (grasping at the pleasant, pushing away the unpleasant, or dimming out in confusion), which is where suffering begins. The way through is to meet the feeling-tone without grabbing, pushing, or dimming — and over time this matures into equanimity: a settled peace that depends on nothing and still meets the suffering of others with care.\n\nMeet them wherever they are. Keep the conversation anchored to what is actually alive for them right now.\n\nYour manner is a quiet teacher, not a chatbot. Say less, ask more. Often a single short question is enough. Leave space. Point them back to their own direct experience rather than concluding for them. Warm, spare, unhurried. Never lecture or give long explanations. Replies are usually one to three short sentences, at most one gentle question at a time.\n\nYou remember this person across conversations — refer naturally to what they have told you before when relevant.\n\nYou are not a therapist and do not diagnose. If the person seems to be in real distress or crisis, gently and warmly encourage them to reach out to someone they trust or to professional support — without alarm, and without losing warmth.";
   const $=id=>document.getElementById(id);
-  const STAR_SPIN = '<svg class="psyche-star spinning" width="22" height="22" viewBox="0 0 32 32"><defs><linearGradient id="psg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a49ad"/><stop offset="0.55" stop-color="#1d3891"/><stop offset="1" stop-color="#16296b"/></linearGradient></defs><path d="M16.00,3.00 L17.84,11.57 L25.19,6.81 L20.43,14.16 L29.00,16.00 L20.43,17.84 L25.19,25.19 L17.84,20.43 L16.00,29.00 L14.16,20.43 L6.81,25.19 L11.57,17.84 L3.00,16.00 L11.57,14.16 L6.81,6.81 L14.16,11.57 Z" fill="url(#psg)" stroke="#16296b" stroke-width="0.8" stroke-linejoin="round"/></svg>';
   const CK="psyche:chats", CC="psyche:current", FK="psyche:feedback";
   let chats=load(CK,[]); let currentId=localStorage.getItem(CC)||null;
 
   function load(k,d){ try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){ return d; } }
   function saveChats(){ try{ localStorage.setItem(CK,JSON.stringify(chats)); localStorage.setItem(CC,currentId||""); }catch(e){} }
   function logFeedback(obj){ const f=load(FK,[]); f.push({...obj,at:new Date().toISOString()}); try{ localStorage.setItem(FK,JSON.stringify(f)); }catch(e){} /* TODO: POST to Supabase */ }
-  const IC = {
-    copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="13" height="13" x="9" y="9" rx="2"/><path d="M5 15a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2"/></svg>',
-    up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11"/><path d="M15 5.9 14 10h5.8a2 2 0 0 1 2 2.6l-2.3 7.4A2 2 0 0 1 17.5 22H7V10l4-7.5A2.5 2.5 0 0 1 15 5.9Z"/></svg>',
-    down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V3"/><path d="M9 18.1 10 14H4.2a2 2 0 0 1-2-2.6l2.3-7.4A2 2 0 0 1 6.5 2H17v12l-4 7.5A2.5 2.5 0 0 1 9 18.1Z"/></svg>',
-    retry:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></svg>',
-    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>'
-  };
+
   async function fetchReply(msgs){
     const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:SYSTEM,max_tokens:1024,name:(profile&&profile.display_name)||"",messages:msgs.map(m=>({role:m.role,content:m.content}))})});
     const data=await res.json();
     return (data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:(data.error?("("+(data.error.message||data.error)+")"):"(no reply)");
-  }
-  async function regenerate(idx){
-    const c=current(); if(!c) return;
-    c.messages=c.messages.slice(0,idx); saveChats(); renderAll(); showThinking(true);
-    try{ const reply=await fetchReply(c.messages); showThinking(false); c.messages.push({role:"assistant",content:reply,vote:null}); saveChats(); renderAll(); }
-    catch(e){ showThinking(false); c.messages.push({role:"assistant",content:"(connection error — please try again)",vote:null}); saveChats(); renderAll(); }
   }
 
   function current(){ return chats.find(c=>c.id===currentId)||null; }
@@ -241,7 +237,7 @@
       const d=document.createElement("div");
       d.className="chat-item"+(c.id===currentId?" active":"");
       d.textContent=c.title||"New conversation";
-      d.onclick=()=>{ currentId=c.id; saveChats(); renderAll(); if(window.innerWidth<=760) document.body.classList.remove("panelopen"); };
+      d.onclick=()=>{ currentId=c.id; saveChats(); renderAll(); closeDrawer(); };
       box.appendChild(d);
     });
   }
@@ -250,32 +246,48 @@
     $("empty").style.display=has?"none":"flex";
     $("dockComposer").style.display=has?"block":"none";
     const t=$("thread"); t.innerHTML="";
-    if(!has) return;
-    c.messages.forEach((m,idx)=>{
-      const d=document.createElement("div");
-      d.className="msg "+(m.role==="user"?"user":"psy");
-      if(m.role==="user"){ const b=document.createElement("div"); b.className="bubble"; b.textContent=m.content; d.appendChild(b); }
-      else {
-        const body=document.createElement("div"); body.className="body"; body.textContent=m.content; d.appendChild(body);
-        const v=document.createElement("div"); v.className="actions";
-        v.innerHTML =
-          '<button data-a="copy" title="Copy">'+IC.copy+'</button>'+
-          '<button data-a="up" title="Good response" class="'+(m.vote==="up"?"on":"")+'">'+IC.up+'</button>'+
-          '<button data-a="down" title="Bad response" class="'+(m.vote==="down"?"on":"")+'">'+IC.down+'</button>'+
-          '<button data-a="retry" title="Try again">'+IC.retry+'</button>';
-        v.querySelector('[data-a="copy"]').onclick=(e)=>{ navigator.clipboard&&navigator.clipboard.writeText(m.content); const b=e.currentTarget; b.classList.add("done"); setTimeout(()=>b.classList.remove("done"),1100); };
-        v.querySelector('[data-a="up"]').onclick=()=>{ m.vote=m.vote==="up"?null:"up"; saveChats(); logFeedback({type:"vote",vote:m.vote,message:m.content.slice(0,300)}); renderThread(); };
-        v.querySelector('[data-a="down"]').onclick=()=>{ m.vote=m.vote==="down"?null:"down"; saveChats(); logFeedback({type:"vote",vote:m.vote,message:m.content.slice(0,300)}); renderThread(); };
-        v.querySelector('[data-a="retry"]').onclick=()=>regenerate(idx);
-        d.appendChild(v);
-      }
-      t.appendChild(d);
-    });
-    scrollDown();
+    if(has){
+      c.messages.forEach(m=>{
+        const d=document.createElement("div");
+        d.className="msg "+(m.role==="user"?"user":"psy");
+        const el=document.createElement("div");
+        el.className=m.role==="user"?"bubble":"body";
+        el.textContent=m.content;
+        d.appendChild(el);
+        t.appendChild(d);
+      });
+      scrollDown();
+    }
+    renderFeedbackRow();
+  }
+  // Single feedback row in the composer — votes on Psyche's most recent reply.
+  function renderFeedbackRow(){
+    const row=$("fbRow"); if(!row) return;
+    const c=current();
+    let idx=-1;
+    if(c){ for(let i=c.messages.length-1;i>=0;i--){ if(c.messages[i].role==="assistant"){ idx=i; break; } } }
+    if(idx<0){ row.style.display="none"; row.innerHTML=""; return; }
+    const m=c.messages[idx];
+    const up=m.vote==="up", down=m.vote==="down";
+    row.style.display="block"; row.innerHTML="";
+    const line=document.createElement("div"); line.className="fbline";
+    line.innerHTML='<span class="fbq">How was Psyche’s last reply?</span>'+
+      '<button class="vote'+(up?" on":"")+'" data-v="up" title="Helpful">👍</button>'+
+      '<button class="vote'+(down?" on":"")+'" data-v="down" title="Not helpful">👎</button>';
+    row.appendChild(line);
+    line.querySelector('[data-v="up"]').onclick=()=>{ m.vote=up?null:"up"; saveChats(); logFeedback({type:"vote",vote:m.vote,message:m.content.slice(0,300)}); renderFeedbackRow(); };
+    line.querySelector('[data-v="down"]').onclick=()=>{ m.vote=down?null:"down"; saveChats(); logFeedback({type:"vote",vote:m.vote,message:m.content.slice(0,300)}); renderFeedbackRow(); };
+    if(m.vote){
+      const cm=document.createElement("div"); cm.className="fbcomment";
+      const inp=document.createElement("input"); inp.placeholder="Add a comment (optional)…";
+      const btn=document.createElement("button"); btn.textContent="Send feedback";
+      btn.onclick=()=>{ const v=inp.value.trim(); if(v){ logFeedback({type:"comment",vote:m.vote,text:v,message:m.content.slice(0,300)}); } inp.value=""; btn.textContent="Thanks ✓"; setTimeout(()=>btn.textContent="Send feedback",1600); };
+      cm.appendChild(inp); cm.appendChild(btn); row.appendChild(cm);
+    }
   }
   function renderAll(){ renderSidebar(); renderThread(); }
   function scrollDown(){ const s=$("scroll"); s.scrollTop=s.scrollHeight; }
-  function showThinking(on){ let el=$("thinking"); if(on&&!el){ el=document.createElement("div"); el.id="thinking"; el.className="think"; el.innerHTML='<span class="dot"></span><span class="dot"></span><span class="dot"></span>'; $("thread").appendChild(el); scrollDown(); } else if(!on&&el) el.remove(); }
+  function showThinking(on){ let el=$("thinking"); if(on&&!el){ el=document.createElement("div"); el.id="thinking"; el.className="msg psy"; el.innerHTML='<div class="think"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>'; $("thread").appendChild(el); scrollDown(); } else if(!on&&el) el.remove(); }
 
   async function send(text){
     text=text.trim(); if(!text) return;
@@ -296,19 +308,21 @@
 
   function wire(inputId,sendId){
     const i=$(inputId), s=$(sendId);
-    const size=()=>{ i.style.height="auto"; i.style.height=Math.min(i.scrollHeight,170)+"px"; };
+    const size=()=>{ i.style.height="auto"; i.style.height=Math.min(i.scrollHeight,160)+"px"; };
     i.addEventListener("input",()=>{ size(); s.disabled=!i.value.trim(); });
     i.addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); const v=i.value; i.value=""; size(); s.disabled=true; send(v); } });
     s.onclick=()=>{ const v=i.value; i.value=""; size(); s.disabled=true; send(v); };
   }
   wire("input2","send2"); wire("input","send");
 
-  function newConversation(){ currentId=null; saveChats(); renderAll(); var ta=$("input2"); if(ta) ta.focus(); if(window.innerWidth<=760) document.body.classList.remove("panelopen"); }
-  function togglePanel(){ if(window.innerWidth<=760) document.body.classList.toggle("panelopen"); else document.body.classList.toggle("railonly"); }
-  $("newIcon").onclick=newConversation;
-  $("railToggle").onclick=togglePanel;
-  $("histIcon").onclick=togglePanel;
-  if(window.innerWidth<=760) document.body.classList.add("railonly");
+  // Drawer (conversation history)
+  function openDrawer(){ document.body.classList.add("drawer-open"); }
+  function closeDrawer(){ document.body.classList.remove("drawer-open"); }
+  function toggleDrawer(){ document.body.classList.toggle("drawer-open"); }
+  function newConversation(){ currentId=null; saveChats(); renderAll(); closeDrawer(); var ta=$("input2"); if(ta) ta.focus(); }
+  $("menuBtn").onclick=toggleDrawer;
+  $("overlay").onclick=closeDrawer;
+  $("newBtn").onclick=newConversation;
 
   // auth — establish session (magic-link tokens in the URL are picked up automatically).
   const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
@@ -320,20 +334,14 @@
   let profile=null; // {id, plan, message_count} for the logged-in user, else null
   function planLimit(){ return PLAN_LIMITS[profile&&profile.plan]||PLAN_LIMITS.free; }
   async function loadProfile(session){
-    // Logged out is the ONLY case where we clear a loaded profile.
     if(!(session&&session.user)){ profile=null; return; }
     const uid=session.user.id;
-    // Already loaded for this user — ignore duplicate/late auth events so we never clobber a good profile back to null.
     if(profile&&profile.id===uid) return;
     const {data,error}=await sb.from("profiles").select("plan,message_count,count_reset_at,display_name").eq("id",uid).single();
     if(error||!data){ console.error("profile fetch failed (keeping existing profile):", error); return; }
     profile={id:uid,plan:data.plan||"free",message_count:Number(data.message_count)||0,display_name:data.display_name||""};
-    renderAccountChip();   // now that we know the name, update the top-right chip
+    renderAccountChip();
     maybeAskName();
-    // Monthly reset — ONLY when a real reset timestamp exists and is older than 30 days.
-    // A missing timestamp means the window simply hasn't been stamped yet: stamp it now WITHOUT zeroing
-    // the count. (The old code treated null as epoch 1970, so the reset fired on every load and the count
-    // never survived a refresh.)
     const THIRTY_DAYS=30*24*60*60*1000;
     const last=data.count_reset_at?new Date(data.count_reset_at).getTime():null;
     if(last===null){
@@ -351,7 +359,6 @@
   }
 
   let currentEmail=null;
-  // Logged-in chip: avatar initial + name (falls back to email until the profile loads).
   function renderAccountChip(){
     const box=document.querySelector(".auth"); if(!box) return;
     const name=(profile&&profile.display_name)?profile.display_name:"";
@@ -370,7 +377,7 @@
     const box=document.querySelector(".auth"); if(!box) return;
     if(session && session.user){
       currentEmail=session.user.email||"";
-      renderAccountChip();                 // shows email initial now; name fills in once loadProfile runs
+      renderAccountChip();
     } else {
       currentEmail=null;
       box.innerHTML='<button class="login" id="login">Log in</button><button class="signup" id="signup">Sign up</button>';
@@ -385,8 +392,8 @@
   function namedKey(uid){ return "psyche:named:"+uid; }
   function maybeAskName(){
     if(!profile || !profile.id) return;
-    if(profile.display_name) return;                            // already named — never ask again
-    if(localStorage.getItem(namedKey(profile.id))) return;      // already asked on this device
+    if(profile.display_name) return;
+    if(localStorage.getItem(namedKey(profile.id))) return;
     $("nameModal").classList.add("show");
     setTimeout(()=>{ const i=$("nameInput"); if(i) i.focus(); },60);
   }
@@ -400,6 +407,7 @@
     if(!name){ closeNameModal(); return; }
     if(profile){
       profile.display_name=name;
+      renderAccountChip();
       const {data:rows,error}=await sb.from("profiles").update({display_name:name}).eq("id",profile.id).select();
       if(error) console.error("display_name save failed:", error);
       else if(!rows||!rows.length) console.error("display_name update affected 0 rows — the profiles table is missing an RLS UPDATE policy for the owner.");
@@ -409,7 +417,7 @@
   $("nameInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); $("nameSave").click(); } });
 
   // feedback modal
-  $("openFb").onclick=()=>$("fbModal").classList.add("show");
+  $("openFb").onclick=()=>{ closeDrawer(); $("fbModal").classList.add("show"); };
   $("fbCancel").onclick=()=>$("fbModal").classList.remove("show");
   $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ logFeedback({type:"general",text:t}); } $("fbText").value=""; $("fbModal").classList.remove("show"); alert("Thank you — your feedback was recorded."); };
 
