@@ -45,6 +45,10 @@
   .topbar .urgent a{color:var(--indigo);text-decoration:none;}
   .topbar .urgent a:hover{text-decoration:underline;}
   .auth{display:flex;align-items:center;gap:6px;}
+  .acct-btn{display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:4px 8px 4px 4px;border-radius:20px;font-family:inherit;color:var(--ink);}
+  .acct-btn:hover{background:var(--hover);}
+  .acct-btn .av{width:30px;height:30px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.78rem;font-weight:600;flex:none;text-transform:uppercase;}
+  .acct-btn .nm{font-size:.86rem;}
   .login{background:none;border:none;color:var(--ink);font-size:.84rem;cursor:pointer;padding:8px 12px;border-radius:18px;font-family:inherit;}
   .login:hover{background:var(--hover);}
   .signup{background:var(--indigo);border:none;color:#fff;font-size:.84rem;cursor:pointer;padding:8px 16px;border-radius:18px;font-family:inherit;}
@@ -324,6 +328,7 @@
     const {data,error}=await sb.from("profiles").select("plan,message_count,count_reset_at,display_name").eq("id",uid).single();
     if(error||!data){ console.error("profile fetch failed (keeping existing profile):", error); return; }
     profile={id:uid,plan:data.plan||"free",message_count:Number(data.message_count)||0,display_name:data.display_name||""};
+    renderAccountChip();   // now that we know the name, update the top-right chip
     maybeAskName();
     // Monthly reset — ONLY when a real reset timestamp exists and is older than 30 days.
     // A missing timestamp means the window simply hasn't been stamped yet: stamp it now WITHOUT zeroing
@@ -345,14 +350,29 @@
     scrollDown();
   }
 
+  let currentEmail=null;
+  // Logged-in chip: avatar initial + name (falls back to email until the profile loads).
+  function renderAccountChip(){
+    const box=document.querySelector(".auth"); if(!box) return;
+    const name=(profile&&profile.display_name)?profile.display_name:"";
+    const email=currentEmail||"";
+    const initial=((name||email||"·").trim()[0])||"·";
+    const btn=document.createElement("button");
+    btn.className="acct-btn"; btn.id="acct";
+    btn.title=name?(name+" · "+email):(email||"Account");
+    const av=document.createElement("span"); av.className="av"; av.textContent=initial;
+    btn.appendChild(av);
+    if(name){ const nm=document.createElement("span"); nm.className="nm"; nm.textContent=name; btn.appendChild(nm); }
+    box.innerHTML=""; box.appendChild(btn);
+    btn.onclick=()=>location.href="account.html";
+  }
   function reflectAuth(session){
-    const box=document.querySelector(".auth");
+    const box=document.querySelector(".auth"); if(!box) return;
     if(session && session.user){
-      const email=session.user.email||"Account";
-      // Logged in: single button into the account page. No lockout — chat stays open.
-      box.innerHTML='<button class="login" id="acct" title="'+email+'">'+email+'</button>';
-      $("acct").onclick=()=>location.href="account.html";
+      currentEmail=session.user.email||"";
+      renderAccountChip();                 // shows email initial now; name fills in once loadProfile runs
     } else {
+      currentEmail=null;
       box.innerHTML='<button class="login" id="login">Log in</button><button class="signup" id="signup">Sign up</button>';
       $("login").onclick=()=>location.href="auth.html";
       $("signup").onclick=()=>location.href="auth.html";
