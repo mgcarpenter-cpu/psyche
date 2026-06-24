@@ -25,7 +25,8 @@
   .menu{background:none;border:none;cursor:pointer;color:var(--soft);padding:4px;border-radius:8px;display:inline-flex;line-height:1;}
   .menu:hover{background:var(--hover);}
   .menu svg{width:21px;height:21px;}
-  .wordmark{letter-spacing:.32em;color:var(--indigo);font-size:.92rem;}
+  .wordmark{letter-spacing:.32em;color:var(--indigo);font-size:.92rem;text-decoration:none;cursor:pointer;}
+  .wordmark:hover{opacity:.7;}
   .urgent{font-size:.74rem;color:var(--soft);}
   .urgent a{color:var(--indigo);text-decoration:none;}
   .urgent a:hover{text-decoration:underline;}
@@ -148,7 +149,7 @@
   <div class="topbar">
     <div class="left">
       <button class="menu" id="menuBtn" title="Conversations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
-      <span class="wordmark">PSYCHE</span>
+      <a href="index.html" class="wordmark" title="Home">PSYCHE</a>
     </div>
     <div class="right">
       <span class="urgent sans"><a href="urgent.html">Need urgent help?</a></span>
