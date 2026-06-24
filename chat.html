@@ -74,6 +74,13 @@
   .msg.psy .body{background:var(--psybub);color:var(--ink);border-radius:18px 18px 18px 5px;padding:14px 18px;max-width:78%;font-size:1rem;line-height:1.6;white-space:pre-wrap;}
   .msg.psy .body a{color:var(--indigo);}
 
+  /* generate-the-way-through offer card */
+  .gencard{align-self:center;max-width:84%;text-align:center;background:#fffdf8;border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:6px auto 0;box-shadow:0 4px 18px rgba(42,38,31,.05);}
+  .gentext{font-size:1rem;color:var(--soft);line-height:1.55;margin-bottom:14px;font-weight:300;}
+  .genbtn{background:var(--indigo);color:#fff;border:none;border-radius:26px;padding:12px 30px;font-size:.88rem;font-weight:500;letter-spacing:.01em;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;box-shadow:0 6px 18px rgba(29,56,145,.2);}
+  .genbtn:hover{background:var(--indigo-deep);}
+  .genbtn:disabled{opacity:.7;cursor:default;}
+
   .think{display:flex;gap:6px;}
   .think .dot{width:7px;height:7px;border-radius:50%;background:var(--indigo);opacity:.5;animation:b 1.2s infinite ease-in-out;}
   .think .dot:nth-child(2){animation-delay:.18s;}
@@ -257,9 +264,39 @@
         d.appendChild(el);
         t.appendChild(d);
       });
+      maybeGenerateCard(c);
       scrollDown();
     }
     renderFeedbackRow();
+  }
+  // Offer "Generate the way through" once there's a real back-and-forth.
+  function maybeGenerateCard(c){
+    if(!c) return;
+    const aCount=c.messages.filter(m=>m.role==="assistant").length;
+    const uCount=c.messages.filter(m=>m.role==="user").length;
+    if(aCount<2||uCount<2) return;
+    const card=document.createElement("div"); card.className="gencard";
+    const p=document.createElement("p"); p.className="gentext sans";
+    p.textContent="When you’re ready, I can draw together the pattern underneath — and a way through.";
+    const btn=document.createElement("button"); btn.className="genbtn"; btn.textContent="✦ Generate the way through";
+    btn.onclick=()=>generateReveal(btn);
+    card.appendChild(p); card.appendChild(btn);
+    $("thread").appendChild(card);
+  }
+  async function generateReveal(btn){
+    const c=current(); if(!c) return;
+    btn.disabled=true; btn.textContent="Drawing it together…";
+    try{
+      const res=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:(profile&&profile.display_name)||"",messages:c.messages.map(m=>({role:m.role,content:m.content}))})});
+      const data=await res.json();
+      if(!res.ok||data.error){ throw new Error(data.error||"Generation failed"); }
+      data.title=c.title; data.chatId=c.id; data.at=new Date().toISOString();
+      try{ localStorage.setItem("psyche:reveal",JSON.stringify(data)); }catch(e){}
+      location.href="reveal.html";
+    }catch(e){
+      btn.disabled=false; btn.textContent="✦ Generate the way through";
+      alert("Couldn’t generate just now — please try again in a moment.");
+    }
   }
   // Single feedback row in the composer — votes on Psyche's most recent reply.
   function renderFeedbackRow(){

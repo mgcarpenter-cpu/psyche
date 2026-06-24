@@ -28,7 +28,7 @@
   .lede{font-size:1.06rem;font-weight:300;color:var(--soft);line-height:1.5;margin-bottom:26px;}
 
   .row{padding:20px 0;border-bottom:1px solid var(--line);}
-  .row:first-child{padding-top:0;}
+  .row:first-of-type{padding-top:0;}
   .rlabel{font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(29,56,145,.62);margin-bottom:7px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
   .rtext{font-size:1.06rem;color:var(--ink);line-height:1.45;}
   .wisdom{padding:22px 0 4px;display:flex;gap:16px;align-items:flex-start;}
@@ -74,32 +74,32 @@
 
       <div class="row">
         <p class="rlabel">The pattern</p>
-        <p class="rtext">Avoidance to prevent a feared outcome.</p>
+        <p class="rtext" id="r_pattern">Avoidance to prevent a feared outcome.</p>
         <button class="toggle">Explain <span class="car">⌄</span></button>
-        <div class="detail">You keep the decision open so you never have to face being wrong about it. Staying undecided feels safer than choosing — but it's the avoidance itself, not the choice, that keeps you stuck.</div>
+        <div class="detail" id="r_pattern_d">You keep the decision open so you never have to face being wrong about it. Staying undecided feels safer than choosing — but it's the avoidance itself, not the choice, that keeps you stuck.</div>
       </div>
 
       <div class="row">
         <p class="rlabel">Root cause</p>
-        <p class="rtext">Fear that a wrong choice means being a failure.</p>
+        <p class="rtext" id="r_root">Fear that a wrong choice means being a failure.</p>
         <button class="toggle">Explain <span class="car">⌄</span></button>
-        <div class="detail">Underneath is a belief that your worth rides on getting it right. So a decision stops being about the job and becomes a verdict on you — which makes any choice feel dangerous.</div>
+        <div class="detail" id="r_root_d">Underneath is a belief that your worth rides on getting it right. So a decision stops being about the job and becomes a verdict on you — which makes any choice feel dangerous.</div>
       </div>
 
       <div class="row">
         <p class="rlabel">Feeling-tone</p>
-        <p class="rtext">Unpleasant → aversion (pushing the decision away).</p>
+        <p class="rtext" id="r_tone">Unpleasant → aversion (pushing the decision away).</p>
         <button class="toggle">Explain <span class="car">⌄</span></button>
-        <div class="detail">The thought of deciding carries an unpleasant feeling, and the mind reacts by pushing it away. Naming that reaction — aversion — is the first step to meeting it instead of obeying it.</div>
+        <div class="detail" id="r_tone_d">The thought of deciding carries an unpleasant feeling, and the mind reacts by pushing it away. Naming that reaction — aversion — is the first step to meeting it instead of obeying it.</div>
       </div>
 
       <div class="wisdom">
         <span class="accent"></span>
         <div>
           <p class="rlabel">Wisdom</p>
-          <p class="rtext">What we resist persists; what we meet, passes.</p>
+          <p class="rtext" id="r_wisdom">What we resist persists; what we meet, passes.</p>
           <button class="toggle">Explain <span class="car">⌄</span></button>
-          <div class="detail">A feeling met with steady attention rises, crests, and fades. A feeling resisted only waits. The way out is through — turning toward the discomfort rather than around it.</div>
+          <div class="detail" id="r_wisdom_d">A feeling met with steady attention rises, crests, and fades. A feeling resisted only waits. The way out is through — turning toward the discomfort rather than around it.</div>
         </div>
       </div>
 
@@ -109,38 +109,38 @@
       <p class="eyebrow">The way through</p>
       <p class="lede" style="margin-bottom:24px;">Steps to work through, in order.</p>
 
-      <div class="step">
-        <span class="num">1</span>
-        <div>
-          <p class="t">Practise small choices daily</p>
-          <p class="d">Each morning, make one small choice within a minute — what to eat, which task first. Training that choosing is survivable.</p>
-          <button class="toggle">Why this <span class="car">⌄</span></button>
-          <div class="detail">Decision-fear shrinks with repetition. Tiny, low-stakes choices teach your nervous system that choosing doesn't end in catastrophe — so the big choice feels less charged.</div>
+      <div id="steps">
+        <div class="step">
+          <span class="num">1</span>
+          <div>
+            <p class="t">Practise small choices daily</p>
+            <p class="d">Each morning, make one small choice within a minute — what to eat, which task first. Training that choosing is survivable.</p>
+            <button class="toggle">Why this <span class="car">⌄</span></button>
+            <div class="detail">Decision-fear shrinks with repetition. Tiny, low-stakes choices teach your nervous system that choosing doesn't end in catastrophe — so the big choice feels less charged.</div>
+          </div>
         </div>
-      </div>
-
-      <div class="step">
-        <span class="num">2</span>
-        <div>
-          <p class="t">Answer the failure-thought</p>
-          <p class="d">When it arises, meet it: "A wrong turn is information, not a verdict." Repeat until it loosens.</p>
-          <button class="toggle">Why this <span class="car">⌄</span></button>
-          <div class="detail">The belief "wrong = failure" runs unexamined. Meeting it with a truer thought, repeatedly, loosens its grip — not by arguing, but by offering the mind a kinder, more accurate frame.</div>
+        <div class="step">
+          <span class="num">2</span>
+          <div>
+            <p class="t">Answer the failure-thought</p>
+            <p class="d">When it arises, meet it: "A wrong turn is information, not a verdict." Repeat until it loosens.</p>
+            <button class="toggle">Why this <span class="car">⌄</span></button>
+            <div class="detail">The belief "wrong = failure" runs unexamined. Meeting it with a truer thought, repeatedly, loosens its grip — not by arguing, but by offering the mind a kinder, more accurate frame.</div>
+          </div>
         </div>
-      </div>
-
-      <div class="step">
-        <span class="num">3</span>
-        <div>
-          <p class="t">Sit with the discomfort 60 seconds</p>
-          <p class="d">Find the feeling in your body. Don't fix it — watch it rise and pass.</p>
-          <button class="toggle">Why this <span class="car">⌄</span></button>
-          <div class="detail">This is the core practice: meeting the feeling-tone without reacting. Sixty seconds of steady attention shows you directly that the discomfort moves through — you don't have to push it away.</div>
+        <div class="step">
+          <span class="num">3</span>
+          <div>
+            <p class="t">Sit with the discomfort 60 seconds</p>
+            <p class="d">Find the feeling in your body. Don't fix it — watch it rise and pass.</p>
+            <button class="toggle">Why this <span class="car">⌄</span></button>
+            <div class="detail">This is the core practice: meeting the feeling-tone without reacting. Sixty seconds of steady attention shows you directly that the discomfort moves through — you don't have to push it away.</div>
+          </div>
         </div>
       </div>
 
       <a href="chat.html" class="backbtn">↩ Back to chat</a>
-      <p class="saved">Saved to <b>Your practice</b> — open or regenerate any time</p>
+      <p class="saved" id="saved">Saved to <b>Your practice</b> — open or regenerate any time</p>
       <p class="crisis">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
 
     </div>
@@ -148,10 +148,43 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // dropdowns
-  document.querySelectorAll(".toggle").forEach(btn=>{
-    btn.onclick=()=>{ btn.classList.toggle("open"); const d=btn.nextElementSibling; if(d&&d.classList.contains("detail")) d.classList.toggle("show"); };
-  });
+  // Render from the generated reveal if present; otherwise keep the sample content.
+  (function(){
+    let d=null;
+    try{ d=JSON.parse(localStorage.getItem("psyche:reveal")||"null"); }catch(e){}
+    if(d){
+      const set=(id,v)=>{ const el=document.getElementById(id); if(el&&v!=null&&v!=="") el.textContent=v; };
+      set("r_pattern",d.pattern); set("r_pattern_d",d.pattern_explain);
+      set("r_root",d.root_cause); set("r_root_d",d.root_cause_explain);
+      set("r_tone",d.feeling_tone); set("r_tone_d",d.feeling_tone_explain);
+      set("r_wisdom",d.wisdom); set("r_wisdom_d",d.wisdom_explain);
+      if(Array.isArray(d.steps)&&d.steps.length){
+        const box=document.getElementById("steps"); box.innerHTML="";
+        d.steps.forEach((s,i)=>{
+          const div=document.createElement("div"); div.className="step";
+          const inner=document.createElement("div");
+          const t=document.createElement("p"); t.className="t"; t.textContent=s.title||"";
+          const de=document.createElement("p"); de.className="d"; de.textContent=s.description||"";
+          inner.appendChild(t); inner.appendChild(de);
+          if(s.why){
+            const btn=document.createElement("button"); btn.className="toggle"; btn.innerHTML='Why this <span class="car">⌄</span>';
+            const det=document.createElement("div"); det.className="detail"; det.textContent=s.why;
+            inner.appendChild(btn); inner.appendChild(det);
+          }
+          const num=document.createElement("span"); num.className="num"; num.textContent=(i+1);
+          div.appendChild(num); div.appendChild(inner);
+          box.appendChild(div);
+        });
+      }
+      if(d.title){ const sv=document.getElementById("saved"); if(sv) sv.innerHTML='From “'+String(d.title).replace(/[<>&]/g,"")+'” · saved to <b>Your practice</b>'; }
+    }
+
+    // wire all dropdowns (after any rebuild)
+    document.querySelectorAll(".toggle").forEach(btn=>{
+      btn.onclick=()=>{ btn.classList.toggle("open"); const dd=btn.nextElementSibling; if(dd&&dd.classList.contains("detail")) dd.classList.toggle("show"); };
+    });
+  })();
+
   // show the signed-in name in the top bar (optional, no gating)
   try{
     const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
