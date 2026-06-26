@@ -74,11 +74,11 @@
   .msg.psy .body{background:var(--psybub);color:var(--ink);border-radius:18px 18px 18px 5px;padding:14px 18px;max-width:78%;font-size:1rem;line-height:1.6;white-space:pre-wrap;}
   .msg.psy .body a{color:var(--indigo);}
 
-  /* generate-the-way-through — slim bar above the composer (out of the message flow) */
-  .genbar{max-width:680px;margin:0 auto 12px;display:flex;justify-content:center;}
-  .genbtn{background:none;color:var(--indigo);border:1px solid rgba(29,56,145,.35);border-radius:24px;padding:9px 22px;font-size:.82rem;font-weight:500;letter-spacing:.01em;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:background .15s;}
-  .genbtn:hover{background:rgba(29,56,145,.06);}
-  .genbtn:disabled{opacity:.6;cursor:default;}
+  /* generate-the-way-through — soft chip under the composer (out of the message flow) */
+  .genbar{max-width:680px;margin:12px auto 0;display:flex;justify-content:center;}
+  .genbtn{background:rgba(29,56,145,.07);border:none;color:var(--indigo);border-radius:20px;padding:9px 20px;font-size:.82rem;font-weight:500;letter-spacing:.01em;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:background .15s,opacity .15s;}
+  .genbtn:hover{background:rgba(29,56,145,.13);}
+  .genbtn:disabled{opacity:.55;cursor:default;}
 
   .think{display:flex;gap:6px;}
   .think .dot{width:7px;height:7px;border-radius:50%;background:var(--indigo);opacity:.5;animation:b 1.2s infinite ease-in-out;}
@@ -238,6 +238,21 @@
 
   function current(){ return chats.find(c=>c.id===currentId)||null; }
 
+  // Replace the raw-first-words title with a short AI-generated label after the first exchange.
+  async function titleConversation(c){
+    if(!c || !c.messages[0]) return;
+    try{
+      const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        system:"You name conversations. Reply with ONLY a short title of 2 to 4 words in Title Case naming what the person is bringing — no quotes, no punctuation, no preamble.",
+        max_tokens:16,
+        messages:[{role:"user",content:c.messages[0].content.slice(0,500)}]
+      })});
+      const data=await res.json();
+      let t=((data&&data.content&&data.content[0]&&data.content[0].text)||"").trim().replace(/^["'\s]+|["'.\s]+$/g,"").slice(0,40);
+      if(t){ c.title=t; saveChats(); renderSidebar(); }
+    }catch(e){}
+  }
+
   function renderSidebar(){
     const box=$("chats"); box.innerHTML="";
     chats.slice().reverse().forEach(c=>{
@@ -333,7 +348,7 @@
     if(!c){ c={id:String(Date.now()),title:text.slice(0,38),messages:[]}; chats.push(c); currentId=c.id; }
     if(!c.title||c.title==="New conversation") c.title=text.slice(0,38);
     c.messages.push({role:"user",content:text}); saveChats(); renderAll(); showThinking(true);
-    try{ const reply=await fetchReply(c.messages); showThinking(false); c.messages.push({role:"assistant",content:reply,vote:null}); saveChats(); renderAll(); }
+    try{ const reply=await fetchReply(c.messages); showThinking(false); c.messages.push({role:"assistant",content:reply,vote:null}); saveChats(); renderAll(); if(c.messages.length===2) titleConversation(c); }
     catch(e){ showThinking(false); c.messages.push({role:"assistant",content:"(connection error — please try again)",vote:null}); saveChats(); renderAll(); }
   }
 
