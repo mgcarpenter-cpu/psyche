@@ -132,12 +132,50 @@
     <p class="crisis">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
   </div>
 
-  <p class="note">Prices and message allowances are starting points and may change. Billing isn’t connected yet.</p>
+  <p class="note">Prices and message allowances are starting points and may change. Billing is running in Paddle <b>sandbox</b> (test mode) — use Paddle's test card, no real charge.</p>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <script>
-  document.getElementById("freeBtn").onclick=()=>location.href="chat.html";
-  document.getElementById("plusBtn").onclick=()=>alert("Checkout for Plus — coming soon.");
-  document.getElementById("proBtn").onclick=()=>alert("Checkout for Pro — coming soon.");
+  // --- Paddle (sandbox) ---
+  const PADDLE_TOKEN = "test_195b872d4d5350c5482779ad955";
+  const PRICE = {
+    plus: "pri_01kw0rqt339scen89r0k1wpp02",
+    pro:  "pri_01kw0rx0p6wak5k2pfx774bre7"
+  };
+  Paddle.Environment.set("sandbox");
+  Paddle.Initialize({
+    token: PADDLE_TOKEN,
+    eventCallback: function(ev){
+      if(ev && ev.name === "checkout.completed"){
+        // The actual plan upgrade is applied server-side by the Paddle webhook.
+        alert("Thank you — your payment was received. Your plan will update shortly.");
+        location.href = "account.html";
+      }
+    }
+  });
+
+  // --- who is buying (needed so the webhook can upgrade the right account) ---
+  const sb = supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
+  let session = null;
+  sb.auth.getSession().then(({data}) => { session = data.session; });
+
+  function openCheckout(plan){
+    if(!session || !session.user){
+      // must be signed in so the purchase can be tied to the account
+      location.href = "auth.html";
+      return;
+    }
+    Paddle.Checkout.open({
+      items: [{ priceId: PRICE[plan], quantity: 1 }],
+      customer: { email: session.user.email },
+      customData: { user_id: session.user.id, plan: plan }
+    });
+  }
+
+  document.getElementById("freeBtn").onclick = () => location.href = "chat.html";
+  document.getElementById("plusBtn").onclick = () => openCheckout("plus");
+  document.getElementById("proBtn").onclick  = () => openCheckout("pro");
 </script>
 </body>
 </html>
