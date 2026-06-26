@@ -74,12 +74,11 @@
   .msg.psy .body{background:var(--psybub);color:var(--ink);border-radius:18px 18px 18px 5px;padding:14px 18px;max-width:78%;font-size:1rem;line-height:1.6;white-space:pre-wrap;}
   .msg.psy .body a{color:var(--indigo);}
 
-  /* generate-the-way-through offer card */
-  .gencard{align-self:center;max-width:84%;text-align:center;background:#fffdf8;border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:6px auto 0;box-shadow:0 4px 18px rgba(42,38,31,.05);}
-  .gentext{font-size:1rem;color:var(--soft);line-height:1.55;margin-bottom:14px;font-weight:300;}
-  .genbtn{background:var(--indigo);color:#fff;border:none;border-radius:26px;padding:12px 30px;font-size:.88rem;font-weight:500;letter-spacing:.01em;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;box-shadow:0 6px 18px rgba(29,56,145,.2);}
-  .genbtn:hover{background:var(--indigo-deep);}
-  .genbtn:disabled{opacity:.7;cursor:default;}
+  /* generate-the-way-through — slim bar above the composer (out of the message flow) */
+  .genbar{max-width:680px;margin:0 auto 12px;display:flex;justify-content:center;}
+  .genbtn{background:none;color:var(--indigo);border:1px solid rgba(29,56,145,.35);border-radius:24px;padding:9px 22px;font-size:.82rem;font-weight:500;letter-spacing:.01em;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:background .15s;}
+  .genbtn:hover{background:rgba(29,56,145,.06);}
+  .genbtn:disabled{opacity:.6;cursor:default;}
 
   .think{display:flex;gap:6px;}
   .think .dot{width:7px;height:7px;border-radius:50%;background:var(--indigo);opacity:.5;animation:b 1.2s infinite ease-in-out;}
@@ -189,6 +188,7 @@
       <div class="field"><textarea id="input" rows="1" placeholder="Share what’s on your mind…"></textarea></div>
       <button class="send" id="send" disabled><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6 12 12 6 18 12"/></svg></button>
     </div>
+    <div class="genbar" id="genBar" style="display:none;"><button class="genbtn" id="genBtn">✦ Generate the way through</button></div>
     <div class="fbrow" id="fbRow" style="display:none;"></div>
     <div class="disc">Psyche is a space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></div>
   </div>
@@ -263,25 +263,19 @@
         d.appendChild(el);
         t.appendChild(d);
       });
-      maybeGenerateCard(c);
       scrollDown();
     }
+    updateGenBar(c);
     renderFeedbackRow();
   }
-  // Offer "Generate the way through" once there's a real back-and-forth.
-  function maybeGenerateCard(c){
-    if(!c) return;
-    const aCount=c.messages.filter(m=>m.role==="assistant").length;
-    const uCount=c.messages.filter(m=>m.role==="user").length;
-    if(aCount<2||uCount<2) return;
-    const card=document.createElement("div"); card.className="gencard";
-    const p=document.createElement("p"); p.className="gentext sans";
-    p.textContent="When you’re ready, I can draw together the pattern underneath — and a way through.";
-    const btn=document.createElement("button"); btn.className="genbtn"; btn.textContent="✦ Generate the way through";
-    btn.onclick=()=>generateReveal(btn);
-    card.appendChild(p); card.appendChild(btn);
-    $("thread").appendChild(card);
+  // Show the slim "Generate the way through" button once there's a real back-and-forth.
+  function updateGenBar(c){
+    const bar=$("genBar"); if(!bar) return;
+    const aCount=c?c.messages.filter(m=>m.role==="assistant").length:0;
+    const uCount=c?c.messages.filter(m=>m.role==="user").length:0;
+    bar.style.display=(aCount>=2&&uCount>=2)?"flex":"none";
   }
+  $("genBtn").onclick=()=>generateReveal($("genBtn"));
   async function generateReveal(btn){
     const c=current(); if(!c) return;
     btn.disabled=true; btn.textContent="Drawing it together…";
