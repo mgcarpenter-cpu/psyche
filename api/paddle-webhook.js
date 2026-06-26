@@ -81,8 +81,22 @@ export default async function handler(req, res) {
   }
 
   const raw = await readRaw(req);
-  if (!verifySignature(raw, req.headers["paddle-signature"], secret)) {
-    return res.status(401).json({ error: "Invalid signature" });
+  const sigHeader = req.headers["paddle-signature"];
+  if (!verifySignature(raw, sigHeader, secret)) {
+    // Diagnostic detail (safe: no secrets) — surfaces in Paddle's delivery log.
+    let computed = "";
+    try {
+      const ts = String(sigHeader || "").split(";").find(x => x.startsWith("ts="));
+      if (ts) computed = crypto.createHmac("sha256", secret).update(`${ts.slice(3)}:${raw}`).digest("hex");
+    } catch (e) {}
+    return res.status(401).json({
+      error: "Invalid signature",
+      rawLen: raw.length,
+      bodyWasParsed: !!(req.body && typeof req.body === "object"),
+      hasSigHeader: !!sigHeader,
+      secretPrefix: secret.slice(0, 8),
+      computedPrefix: computed.slice(0, 10)
+    });
   }
 
   let evt;
