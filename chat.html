@@ -87,9 +87,11 @@
   /* generate affordance — pinned above the input, right-aligned */
   .genrow{position:relative;display:flex;justify-content:flex-end;align-items:center;gap:9px;margin-bottom:11px;flex-wrap:wrap;}
   .ghint{font-size:.72rem;color:#a59f93;font-style:italic;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
-  .genbtn{display:inline-flex;align-items:center;gap:7px;background:rgba(29,56,145,.06);border:1px solid rgba(29,56,145,.2);color:var(--indigo);border-radius:24px;padding:7px 16px;font-size:.78rem;font-weight:500;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:background .2s;}
-  .genbtn:hover{background:rgba(29,56,145,.11);}
-  .genbtn:disabled{opacity:.6;cursor:default;}
+  .genbtn{display:inline-flex;align-items:center;gap:7px;background:rgba(29,56,145,.06);border:1px solid rgba(29,56,145,.2);color:var(--indigo);border-radius:24px;padding:7px 16px;font-size:.78rem;font-weight:500;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:background .2s,opacity .3s;}
+  .genbtn:hover:not(:disabled){background:rgba(29,56,145,.11);}
+  .genbtn:disabled{opacity:.38;cursor:default;}            /* locked / not enough exchanges yet */
+  .genbtn.active{background:var(--indigo);border-color:var(--indigo);color:#fff;opacity:1;}  /* unlocked: full colour */
+  .genbtn.active:hover{background:var(--indigo-deep);}
   .ginfo{width:19px;height:19px;flex-shrink:0;border-radius:50%;border:1px solid rgba(29,56,145,.32);color:var(--indigo);display:flex;align-items:center;justify-content:center;font-size:.66rem;font-style:italic;cursor:pointer;line-height:1;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
   .gtip{position:absolute;right:0;bottom:calc(100% + 11px);width:288px;background:#fffdf8;border:1px solid var(--fieldline);border-radius:14px;padding:16px 18px;box-shadow:0 10px 30px rgba(42,38,31,.12);text-align:left;z-index:5;}
   .gtip .h{font-size:.82rem;font-weight:600;color:var(--indigo);margin-bottom:6px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
@@ -307,11 +309,17 @@
     renderFeedbackRow();
   }
   // Show the slim "Generate the way through" button once there's a real back-and-forth.
+  const GEN_UNLOCK=10; // exchanges (Psyche replies) before "Generate" becomes active
   function updateGenBar(c){
     const bar=$("genBar"); if(!bar) return;
     const aCount=c?c.messages.filter(m=>m.role==="assistant").length:0;
     const uCount=c?c.messages.filter(m=>m.role==="user").length:0;
-    bar.style.display=(aCount>=2&&uCount>=2)?"flex":"none";
+    const exchanges=Math.min(aCount,uCount);
+    if(exchanges<1){ bar.style.display="none"; return; }
+    bar.style.display="flex";
+    const ready=exchanges>=GEN_UNLOCK;
+    const btn=$("genBtn"); btn.classList.toggle("active",ready); btn.disabled=!ready;
+    const hint=bar.querySelector(".ghint"); if(hint) hint.style.display=ready?"":"none";
   }
   $("genBtn").onclick=()=>generateReveal($("genBtn"));
   $("genInfo").onclick=(e)=>{ e.stopPropagation(); const t=$("genTip"); t.style.display=(t.style.display==="none"||!t.style.display)?"block":"none"; };
