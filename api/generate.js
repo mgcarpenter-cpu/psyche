@@ -65,6 +65,15 @@ export default async function handler(req, res) {
     const who = typeof name === "string" ? name.trim().replace(/\s+/g, " ").slice(0, 60) : "";
     if (who) sys += `\n\nThe person is called "${who}".`;
 
+    // Pass the whole conversation as one transcript in a single user message — the model
+    // can't take a conversation that ends on an assistant turn while a tool call is forced.
+    const transcript = messages
+      .filter(m => m && (m.role === "user" || m.role === "assistant") && m.content)
+      .map(m => (m.role === "user" ? (who || "Me") : "Psyche") + ": " + m.content)
+      .join("\n\n");
+    const userMessage = "Here is the conversation so far:\n\n" + transcript +
+      "\n\nDrawing only from this conversation, record your reading with the record_reveal tool.";
+
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -78,7 +87,7 @@ export default async function handler(req, res) {
         system: sys,
         tools: [REVEAL_TOOL],
         tool_choice: { type: "tool", name: "record_reveal" },
-        messages: messages.map(m => ({ role: m.role, content: m.content }))
+        messages: [{ role: "user", content: userMessage }]
       })
     });
 
