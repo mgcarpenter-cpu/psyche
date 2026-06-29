@@ -54,8 +54,11 @@ function planFromData(data) {
   return null;
 }
 
-async function setPlan(uid, plan) {
+async function patchProfile(uid, patch) {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const body = {};
+  for (const k in patch) if (patch[k] != null) body[k] = patch[k];
+  if (!Object.keys(body).length) return;
   const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}`, {
     method: "PATCH",
     headers: {
@@ -64,7 +67,7 @@ async function setPlan(uid, plan) {
       Authorization: `Bearer ${key}`,
       Prefer: "return=minimal"
     },
-    body: JSON.stringify({ plan })
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     const txt = await res.text();
@@ -100,7 +103,12 @@ export default async function handler(req, res) {
       plan = "free";
     }
     if (plan && uid) {
-      await setPlan(uid, plan);
+      // also remember the Paddle customer + subscription ids so we can open the portal later
+      await patchProfile(uid, {
+        plan,
+        paddle_customer_id: data.customer_id,
+        paddle_subscription_id: type.indexOf("subscription") === 0 ? data.id : undefined
+      });
       console.log(`paddle-webhook: set ${uid} -> ${plan} (${type})`);
     }
   } catch (err) {

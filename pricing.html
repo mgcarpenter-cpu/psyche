@@ -158,7 +158,19 @@
   // --- who is buying (needed so the webhook can upgrade the right account) ---
   const sb = supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
   let session = null;
-  sb.auth.getSession().then(({data}) => { session = data.session; });
+  sb.auth.getSession().then(async ({data}) => {
+    session = data.session;
+    if(session && session.user){
+      const {data:p} = await sb.from("profiles").select("plan").eq("id",session.user.id).single();
+      markCurrent((p && p.plan) || "free");
+    }
+  });
+  // Mark the user's current plan card so they can't re-buy it.
+  function markCurrent(plan){
+    const id = {free:"freeBtn", plus:"plusBtn", pro:"proBtn"}[plan];
+    const btn = id && document.getElementById(id);
+    if(btn){ btn.textContent="Current plan"; btn.disabled=true; btn.style.opacity=".55"; btn.style.cursor="default"; btn.onclick=null; }
+  }
 
   function openCheckout(plan){
     if(!session || !session.user){
