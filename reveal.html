@@ -51,7 +51,10 @@
   .step .t{font-size:1.04rem;color:var(--indigo);margin-bottom:5px;}
   .step .d{font-size:.86rem;color:#3a362e;line-height:1.55;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
 
-  .backbtn{display:block;width:100%;text-align:center;color:var(--indigo);font-size:.84rem;font-weight:500;padding:14px 0;border:1px solid var(--indigo);border-radius:26px;cursor:pointer;background:none;margin-top:30px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;text-decoration:none;}
+  .sharebtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;color:#FAF8F3;font-size:.86rem;font-weight:600;padding:14px 0;border:none;border-radius:26px;cursor:pointer;background:linear-gradient(180deg,#3550A8 0%,#1D3891 52%,#16275F 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 20px rgba(29,56,145,.28);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:transform .18s,box-shadow .18s;margin-top:30px;}
+  .sharebtn:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 14px 30px rgba(29,56,145,.36);}
+  .sharebtn:disabled{opacity:.7;cursor:default;transform:none;}
+  .backbtn{display:block;width:100%;text-align:center;color:var(--indigo);font-size:.84rem;font-weight:500;padding:14px 0;border:1px solid var(--indigo);border-radius:26px;cursor:pointer;background:none;margin-top:12px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;text-decoration:none;}
   .backbtn:hover{background:rgba(29,56,145,.06);}
   .saved{text-align:center;font-size:.72rem;color:var(--muted);margin-top:18px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
   .saved b{color:var(--indigo);font-weight:600;}
@@ -139,6 +142,7 @@
         </div>
       </div>
 
+      <button class="sharebtn" id="shareBtn">✦ Share this</button>
       <a href="chat.html" class="backbtn">↩ Back to chat</a>
       <p class="saved" id="saved">Saved to <b>Your practice</b> — open or regenerate any time</p>
       <p class="crisis">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
@@ -184,6 +188,57 @@
       btn.onclick=()=>{ btn.classList.toggle("open"); const dd=btn.nextElementSibling; if(dd&&dd.classList.contains("detail")) dd.classList.toggle("show"); };
     });
   })();
+
+  // ---- Share Card (Pearl: the antidote line, no name) ----
+  function wrapText(ctx,text,cx,topY,maxW,lh){
+    const words=String(text).split(/\s+/); const lines=[]; let cur="";
+    for(const w of words){ const t=cur?cur+" "+w:w; if(ctx.measureText(t).width>maxW && cur){ lines.push(cur); cur=w; } else cur=t; }
+    if(cur) lines.push(cur);
+    const startY=topY-((lines.length-1)*lh)/2;
+    lines.forEach((l,i)=>ctx.fillText(l,cx,startY+i*lh));
+    return lines.length;
+  }
+  async function renderCardBlob(){
+    const line=(document.getElementById("r_wisdom").textContent||"").trim();
+    const W=1080,H=1350, cv=document.createElement("canvas"); cv.width=W; cv.height=H;
+    const ctx=cv.getContext("2d");
+    ctx.fillStyle="#faf8f3"; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle="rgba(29,56,145,0.16)"; ctx.lineWidth=2; ctx.strokeRect(64,64,W-128,H-128);
+    try{ await document.fonts.load("italic 600 72px Spectral"); await document.fonts.load("600 30px Spectral"); await document.fonts.ready; }catch(e){}
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    // small mark of three dots
+    ctx.fillStyle="rgba(29,56,145,0.5)";
+    [-26,0,26].forEach(dx=>{ ctx.beginPath(); ctx.arc(W/2+dx,300,5,0,7); ctx.fill(); });
+    // the antidote line
+    ctx.fillStyle="#1d3891"; ctx.font="italic 600 72px Spectral, Georgia, serif";
+    wrapText(ctx,line,W/2,H/2,W-280,92);
+    // wordmark + quiet link
+    ctx.fillStyle="#1d3891"; ctx.font="600 30px Spectral, Georgia, serif";
+    ctx.save(); ctx.translate(W/2,H-176); ctx.fillText("P S Y C H E",0,0); ctx.restore();
+    ctx.fillStyle="#9a948a"; ctx.font="400 24px ui-sans-serif, system-ui, sans-serif";
+    ctx.fillText("psyche-uptf.vercel.app",W/2,H-128);
+    return await new Promise(r=>cv.toBlob(r,"image/png"));
+  }
+  async function shareCard(){
+    const btn=document.getElementById("shareBtn"), label=btn.textContent;
+    btn.disabled=true; btn.textContent="Preparing…";
+    try{
+      const blob=await renderCardBlob();
+      const file=new File([blob],"psyche.png",{type:"image/png"});
+      const line=(document.getElementById("r_wisdom").textContent||"").trim();
+      const caption=line+" — Psyche\npsyche-uptf.vercel.app";
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],text:caption});
+      } else {
+        const url=URL.createObjectURL(blob); const a=document.createElement("a");
+        a.href=url; a.download="psyche.png"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        try{ await navigator.clipboard.writeText(caption); }catch(e){}
+        alert("Card saved"+(navigator.clipboard?" — caption copied":"")+".");
+      }
+    }catch(e){ /* user cancelled or unsupported */ }
+    btn.disabled=false; btn.textContent=label;
+  }
+  document.getElementById("shareBtn").onclick=shareCard;
 
   // show the signed-in name in the top bar (optional, no gating)
   try{
