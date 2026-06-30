@@ -55,29 +55,49 @@
   footer a{color:var(--soft);}
 
   /* MEMBERSHIP */
-  .mlede{color:var(--soft);font-size:1.1rem;font-weight:300;line-height:1.6;max-width:520px;margin:0 auto 6px;}
-  .guarantee{font-size:.82rem;color:var(--muted);margin-bottom:30px;}
-  .ptoggle{display:inline-flex;background:#ece7da;border-radius:30px;padding:4px;margin:0 auto 34px;gap:2px;}
-  .ptoggle button{border:none;background:none;padding:9px 20px;border-radius:26px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.84rem;color:var(--soft);cursor:pointer;transition:background .15s,color .15s;}
+  #membership{padding-top:52px;padding-bottom:52px;}
+  #membership .wrap{max-width:1040px;}
+  #membership h2{font-size:1.85rem;margin-bottom:4px;}
+  .mlede{color:var(--soft);font-size:1rem;font-weight:300;line-height:1.5;max-width:480px;margin:0 auto 4px;}
+  .guarantee{font-size:.78rem;color:var(--muted);margin-bottom:20px;}
+  .ptoggle{display:inline-flex;background:#ece7da;border-radius:30px;padding:4px;margin:0 auto 26px;gap:2px;}
+  .ptoggle button{border:none;background:none;padding:8px 20px;border-radius:26px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:.84rem;color:var(--soft);cursor:pointer;transition:background .15s,color .15s;}
   .ptoggle button.on{background:#fff;color:var(--indigo);font-weight:500;box-shadow:0 1px 4px rgba(40,36,30,.08);}
   .ptoggle .save{font-size:.68rem;color:var(--indigo);opacity:.7;margin-left:5px;}
-  .tiers{display:flex;gap:18px;justify-content:center;align-items:stretch;flex-wrap:wrap;max-width:920px;margin:0 auto;text-align:left;}
-  .tier{flex:1;min-width:240px;max-width:288px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px 24px;display:flex;flex-direction:column;}
-  .tier.featured{border:1.5px solid var(--indigo);box-shadow:0 16px 42px rgba(29,56,145,.15);position:relative;}
-  .tbadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--grad);color:#FAF8F3;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;font-weight:600;padding:5px 13px;border-radius:20px;white-space:nowrap;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;box-shadow:0 4px 12px rgba(29,56,145,.3);}
-  .tname{font-size:1.15rem;color:var(--indigo);margin-bottom:10px;}
-  .tprice{font-size:2rem;color:var(--ink);line-height:1;margin-bottom:4px;}
-  .tprice small{font-size:.88rem;color:var(--muted);font-weight:400;}
-  .tsub{font-size:.82rem;color:var(--muted);margin-bottom:20px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;min-height:18px;}
-  .tfeat{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:22px;flex:1;}
-  .tfeat li{display:flex;gap:9px;align-items:flex-start;font-size:.88rem;color:var(--soft);line-height:1.4;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .tiers{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;max-width:1000px;margin:0 auto;text-align:left;}
+  .tier{flex:1 1 250px;min-width:235px;max-width:296px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px 22px;display:flex;flex-direction:column;align-self:stretch;}
+  .tier.featured{flex:1.18 1 320px;max-width:360px;padding:30px 28px;border:1.5px solid var(--indigo);box-shadow:0 22px 54px rgba(29,56,145,.2);position:relative;z-index:2;align-self:auto;}
+  .tbadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--grad);color:#FAF8F3;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;font-weight:600;padding:5px 14px;border-radius:20px;white-space:nowrap;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;box-shadow:0 4px 12px rgba(29,56,145,.3);}
+  .tname{font-size:1.12rem;color:var(--indigo);margin-bottom:8px;}
+  .tier.featured .tname{font-size:1.32rem;}
+  .tprice{font-size:1.85rem;color:var(--ink);line-height:1;margin-bottom:4px;}
+  .tier.featured .tprice{font-size:2.5rem;}
+  .tprice small{font-size:.85rem;color:var(--muted);font-weight:400;}
+  .trise{font-size:.7rem;color:var(--indigo);opacity:.8;margin-bottom:12px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .tsub{font-size:.8rem;color:var(--muted);margin-bottom:16px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;min-height:16px;}
+  .counter{margin-bottom:16px;}
+  .cbar{height:6px;background:#e6e0d4;border-radius:4px;overflow:hidden;margin-bottom:6px;}
+  .cbar i{display:block;height:100%;background:var(--grad);border-radius:4px;width:27%;transition:width 1s ease;}
+  .cnum{font-size:.72rem;color:var(--soft);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .cnum b{color:var(--indigo);font-weight:600;}
+  .tfeat{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:20px;flex:1;}
+  .tfeat li{display:flex;gap:9px;align-items:flex-start;font-size:.86rem;color:var(--soft);line-height:1.4;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
   .tfeat li svg{width:15px;height:15px;flex:none;margin-top:3px;}
   .tfeat li.refer{color:var(--indigo);font-weight:500;}
-  .tbtn{width:100%;text-align:center;border-radius:26px;padding:13px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;border:1px solid var(--indigo);background:none;color:var(--indigo);transition:background .15s,transform .15s;}
+  .tbtn{width:100%;text-align:center;border-radius:26px;padding:12px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;border:1px solid var(--indigo);background:none;color:var(--indigo);transition:background .15s,transform .15s;}
   .tbtn:hover{background:rgba(29,56,145,.06);}
-  .tbtn.grad{border:none;color:#FAF8F3;background:var(--grad);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 20px rgba(29,56,145,.26);}
+  .tbtn.grad{border:none;color:#FAF8F3;background:var(--grad);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 20px rgba(29,56,145,.26);padding:14px;}
   .tbtn.grad:hover{transform:translateY(-2px);}
-  .mfoot{font-size:.78rem;color:var(--muted);max-width:580px;margin:30px auto 0;line-height:1.6;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  /* earning strip */
+  .earn{max-width:880px;margin:32px auto 0;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 26px;}
+  .earn h3{font-size:1.05rem;font-weight:500;color:var(--indigo);text-align:center;margin-bottom:4px;}
+  .earn .es{text-align:center;font-size:.82rem;color:var(--muted);margin-bottom:18px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .esteps{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+  .estep{flex:1;min-width:190px;max-width:240px;display:flex;gap:11px;align-items:flex-start;}
+  .estep .n{flex:none;width:24px;height:24px;border-radius:50%;background:rgba(29,56,145,.08);color:var(--indigo);font-size:.76rem;font-weight:600;display:flex;align-items:center;justify-content:center;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .estep p{font-size:.81rem;color:var(--soft);line-height:1.45;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  .estep b{color:var(--ink);font-weight:600;}
+  .mfoot{font-size:.76rem;color:var(--muted);max-width:580px;margin:22px auto 0;line-height:1.55;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
 
   @media(max-width:560px){
     header{padding:20px 22px;}
@@ -176,19 +196,19 @@
     <div class="wrap">
       <p class="eyebrow sans">Membership</p>
       <h2>Choose how far you go</h2>
-      <p class="mlede">One method, three ways in. Most begin with Lifetime.</p>
+      <p class="mlede">One method, three ways in.</p>
       <p class="guarantee sans">7-day, no-questions refund · cancel anytime</p>
 
       <div class="ptoggle sans">
-        <button id="tgM" class="on">Monthly</button>
-        <button id="tgY">Yearly <span class="save">save 2 months</span></button>
+        <button id="tgM">Monthly</button>
+        <button id="tgY" class="on">Yearly <span class="save">save 2 months</span></button>
       </div>
 
       <div class="tiers">
-        <!-- TIER 1 -->
+        <!-- SEEKER -->
         <div class="tier">
           <p class="tname">Seeker</p>
-          <p class="tprice"><span data-m="$24" data-y="$240">$24</span> <small data-m="/mo" data-y="/yr">/mo</small></p>
+          <p class="tprice"><span data-m="$24" data-y="$240">$240</span> <small data-m="/mo" data-y="/yr">/yr</small></p>
           <p class="tsub sans">For a steady daily practice</p>
           <ul class="tfeat">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>The full method · unlimited chat</li>
@@ -199,38 +219,52 @@
           <button class="tbtn">Start</button>
         </div>
 
-        <!-- TIER 2 -->
-        <div class="tier">
-          <p class="tname">Practitioner</p>
-          <p class="tprice"><span data-m="$49" data-y="$490">$49</span> <small data-m="/mo" data-y="/yr">/mo</small></p>
-          <p class="tsub sans">For going deeper, every day</p>
-          <ul class="tfeat">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Everything in Seeker</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Unlimited way-throughs</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Daily reset — your antidote each morning</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Priority · early access</li>
-            <li class="refer"><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Refer &amp; earn 20%</li>
-          </ul>
-          <button class="tbtn">Start</button>
-        </div>
-
-        <!-- LIFETIME (featured) -->
+        <!-- LIFETIME (centre hero) -->
         <div class="tier featured">
-          <span class="tbadge">Founding offer · price rises</span>
+          <span class="tbadge">Founding 5,000 · then it's gone</span>
           <p class="tname">Lifetime</p>
           <p class="tprice">$199 <small>once</small></p>
-          <p class="tsub sans">Pay once. Yours for good.</p>
+          <p class="trise sans">▲ Price climbs with every wave — locked forever at what you pay</p>
+          <div class="counter">
+            <div class="cbar"><i id="cfill"></i></div>
+            <p class="cnum sans"><b id="cclaim">1,347</b> claimed · <span id="cleft">3,653</span> of 5,000 left</p>
+          </div>
           <ul class="tfeat">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Everything, unlimited — forever</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Bring your own AI key · text + voice</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Bring your own AI key · text</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>No subscription, ever</li>
             <li class="refer"><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Refer &amp; earn 30% — our best</li>
           </ul>
           <button class="tbtn grad">Claim lifetime</button>
         </div>
+
+        <!-- PRACTITIONER -->
+        <div class="tier">
+          <p class="tname">Practitioner</p>
+          <p class="tprice"><span data-m="$49" data-y="$490">$490</span> <small data-m="/mo" data-y="/yr">/yr</small></p>
+          <p class="tsub sans">For going deeper, every day</p>
+          <ul class="tfeat">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Everything in Seeker</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Unlimited way-throughs</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Daily reset — your antidote each morning</li>
+            <li class="refer"><svg viewBox="0 0 24 24" fill="none" stroke="#1d3891" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>Refer &amp; earn 20%</li>
+          </ul>
+          <button class="tbtn">Start</button>
+        </div>
       </div>
 
-      <p class="mfoot sans">Lifetime is bring-your-own-key: unlimited use, billed directly by Claude or Gemini — usually cents a day. Monthly plans include everything with no key needed. Prices shown are the current wave and rise as we grow.</p>
+      <!-- EARNING -->
+      <div class="earn">
+        <h3>Share it, earn from it — fully automated</h3>
+        <p class="es sans">Add your social links once. After that you do nothing — no chasing, no admin.</p>
+        <div class="esteps">
+          <div class="estep"><span class="n">1</span><p><b>Add your links once.</b> Drop your socials into your account and you're set.</p></div>
+          <div class="estep"><span class="n">2</span><p><b>Every share carries your invite.</b> Baked in automatically — nothing to copy or paste.</p></div>
+          <div class="estep"><span class="n">3</span><p><b>Paid monthly, hands-off.</b> Sales are tracked and your share is paid out for you.</p></div>
+        </div>
+      </div>
+
+      <p class="mfoot sans">Lifetime is bring-your-own-key: unlimited use, billed directly by Claude — usually cents a day. Monthly plans include everything, no key needed.</p>
     </div>
   </section>
 
@@ -278,6 +312,15 @@
   }
   $("tgM").onclick=()=>setBilling(false);
   $("tgY").onclick=()=>setBilling(true);
+
+  // lifetime scarcity counter (placeholder — wire CLAIMED to live Supabase count later)
+  (function(){
+    const CLAIMED=1347, CAP=5000, fill=$("cfill"), cc=$("cclaim"), cl=$("cleft");
+    if(!fill) return;
+    requestAnimationFrame(()=>{ fill.style.width=(CLAIMED/CAP*100).toFixed(1)+"%"; });
+    let n=Math.max(0,CLAIMED-50);
+    const t=setInterval(()=>{ n+=2; if(n>=CLAIMED){n=CLAIMED;clearInterval(t);} cc.textContent=n.toLocaleString(); cl.textContent=(CAP-n).toLocaleString(); },22);
+  })();
 
   sb.auth.getSession().then(({data})=>reflect(data.session));
   sb.auth.onAuthStateChange((_e,session)=>reflect(session));
