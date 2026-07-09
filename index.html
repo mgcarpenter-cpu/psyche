@@ -160,8 +160,7 @@
   /* ===== THREE CINEMATIC VIDEO SECTIONS (owl / stag / lion) ===== */
   .vhero{position:relative;height:100vh;min-height:600px;width:100%;overflow:hidden;background:var(--night);}
   .vstage{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 76% at 50% 46%,#0d1526 0%,#06090f 72%);}
-  .vvid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:var(--night);}
-  @media(min-width:769px){ .vvid{inset:auto;top:0;left:50%;width:auto;height:100%;transform:translateX(-50%);object-fit:contain;} }
+  .vvid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;background:var(--night);}
   .vhero::before{content:"";position:absolute;top:0;left:0;right:0;height:130px;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(6,9,15,.55),rgba(6,9,15,0));}
   .vhero::after{content:"";position:absolute;bottom:0;left:0;right:0;height:210px;z-index:1;pointer-events:none;background:linear-gradient(0deg,rgba(6,9,15,.62),rgba(6,9,15,0));}
 
@@ -169,6 +168,9 @@
   .vmark{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.34em;text-transform:uppercase;font-size:15px;color:var(--cream);}
   .vlogin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--cream);background:none;border:none;cursor:pointer;padding:4px 6px;opacity:.92;}
   .vlogin:hover{opacity:1;}
+  .vnav-r{display:flex;align-items:center;gap:20px;}
+  .vlink{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--cream);background:none;border:none;cursor:pointer;padding:4px 6px;opacity:.9;}
+  .vlink:hover{opacity:1;}
 
   .vbottom{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;flex-direction:column;align-items:center;gap:14px;padding:0 24px 44px;}
   .vcta{font-family:'Cormorant Garamond',serif;background:var(--coral);color:#fff;border:none;border-radius:40px;padding:13px 50px;font-size:21px;font-weight:600;letter-spacing:.01em;cursor:pointer;box-shadow:0 8px 30px rgba(224,80,58,.45);transition:transform .18s ease,box-shadow .18s ease;}
@@ -187,69 +189,29 @@
 </head>
 <body>
 
-  <!-- THREE CINEMATIC HERO SECTIONS (owl = what it is · stag = what it does · lion = how you earn) -->
-  <section class="vhero" id="v-owl">
-    <div class="vstage">
-      <video class="vvid" autoplay muted loop playsinline preload="auto">
-        <source src="videos/owl-sequence-v10.mp4" type="video/mp4">
-      </video>
-    </div>
+  <!-- FULL-PAGE CINEMATIC HERO (combined owl→stag→lion sequence, covers viewport) -->
+  <section class="vhero" id="v-hero">
+    <video class="vvid" autoplay muted loop playsinline preload="auto">
+      <source src="videos/psyche-hero.mp4" type="video/mp4">
+    </video>
     <header class="vnav">
       <span class="vmark">PSYCHE</span>
-      <button class="vlogin" id="login" type="button">Log in</button>
+      <div class="vnav-r">
+        <button class="vlink" id="login" type="button">Login</button>
+        <button class="vlink" id="join" type="button">Join</button>
+      </div>
     </header>
-    <div class="vbottom">
-      <button class="vcta" id="cta1" type="button">Begin</button>
-      <button class="vreplay" type="button" onclick="(function(v){v.currentTime=0;v.play();})(document.querySelector('#v-owl video'))">Replay</button>
-    </div>
-    <button class="vsound" type="button" aria-label="Toggle sound"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><g class="son"><path d="M16 8.6a4 4 0 0 1 0 6.8"/><path d="M18.6 6a7 7 0 0 1 0 12"/></g><line class="soff" x1="16.5" y1="8" x2="22" y2="16"/></svg></button>
-  </section>
-
-  <section class="vhero" id="v-stag">
-    <div class="vstage">
-      <video class="vvid" muted loop playsinline preload="none">
-        <source src="videos/stag-sequence-v3.mp4" type="video/mp4">
-      </video>
-    </div>
-    <div class="vscrollcue">Scroll</div>
-    <button class="vsound" type="button" aria-label="Toggle sound"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><g class="son"><path d="M16 8.6a4 4 0 0 1 0 6.8"/><path d="M18.6 6a7 7 0 0 1 0 12"/></g><line class="soff" x1="16.5" y1="8" x2="22" y2="16"/></svg></button>
-  </section>
-
-  <section class="vhero" id="v-lion">
-    <div class="vstage">
-      <video class="vvid" muted loop playsinline preload="none">
-        <source src="videos/lion-sequence-v2.mp4" type="video/mp4">
-      </video>
-    </div>
-    <div class="vbottom">
-      <button class="vcta" id="cta3" type="button">Begin</button>
-    </div>
     <button class="vsound" type="button" aria-label="Toggle sound"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><g class="son"><path d="M16 8.6a4 4 0 0 1 0 6.8"/><path d="M18.6 6a7 7 0 0 1 0 12"/></g><line class="soff" x1="16.5" y1="8" x2="22" y2="16"/></svg></button>
   </section>
   <script>
     (function(){
-      var sections=[].slice.call(document.querySelectorAll('.vhero'));
-      sections.forEach(function(sec){
-        var v=sec.querySelector('video'), snd=sec.querySelector('.vsound');
-        if(!v) return;
-        // lazy autoplay/pause: play (loading on demand) when ≥60% in view, pause when scrolled away
-        if('IntersectionObserver' in window){
-          new IntersectionObserver(function(es){ es.forEach(function(e){
-            if(e.isIntersecting && e.intersectionRatio>=0.6){ v.play().catch(function(){}); }
-            else { v.pause(); }
-          }); },{threshold:[0,0.6,1]}).observe(sec);
-        } else { v.play().catch(function(){}); }
-        // unmute toggle — videos autoplay muted (browser rule); a tap turns audio on (and mutes the others)
-        if(snd){ snd.addEventListener('click',function(){
-          var willUnmute=v.muted;
-          sections.forEach(function(s2){ var v2=s2.querySelector('video'), b2=s2.querySelector('.vsound'); if(v2){ v2.muted=true; if(b2) b2.classList.remove('on'); } });
-          v.muted=!willUnmute;
-          if(!v.muted){ v.play().catch(function(){}); }
-          snd.classList.toggle('on',!v.muted);
-        }); }
-      });
-      // final (lion) Begin → into membership, matching the primary Begin
-      var c3=document.getElementById('cta3'); if(c3){ c3.onclick=function(){ var m=document.getElementById('membership'); if(m) m.scrollIntoView({behavior:'smooth'}); }; }
+      var v=document.querySelector('#v-hero video'), snd=document.querySelector('#v-hero .vsound');
+      if(v && snd){
+        // autoplays muted (browser rule); tap the speaker to turn audio on
+        snd.addEventListener('click',function(){ v.muted=!v.muted; if(!v.muted){ v.play().catch(function(){}); } snd.classList.toggle('on',!v.muted); });
+      }
+      // Join → view membership/plans
+      var j=document.getElementById('join'); if(j){ j.onclick=function(){ var m=document.getElementById('membership'); if(m) m.scrollIntoView({behavior:'smooth'}); }; }
     })();
   </script>
 
@@ -365,7 +327,7 @@
       $("login").onclick=()=>location.href="auth.html";
     }
   }
-  $("cta1").onclick=()=>$("membership").scrollIntoView({behavior:"smooth"});
+  { const c1=$("cta1"); if(c1) c1.onclick=()=>$("membership").scrollIntoView({behavior:"smooth"}); }
   $("cta2").onclick=()=>location.href=dest;
   document.querySelectorAll(".tbtn").forEach(b=>b.onclick=()=>location.href=dest);
 
