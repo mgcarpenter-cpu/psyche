@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psyche</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#06090f;color:#faf8f3;font-family:'Cormorant Garamond',serif;height:100dvh;display:flex;flex-direction:column;}
+  .top{padding:20px 24px;}
+  .wm{font-family:'Cinzel',serif;letter-spacing:.3em;font-size:14px;color:#faf8f3;text-decoration:none;}
+  .wm:hover{opacity:.75;}
+  .mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 26px;gap:14px;}
+  .mid h1{font-weight:400;font-size:2.1rem;letter-spacing:.01em;}
+  .mid .tag{font-style:italic;opacity:.55;font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase;}
+  .mid p{opacity:.6;max-width:430px;line-height:1.65;font-size:1.08rem;}
+  .back{margin-top:12px;color:#faf8f3;opacity:.72;text-decoration:none;border-bottom:1px dotted rgba(250,248,243,.4);font-style:italic;font-size:1rem;}
+  .back:hover{opacity:1;}
+</style>
+</head>
+<body>
+  <div class="top"><a href="chat.html" class="wm">PSYCHE</a></div>
+  <div class="mid">
+    <div class="tag">Coming soon</div>
+    <h1 id="ttl">Coming soon</h1>
+    <p>This part of Psyche is still being crafted. It will arrive here soon.</p>
+    <a href="chat.html" class="back">&larr; Back to your sanctuary</a>
+  </div>
+  <script>
+    var t=new URLSearchParams(location.search).get('t');
+    if(t){ document.getElementById('ttl').textContent=t; document.title='Psyche — '+t; }
+  </script>
+</body>
+</html>
