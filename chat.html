@@ -96,17 +96,19 @@
   .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; text-shadow: 0 1px 6px rgba(0,0,0,0.7); }
   .count { font-style: italic; font-size: 13.5px; opacity: 0.6; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
 
-  .soundhint {
-    position: absolute; top: 54px; right: 16px;
-    background: var(--veil);
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    border: 1px solid rgba(250,248,243,0.2);
-    color: var(--cream); font-family: 'Cormorant Garamond', serif;
-    font-style: italic; font-size: 14px;
-    border-radius: 16px; padding: 6px 14px; cursor: pointer;
-    z-index: 3; display: flex; align-items: center; gap: 7px;
+  .tapcue {
+    position: absolute; inset: 0; z-index: 4;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; padding: 0 30px;
+    opacity: 0; transition: opacity 2s ease;
   }
-  .soundhint.hidden { display: none; }
+  .tapcue.show { opacity: 1; }
+  .tapcue.gone { opacity: 0; transition: opacity 0.8s ease; }
+  .tapcue span {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 22px; color: rgba(250,248,243,0.7);
+    text-shadow: 0 1px 12px rgba(0,0,0,0.85); text-align: center;
+  }
 
   .spacer { flex: 1; min-height: 22%; }
   .chat { max-height: 48%; overflow-y: auto; scrollbar-width: none; padding: 8px 0; }
@@ -199,15 +201,13 @@
   .wordmark { position: absolute; left: 50%; transform: translateX(-50%); }
   .topright { display: flex; align-items: center; gap: 12px; }
   .soundpill {
-    display: flex; align-items: center; gap: 5px;
-    background: var(--veil); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    border: 1px solid rgba(250,248,243,0.22); color: var(--cream);
-    font-family: 'Cormorant Garamond', serif; font-size: 14px;
-    border-radius: 16px; padding: 5px 13px; cursor: pointer;
-    text-shadow: 0 1px 5px rgba(0,0,0,0.7); white-space: nowrap; opacity: 0.85;
+    display: flex; align-items: center; gap: 6px;
+    background: none; border: none; outline: none;
+    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px;
+    padding: 5px 6px; cursor: pointer;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.85); white-space: nowrap; opacity: 0.72;
   }
-  .soundpill:hover { opacity: 1; }
-  .soundpill.active { opacity: 1; border-color: rgba(250,248,243,0.45); }
+  .soundpill:hover, .soundpill.active { opacity: 1; }
   .soundpill .note { font-size: 13px; }
   .soundpop {
     position: absolute; top: 52px; right: 14px; z-index: 8; width: 210px;
@@ -316,10 +316,7 @@
       <div class="sovol"><input type="range" id="soundVol" min="0" max="100" value="40" aria-label="Ambience volume"></div>
     </div>
 
-    <button class="soundhint" id="soundhint">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.5 8.5a5 5 0 0 1 0 7"></path></svg>
-      Hear the stag
-    </button>
+    <div class="tapcue" id="tapcue"><span>Tap anywhere to begin</span></div>
 
     <div class="spacer"></div>
 
@@ -377,7 +374,6 @@
   // ---- elements ----
   const scene=$("scene");
   const vids={ greet:$("vidGreet"), idle:$("vidIdle"), resp:$("vidResp") };
-  const soundhint=$("soundhint");
   const nav=$("nav");
   const chatInner=$("chatInner");
   const chatScroll=$("chat");
@@ -390,20 +386,27 @@
   $("menuBtn").addEventListener('click', toggleNav);
   $("collapseBtn").addEventListener('click', toggleNav);
 
-  // ================= AVATAR STATE MACHINE (from reference, verbatim) =================
+  // ================= AVATAR STATE MACHINE =================
   function show(name){ Object.entries(vids).forEach(([k,v])=>v.classList.toggle('active', k===name)); }
-  vids.greet.muted = true;
-  show('greet');
-  vids.greet.play().catch(()=>{});
+  // On load: idle loop (muted). "Tap anywhere to begin" fades in; the first tap plays the greeting with audio.
+  const tapcue=$("tapcue");
+  vids.idle.muted = true;
+  show('idle'); vids.idle.play().catch(()=>{});
+  setTimeout(()=>{ tapcue.classList.add('show'); }, 60);   // gentle 2s fade-in
+  let greeted=false;
+  function startGreeting(){
+    if(greeted) return; greeted=true;
+    tapcue.classList.remove('show'); tapcue.classList.add('gone');
+    ducked = true;                                          // duck first, so ambience fades in already low under the greeting
+    vids.greet.currentTime = 0; vids.greet.muted = false;   // greeting audio unmuted from the start
+    show('greet'); vids.greet.play().catch(()=>{});
+    resumeAmbience();   // saved ambience (if any) fades in — to the ducked level — on the same tap
+  }
   vids.greet.addEventListener('ended', () => {
     show('idle'); vids.idle.play().catch(()=>{});
-    soundhint.classList.add('hidden');
+    duck(false);
   });
-  soundhint.addEventListener('click', () => {
-    vids.greet.currentTime = 0; vids.greet.muted = false;
-    show('greet'); vids.greet.play().catch(()=>{});
-    soundhint.classList.add('hidden');
-  });
+  ['pointerdown','keydown','touchstart'].forEach(ev=>window.addEventListener(ev, startGreeting, {once:true}));
   vids.resp.addEventListener('ended', () => {
     scene.classList.remove('responding');
     show('idle'); vids.idle.play().catch(()=>{});
@@ -620,18 +623,15 @@
   function effVol(){ return ducked ? targetVol*0.3 : targetVol; }
   function fadeTo(v,done){ clearInterval(fadeTimer); const start=ambience.volume||0, steps=18; let i=0; fadeTimer=setInterval(()=>{ i++; ambience.volume=Math.max(0,Math.min(1,start+(v-start)*i/steps)); if(i>=steps){ clearInterval(fadeTimer); if(done) done(); } }, 600/steps); }
   function reflectSound(){ soundLabel.textContent=(SOUNDS[curSound]||SOUNDS.quiet).label; soundPill.classList.toggle("active",curSound!=="quiet"); [].forEach.call(soundPop.querySelectorAll('.sopt'),o=>o.classList.toggle('on',o.getAttribute('data-sound')===curSound)); }
-  function playSound(){ const s=SOUNDS[curSound]; if(!s||!s.src){ fadeTo(0,()=>ambience.pause()); return; } if(ambience.getAttribute('data-src')!==s.src){ ambience.src=s.src; ambience.setAttribute('data-src',s.src); } ambience.volume=0; ambience.play().then(()=>fadeTo(effVol())).catch(()=>{}); }
+  function playSound(){ const s=SOUNDS[curSound]; clearInterval(fadeTimer); if(!s||!s.src){ fadeTo(0,()=>{ try{ambience.pause();}catch(e){} }); return; } if(ambience.getAttribute('data-src')!==s.src){ try{ ambience.pause(); }catch(e){} ambience.src=s.src; ambience.setAttribute('data-src',s.src); ambience.load(); } ambience.volume=0; ambience.play().then(()=>fadeTo(effVol())).catch(()=>{}); }
   function selectSound(key){ curSound=key; localStorage.setItem("psyche:sound",key); reflectSound(); if(resumed) playSound(); }
   soundPill.addEventListener('click',e=>{ e.stopPropagation(); soundPop.classList.toggle('open'); });
   [].forEach.call(soundPop.querySelectorAll('.sopt'),o=>o.addEventListener('click',()=>{ selectSound(o.getAttribute('data-sound')); }));
   soundVol.addEventListener('input',()=>{ targetVol=soundVol.value/100; localStorage.setItem("psyche:soundVol",soundVol.value); if(!ambience.paused) ambience.volume=effVol(); });
   document.addEventListener('click',e=>{ if(!soundPop.contains(e.target)&&!soundPill.contains(e.target)) soundPop.classList.remove('open'); });
   function duck(on){ ducked=on; if(!ambience.paused) fadeTo(effVol()); }
-  function resumeAmbience(){ if(resumed) return; resumed=true; if(curSound!=="quiet") playSound(); }   // never autoplay on load — resume on first gesture
-  ['pointerdown','keydown','touchstart'].forEach(ev=>window.addEventListener(ev,resumeAmbience,{once:true}));
+  function resumeAmbience(){ if(resumed) return; resumed=true; if(curSound!=="quiet") playSound(); }   // never autoplay on load — resumed by the first-tap greeting
   reflectSound();
-  soundhint.addEventListener('click',()=>duck(true));      // duck while the stag speaks unmuted
-  vids.greet.addEventListener('ended',()=>duck(false));
   function playChime(name){ try{ const a=new Audio("/audio/"+name+".mp3"); a.volume=Math.min(0.5,targetVol+0.15); a.play().catch(()=>{}); }catch(e){} }  // optional; no-op if file missing
 
   // ================= ADDENDUM: account menu, help & feedback =================
