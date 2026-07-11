@@ -18,6 +18,35 @@ export default async function handler(req, res) {
   try {
     const { messages, system, max_tokens, name } = req.body;
 
+    // Crisis screen (minimal launch floor): conservative keyword match on the latest user
+    // message for EXPLICIT self-harm / suicide intent. Only on real chat turns (skip the
+    // short title-generation call). On match, return a brief warm reply + crisis flag WITHOUT
+    // calling the model, so the client shows the support modal. Logs a count only — no content.
+    const isChatTurn = (max_tokens || 400) > 100;
+    if (isChatTurn && Array.isArray(messages) && messages.length) {
+      const last = messages[messages.length - 1];
+      const text = last && last.role === "user" && typeof last.content === "string"
+        ? last.content.toLowerCase() : "";
+      const CRISIS = [
+        "kill myself", "killing myself", "kill my self", "end my life", "ending my life",
+        "end it all", "take my own life", "taking my own life", "want to die", "wanna die",
+        "want to be dead", "don't want to live", "dont want to live", "don't want to be alive",
+        "dont want to be alive", "don't want to be here anymore", "dont want to be here anymore",
+        "better off dead", "no reason to live", "nothing to live for", "suicidal", "suicide",
+        "hurt myself", "harm myself", "self-harm", "self harm", "cut myself", "cutting myself"
+      ];
+      if (text && CRISIS.some((p) => text.includes(p))) {
+        console.log("crisis_flag", 1); // count only, no message content
+        return res.status(200).json({
+          crisis: true,
+          content: [{
+            type: "text",
+            text: "I'm really glad you told me — that took courage. What you're carrying matters, and you don't have to face it alone right now. Please reach out to one of the helplines on the support screen; they're there for exactly this, any time of day. I'm here with you too."
+          }]
+        });
+      }
+    }
+
     // Personalisation: if the client sent the person's saved name, let Psyche address them by it.
     // Sanitised (single line, trimmed, capped) so a stray value can't reshape the prompt.
     let sys = system || "";

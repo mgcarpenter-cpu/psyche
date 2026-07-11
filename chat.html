@@ -250,6 +250,29 @@
   .fbcard .row button { font-family: 'Cormorant Garamond', serif; font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
   .fbcard .ghost { background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
   .fbcard .primary { background: var(--cream); border: none; color: var(--night); }
+
+  /* ===== CRISIS SUPPORT MODAL (over chat; calmer lifted-indigo, chat dimmed behind) ===== */
+  .crisismodal {
+    position: fixed; inset: 0; z-index: 60; display: none;
+    align-items: center; justify-content: center; overflow-y: auto;
+    padding: 26px 22px calc(26px + env(safe-area-inset-bottom));
+    background: radial-gradient(ellipse at 50% 22%, rgba(19,27,54,0.97), rgba(10,15,30,0.98) 70%);
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  }
+  .crisismodal.open { display: flex; }
+  .crisisbox { width: 100%; max-width: 460px; text-align: center; margin: auto; }
+  .crisisbox h1 { font-weight: 400; font-size: clamp(27px, 6.5vw, 37px); line-height: 1.2; margin-bottom: 14px; }
+  .clede { font-style: italic; font-size: 19px; line-height: 1.5; opacity: 0.85; margin-bottom: 32px; }
+  .ccard { background: rgba(4,7,14,0.5); border: 1px solid rgba(250,248,243,0.16); border-radius: 18px; padding: 22px; margin-bottom: 16px; text-align: left; }
+  .ctitle { font-size: 20px; margin-bottom: 6px; }
+  .cdesc { font-style: italic; font-size: 15.5px; opacity: 0.75; line-height: 1.45; margin-bottom: 14px; }
+  .cbig { display: block; width: 100%; background: var(--cream); color: #0a0f1e; font-family: 'Cormorant Garamond', serif; font-size: 19px; text-align: center; text-decoration: none; border: none; border-radius: 30px; padding: 14px 20px; cursor: pointer; }
+  .cbig:hover { background: #fff; }
+  .cghost { display: block; width: 100%; background: transparent; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 18px; text-align: center; text-decoration: none; border: 1px solid rgba(250,248,243,0.4); border-radius: 30px; padding: 13px 20px; cursor: pointer; }
+  .cghost:hover { border-color: rgba(250,248,243,0.8); background: rgba(250,248,243,0.06); }
+  .creturn { margin-top: 26px; font-style: italic; font-size: 16px; color: rgba(250,248,243,0.6); background: none; border: none; border-bottom: 1px dotted rgba(250,248,243,0.35); cursor: pointer; font-family: 'Cormorant Garamond', serif; }
+  .creturn:hover { color: rgba(250,248,243,0.95); }
+  .cnote { margin: 34px auto 0; font-style: italic; font-size: 13.5px; opacity: 0.5; line-height: 1.5; max-width: 400px; }
 </style>
 </head>
 <body>
@@ -337,7 +360,7 @@
     </div>
     <div class="underbar">
       Psyche is a reflection tool &mdash; not therapy or crisis care.
-      <a href="https://findahelpline.com" target="_blank" rel="noopener">Need support right now?</a>
+      <a href="support.html">Need support right now?</a>
     </div>
   </div>
 </main>
@@ -353,6 +376,25 @@
       <button class="ghost" id="fbCancel">Cancel</button>
       <button class="primary" id="fbSend">Send</button>
     </div>
+  </div>
+</div>
+
+<div class="crisismodal" id="crisisModal">
+  <div class="crisisbox">
+    <h1>You don't have to carry this alone.</h1>
+    <div class="clede">If things feel heavy right now, real people are ready to listen &mdash; free, and right where you are.</div>
+    <div class="ccard">
+      <div class="ctitle">Talk to someone now</div>
+      <div class="cdesc">Find a helpline for your country &mdash; call, text, or chat options, open now.</div>
+      <a class="cbig" href="https://findahelpline.com" target="_blank" rel="noopener">Find a helpline near you</a>
+    </div>
+    <div class="ccard">
+      <div class="ctitle">In immediate danger?</div>
+      <div class="cdesc">If you or someone else is in immediate danger, contact your local emergency services straight away.</div>
+      <a class="cghost" id="crisisTel" href="tel:111">Call emergency services</a>
+    </div>
+    <button class="creturn" id="crisisReturn" type="button">Return to your conversation</button>
+    <div class="cnote">Psyche is a reflection tool, not therapy or crisis care. Reaching out to the people above is a strength, not a step back.</div>
   </div>
 </div>
 
@@ -444,7 +486,8 @@
   async function fetchReply(msgs){
     const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:SYSTEM,max_tokens:1024,name:(profile&&profile.display_name)||"",messages:msgs.map(m=>({role:m.role,content:m.content}))})});
     const data=await res.json();
-    return (data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:(data.error?("("+(data.error.message||data.error)+")"):"(no reply)");
+    const text=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:(data.error?("("+(data.error.message||data.error)+")"):"(no reply)");
+    return { text:text, crisis:!!data.crisis };
   }
   async function titleConversation(c){
     if(!c || !c.messages[0]) return;
@@ -514,12 +557,13 @@
     }
 
     try{
-      const reply=await fetchReply(c.messages);
+      const {text:reply, crisis}=await fetchReply(c.messages);
+      if(crisis) showCrisisModal();          // backend flagged possible crisis — show the support overlay
       playResponse();                        // response clip + glow when the reply arrives
       addMsg(reply,'avatar');
       c.messages.push({role:"assistant",content:reply}); saveChats();
       if(c.messages.length===2) titleConversation(c);
-      setTimeout(maybeOffer,600);
+      if(!crisis) setTimeout(maybeOffer,600);   // don't surface the reveal offer during a crisis moment
     }catch(e){
       addMsg("(connection error — please try again)",'avatar');
     }
@@ -651,6 +695,20 @@
     localStorage.setItem("psyche:soundHint","1");
     setTimeout(()=>{ addMsg("Some ambient sound or music? Tap ♪ above.",'avatar'); }, 1300);
   }
+
+  // ================= CRISIS SUPPORT MODAL =================
+  const crisisModal=$("crisisModal");
+  function showCrisisModal(){ if(crisisModal){ crisisModal.classList.add('open'); crisisModal.scrollTop=0; } }
+  function closeCrisisModal(){ if(crisisModal) crisisModal.classList.remove('open'); }
+  if($("crisisReturn")) $("crisisReturn").onclick=closeCrisisModal;
+  (function(){ // emergency number by browser region (light touch)
+    var direct={NZ:"111",AU:"000",US:"911",CA:"911",GB:"999",IE:"112"};
+    var eu=["DE","FR","ES","IT","NL","SE","NO","FI","DK","PL","PT","AT","BE","CH","GR","CZ","HU","RO","IS","LU","SK","SI","HR","EE","LV","LT","BG"];
+    var region=""; try{ region=(new Intl.Locale(navigator.language).region)||""; }catch(e){}
+    if(!region){ var p=(navigator.language||"").split("-")[1]; region=(p||"").toUpperCase(); }
+    var num=direct[region]||(eu.indexOf(region)>=0?"112":"111");
+    var el=$("crisisTel"); if(el) el.setAttribute("href","tel:"+num);
+  })();
 
   // ================= INIT =================
   renderSidebar();
