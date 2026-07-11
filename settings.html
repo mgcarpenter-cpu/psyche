@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psyche — Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#06090f;color:#faf8f3;font-family:'Cormorant Garamond',serif;min-height:100dvh;}
+  .top{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;}
+  .wm{font-family:'Cinzel',serif;letter-spacing:.3em;font-size:14px;color:#faf8f3;text-decoration:none;}
+  .wm:hover{opacity:.75;}
+  .back{color:#faf8f3;opacity:.7;text-decoration:none;font-style:italic;font-size:15px;}
+  .back:hover{opacity:1;}
+  .wrap{max-width:520px;margin:0 auto;padding:24px 24px 60px;}
+  h1{font-weight:400;font-size:2rem;margin-bottom:26px;}
+  .row{border-top:1px solid rgba(250,248,243,.1);padding:18px 2px;}
+  .row .lbl{font-style:italic;opacity:.5;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+  .row .val{font-size:18px;}
+  .actions{margin-top:30px;display:flex;flex-direction:column;gap:12px;}
+  button, .linkbtn{font-family:'Cormorant Garamond',serif;font-size:16px;border-radius:24px;padding:12px 22px;cursor:pointer;text-align:center;text-decoration:none;}
+  .signout{background:rgba(250,248,243,.06);border:1px solid rgba(250,248,243,.2);color:#faf8f3;}
+  .signout:hover{background:rgba(250,248,243,.12);}
+  .danger{background:transparent;border:1px solid rgba(224,120,86,.5);color:#e07856;}
+  .danger:hover{background:rgba(224,120,86,.1);}
+  .note{opacity:.45;font-style:italic;font-size:14px;margin-top:8px;line-height:1.5;}
+</style>
+</head>
+<body>
+  <div class="top">
+    <a href="chat.html" class="wm">PSYCHE</a>
+    <a href="chat.html" class="back">&larr; Back</a>
+  </div>
+  <div class="wrap">
+    <h1>Settings</h1>
+    <div class="row">
+      <div class="lbl">Signed in as</div>
+      <div class="val" id="email">—</div>
+    </div>
+    <div class="row">
+      <div class="lbl">Plan</div>
+      <div class="val" id="plan">—</div>
+    </div>
+    <div class="actions">
+      <button class="signout" id="signout">Sign out</button>
+      <button class="danger" id="del">Delete account</button>
+      <div class="note" id="delNote" style="display:none;">Account deletion isn't self-serve yet — email <a href="mailto:hello@psyche.app" style="color:#e07856;">hello@psyche.app</a> and we'll remove your data promptly.</div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const $=id=>document.getElementById(id);
+  const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
+  function planName(p){ return p==='pro'?'Pro plan':(p==='plus'?'Plus plan':'Free plan'); }
+  sb.auth.getSession().then(async({data})=>{
+    const s=data.session;
+    if(!(s&&s.user)){ location.href="auth.html"; return; }
+    $("email").textContent=s.user.email||"—";
+    const {data:prof}=await sb.from("profiles").select("plan").eq("id",s.user.id).single();
+    $("plan").textContent=planName(prof&&prof.plan);
+  });
+  $("signout").onclick=async()=>{ try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
+  $("del").onclick=()=>{ $("delNote").style.display="block"; };
+</script>
+</body>
+</html>
