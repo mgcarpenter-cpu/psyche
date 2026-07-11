@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Psyche — Settings</title>
@@ -54,14 +55,24 @@
   const $=id=>document.getElementById(id);
   const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
   function planName(p){ return p==='pro'?'Pro plan':(p==='plus'?'Plus plan':'Free plan'); }
-  sb.auth.getSession().then(async({data})=>{
-    const s=data.session;
-    if(!(s&&s.user)){ location.href="auth.html"; return; }
-    $("email").textContent=s.user.email||"—";
-    const {data:prof}=await sb.from("profiles").select("plan").eq("id",s.user.id).single();
-    $("plan").textContent=planName(prof&&prof.plan);
-  });
-  $("signout").onclick=async()=>{ try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
+  if(window.PSYCHE_PREVIEW){
+    // Dev preview: mock profile only, no Supabase session is created or read.
+    const p=window.PSYCHE_PREVIEW_PROFILE;
+    $("email").textContent=p.email;
+    $("plan").textContent=planName(p.plan);
+  } else {
+    sb.auth.getSession().then(async({data})=>{
+      const s=data.session;
+      if(!(s&&s.user)){ location.href="auth.html"; return; }
+      $("email").textContent=s.user.email||"—";
+      const {data:prof}=await sb.from("profiles").select("plan").eq("id",s.user.id).single();
+      $("plan").textContent=planName(prof&&prof.plan);
+    });
+  }
+  $("signout").onclick=async()=>{
+    if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; }
+    try{ await sb.auth.signOut(); }catch(e){} location.href="index.html";
+  };
   $("del").onclick=()=>{ $("delNote").style.display="block"; };
 </script>
 </body>

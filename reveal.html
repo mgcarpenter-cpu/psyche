@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>The way through · Psyche</title>
@@ -241,15 +242,20 @@
   document.getElementById("shareBtn").onclick=shareCard;
 
   // show the signed-in name in the top bar (optional, no gating)
-  try{
-    const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
-    sb.auth.getSession().then(async({data})=>{
-      const s=data.session; if(!s||!s.user) return;
-      const {data:p}=await sb.from("profiles").select("display_name").eq("id",s.user.id).single();
-      const name=(p&&p.display_name)||(s.user.email||"").split("@")[0];
-      if(name) document.getElementById("who").textContent=name;
-    });
-  }catch(e){}
+  if(window.PSYCHE_PREVIEW){
+    // Dev preview: mock profile only, no Supabase session is created or read.
+    document.getElementById("who").textContent=window.PSYCHE_PREVIEW_PROFILE.display_name;
+  } else {
+    try{
+      const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
+      sb.auth.getSession().then(async({data})=>{
+        const s=data.session; if(!s||!s.user) return;
+        const {data:p}=await sb.from("profiles").select("display_name").eq("id",s.user.id).single();
+        const name=(p&&p.display_name)||(s.user.email||"").split("@")[0];
+        if(name) document.getElementById("who").textContent=name;
+      });
+    }catch(e){}
+  }
 </script>
 </body>
 </html>

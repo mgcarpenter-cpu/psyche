@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Psyche — Sanctuary</title>
@@ -483,13 +484,26 @@
   }
 
   // ================= API =================
+  const PREVIEW_REPLIES=[
+    "Stay with that for a moment. Notice the feeling-tone before any story about it.",
+    "Good. You just watched the reaction instead of becoming it.",
+    "What does it feel like in the body, right now, as you say that?"
+  ];
+  let previewReplyIdx=0;
   async function fetchReply(msgs){
+    if(window.PSYCHE_PREVIEW){
+      // Styling only — no model call, no network request.
+      await new Promise(r=>setTimeout(r,350));
+      const text=PREVIEW_REPLIES[previewReplyIdx%PREVIEW_REPLIES.length]; previewReplyIdx++;
+      return { text:text, crisis:false };
+    }
     const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:SYSTEM,max_tokens:1024,name:(profile&&profile.display_name)||"",messages:msgs.map(m=>({role:m.role,content:m.content}))})});
     const data=await res.json();
     const text=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:(data.error?("("+(data.error.message||data.error)+")"):"(no reply)");
     return { text:text, crisis:!!data.crisis };
   }
   async function titleConversation(c){
+    if(window.PSYCHE_PREVIEW) return;   // styling only — no model call
     if(!c || !c.messages[0]) return;
     try{
       const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
@@ -517,6 +531,12 @@
     $("revealBtn").onclick=()=>generateReveal($("revealBtn"));
   }
   async function generateReveal(btn){
+    if(window.PSYCHE_PREVIEW){
+      // Styling only — no model call; reveal.html's own sample content renders.
+      btn.disabled=true; btn.textContent="Drawing it together…";
+      setTimeout(()=>{ location.href="reveal.html"; },300);
+      return;
+    }
     const c=current(); if(!c || !c.messages.length){ location.href="reveal.html"; return; }
     btn.disabled=true; btn.textContent="Drawing it together…";
     try{
@@ -549,12 +569,13 @@
     c.messages.push({role:"user",content:text}); saveChats(); renderSidebar();
     userCount++;
 
-    if(profile){
+    if(profile && !window.PSYCHE_PREVIEW){
       profile.message_count++; updateCount();
       sb.from("profiles").update({message_count:profile.message_count}).eq("id",profile.id).select()
         .then(({data:rows,error})=>{ if(error) console.error("message_count update failed:",error);
           else if(!rows||!rows.length) console.error("profile update affected 0 rows — profiles table needs an RLS UPDATE policy for the owner."); });
     }
+    // Preview mode: message_count stays fixed at the mock value — no Supabase write.
 
     try{
       const {text:reply, crisis}=await fetchReply(c.messages);
@@ -610,7 +631,7 @@
   const PLAN_LIMITS={free:30,plus:300,pro:1000};
   let profile=null;          // {id, plan, message_count, display_name}
   let currentEmail=null;
-  function planLimit(){ return PLAN_LIMITS[profile&&profile.plan]||PLAN_LIMITS.free; }
+  function planLimit(){ if(window.PSYCHE_PREVIEW) return window.PSYCHE_PREVIEW_LIMIT; return PLAN_LIMITS[profile&&profile.plan]||PLAN_LIMITS.free; }
   function planName(p){ return p==='pro'?'Pro plan':(p==='plus'?'Plus plan':'Free plan'); }
 
   function updateCount(){
@@ -630,6 +651,7 @@
   }
 
   async function loadProfile(session){
+    if(window.PSYCHE_PREVIEW) return;   // preview loads its own mock profile below — never via Supabase
     if(!(session&&session.user)){ profile=null; renderAccount(); updateCount(); return; }
     const uid=session.user.id;
     currentEmail=session.user.email||"";
@@ -644,8 +666,17 @@
     if(last===null){ sb.from("profiles").update({count_reset_at:new Date().toISOString()}).eq("id",uid); }
     else if(Date.now()-last>THIRTY_DAYS){ profile.message_count=0; updateCount(); sb.from("profiles").update({message_count:0,count_reset_at:new Date().toISOString()}).eq("id",uid); }
   }
-  sb.auth.getSession().then(({data})=>{ currentEmail=data.session&&data.session.user?data.session.user.email:null; loadProfile(data.session); });
-  sb.auth.onAuthStateChange((_e,session)=>{ currentEmail=session&&session.user?session.user.email:null; setTimeout(()=>loadProfile(session),0); });
+
+  if(window.PSYCHE_PREVIEW){
+    // Dev preview: mock profile only. No Supabase session is ever created or read.
+    const p=window.PSYCHE_PREVIEW_PROFILE;
+    currentEmail=p.email;
+    profile={id:p.id,plan:p.plan,message_count:p.message_count,display_name:p.display_name};
+    renderAccount(); updateCount(); renderThread();
+  } else {
+    sb.auth.getSession().then(({data})=>{ currentEmail=data.session&&data.session.user?data.session.user.email:null; loadProfile(data.session); });
+    sb.auth.onAuthStateChange((_e,session)=>{ currentEmail=session&&session.user?session.user.email:null; setTimeout(()=>loadProfile(session),0); });
+  }
 
   // ================= ADDENDUM: ambience sounds =================
   const SOUNDS = {
@@ -681,7 +712,7 @@
   // ================= ADDENDUM: account menu, help & feedback =================
   const acctMenu=$("acctMenu");
   $("acctSettings").onclick=()=>{ location.href="settings.html"; };
-  $("acctSignout").onclick=async()=>{ try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
+  $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
   document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!$("account").contains(e.target)) acctMenu.classList.remove('open'); });
   const fbModal=$("fbModal");
   $("helpBtn").onclick=()=>{ closeNav(); fbModal.classList.add('open'); setTimeout(()=>$("fbText").focus(),60); };

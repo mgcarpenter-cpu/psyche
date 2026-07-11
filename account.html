@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Account · Psyche</title>
@@ -140,36 +141,58 @@
   const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
 
   let acctUid=null, acctToken=null;
-  // Load the real session; if there's none, send them to sign in.
-  sb.auth.getSession().then(async({data})=>{
-    const s=data.session;
-    if(!s || !s.user){ location.replace("auth.html"); return; }
-    acctUid=s.user.id;
-    acctToken=s.access_token;
-    const email=s.user.email||"—";
+
+  function renderAccountFrom(email,name,plan,used){
     $("acctEmail").textContent=email;
     $("acctEmail2").textContent=email;
-    $("avatarInit").textContent=(email[0]||"·");
-
-    const {data:p,error}=await sb.from("profiles").select("display_name,plan,message_count").eq("id",acctUid).single();
-    if(error){ console.error("profile fetch failed:", error); return; }
-    const name=(p&&p.display_name)||"";
-    if(name){ $("acctName").value=name; $("acctNameDisplay").textContent=name; $("avatarInit").textContent=name[0]; }
+    $("avatarInit").textContent=(name&&name[0])||(email[0]||"·");
+    if(name){ $("acctName").value=name; $("acctNameDisplay").textContent=name; }
     else { $("acctNameDisplay").textContent="Friend"; }
-
-    const plan=(p&&p.plan)||"free";
-    const limit=PLAN_LIMITS[plan]||PLAN_LIMITS.free;
-    const used=Math.max(0,Number(p&&p.message_count)||0);
+    const limit=window.PSYCHE_PREVIEW ? window.PSYCHE_PREVIEW_LIMIT : (PLAN_LIMITS[plan]||PLAN_LIMITS.free);
     $("planBadge").textContent=cap(plan);
     $("planMsgs").textContent=limit.toLocaleString()+" messages a month";
     $("usageText").textContent=used.toLocaleString()+" of "+limit.toLocaleString()+" messages used";
     $("usageBar").style.width=Math.min(100,Math.round(used/limit*100))+"%";
-    if(plan!=="free"){ const pa=$("planAction"); if(pa){ pa.textContent="Manage"; pa.onclick=openPortal; } }
-  });
+  }
+
+  if(window.PSYCHE_PREVIEW){
+    // Dev preview: mock profile only, no Supabase session is created or read.
+    const p=window.PSYCHE_PREVIEW_PROFILE;
+    acctUid=p.id; acctToken=null;
+    renderAccountFrom(p.email,p.display_name,p.plan,p.message_count);
+  } else {
+    // Load the real session; if there's none, send them to sign in.
+    sb.auth.getSession().then(async({data})=>{
+      const s=data.session;
+      if(!s || !s.user){ location.replace("auth.html"); return; }
+      acctUid=s.user.id;
+      acctToken=s.access_token;
+      const email=s.user.email||"—";
+      $("acctEmail").textContent=email;
+      $("acctEmail2").textContent=email;
+      $("avatarInit").textContent=(email[0]||"·");
+
+      const {data:p,error}=await sb.from("profiles").select("display_name,plan,message_count").eq("id",acctUid).single();
+      if(error){ console.error("profile fetch failed:", error); return; }
+      const name=(p&&p.display_name)||"";
+      if(name){ $("acctName").value=name; $("acctNameDisplay").textContent=name; $("avatarInit").textContent=name[0]; }
+      else { $("acctNameDisplay").textContent="Friend"; }
+
+      const plan=(p&&p.plan)||"free";
+      const limit=PLAN_LIMITS[plan]||PLAN_LIMITS.free;
+      const used=Math.max(0,Number(p&&p.message_count)||0);
+      $("planBadge").textContent=cap(plan);
+      $("planMsgs").textContent=limit.toLocaleString()+" messages a month";
+      $("usageText").textContent=used.toLocaleString()+" of "+limit.toLocaleString()+" messages used";
+      $("usageBar").style.width=Math.min(100,Math.round(used/limit*100))+"%";
+      if(plan!=="free"){ const pa=$("planAction"); if(pa){ pa.textContent="Manage"; pa.onclick=openPortal; } }
+    });
+  }
 
   // Open Paddle's customer portal so the user can change card / cancel.
   async function openPortal(e){
     if(e) e.preventDefault();
+    if(window.PSYCHE_PREVIEW){ alert("Preview mode — billing portal is not opened."); return; }
     const pa=$("planAction"); const label=pa?pa.textContent:"Manage";
     if(pa) pa.textContent="Opening…";
     try{
@@ -187,6 +210,13 @@
     if(!acctUid) return;
     const name=$("acctName").value.trim().slice(0,60);
     const btn=$("saveName"), label=btn.textContent;
+    if(window.PSYCHE_PREVIEW){
+      // Styling only — reflect the change locally, no Supabase write.
+      $("acctNameDisplay").textContent=name||"Friend";
+      if(name) $("avatarInit").textContent=name[0];
+      btn.textContent="Saved ✓"; setTimeout(()=>btn.textContent=label,1800);
+      return;
+    }
     btn.disabled=true; btn.textContent="Saving…";
     const {data:rows,error}=await sb.from("profiles").update({display_name:name}).eq("id",acctUid).select();
     btn.disabled=false;
@@ -202,6 +232,7 @@
   $("changeEmail").onclick=()=>alert("Email change — coming soon.");
 
   $("logout").onclick=async()=>{
+    if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; }
     await sb.auth.signOut();
     location.href="index.html";
   };

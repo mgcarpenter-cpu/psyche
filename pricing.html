@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Pricing · Psyche</title>
@@ -158,13 +159,18 @@
   // --- who is buying (needed so the webhook can upgrade the right account) ---
   const sb = supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
   let session = null;
-  sb.auth.getSession().then(async ({data}) => {
-    session = data.session;
-    if(session && session.user){
-      const {data:p} = await sb.from("profiles").select("plan").eq("id",session.user.id).single();
-      markCurrent((p && p.plan) || "free");
-    }
-  });
+  if(window.PSYCHE_PREVIEW){
+    // Dev preview: mock profile only, no Supabase session is created or read.
+    markCurrent(window.PSYCHE_PREVIEW_PROFILE.plan);
+  } else {
+    sb.auth.getSession().then(async ({data}) => {
+      session = data.session;
+      if(session && session.user){
+        const {data:p} = await sb.from("profiles").select("plan").eq("id",session.user.id).single();
+        markCurrent((p && p.plan) || "free");
+      }
+    });
+  }
   // Mark the user's current plan card so they can't re-buy it.
   function markCurrent(plan){
     const id = {free:"freeBtn", plus:"plusBtn", pro:"proBtn"}[plan];
@@ -173,6 +179,7 @@
   }
 
   function openCheckout(plan){
+    if(window.PSYCHE_PREVIEW){ alert("Preview mode — checkout is not opened."); return; }
     if(!session || !session.user){
       // must be signed in so the purchase can be tied to the account
       location.href = "auth.html";

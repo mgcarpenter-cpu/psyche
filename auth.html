@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Sign in · Psyche</title>
@@ -93,8 +94,10 @@
   const sb=supabase.createClient(SB_URL,SB_KEY);
   const $=id=>document.getElementById(id);
 
-  // Already signed in? Skip straight to the app.
-  sb.auth.getSession().then(({data})=>{ if(data.session) location.replace("chat.html"); });
+  // Already signed in? Skip straight to the app. (Skipped entirely in preview — no Supabase calls.)
+  if(!window.PSYCHE_PREVIEW){
+    sb.auth.getSession().then(({data})=>{ if(data.session) location.replace("chat.html"); });
+  }
 
   // Google — clearly coming soon for now.
   $("google").onclick=()=>alert("Continue with Google — coming soon. Use email for now.");
@@ -103,6 +106,13 @@
   async function sendLink(){
     const email=$("email").value.trim();
     if(!email || !email.includes("@")){ $("authMsg").textContent="Please enter a valid email address."; return; }
+    if(window.PSYCHE_PREVIEW){
+      // Styling only — no email is sent, no Supabase call.
+      $("sentTo").textContent=email;
+      $("signinCard").style.display="none";
+      $("sentCard").style.display="flex";
+      return;
+    }
     const btn=$("emailBtn"); btn.disabled=true; btn.textContent="Sending…";
     const { error } = await sb.auth.signInWithOtp({
       email,
