@@ -1,149 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="preview.js"></script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign in · Psyche</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  // ---- auth: already signed in -> chat ----
+  (function(){
+    try{
+      var sb2=window.__sb||(window.__sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb"));
+      sb2.auth.getSession().then(function(r){ if(r.data && r.data.session) location.replace("chat.html"); });
+      var $=function(id){return document.getElementById(id);};
+      $("google").onclick=function(){ alert("Continue with Google — coming soon. Use email for now."); };
+      async function sendLink(){
+        var email=$("email").value.trim();
+        if(!email || email.indexOf("@")<0){ $("authMsg").textContent="Please enter a valid email address."; return; }
+        var btn=$("emailBtn"); btn.disabled=true; btn.textContent="Sending…";
+        var res=await sb2.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin + "/chat.html" } });
+        btn.disabled=false; btn.textContent="Email me a sign-in link";
+        if(res.error){ $("authMsg").textContent=res.error.message||"Couldn't send the link — please try again."; return; }
+        $("sentTo").textContent=email;
+        $("signinCard").style.display="none";
+        $("sentCard").style.display="block";
+      }
+      $("emailBtn").onclick=sendLink;
+      $("email").addEventListener("keydown",function(ev){ if(ev.key==="Enter") sendLink(); });
+      $("resend").onclick=function(){ $("sentCard").style.display="none"; $("signinCard").style.display="block"; $("email").focus(); };
+    }catch(e){}
+  })();
+</script>
 <style>
   :root{
-    --page:#efece4; --card:#faf8f3; --ink:#2a261f; --soft:#615c52; --muted:#9a948a;
-    --line:#ece7da; --field-line:#e6e0d4; --indigo-deep:#16296b;
-    /* nav tokens (separate from this page's own cream palette above) */
-    --cream:#faf8f3; --night:#06090f; --indigo:#1d3891; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
+    --cream:#faf8f3; --night:#06090f; --indigo:#1d3891;
+    --panel:rgba(6,10,18,0.96); --line:rgba(250,248,243,0.1);
   }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  *{margin:0;padding:0;box-sizing:border-box;}
   html,body{height:100%;}
-  body{
-    background:var(--night);color:var(--ink);font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;
-    display:flex;height:100dvh;overflow:hidden;
-  }
-  .sans{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
-  a{color:inherit;}
+  body{font-family:'Cormorant Garamond',serif;background:var(--night);color:var(--cream);display:flex;height:100dvh;overflow:hidden;}
 
-  /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
-  nav {
-    width: 258px; background: var(--panel);
-    border-right: 1px solid var(--navline);
-    display: flex; flex-direction: column;
-    flex-shrink: 0; overflow-y: auto; scrollbar-width: none;
-    transition: margin-left 0.25s ease;
-    z-index: 5;
-    color: var(--cream); font-family: 'Cormorant Garamond', serif;
-  }
-  nav::-webkit-scrollbar { display: none; }
-  nav.hidden { margin-left: -258px; }
-  .nav-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 10px; }
-  .wordmark-side { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 0.3em; }
-  .collapse { background: transparent; border: none; color: var(--cream); opacity: 0.5; cursor: pointer; font-size: 16px; }
-  .collapse:hover { opacity: 1; }
-  .newchat {
-    margin: 4px 12px 14px; display: flex; align-items: center; gap: 10px;
-    background: rgba(250,248,243,0.06); border: 1px solid var(--navline);
-    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px;
-    border-radius: 12px; padding: 10px 14px; cursor: pointer;
-  }
-  .newchat:hover { background: rgba(250,248,243,0.1); }
-  .newchat .plus { width: 20px; height: 20px; border-radius: 50%; background: var(--cream); color: var(--night); display: flex; align-items: center; justify-content: center; font-size: 15px; }
-  .navitem {
-    display: flex; align-items: center; gap: 10px;
-    margin: 1px 8px; padding: 8px 10px; border-radius: 9px;
-    font-size: 15.5px; opacity: 0.8; cursor: pointer;
-  }
-  .navitem:hover { background: rgba(250,248,243,0.06); opacity: 1; }
-  .navitem.soon { opacity: 0.38; cursor: default; }
-  .navitem.soon:hover { background: transparent; }
-  .navitem.soon .pill { margin-left: auto; font-style: italic; font-size: 11.5px; border: 1px solid rgba(250,248,243,0.2); border-radius: 9px; padding: 0 7px; }
-  .navlabel { font-style: italic; font-size: 12.5px; opacity: 0.42; padding: 16px 20px 6px; }
-  .recent {
-    margin: 0 8px; padding: 7px 10px; border-radius: 9px;
-    font-size: 15px; opacity: 0.72; cursor: pointer;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .recent:hover, .recent.active { background: rgba(250,248,243,0.06); opacity: 1; }
-  .navspacer { flex: 1; min-height: 16px; }
-  .account {
-    display: flex; align-items: center; gap: 10px;
-    margin: 8px; padding: 10px; border-radius: 12px;
-    border-top: 1px solid var(--navline); cursor: pointer;
-  }
-  .account:hover { background: rgba(250,248,243,0.05); }
-  .avatar-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; color: var(--cream); }
-  .account .meta { line-height: 1.15; font-size: 14.5px; }
-  .account .meta .plan { font-style: italic; opacity: 0.5; font-size: 13px; }
-  .navitem.upgrade { border: 1px solid rgba(250,248,243,0.28); border-radius: 10px; margin: 10px 8px; justify-content: center; opacity: 0.95; }
-  .navitem.upgrade:hover { background: rgba(250,248,243,0.08); opacity: 1; }
-  .navitem.help { opacity: 0.5; font-size: 14px; }
-  .navitem.help:hover { opacity: 0.85; background: rgba(250,248,243,0.05); }
+  /* ===== SIDEBAR (identical to chat.html) ===== */
+  nav{width:258px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;scrollbar-width:none;transition:margin-left 0.25s ease;z-index:5;}
+  nav::-webkit-scrollbar{display:none;}
+  nav.hidden{margin-left:-258px;}
+  .nav-top{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 10px;}
+  .wordmark-side{font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.3em;}
+  .collapse{background:transparent;border:none;color:var(--cream);opacity:0.5;cursor:pointer;font-size:16px;}
+  .collapse:hover{opacity:1;}
+  .newchat{margin:4px 12px 14px;display:flex;align-items:center;gap:10px;background:rgba(250,248,243,0.06);border:1px solid var(--line);color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:16px;border-radius:12px;padding:10px 14px;cursor:pointer;}
+  .newchat:hover{background:rgba(250,248,243,0.1);}
+  .newchat .plus{width:20px;height:20px;border-radius:50%;background:var(--cream);color:var(--night);display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .navitem{display:flex;align-items:center;gap:10px;margin:1px 8px;padding:8px 10px;border-radius:9px;font-size:15.5px;opacity:0.8;cursor:pointer;}
+  .navitem:hover{background:rgba(250,248,243,0.06);opacity:1;}
+  .navitem.soon{opacity:0.38;cursor:default;}
+  .navitem.soon:hover{background:transparent;}
+  .navitem.soon .pill{margin-left:auto;font-style:italic;font-size:11.5px;border:1px solid rgba(250,248,243,0.2);border-radius:9px;padding:0 7px;}
+  .navitem.upgrade{border:1px solid rgba(250,248,243,0.28);border-radius:10px;margin:10px 8px;justify-content:center;opacity:0.95;}
+  .navitem.upgrade:hover{background:rgba(250,248,243,0.08);opacity:1;}
+  .navitem.help{opacity:0.5;font-size:14px;}
+  .navitem.help:hover{opacity:0.85;background:rgba(250,248,243,0.05);}
+  .navlabel{font-style:italic;font-size:12.5px;opacity:0.42;padding:16px 20px 6px;}
+  .recent{margin:0 8px;padding:7px 10px;border-radius:9px;font-size:15px;opacity:0.72;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .recent:hover,.recent.active{background:rgba(250,248,243,0.06);opacity:1;}
+  .navspacer{flex:1;min-height:16px;}
+  .account{display:flex;align-items:center;gap:10px;margin:8px;padding:10px;border-radius:12px;border-top:1px solid var(--line);cursor:pointer;}
+  .account:hover{background:rgba(250,248,243,0.05);}
+  .avatar-dot{width:30px;height:30px;border-radius:50%;background:var(--indigo);display:flex;align-items:center;justify-content:center;font-size:13px;font-family:'Cinzel',serif;flex-shrink:0;}
+  .account .meta{line-height:1.15;font-size:14.5px;}
+  .account .meta .plan{font-style:italic;opacity:0.5;font-size:13px;}
+  .acctwrap{position:relative;}
+  .acctmenu{position:absolute;bottom:calc(100% - 2px);left:8px;right:8px;z-index:9;background:var(--panel);border:1px solid rgba(250,248,243,0.14);border-radius:12px;padding:6px;display:none;flex-direction:column;box-shadow:0 -8px 30px rgba(0,0,0,0.5);}
+  .acctmenu.open{display:flex;}
+  .acctmenu button{background:transparent;border:none;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:15px;text-align:left;padding:9px 12px;border-radius:8px;cursor:pointer;}
+  .acctmenu button:hover{background:rgba(250,248,243,0.08);}
 
-  .acctwrap { position: relative; }
-  .acctmenu {
-    position: absolute; bottom: calc(100% - 2px); left: 8px; right: 8px; z-index: 9;
-    background: var(--panel); border: 1px solid rgba(250,248,243,0.14);
-    border-radius: 12px; padding: 6px; display: none; flex-direction: column;
-    box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
-  }
-  .acctmenu.open { display: flex; }
-  .acctmenu button { background: transparent; border: none; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px; text-align: left; padding: 9px 12px; border-radius: 8px; cursor: pointer; }
-  .acctmenu button:hover { background: rgba(250,248,243,0.08); }
-
-  .fbmodal { position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
-  .fbmodal.open { display: flex; }
-  .fbcard { background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family: 'Cormorant Garamond', serif; }
-  .fbcard h3 { font-weight: 400; font-size: 22px; margin-bottom: 8px; }
-  .fbcard p { opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
-  .fbcard textarea { width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px; outline: none; resize: none; }
-  .fbcard .row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-  .fbcard .row button { font-family: 'Cormorant Garamond', serif; font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
-  .fbcard .ghost { background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
-  .fbcard .primary { background: var(--cream); border: none; color: var(--night); }
-
-  @media (max-width: 760px) {
-    nav { position: fixed; z-index: 10; height: 100dvh; margin-left: -258px; }
-    nav.open { margin-left: 0; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
+  @media (max-width:760px){
+    nav{position:fixed;z-index:10;height:100dvh;margin-left:-258px;}
+    nav.open{margin-left:0;box-shadow:4px 0 30px rgba(0,0,0,0.6);}
   }
 
-  /* ================= MAIN ================= */
-  main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow-y: auto; background: var(--page); }
-  .topbar { position: relative; flex-shrink: 0; display: flex; align-items: center; padding: 14px 18px; }
-  .menu-btn { background: transparent; border: none; color: var(--ink); font-size: 19px; cursor: pointer; opacity: 0.6; }
-  .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: var(--ink); position: absolute; left: 50%; transform: translateX(-50%); }
+  /* ===== MAIN ===== */
+  main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;}
+  .topbar{display:flex;align-items:center;gap:14px;padding:0 20px;height:58px;flex-shrink:0;background:linear-gradient(rgba(6,9,15,.92),transparent);position:relative;z-index:4;}
+  .menu-btn{background:none;border:none;cursor:pointer;padding:6px;display:flex;flex-direction:column;gap:4px;}
+  .menu-btn span{display:block;width:18px;height:1px;background:var(--cream);opacity:.7;}
+  .menu-btn:hover span{opacity:1;}
+  .wordmark{font-family:'Cinzel',serif;font-weight:500;font-size:17px;letter-spacing:.32em;text-shadow:0 1px 6px rgba(0,0,0,.7);}
+  .top-login{margin-left:auto;font-size:17px;color:var(--cream);text-decoration:none;text-shadow:0 1px 5px rgba(0,0,0,.8);}
+  .top-login:hover{border-bottom:1px dotted rgba(250,248,243,.5);}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:8;}
+  .scrim.on{opacity:1;pointer-events:auto;}
 
-  .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px 20px 44px; }
+  .content{flex:1;overflow-y:auto;}
+  .page{max-width:720px;margin:0 auto;padding:34px 24px 90px;line-height:1.66;}
+  .page h1{font-family:'Cinzel',serif;font-weight:500;font-size:26px;letter-spacing:.06em;margin-bottom:6px;}
+  .updated{font-style:italic;font-size:15px;opacity:.5;margin-bottom:26px;}
+  .page h2{font-weight:600;font-size:22px;margin:32px 0 10px;}
+  .page p,.page li{font-size:17.5px;opacity:.9;margin-bottom:12px;}
+  .page ul{padding-left:22px;margin-bottom:14px;}
+  .page a{color:var(--cream);}
+  .page a.bigbtn{color:#06090f;}
+  .page strong{font-weight:600;}
+  .note{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-style:italic;font-size:16px;opacity:.6;}
 
-  /* ===== page content (this page's own cream sign-in card, unchanged) ===== */
-  .card{width:100%;max-width:392px;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 12px 36px rgba(42,38,31,.08);display:flex;flex-direction:column;}
-  .brandtop{padding:26px 0 0;text-align:center;}
-  .brandtop .wm{letter-spacing:.32em;color:var(--indigo);font-size:1rem;text-decoration:none;cursor:pointer;}
-  .brandtop .wm:hover{opacity:.7;text-decoration:underline;}
-  .body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:30px 36px 40px;text-align:center;}
-  .body h1{color:var(--ink);font-size:1.5rem;font-weight:400;margin-bottom:10px;line-height:1.3;}
-  .lede{font-size:.88rem;color:var(--soft);line-height:1.55;margin-bottom:28px;}
 
-  .field{width:100%;border:1px solid var(--field-line);border-radius:26px;padding:14px 20px;font-size:.9rem;background:#fff;color:var(--ink);outline:none;margin-bottom:14px;transition:border-color .15s,box-shadow .15s;}
-  .field::placeholder{color:#a59f93;}
-  .field:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(29,56,145,.10);}
-
-  .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border-radius:26px;padding:14px;font-size:.92rem;font-weight:500;cursor:pointer;transition:background .15s,border-color .15s,opacity .15s;}
-  .btn.primary{border:none;background:linear-gradient(180deg,#3550A8 0%,#1D3891 52%,#16275F 100%);color:#FAF8F3;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 6px 18px rgba(29,56,145,.28);margin-bottom:18px;transition:transform .18s ease,box-shadow .18s ease;}
-  .btn.primary:hover{transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 12px 28px rgba(29,56,145,.36);}
-  .btn.primary:disabled{opacity:.6;cursor:default;}
-  .btn.ghost{background:#fff;border:1px solid var(--field-line);color:var(--ink);}
-  .btn.ghost:hover{background:#f3efe6;}
-  .btn svg{width:17px;height:17px;flex:none;}
-
-  .divider{display:flex;align-items:center;gap:14px;margin:4px 0 18px;color:var(--muted);font-size:.74rem;}
-  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
-
-  .fine{font-size:.72rem;color:var(--muted);line-height:1.55;margin-top:18px;}
-  .fine a{color:var(--soft);}
-  .note{font-size:.74rem;color:var(--muted);line-height:1.55;margin-top:14px;}
-
-  .crisis{text-align:center;font-size:.66rem;color:var(--muted);padding:0 32px 24px;line-height:1.55;}
-  .crisis a{color:var(--indigo);}
+  /* ===== auth card ===== */
+  .content{display:flex;align-items:center;justify-content:center;padding:24px;}
+  .card{width:100%;max-width:400px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:20px;padding:34px 30px;text-align:center;}
+  .card h1{font-family:'Cinzel',serif;font-weight:500;font-size:24px;letter-spacing:.05em;margin-bottom:12px;}
+  .card .lede{font-size:17px;opacity:.75;line-height:1.5;margin-bottom:24px;}
+  .field{width:100%;background:rgba(4,7,14,.5);border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:17px;outline:none;margin-bottom:12px;text-align:center;}
+  .field::placeholder{color:rgba(250,248,243,.4);}
+  .btn{width:100%;border-radius:22px;padding:13px;font-family:'Cormorant Garamond',serif;font-size:17px;cursor:pointer;border:1px solid transparent;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px;}
+  .btn.primary{background:var(--cream);color:#06090f;border:none;}
+  .btn.ghost{background:transparent;color:var(--cream);border:1px solid rgba(250,248,243,.28);}
+  .btn.ghost:hover{background:rgba(250,248,243,.06);}
+  .btn svg{width:18px;height:18px;}
+  .divider{opacity:.4;font-style:italic;font-size:15px;margin:6px 0 14px;}
+  .fine{font-size:14px;opacity:.55;line-height:1.5;margin-top:8px;}
+  .fine a{color:var(--cream);}
+  .note{font-size:14px;opacity:.5;margin-top:14px;padding:0;border:none;font-style:italic;}
+  .crisis{font-size:14px;opacity:.5;margin-top:22px;line-height:1.5;}
+  .crisis a{color:var(--cream);}
 </style>
 </head>
 <body>
@@ -163,10 +141,10 @@
   <div class="navitem soon">Meditations <span class="pill">soon</span></div>
   <div class="navitem soon">Education <span class="pill">soon</span></div>
   <div class="navitem upgrade" data-route="pricing.html">Upgrade</div>
-  <div class="navlabel" id="recentsLabel">Recents</div>
+  <div class="navlabel">Recents</div>
   <div id="recents"></div>
   <div class="navspacer"></div>
-  <div class="navitem help" id="helpBtn">Help &amp; feedback</div>
+  <div class="navitem help" id="helpBtn" data-route="support.html">Help &amp; feedback</div>
   <div class="acctwrap">
     <div class="acctmenu" id="acctMenu">
       <button id="acctSettings">Settings</button>
@@ -178,148 +156,126 @@
     </div>
   </div>
 </nav>
+<div class="scrim" id="scrim"></div>
 
 <main>
   <div class="topbar">
-    <button class="menu-btn" id="menuBtn">&#9776;</button>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
     <div class="wordmark">PSYCHE</div>
+    <a href="auth.html" class="top-login" id="topLogin" style="display:none;">log in</a>
   </div>
-
-  <div class="page">
-    <!-- SIGN-IN -->
-    <div class="card" id="signinCard">
-      <div class="brandtop"><a href="index.html" class="wm">PSYCHE</a></div>
-      <div class="body">
+  <div class="content">
+    <div class="page" style="max-width:none;padding:0;">
+      <div class="card" id="signinCard">
         <h1>Welcome to Psyche</h1>
-        <p class="lede sans">Enter your email and we’ll send you a link to sign in. No password to remember.</p>
-
-        <input class="field sans" id="email" type="email" placeholder="you@email.com" autocomplete="email">
-        <button class="btn primary sans" id="emailBtn">Email me a sign-in link</button>
-
-        <div class="divider sans">or</div>
-
-        <button class="btn ghost sans" id="google">
+        <p class="lede">Enter your email and we'll send you a link to sign in. No password to remember.</p>
+        <input class="field" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+        <button class="btn primary" id="emailBtn">Email me a sign-in link</button>
+        <div class="divider">or</div>
+        <button class="btn ghost" id="google">
           <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38Z"/></svg>
           Continue with Google
         </button>
-
-        <div class="fine sans">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</div>
-        <div class="note sans" id="authMsg">We’ll email you a secure link — no password needed.</div>
+        <div class="fine">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</div>
+        <div class="note" id="authMsg">We'll email you a secure link — no password needed.</div>
+        <p class="crisis">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
       </div>
-      <p class="crisis sans">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
-    </div>
-
-    <!-- CHECK YOUR EMAIL -->
-    <div class="card" id="sentCard" style="display:none;">
-      <div class="brandtop"><a href="index.html" class="wm">PSYCHE</a></div>
-      <div class="body">
+      <div class="card" id="sentCard" style="display:none;">
         <h1>Check your email</h1>
-        <p class="lede sans">We’ve sent a secure sign-in link to <strong id="sentTo"></strong>. Open it on this device to continue.</p>
-        <button class="btn ghost sans" id="resend">Use a different email</button>
-        <div class="note sans">The link expires after a short while. Didn’t arrive? Check spam, or try again.</div>
+        <p class="lede">We've sent a secure sign-in link to <strong id="sentTo"></strong>. Open it on this device to continue.</p>
+        <button class="btn ghost" id="resend">Use a different email</button>
+        <div class="note">The link expires after a short while. Didn't arrive? Check spam, or try again.</div>
+        <p class="crisis">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
       </div>
-      <p class="crisis sans">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
-    </div>
+        </div>
   </div>
 </main>
 
-<div class="fbmodal" id="fbModal">
-  <div class="fbcard">
-    <h3>Help &amp; feedback</h3>
-    <p>What's working, what isn't, what would make this worth it? Anything helps.</p>
-    <textarea id="fbText" placeholder="Type your thoughts&hellip;"></textarea>
-    <div class="row">
-      <button class="ghost" id="fbCancel">Cancel</button>
-      <button class="primary" id="fbSend">Send</button>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
-  const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
-  const sb=supabase.createClient(SB_URL,SB_KEY);
-  const $=id=>document.getElementById(id);
-  const nav=$("nav");
-  function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+  var nav=document.getElementById('nav'), scrim=document.getElementById('scrim');
+  function openNav(){ nav.classList.remove('hidden'); nav.classList.add('open'); if(window.innerWidth<=760) scrim.classList.add('on'); }
+  function closeNav(){ nav.classList.add('hidden'); nav.classList.remove('open'); scrim.classList.remove('on'); }
+  function toggleNav(){ if(nav.classList.contains('hidden')) openNav(); else closeNav(); }
+  document.getElementById('menuBtn').addEventListener('click', toggleNav);
+  document.getElementById('collapseBtn').addEventListener('click', closeNav);
+  scrim.addEventListener('click', closeNav);
+  document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ location.href=el.getAttribute('data-route'); }; });
+  document.getElementById('newChat').onclick=()=>{ location.href='chat.html'; };
+  // account chip: signed-out -> auth. (Code wires real session state.)
+  var acctMenu=document.getElementById('acctMenu');
+  document.getElementById('account').onclick=(e)=>{ e.stopPropagation(); location.href='auth.html'; };
+  document.getElementById('acctSettings').onclick=()=>{ location.href='settings.html'; };
+  document.getElementById('acctSignout').onclick=()=>{ location.href='index.html'; };
+  document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!document.getElementById('account').contains(e.target)) acctMenu.classList.remove('open'); });
 
-  // ================= SIDEBAR TOGGLE =================
-  function toggleNav(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
-  function closeNav(){ if(window.innerWidth<=760){ nav.classList.add('hidden'); nav.classList.remove('open'); } }
-  $("menuBtn").addEventListener('click', toggleNav);
-  $("collapseBtn").addEventListener('click', toggleNav);
+  // ---- session state: hide "log in" + fill account chip when signed in ----
+  (function(){
+    if(window.PSYCHE_PREVIEW) return;
+    try{
+      var sb=window.__sb||(window.__sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb"));
+      sb.auth.getSession().then(async ({data})=>{
+        var session=data && data.session;
+        if(!session || !session.user){ return; }            // logged out: leave "log in" showing
+        var login=document.getElementById('topLogin'); if(login) login.style.display='none';
+        var acct=document.getElementById('account');
+        try{
+          var uid=session.user.id;
+          var r=await sb.from('profiles').select('display_name,plan').eq('id',uid).single();
+          var name=(r.data&&r.data.display_name)||session.user.email||'You';
+          var plan=(r.data&&r.data.plan)?r.data.plan:'free';
+          if(acct){
+            acct.querySelector('.avatar-dot').textContent=name.trim().charAt(0).toUpperCase();
+            acct.querySelector('.meta').innerHTML=name+'<br><span class="plan">'+(plan.charAt(0).toUpperCase()+plan.slice(1))+' plan</span>';
+            acct.onclick=function(e){ e.stopPropagation(); var m=document.getElementById('acctMenu'); if(m) m.classList.toggle('open'); };
+          }
+        }catch(e){}
+      });
+    }catch(e){}
+  })();
 
-  // ================= RECENTS =================
-  const CK="psyche:chats", CC="psyche:current";
-  function load(k,d){ try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){ return d; } }
-  let chats=load(CK,[]);
-  function renderSidebar(){
-    const box=$("recents"), label=$("recentsLabel");
-    box.innerHTML="";
-    const list=chats.slice().reverse();
-    if(!list.length){ label.style.display="none"; return; }
-    label.style.display="";
-    list.forEach(c=>{
-      const d=document.createElement('div');
-      d.className="recent";
-      d.textContent=c.title||"New conversation";
-      d.title=c.title||"";
-      d.onclick=()=>{ localStorage.setItem(CC,c.id); location.href="chat.html"; };
+  // ---- recents: read the same conversation list chat.html stores ----
+  (function(){
+    var box=document.getElementById('recents');
+    if(!box) return;
+    var chats=[];
+    try{ chats=JSON.parse(localStorage.getItem('psyche:chats'))||[]; }catch(e){ chats=[]; }
+    var label=document.querySelector('.navlabel');
+    if(!chats.length){ if(label) label.style.display='none'; return; }
+    if(label) label.style.display='';
+    chats.slice().reverse().forEach(function(c){
+      var d=document.createElement('div');
+      d.className='recent';
+      d.textContent=(c.title)||'New conversation';
+      d.title=(c.title)||'';
+      d.onclick=function(){ try{ localStorage.setItem('psyche:current', c.id||''); }catch(e){} location.href='chat.html'; };
       box.appendChild(d);
     });
-  }
-  function newConversation(){ localStorage.setItem(CC,""); location.href="chat.html"; }
-  $("newChat").onclick=newConversation;
-  document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ location.href=el.getAttribute('data-route'); }; });
+  })();
 
-  // ================= ACCOUNT MENU, HELP & FEEDBACK =================
-  const acctMenu=$("acctMenu");
-  $("acctSettings").onclick=()=>{ location.href="settings.html"; };
-  $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
-  document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!$("account").contains(e.target)) acctMenu.classList.remove('open'); });
-  const fbModal=$("fbModal");
-  $("helpBtn").onclick=()=>{ closeNav(); fbModal.classList.add('open'); setTimeout(()=>$("fbText").focus(),60); };
-  $("fbCancel").onclick=()=>fbModal.classList.remove('open');
-  $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ try{ const f=JSON.parse(localStorage.getItem("psyche:feedback")||"[]"); f.push({text:t,at:new Date().toISOString()}); localStorage.setItem("psyche:feedback",JSON.stringify(f)); }catch(e){} } $("fbText").value=""; fbModal.classList.remove('open'); alert("Thank you — your feedback was recorded."); };
 
-  renderSidebar();
-
-  // Already signed in? Skip straight to the app. (Skipped entirely in preview — no Supabase calls.)
-  if(!window.PSYCHE_PREVIEW){
-    sb.auth.getSession().then(({data})=>{ if(data.session) location.replace("chat.html"); });
-  }
-
-  // Google — clearly coming soon for now.
-  $("google").onclick=()=>alert("Continue with Google — coming soon. Use email for now.");
-
-  // Email magic link.
-  async function sendLink(){
-    const email=$("email").value.trim();
-    if(!email || !email.includes("@")){ $("authMsg").textContent="Please enter a valid email address."; return; }
-    if(window.PSYCHE_PREVIEW){
-      // Styling only — no email is sent, no Supabase call.
-      $("sentTo").textContent=email;
-      $("signinCard").style.display="none";
-      $("sentCard").style.display="flex";
-      return;
-    }
-    const btn=$("emailBtn"); btn.disabled=true; btn.textContent="Sending…";
-    const { error } = await sb.auth.signInWithOtp({
-      email,
-      options:{ emailRedirectTo: location.origin + "/chat.html" }
-    });
-    btn.disabled=false; btn.textContent="Email me a sign-in link";
-    if(error){ $("authMsg").textContent=error.message||"Couldn’t send the link — please try again."; return; }
-    $("sentTo").textContent=email;
-    $("signinCard").style.display="none";
-    $("sentCard").style.display="flex";
-  }
-  $("emailBtn").onclick=sendLink;
-  $("email").addEventListener("keydown",ev=>{ if(ev.key==="Enter") sendLink(); });
-
-  // Back to the email entry from the confirmation state.
-  $("resend").onclick=()=>{ $("sentCard").style.display="none"; $("signinCard").style.display="flex"; $("email").focus(); };
+  // ---- auth: already signed in -> chat ----
+  (function(){
+    try{
+      var sb2=window.__sb||(window.__sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb"));
+      sb2.auth.getSession().then(function(r){ if(r.data && r.data.session) location.replace("chat.html"); });
+      var $=function(id){return document.getElementById(id);};
+      $("google").onclick=function(){ alert("Continue with Google — coming soon. Use email for now."); };
+      async function sendLink(){
+        var email=$("email").value.trim();
+        if(!email || email.indexOf("@")<0){ $("authMsg").textContent="Please enter a valid email address."; return; }
+        var btn=$("emailBtn"); btn.disabled=true; btn.textContent="Sending…";
+        var res=await sb2.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin + "/chat.html" } });
+        btn.disabled=false; btn.textContent="Email me a sign-in link";
+        if(res.error){ $("authMsg").textContent=res.error.message||"Couldn't send the link — please try again."; return; }
+        $("sentTo").textContent=email;
+        $("signinCard").style.display="none";
+        $("sentCard").style.display="block";
+      }
+      $("emailBtn").onclick=sendLink;
+      $("email").addEventListener("keydown",function(ev){ if(ev.key==="Enter") sendLink(); });
+      $("resend").onclick=function(){ $("sentCard").style.display="none"; $("signinCard").style.display="block"; $("email").focus(); };
+    }catch(e){}
+  })();
 </script>
 </body>
 </html>
