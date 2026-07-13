@@ -7,18 +7,114 @@
 <title>Sign in · Psyche</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --page:#efece4; --card:#faf8f3; --ink:#2a261f; --soft:#615c52; --muted:#9a948a;
-    --line:#ece7da; --field-line:#e6e0d4; --indigo:#1d3891; --indigo-deep:#16296b;
+    --line:#ece7da; --field-line:#e6e0d4; --indigo-deep:#16296b;
+    /* nav tokens (separate from this page's own cream palette above) */
+    --cream:#faf8f3; --night:#06090f; --indigo:#1d3891; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{min-height:100%;}
-  body{background:var(--page);color:var(--ink);font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:44px 20px;}
+  html,body{height:100%;}
+  body{
+    background:var(--night);color:var(--ink);font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;
+    display:flex;height:100dvh;overflow:hidden;
+  }
   .sans{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
   a{color:inherit;}
 
+  /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
+  nav {
+    width: 258px; background: var(--panel);
+    border-right: 1px solid var(--navline);
+    display: flex; flex-direction: column;
+    flex-shrink: 0; overflow-y: auto; scrollbar-width: none;
+    transition: margin-left 0.25s ease;
+    z-index: 5;
+    color: var(--cream); font-family: 'Cormorant Garamond', serif;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav.hidden { margin-left: -258px; }
+  .nav-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 10px; }
+  .wordmark-side { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 0.3em; }
+  .collapse { background: transparent; border: none; color: var(--cream); opacity: 0.5; cursor: pointer; font-size: 16px; }
+  .collapse:hover { opacity: 1; }
+  .newchat {
+    margin: 4px 12px 14px; display: flex; align-items: center; gap: 10px;
+    background: rgba(250,248,243,0.06); border: 1px solid var(--navline);
+    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px;
+    border-radius: 12px; padding: 10px 14px; cursor: pointer;
+  }
+  .newchat:hover { background: rgba(250,248,243,0.1); }
+  .newchat .plus { width: 20px; height: 20px; border-radius: 50%; background: var(--cream); color: var(--night); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .navitem {
+    display: flex; align-items: center; gap: 10px;
+    margin: 1px 8px; padding: 8px 10px; border-radius: 9px;
+    font-size: 15.5px; opacity: 0.8; cursor: pointer;
+  }
+  .navitem:hover { background: rgba(250,248,243,0.06); opacity: 1; }
+  .navitem.soon { opacity: 0.38; cursor: default; }
+  .navitem.soon:hover { background: transparent; }
+  .navitem.soon .pill { margin-left: auto; font-style: italic; font-size: 11.5px; border: 1px solid rgba(250,248,243,0.2); border-radius: 9px; padding: 0 7px; }
+  .navlabel { font-style: italic; font-size: 12.5px; opacity: 0.42; padding: 16px 20px 6px; }
+  .recent {
+    margin: 0 8px; padding: 7px 10px; border-radius: 9px;
+    font-size: 15px; opacity: 0.72; cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .recent:hover, .recent.active { background: rgba(250,248,243,0.06); opacity: 1; }
+  .navspacer { flex: 1; min-height: 16px; }
+  .account {
+    display: flex; align-items: center; gap: 10px;
+    margin: 8px; padding: 10px; border-radius: 12px;
+    border-top: 1px solid var(--navline); cursor: pointer;
+  }
+  .account:hover { background: rgba(250,248,243,0.05); }
+  .avatar-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; color: var(--cream); }
+  .account .meta { line-height: 1.15; font-size: 14.5px; }
+  .account .meta .plan { font-style: italic; opacity: 0.5; font-size: 13px; }
+  .navitem.upgrade { border: 1px solid rgba(250,248,243,0.28); border-radius: 10px; margin: 10px 8px; justify-content: center; opacity: 0.95; }
+  .navitem.upgrade:hover { background: rgba(250,248,243,0.08); opacity: 1; }
+  .navitem.help { opacity: 0.5; font-size: 14px; }
+  .navitem.help:hover { opacity: 0.85; background: rgba(250,248,243,0.05); }
+
+  .acctwrap { position: relative; }
+  .acctmenu {
+    position: absolute; bottom: calc(100% - 2px); left: 8px; right: 8px; z-index: 9;
+    background: var(--panel); border: 1px solid rgba(250,248,243,0.14);
+    border-radius: 12px; padding: 6px; display: none; flex-direction: column;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
+  }
+  .acctmenu.open { display: flex; }
+  .acctmenu button { background: transparent; border: none; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px; text-align: left; padding: 9px 12px; border-radius: 8px; cursor: pointer; }
+  .acctmenu button:hover { background: rgba(250,248,243,0.08); }
+
+  .fbmodal { position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal.open { display: flex; }
+  .fbcard { background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family: 'Cormorant Garamond', serif; }
+  .fbcard h3 { font-weight: 400; font-size: 22px; margin-bottom: 8px; }
+  .fbcard p { opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
+  .fbcard textarea { width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px; outline: none; resize: none; }
+  .fbcard .row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+  .fbcard .row button { font-family: 'Cormorant Garamond', serif; font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost { background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
+  .fbcard .primary { background: var(--cream); border: none; color: var(--night); }
+
+  @media (max-width: 760px) {
+    nav { position: fixed; z-index: 10; height: 100dvh; margin-left: -258px; }
+    nav.open { margin-left: 0; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
+  }
+
+  /* ================= MAIN ================= */
+  main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow-y: auto; background: var(--page); }
+  .topbar { position: relative; flex-shrink: 0; display: flex; align-items: center; padding: 14px 18px; }
+  .menu-btn { background: transparent; border: none; color: var(--ink); font-size: 19px; cursor: pointer; opacity: 0.6; }
+  .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: var(--ink); position: absolute; left: 50%; transform: translateX(-50%); }
+
+  .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px 20px 44px; }
+
+  /* ===== page content (this page's own cream sign-in card, unchanged) ===== */
   .card{width:100%;max-width:392px;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 12px 36px rgba(42,38,31,.08);display:flex;flex-direction:column;}
   .brandtop{padding:26px 0 0;text-align:center;}
   .brandtop .wm{letter-spacing:.32em;color:var(--indigo);font-size:1rem;text-decoration:none;cursor:pointer;}
@@ -52,40 +148,92 @@
 </head>
 <body>
 
-  <!-- SIGN-IN -->
-  <div class="card" id="signinCard">
-    <div class="brandtop"><a href="index.html" class="wm">PSYCHE</a></div>
-    <div class="body">
-      <h1>Welcome to Psyche</h1>
-      <p class="lede sans">Enter your email and we’ll send you a link to sign in. No password to remember.</p>
-
-      <input class="field sans" id="email" type="email" placeholder="you@email.com" autocomplete="email">
-      <button class="btn primary sans" id="emailBtn">Email me a sign-in link</button>
-
-      <div class="divider sans">or</div>
-
-      <button class="btn ghost sans" id="google">
-        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38Z"/></svg>
-        Continue with Google
-      </button>
-
-      <div class="fine sans">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</div>
-      <div class="note sans" id="authMsg">We’ll email you a secure link — no password needed.</div>
+<nav id="nav" class="hidden">
+  <div class="nav-top">
+    <div class="wordmark-side">PSYCHE</div>
+    <button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button>
+  </div>
+  <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
+  <div class="navitem" data-route="soon.html?t=My%20assessment">My assessment</div>
+  <div class="navitem" data-route="reveal.html">My reveal</div>
+  <div class="navitem" data-route="soon.html?t=Your%20practice">Your practice</div>
+  <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
+  <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
+  <div class="navitem" data-route="soon.html?t=Account%20%26%20earnings">Account &amp; earnings</div>
+  <div class="navitem soon">Meditations <span class="pill">soon</span></div>
+  <div class="navitem soon">Education <span class="pill">soon</span></div>
+  <div class="navitem upgrade" data-route="pricing.html">Upgrade</div>
+  <div class="navlabel" id="recentsLabel">Recents</div>
+  <div id="recents"></div>
+  <div class="navspacer"></div>
+  <div class="navitem help" id="helpBtn">Help &amp; feedback</div>
+  <div class="acctwrap">
+    <div class="acctmenu" id="acctMenu">
+      <button id="acctSettings">Settings</button>
+      <button id="acctSignout">Sign out</button>
     </div>
-    <p class="crisis sans">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
+    <div class="account" id="account">
+      <div class="avatar-dot">&middot;</div>
+      <div class="meta">Guest<br><span class="plan">Sign in</span></div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="topbar">
+    <button class="menu-btn" id="menuBtn">&#9776;</button>
+    <div class="wordmark">PSYCHE</div>
   </div>
 
-  <!-- CHECK YOUR EMAIL -->
-  <div class="card" id="sentCard" style="display:none;">
-    <div class="brandtop"><a href="index.html" class="wm">PSYCHE</a></div>
-    <div class="body">
-      <h1>Check your email</h1>
-      <p class="lede sans">We’ve sent a secure sign-in link to <strong id="sentTo"></strong>. Open it on this device to continue.</p>
-      <button class="btn ghost sans" id="resend">Use a different email</button>
-      <div class="note sans">The link expires after a short while. Didn’t arrive? Check spam, or try again.</div>
+  <div class="page">
+    <!-- SIGN-IN -->
+    <div class="card" id="signinCard">
+      <div class="brandtop"><a href="index.html" class="wm">PSYCHE</a></div>
+      <div class="body">
+        <h1>Welcome to Psyche</h1>
+        <p class="lede sans">Enter your email and we’ll send you a link to sign in. No password to remember.</p>
+
+        <input class="field sans" id="email" type="email" placeholder="you@email.com" autocomplete="email">
+        <button class="btn primary sans" id="emailBtn">Email me a sign-in link</button>
+
+        <div class="divider sans">or</div>
+
+        <button class="btn ghost sans" id="google">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38Z"/></svg>
+          Continue with Google
+        </button>
+
+        <div class="fine sans">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</div>
+        <div class="note sans" id="authMsg">We’ll email you a secure link — no password needed.</div>
+      </div>
+      <p class="crisis sans">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
     </div>
-    <p class="crisis sans">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
+
+    <!-- CHECK YOUR EMAIL -->
+    <div class="card" id="sentCard" style="display:none;">
+      <div class="brandtop"><a href="index.html" class="wm">PSYCHE</a></div>
+      <div class="body">
+        <h1>Check your email</h1>
+        <p class="lede sans">We’ve sent a secure sign-in link to <strong id="sentTo"></strong>. Open it on this device to continue.</p>
+        <button class="btn ghost sans" id="resend">Use a different email</button>
+        <div class="note sans">The link expires after a short while. Didn’t arrive? Check spam, or try again.</div>
+      </div>
+      <p class="crisis sans">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
+    </div>
   </div>
+</main>
+
+<div class="fbmodal" id="fbModal">
+  <div class="fbcard">
+    <h3>Help &amp; feedback</h3>
+    <p>What's working, what isn't, what would make this worth it? Anything helps.</p>
+    <textarea id="fbText" placeholder="Type your thoughts&hellip;"></textarea>
+    <div class="row">
+      <button class="ghost" id="fbCancel">Cancel</button>
+      <button class="primary" id="fbSend">Send</button>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -93,6 +241,49 @@
   const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
   const sb=supabase.createClient(SB_URL,SB_KEY);
   const $=id=>document.getElementById(id);
+  const nav=$("nav");
+  function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+  // ================= SIDEBAR TOGGLE =================
+  function toggleNav(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
+  function closeNav(){ if(window.innerWidth<=760){ nav.classList.add('hidden'); nav.classList.remove('open'); } }
+  $("menuBtn").addEventListener('click', toggleNav);
+  $("collapseBtn").addEventListener('click', toggleNav);
+
+  // ================= RECENTS =================
+  const CK="psyche:chats", CC="psyche:current";
+  function load(k,d){ try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){ return d; } }
+  let chats=load(CK,[]);
+  function renderSidebar(){
+    const box=$("recents"), label=$("recentsLabel");
+    box.innerHTML="";
+    const list=chats.slice().reverse();
+    if(!list.length){ label.style.display="none"; return; }
+    label.style.display="";
+    list.forEach(c=>{
+      const d=document.createElement('div');
+      d.className="recent";
+      d.textContent=c.title||"New conversation";
+      d.title=c.title||"";
+      d.onclick=()=>{ localStorage.setItem(CC,c.id); location.href="chat.html"; };
+      box.appendChild(d);
+    });
+  }
+  function newConversation(){ localStorage.setItem(CC,""); location.href="chat.html"; }
+  $("newChat").onclick=newConversation;
+  document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ location.href=el.getAttribute('data-route'); }; });
+
+  // ================= ACCOUNT MENU, HELP & FEEDBACK =================
+  const acctMenu=$("acctMenu");
+  $("acctSettings").onclick=()=>{ location.href="settings.html"; };
+  $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
+  document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!$("account").contains(e.target)) acctMenu.classList.remove('open'); });
+  const fbModal=$("fbModal");
+  $("helpBtn").onclick=()=>{ closeNav(); fbModal.classList.add('open'); setTimeout(()=>$("fbText").focus(),60); };
+  $("fbCancel").onclick=()=>fbModal.classList.remove('open');
+  $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ try{ const f=JSON.parse(localStorage.getItem("psyche:feedback")||"[]"); f.push({text:t,at:new Date().toISOString()}); localStorage.setItem("psyche:feedback",JSON.stringify(f)); }catch(e){} } $("fbText").value=""; fbModal.classList.remove('open'); alert("Thank you — your feedback was recorded."); };
+
+  renderSidebar();
 
   // Already signed in? Skip straight to the app. (Skipped entirely in preview — no Supabase calls.)
   if(!window.PSYCHE_PREVIEW){

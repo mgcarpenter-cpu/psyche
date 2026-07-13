@@ -7,23 +7,118 @@
 <title>The way through · Psyche</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --page:#efece4; --card:#faf8f3; --ink:#2a261f; --soft:#6a655c; --muted:#9a948a;
-    --line:#ece7da; --indigo:#1d3891; --indigo-deep:#16296b;
+    --line:#ece7da; --indigo-deep:#16296b;
+    /* nav tokens (separate from this page's own cream palette above) */
+    --cream:#faf8f3; --night:#06090f; --indigo:#1d3891; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  body{background:var(--page);color:var(--ink);font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;padding:40px 20px 80px;}
+  html,body{height:100%;}
+  body{
+    background:var(--night);color:var(--ink);font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;
+    display:flex;height:100dvh;overflow:hidden;
+  }
   .sans{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
   a{color:inherit;}
 
-  .frame{max-width:500px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 10px 34px rgba(42,38,31,.08);}
-  .barhead{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line);}
-  .barhead .wm{letter-spacing:.32em;color:var(--indigo);font-size:1rem;text-decoration:none;cursor:pointer;}
-  .barhead .wm:hover{opacity:.7;text-decoration:underline;}
-  .barhead .who{font-size:.72rem;color:var(--soft);letter-spacing:.02em;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+  /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
+  nav {
+    width: 258px; background: var(--panel);
+    border-right: 1px solid var(--navline);
+    display: flex; flex-direction: column;
+    flex-shrink: 0; overflow-y: auto; scrollbar-width: none;
+    transition: margin-left 0.25s ease;
+    z-index: 5;
+    color: var(--cream); font-family: 'Cormorant Garamond', serif;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav.hidden { margin-left: -258px; }
+  .nav-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 10px; }
+  .wordmark-side { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 0.3em; }
+  .collapse { background: transparent; border: none; color: var(--cream); opacity: 0.5; cursor: pointer; font-size: 16px; }
+  .collapse:hover { opacity: 1; }
+  .newchat {
+    margin: 4px 12px 14px; display: flex; align-items: center; gap: 10px;
+    background: rgba(250,248,243,0.06); border: 1px solid var(--navline);
+    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px;
+    border-radius: 12px; padding: 10px 14px; cursor: pointer;
+  }
+  .newchat:hover { background: rgba(250,248,243,0.1); }
+  .newchat .plus { width: 20px; height: 20px; border-radius: 50%; background: var(--cream); color: var(--night); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .navitem {
+    display: flex; align-items: center; gap: 10px;
+    margin: 1px 8px; padding: 8px 10px; border-radius: 9px;
+    font-size: 15.5px; opacity: 0.8; cursor: pointer;
+  }
+  .navitem:hover { background: rgba(250,248,243,0.06); opacity: 1; }
+  .navitem.soon { opacity: 0.38; cursor: default; }
+  .navitem.soon:hover { background: transparent; }
+  .navitem.soon .pill { margin-left: auto; font-style: italic; font-size: 11.5px; border: 1px solid rgba(250,248,243,0.2); border-radius: 9px; padding: 0 7px; }
+  .navlabel { font-style: italic; font-size: 12.5px; opacity: 0.42; padding: 16px 20px 6px; }
+  .recent {
+    margin: 0 8px; padding: 7px 10px; border-radius: 9px;
+    font-size: 15px; opacity: 0.72; cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .recent:hover, .recent.active { background: rgba(250,248,243,0.06); opacity: 1; }
+  .navspacer { flex: 1; min-height: 16px; }
+  .account {
+    display: flex; align-items: center; gap: 10px;
+    margin: 8px; padding: 10px; border-radius: 12px;
+    border-top: 1px solid var(--navline); cursor: pointer;
+  }
+  .account:hover { background: rgba(250,248,243,0.05); }
+  .avatar-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; color: var(--cream); }
+  .account .meta { line-height: 1.15; font-size: 14.5px; }
+  .account .meta .plan { font-style: italic; opacity: 0.5; font-size: 13px; }
+  .navitem.upgrade { border: 1px solid rgba(250,248,243,0.28); border-radius: 10px; margin: 10px 8px; justify-content: center; opacity: 0.95; }
+  .navitem.upgrade:hover { background: rgba(250,248,243,0.08); opacity: 1; }
+  .navitem.help { opacity: 0.5; font-size: 14px; }
+  .navitem.help:hover { opacity: 0.85; background: rgba(250,248,243,0.05); }
 
+  .acctwrap { position: relative; }
+  .acctmenu {
+    position: absolute; bottom: calc(100% - 2px); left: 8px; right: 8px; z-index: 9;
+    background: var(--panel); border: 1px solid rgba(250,248,243,0.14);
+    border-radius: 12px; padding: 6px; display: none; flex-direction: column;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
+  }
+  .acctmenu.open { display: flex; }
+  .acctmenu button { background: transparent; border: none; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px; text-align: left; padding: 9px 12px; border-radius: 8px; cursor: pointer; }
+  .acctmenu button:hover { background: rgba(250,248,243,0.08); }
+
+  .fbmodal { position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal.open { display: flex; }
+  .fbcard { background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family: 'Cormorant Garamond', serif; }
+  .fbcard h3 { font-weight: 400; font-size: 22px; margin-bottom: 8px; }
+  .fbcard p { opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
+  .fbcard textarea { width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px; outline: none; resize: none; }
+  .fbcard .row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+  .fbcard .row button { font-family: 'Cormorant Garamond', serif; font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost { background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
+  .fbcard .primary { background: var(--cream); border: none; color: var(--night); }
+
+  @media (max-width: 760px) {
+    nav { position: fixed; z-index: 10; height: 100dvh; margin-left: -258px; }
+    nav.open { margin-left: 0; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
+  }
+
+  /* ================= MAIN ================= */
+  main { flex: 1; min-width: 0; overflow-y: auto; background: var(--page); }
+  .topbar {
+    position: sticky; top: 0; z-index: 6;
+    display: flex; align-items: center; padding: 14px 18px;
+    background: linear-gradient(rgba(239,236,228,.9),rgba(239,236,228,.5) 70%,transparent);
+  }
+  .menu-btn { background: transparent; border: none; color: var(--ink); font-size: 19px; cursor: pointer; opacity: 0.6; }
+  .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: var(--ink); position: absolute; left: 50%; transform: translateX(-50%); }
+
+  /* ===== page content (this page's own cream reveal card, unchanged) ===== */
+  .page{padding:12px 20px 80px;}
+  .frame{max-width:500px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 10px 34px rgba(42,38,31,.08);}
   .inner{padding:34px 28px 30px;}
   .eyebrow{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
   .lede{font-size:1.06rem;font-weight:300;color:var(--soft);line-height:1.5;margin-bottom:26px;}
@@ -64,95 +159,224 @@
 </style>
 </head>
 <body>
-  <div class="frame">
-    <div class="barhead">
-      <a href="index.html" class="wm" title="Home">PSYCHE</a>
-      <span class="who" id="who"></span>
+
+<nav id="nav" class="hidden">
+  <div class="nav-top">
+    <div class="wordmark-side">PSYCHE</div>
+    <button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button>
+  </div>
+  <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
+  <div class="navitem" data-route="soon.html?t=My%20assessment">My assessment</div>
+  <div class="navitem" data-route="reveal.html">My reveal</div>
+  <div class="navitem" data-route="soon.html?t=Your%20practice">Your practice</div>
+  <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
+  <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
+  <div class="navitem" data-route="soon.html?t=Account%20%26%20earnings">Account &amp; earnings</div>
+  <div class="navitem soon">Meditations <span class="pill">soon</span></div>
+  <div class="navitem soon">Education <span class="pill">soon</span></div>
+  <div class="navitem upgrade" data-route="pricing.html">Upgrade</div>
+  <div class="navlabel" id="recentsLabel">Recents</div>
+  <div id="recents"></div>
+  <div class="navspacer"></div>
+  <div class="navitem help" id="helpBtn">Help &amp; feedback</div>
+  <div class="acctwrap">
+    <div class="acctmenu" id="acctMenu">
+      <button id="acctSettings">Settings</button>
+      <button id="acctSignout">Sign out</button>
     </div>
-
-    <div class="inner">
-
-      <!-- SECTION 1 — WHAT PSYCHE SEES -->
-      <p class="eyebrow">What Psyche sees</p>
-      <p class="lede">The understanding underneath your conversation.</p>
-
-      <div class="row">
-        <p class="rlabel">The pattern</p>
-        <p class="rtext" id="r_pattern">Avoidance to prevent a feared outcome.</p>
-        <button class="toggle">Explain <span class="car">⌄</span></button>
-        <div class="detail" id="r_pattern_d">You keep the decision open so you never have to face being wrong about it. Staying undecided feels safer than choosing — but it's the avoidance itself, not the choice, that keeps you stuck.</div>
-      </div>
-
-      <div class="row">
-        <p class="rlabel">Root cause</p>
-        <p class="rtext" id="r_root">Fear that a wrong choice means being a failure.</p>
-        <button class="toggle">Explain <span class="car">⌄</span></button>
-        <div class="detail" id="r_root_d">Underneath is a belief that your worth rides on getting it right. So a decision stops being about the job and becomes a verdict on you — which makes any choice feel dangerous.</div>
-      </div>
-
-      <div class="row">
-        <p class="rlabel">Feeling-tone</p>
-        <p class="rtext" id="r_tone">Unpleasant → aversion (pushing the decision away).</p>
-        <button class="toggle">Explain <span class="car">⌄</span></button>
-        <div class="detail" id="r_tone_d">The thought of deciding carries an unpleasant feeling, and the mind reacts by pushing it away. Naming that reaction — aversion — is the first step to meeting it instead of obeying it.</div>
-      </div>
-
-      <div class="wisdom">
-        <span class="accent"></span>
-        <div>
-          <p class="rlabel">Wisdom</p>
-          <p class="rtext" id="r_wisdom">What we resist persists; what we meet, passes.</p>
-          <button class="toggle">Explain <span class="car">⌄</span></button>
-          <div class="detail" id="r_wisdom_d">A feeling met with steady attention rises, crests, and fades. A feeling resisted only waits. The way out is through — turning toward the discomfort rather than around it.</div>
-        </div>
-      </div>
-
-      <div class="sectiondiv"></div>
-
-      <!-- SECTION 2 — THE WAY THROUGH -->
-      <p class="eyebrow">The way through</p>
-      <p class="lede" style="margin-bottom:24px;">Steps to work through, in order.</p>
-
-      <div id="steps">
-        <div class="step">
-          <span class="num">1</span>
-          <div>
-            <p class="t">Practise small choices daily</p>
-            <p class="d">Each morning, make one small choice within a minute — what to eat, which task first. Training that choosing is survivable.</p>
-            <button class="toggle">Why this <span class="car">⌄</span></button>
-            <div class="detail">Decision-fear shrinks with repetition. Tiny, low-stakes choices teach your nervous system that choosing doesn't end in catastrophe — so the big choice feels less charged.</div>
-          </div>
-        </div>
-        <div class="step">
-          <span class="num">2</span>
-          <div>
-            <p class="t">Answer the failure-thought</p>
-            <p class="d">When it arises, meet it: "A wrong turn is information, not a verdict." Repeat until it loosens.</p>
-            <button class="toggle">Why this <span class="car">⌄</span></button>
-            <div class="detail">The belief "wrong = failure" runs unexamined. Meeting it with a truer thought, repeatedly, loosens its grip — not by arguing, but by offering the mind a kinder, more accurate frame.</div>
-          </div>
-        </div>
-        <div class="step">
-          <span class="num">3</span>
-          <div>
-            <p class="t">Sit with the discomfort 60 seconds</p>
-            <p class="d">Find the feeling in your body. Don't fix it — watch it rise and pass.</p>
-            <button class="toggle">Why this <span class="car">⌄</span></button>
-            <div class="detail">This is the core practice: meeting the feeling-tone without reacting. Sixty seconds of steady attention shows you directly that the discomfort moves through — you don't have to push it away.</div>
-          </div>
-        </div>
-      </div>
-
-      <button class="sharebtn" id="shareBtn">✦ Share this</button>
-      <a href="chat.html" class="backbtn">↩ Back to chat</a>
-      <p class="saved" id="saved">Saved to <b>Your practice</b> — open or regenerate any time</p>
-      <p class="crisis">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
-
+    <div class="account" id="account">
+      <div class="avatar-dot">&middot;</div>
+      <div class="meta">Guest<br><span class="plan">Sign in</span></div>
     </div>
   </div>
+</nav>
+
+<main>
+  <div class="topbar">
+    <button class="menu-btn" id="menuBtn">&#9776;</button>
+    <div class="wordmark">PSYCHE</div>
+  </div>
+
+  <div class="page">
+    <div class="frame">
+      <div class="inner">
+
+        <!-- SECTION 1 — WHAT PSYCHE SEES -->
+        <p class="eyebrow">What Psyche sees</p>
+        <p class="lede">The understanding underneath your conversation.</p>
+
+        <div class="row">
+          <p class="rlabel">The pattern</p>
+          <p class="rtext" id="r_pattern">Avoidance to prevent a feared outcome.</p>
+          <button class="toggle">Explain <span class="car">⌄</span></button>
+          <div class="detail" id="r_pattern_d">You keep the decision open so you never have to face being wrong about it. Staying undecided feels safer than choosing — but it's the avoidance itself, not the choice, that keeps you stuck.</div>
+        </div>
+
+        <div class="row">
+          <p class="rlabel">Root cause</p>
+          <p class="rtext" id="r_root">Fear that a wrong choice means being a failure.</p>
+          <button class="toggle">Explain <span class="car">⌄</span></button>
+          <div class="detail" id="r_root_d">Underneath is a belief that your worth rides on getting it right. So a decision stops being about the job and becomes a verdict on you — which makes any choice feel dangerous.</div>
+        </div>
+
+        <div class="row">
+          <p class="rlabel">Feeling-tone</p>
+          <p class="rtext" id="r_tone">Unpleasant → aversion (pushing the decision away).</p>
+          <button class="toggle">Explain <span class="car">⌄</span></button>
+          <div class="detail" id="r_tone_d">The thought of deciding carries an unpleasant feeling, and the mind reacts by pushing it away. Naming that reaction — aversion — is the first step to meeting it instead of obeying it.</div>
+        </div>
+
+        <div class="wisdom">
+          <span class="accent"></span>
+          <div>
+            <p class="rlabel">Wisdom</p>
+            <p class="rtext" id="r_wisdom">What we resist persists; what we meet, passes.</p>
+            <button class="toggle">Explain <span class="car">⌄</span></button>
+            <div class="detail" id="r_wisdom_d">A feeling met with steady attention rises, crests, and fades. A feeling resisted only waits. The way out is through — turning toward the discomfort rather than around it.</div>
+          </div>
+        </div>
+
+        <div class="sectiondiv"></div>
+
+        <!-- SECTION 2 — THE WAY THROUGH -->
+        <p class="eyebrow">The way through</p>
+        <p class="lede" style="margin-bottom:24px;">Steps to work through, in order.</p>
+
+        <div id="steps">
+          <div class="step">
+            <span class="num">1</span>
+            <div>
+              <p class="t">Practise small choices daily</p>
+              <p class="d">Each morning, make one small choice within a minute — what to eat, which task first. Training that choosing is survivable.</p>
+              <button class="toggle">Why this <span class="car">⌄</span></button>
+              <div class="detail">Decision-fear shrinks with repetition. Tiny, low-stakes choices teach your nervous system that choosing doesn't end in catastrophe — so the big choice feels less charged.</div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="num">2</span>
+            <div>
+              <p class="t">Answer the failure-thought</p>
+              <p class="d">When it arises, meet it: "A wrong turn is information, not a verdict." Repeat until it loosens.</p>
+              <button class="toggle">Why this <span class="car">⌄</span></button>
+              <div class="detail">The belief "wrong = failure" runs unexamined. Meeting it with a truer thought, repeatedly, loosens its grip — not by arguing, but by offering the mind a kinder, more accurate frame.</div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="num">3</span>
+            <div>
+              <p class="t">Sit with the discomfort 60 seconds</p>
+              <p class="d">Find the feeling in your body. Don't fix it — watch it rise and pass.</p>
+              <button class="toggle">Why this <span class="car">⌄</span></button>
+              <div class="detail">This is the core practice: meeting the feeling-tone without reacting. Sixty seconds of steady attention shows you directly that the discomfort moves through — you don't have to push it away.</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="sharebtn" id="shareBtn">✦ Share this</button>
+        <a href="chat.html" class="backbtn">↩ Back to chat</a>
+        <p class="saved" id="saved">Saved to <b>Your practice</b> — open or regenerate any time</p>
+        <p class="crisis">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="fbmodal" id="fbModal">
+  <div class="fbcard">
+    <h3>Help &amp; feedback</h3>
+    <p>What's working, what isn't, what would make this worth it? Anything helps.</p>
+    <textarea id="fbText" placeholder="Type your thoughts&hellip;"></textarea>
+    <div class="row">
+      <button class="ghost" id="fbCancel">Cancel</button>
+      <button class="primary" id="fbSend">Send</button>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const $=id=>document.getElementById(id);
+  const nav=$("nav");
+  function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+  // ================= SIDEBAR TOGGLE =================
+  function toggleNav(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
+  function closeNav(){ if(window.innerWidth<=760){ nav.classList.add('hidden'); nav.classList.remove('open'); } }
+  $("menuBtn").addEventListener('click', toggleNav);
+  $("collapseBtn").addEventListener('click', toggleNav);
+
+  // ================= RECENTS =================
+  const CK="psyche:chats", CC="psyche:current";
+  function load(k,d){ try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){ return d; } }
+  let chats=load(CK,[]);
+  function renderSidebar(){
+    const box=$("recents"), label=$("recentsLabel");
+    box.innerHTML="";
+    const list=chats.slice().reverse();
+    if(!list.length){ label.style.display="none"; return; }
+    label.style.display="";
+    list.forEach(c=>{
+      const d=document.createElement('div');
+      d.className="recent";
+      d.textContent=c.title||"New conversation";
+      d.title=c.title||"";
+      d.onclick=()=>{ localStorage.setItem(CC,c.id); location.href="chat.html"; };
+      box.appendChild(d);
+    });
+  }
+  function newConversation(){ localStorage.setItem(CC,""); location.href="chat.html"; }
+  $("newChat").onclick=newConversation;
+  document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ location.href=el.getAttribute('data-route'); }; });
+
+  // ================= AUTH / PROFILE =================
+  const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
+  const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
+  const sb=supabase.createClient(SB_URL,SB_KEY);
+  let profile=null, currentEmail=null;
+  function planName(p){ return p==='pro'?'Pro plan':(p==='plus'?'Plus plan':'Free plan'); }
+  function renderAccount(){
+    const el=$("account"); if(!el) return;
+    const signedIn=!!(profile&&profile.id);
+    const name=(profile&&profile.display_name)||"";
+    const label=name||currentEmail||"Guest";
+    const initial=((label.trim()[0])||"·").toUpperCase();
+    const sub=signedIn ? (planName(profile.plan)+" · Upgrade") : "Sign in";
+    el.innerHTML='<div class="avatar-dot">'+esc(initial)+'</div><div class="meta">'+esc(label)+'<br><span class="plan">'+esc(sub)+'</span></div>';
+    el.onclick=(e)=>{ e.stopPropagation(); if(!signedIn){ location.href="auth.html"; return; } var m=$("acctMenu"); if(m) m.classList.toggle('open'); };
+  }
+  async function loadProfile(session){
+    if(window.PSYCHE_PREVIEW) return;
+    if(!(session&&session.user)){ profile=null; renderAccount(); return; }
+    const uid=session.user.id;
+    currentEmail=session.user.email||"";
+    const {data,error}=await sb.from("profiles").select("plan,display_name").eq("id",uid).single();
+    if(error||!data){ console.error("profile fetch failed:",error); renderAccount(); return; }
+    profile={id:uid,plan:data.plan||"free",display_name:data.display_name||""};
+    renderAccount();
+  }
+  if(window.PSYCHE_PREVIEW){
+    const p=window.PSYCHE_PREVIEW_PROFILE;
+    currentEmail=p.email;
+    profile={id:p.id,plan:p.plan,display_name:p.display_name};
+    renderAccount();
+  } else {
+    sb.auth.getSession().then(({data})=>{ currentEmail=data.session&&data.session.user?data.session.user.email:null; loadProfile(data.session); });
+    sb.auth.onAuthStateChange((_e,session)=>{ currentEmail=session&&session.user?session.user.email:null; setTimeout(()=>loadProfile(session),0); });
+  }
+
+  // ================= ACCOUNT MENU, HELP & FEEDBACK =================
+  const acctMenu=$("acctMenu");
+  $("acctSettings").onclick=()=>{ location.href="settings.html"; };
+  $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
+  document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!$("account").contains(e.target)) acctMenu.classList.remove('open'); });
+  const fbModal=$("fbModal");
+  $("helpBtn").onclick=()=>{ closeNav(); fbModal.classList.add('open'); setTimeout(()=>$("fbText").focus(),60); };
+  $("fbCancel").onclick=()=>fbModal.classList.remove('open');
+  $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ try{ const f=JSON.parse(localStorage.getItem("psyche:feedback")||"[]"); f.push({text:t,at:new Date().toISOString()}); localStorage.setItem("psyche:feedback",JSON.stringify(f)); }catch(e){} } $("fbText").value=""; fbModal.classList.remove('open'); alert("Thank you — your feedback was recorded."); };
+
+  renderSidebar();
+
   // Render from the generated reveal if present; otherwise keep the sample content.
   (function(){
     let d=null;
@@ -240,22 +464,6 @@
     btn.disabled=false; btn.textContent=label;
   }
   document.getElementById("shareBtn").onclick=shareCard;
-
-  // show the signed-in name in the top bar (optional, no gating)
-  if(window.PSYCHE_PREVIEW){
-    // Dev preview: mock profile only, no Supabase session is created or read.
-    document.getElementById("who").textContent=window.PSYCHE_PREVIEW_PROFILE.display_name;
-  } else {
-    try{
-      const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
-      sb.auth.getSession().then(async({data})=>{
-        const s=data.session; if(!s||!s.user) return;
-        const {data:p}=await sb.from("profiles").select("display_name").eq("id",s.user.id).single();
-        const name=(p&&p.display_name)||(s.user.email||"").split("@")[0];
-        if(name) document.getElementById("who").textContent=name;
-      });
-    }catch(e){}
-  }
 </script>
 </body>
 </html>
