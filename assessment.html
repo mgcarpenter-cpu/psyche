@@ -1125,10 +1125,26 @@ html, body {
 #reveal .bar-label{font-size:18px !important;font-weight:500 !important;letter-spacing:.14em !important;color:#fff !important;}
 #reveal .bar-val{font-size:17px !important;color:#fff !important;}
 #reveal .dims-header{border:1px solid rgba(244,242,238,.3) !important;background:rgba(244,242,238,.06) !important;box-shadow:0 8px 30px rgba(0,0,0,.35) !important;padding:30px 26px !important;margin:0 0 40px !important;}
+
+/* ═══ nav dropdown (pre-signup links only) ═══ */
+.psy-menu{position:fixed;top:52px;left:0;right:0;z-index:8999;background:#06090f;border-bottom:1px solid rgba(255,255,255,.1);padding:6px 0;display:none;box-shadow:0 14px 34px rgba(0,0,0,.55);}
+.psy-menu.open{display:block;}
+.psy-menu a{display:block;padding:14px 24px;color:#f4f2ee;text-decoration:none;font-family:'Cormorant Garamond',serif;font-size:1.12rem;border-bottom:1px solid rgba(255,255,255,.05);}
+.psy-menu a:last-child{border-bottom:none;}
+.psy-menu a.join{color:#fff;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;margin-top:4px;}
 </style>
 </head>
 <body>
 <div class="psy-top"><button class="menu-btn" aria-label="Menu">&#9776;</button><div class="wordmark">PSYCHE</div></div>
+<nav class="psy-menu" id="psyMenu">
+  <a href="index.html">Home</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="support.html">Support</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
+  <a href="urgent.html">Need support now?</a>
+  <a href="auth.html" class="join">Sign in / Join</a>
+</nav>
 
 <!-- ═════════════════════════════════════════
      SCREEN 1 — LANDING
@@ -2577,5 +2593,15 @@ document.addEventListener("keydown", e => {
 
 <script>(function(){var _b=window.buildReveal;if(typeof _b==="function"){window.buildReveal=function(){var r=_b.apply(this,arguments);try{var inner=document.querySelector('#reveal .rev-inner');if(inner&&!inner.querySelector('.rev-hero')){var fs=inner.querySelector('.rev-sec');if(fs){var h=document.createElement('div');h.className='rev-hero';while(inner.firstChild&&inner.firstChild!==fs){h.appendChild(inner.firstChild);}inner.insertBefore(h,fs);}}}catch(e){}return r;};}})();</script>
 <script>window.addEventListener("load",function(){var cb=document.getElementById("contBtn");if(cb){var prev=cb.onclick;cb.onclick=function(e){if(prev)prev.call(this,e);try{var a=document.getElementById("assess");if(a)a.scrollTop=0;window.scrollTo(0,0);}catch(x){}};}});</script>
+<script>
+window.addEventListener("load",function(){
+  var btn=document.querySelector(".psy-top .menu-btn");
+  var menu=document.getElementById("psyMenu");
+  if(btn&&menu){
+    btn.addEventListener("click",function(e){e.stopPropagation();menu.classList.toggle("open");});
+    document.addEventListener("click",function(e){if(!menu.contains(e.target)&&e.target!==btn){menu.classList.remove("open");}});
+  }
+});
+</script>
 </body>
 </html>
