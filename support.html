@@ -140,7 +140,7 @@
       <div class="card">
         <div class="title">In immediate danger?</div>
         <div class="desc">If you or someone else is in immediate danger, contact your local emergency services straight away.</div>
-        <a class="bigbtn" id="emerg" href="tel:111">Call emergency services</a>
+        <a class="bigbtn" id="emerg" href="https://findahelpline.com" target="_blank" rel="noopener">Call emergency services</a>
       </div>
       <a class="return" href="chat.html">Return to your conversation</a>
       <div class="note" style="text-align:center;">Psyche is a reflection tool, not therapy or crisis care. Reaching out to the people above is a strength, not a step back.</div>    </div>
@@ -206,15 +206,6 @@
       d.onclick=function(){ try{ localStorage.setItem('psyche:current', c.id||''); }catch(e){} location.href='chat.html'; };
       box.appendChild(d);
     });
-  })();
-  (function(){
-    var direct={NZ:"111",AU:"000",US:"911",CA:"911",GB:"999",IE:"112"};
-    var eu=["DE","FR","ES","IT","NL","SE","NO","FI","DK","PL","PT","AT","BE","CH","GR","CZ","HU","RO","IS","LU","SK","SI","HR","EE","LV","LT","BG"];
-    var region="";
-    try{ region=(new Intl.Locale(navigator.language).region)||""; }catch(e){}
-    if(!region){ var p=(navigator.language||"").split("-")[1]; region=(p||"").toUpperCase(); }
-    var num=direct[region]||(eu.indexOf(region)>=0?"112":"111");
-    var el=document.getElementById("emerg"); if(el) el.setAttribute("href","tel:"+num);
   })();
 </script>
 </body>
