@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Psyche — Share &amp; Earn</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;background:#000;}
+  body{display:flex;align-items:center;justify-content:center;}
+  .phone{position:relative;width:100vw;height:100vh;background:#000;overflow:hidden;}
+  #panda{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center 25%;}
+  .scrim{position:absolute;left:0;right:0;bottom:0;height:60%;
+    background:linear-gradient(transparent,rgba(6,9,15,.85));pointer-events:none;}
+  .slider{position:absolute;left:0;right:0;bottom:3%;height:50%;overflow:hidden;}
+  .track{display:flex;height:100%;gap:14px;transform:translateX(0);
+    transition:transform .8s cubic-bezier(.4,0,.2,1);will-change:transform;}
+  .card{flex:0 0 auto;height:100%;width:31vh;border-radius:16px;overflow:hidden;
+    border:1px solid rgba(244,242,238,.14);box-shadow:0 10px 40px rgba(0,0,0,.6);background:#06090f;}
+  .card img,.card video{display:block;height:100%;width:100%;object-fit:cover;object-position:center;}
+  #playBtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:84px;height:84px;border-radius:50%;background:#fff;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(0,0,0,.55);z-index:5;}
+  #playBtn svg{margin-left:5px;} #playBtn.hidden{display:none;}
+</style></head><body>
+<div class="phone">
+  <video id="panda" src="/videos/01_panda_background.mp4" playsinline loop muted></video>
+  <div class="scrim"></div>
+  <div class="slider"><div class="track" id="track">
+    <div class="card"><video id="c0" src="/videos/02_card_wolf_pearl.mp4" playsinline preload="auto" muted></video></div>
+    <div class="card"><img src="/images/03_card_share_grid.png" alt="Share anywhere"></div>
+    <div class="card"><video id="c2" src="/videos/04_card_ig_wolf_post.mp4" playsinline preload="auto" muted></video></div>
+    <div class="card"><img src="/images/05_card_earn.png" alt="Earn"></div>
+  </div></div>
+  <button id="playBtn" aria-label="Play">
+    <svg viewBox="0 0 24 24" width="34" height="34" fill="#06090f"><path d="M8 5v14l11-7z"/></svg>
+  </button>
+</div>
+<script>
+  const track=document.getElementById('track');
+  const panda=document.getElementById('panda');
+  const playBtn=document.getElementById('playBtn');
+  const slider=document.querySelector('.slider');
+  const cards=[...track.querySelectorAll('.card')];
+  const vids=[document.getElementById('c0'),null,document.getElementById('c2'),null];
+  const meta=[
+    {kind:'video', sound:true,  intro:2500},
+    {kind:'image', dwell:6000},
+    {kind:'video', sound:false, dwell:6507},
+    {kind:'image', dwell:6000}
+  ];
+  let i=0, timer=null;
+  function clearT(){ if(timer){clearTimeout(timer);timer=null;} }
+  function pandaPlay(){ panda.muted=false; if(panda.paused) panda.play(); }
+  function center(idx){
+    const card=cards[idx];
+    const cc=slider.clientWidth/2, cd=card.offsetLeft+card.offsetWidth/2;
+    track.style.transform='translateX('+(cc-cd)+'px)';
+  }
+  function resetOtherVideos(active){
+    vids.forEach((v,j)=>{ if(v && j!==active){ try{v.pause();v.currentTime=0;}catch(e){} } });
+  }
+  function show(idx){
+    i=idx; center(i); clearT(); resetOtherVideos(i);
+    const m=meta[i];
+    if(m.kind==='image'){ pandaPlay(); timer=setTimeout(next, m.dwell); }
+    else {
+      const v=vids[i];
+      if(m.sound){
+        pandaPlay();
+        timer=setTimeout(()=>{ panda.pause(); v.currentTime=0; v.muted=false; v.play();
+          v.onended=()=>{ v.onended=null; next(); }; }, m.intro||0);
+      } else {
+        pandaPlay(); v.currentTime=0; v.muted=true; v.play(); timer=setTimeout(next, m.dwell);
+      }
+    }
+  }
+  function next(){ show((i+1)%cards.length); }
+  window.addEventListener('resize', ()=>center(i));
+  requestAnimationFrame(()=>center(0));
+  playBtn.addEventListener('click', ()=>{ playBtn.classList.add('hidden'); panda.currentTime=0; pandaPlay(); show(0); });
+</script>
+</body></html>
