@@ -105,10 +105,11 @@
     var p=panda.play();
     if(p&&p.then){
       p.then(function(){ show(0); }).catch(function(){
-        running=false;
-        // unmuted blocked: surface the button; a real tap will succeed
-        document.documentElement.classList.add('blocked');
-        playBtn.classList.remove('hidden');
+        // unmuted autoplay blocked: fall back to muted so the sequence still runs
+        panda.muted=true;
+        var mp=panda.play();
+        if(mp&&mp.catch) mp.catch(function(){});
+        show(0);
       });
     } else { show(0); }
   }
