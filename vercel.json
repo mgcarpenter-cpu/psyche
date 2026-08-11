@@ -1,7 +1,7 @@
 {
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/", "destination": "/front-v2.html" }
+  "redirects": [
+    { "source": "/", "destination": "/front-v2", "permanent": false }
   ],
   "functions": {
     "api/chat.js": {
