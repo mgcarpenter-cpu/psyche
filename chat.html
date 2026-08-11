@@ -92,7 +92,7 @@
   .scene.responding .glowring { box-shadow: inset 0 0 110px rgba(250,240,210,0.26); }
 
   .ui { position: relative; height: 100dvh; display: flex; flex-direction: column; z-index: 2; }
-  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; }
+  .topbar { display: flex; gap: 14px; align-items: center; padding: 14px 18px; }
   .menu-btn { background: transparent; border: none; color: var(--cream); font-size: 19px; cursor: pointer; opacity: 0.65; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
   .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; text-shadow: 0 1px 6px rgba(0,0,0,0.7); }
   .count { font-style: italic; font-size: 13.5px; opacity: 0.6; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
@@ -198,9 +198,7 @@
   @media (prefers-reduced-motion: reduce) { .msg, .reveal-offer { animation: none; } }
 
   /* ===== ADDENDUM: sounds pill + popover, nav additions, account menu, feedback ===== */
-  .topbar { position: relative; }
-  .wordmark { position: absolute; left: 50%; transform: translateX(-50%); }
-  .topright { display: flex; align-items: center; gap: 12px; }
+  .topright { display: flex; align-items: center; gap: 12px; margin-left: auto; }
   .soundpill {
     display: flex; align-items: center; gap: 6px;
     background: none; border: none; outline: none;

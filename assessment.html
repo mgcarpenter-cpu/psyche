@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Psyche</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -976,9 +977,9 @@ html, body {
 
 /* ===== PSYCHE GLOBAL DESIGN — black / white / indigo-gradient, every page ===== */
 :root{ --psy-ig: linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%); }
-.psy-top{position:fixed;top:0;left:0;right:0;height:52px;display:flex;align-items:center;padding:0 18px;z-index:9000;background:#06090f;border-bottom:1px solid rgba(255,255,255,.08);}
+.psy-top{position:fixed;top:0;left:0;right:0;height:52px;display:flex;align-items:center;gap:14px;padding:0 18px;z-index:9000;background:#06090f;border-bottom:1px solid rgba(255,255,255,.08);}
 .psy-top .menu-btn{background:transparent;border:none;color:#f4f2ee;font-size:19px;line-height:1;cursor:pointer;opacity:.8;padding:0;}
-.psy-top .wordmark{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.3em;color:#f4f2ee;position:absolute;left:50%;transform:translateX(-50%);}
+.psy-top .wordmark{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.3em;color:#f4f2ee;}
 .assess-topbar{display:none !important;}
 #assess.active{padding-top:52px;}
 /* selected + continue buttons -> indigo gradient */
@@ -1126,25 +1127,77 @@ html, body {
 #reveal .bar-val{font-size:17px !important;color:#fff !important;}
 #reveal .dims-header{border:1px solid rgba(244,242,238,.3) !important;background:rgba(244,242,238,.06) !important;box-shadow:0 8px 30px rgba(0,0,0,.35) !important;padding:30px 26px !important;margin:0 0 40px !important;}
 
-/* ═══ nav dropdown (pre-signup links only) ═══ */
-.psy-menu{position:fixed;top:52px;left:0;right:0;z-index:8999;background:#06090f;border-bottom:1px solid rgba(255,255,255,.1);padding:6px 0;display:none;box-shadow:0 14px 34px rgba(0,0,0,.55);}
-.psy-menu.open{display:block;}
-.psy-menu a{display:block;padding:14px 24px;color:#f4f2ee;text-decoration:none;font-family:'Cormorant Garamond',serif;font-size:1.12rem;border-bottom:1px solid rgba(255,255,255,.05);}
-.psy-menu a:last-child{border-bottom:none;}
-.psy-menu a.join{color:#fff;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;margin-top:4px;}
+/* ═══ SIDEBAR (shared across the site) ═══ */
+nav{position:fixed;top:0;left:0;width:258px;height:100dvh;background:rgba(6,10,18,.96);border-right:1px solid rgba(250,248,243,.1);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;scrollbar-width:none;transition:margin-left .25s ease;z-index:9600;margin-left:-258px;}
+nav::-webkit-scrollbar{display:none;}
+nav.open{margin-left:0;box-shadow:4px 0 30px rgba(0,0,0,.6);}
+.nav-top{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 10px;}
+.wordmark-side{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.3em;color:#f4f2ee;}
+.collapse{background:transparent;border:none;color:#f4f2ee;opacity:.5;cursor:pointer;font-size:16px;}
+.collapse:hover{opacity:1;}
+.newchat{margin:4px 12px 14px;display:flex;align-items:center;gap:10px;background:rgba(250,248,243,.06);border:1px solid rgba(250,248,243,.1);color:#f4f2ee;font-family:'Cormorant Garamond',serif;font-size:16px;border-radius:12px;padding:10px 14px;cursor:pointer;}
+.newchat:hover{background:rgba(250,248,243,.1);}
+.newchat .plus{width:20px;height:20px;border-radius:50%;background:#f4f2ee;color:#06090f;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.navitem{display:flex;align-items:center;gap:10px;margin:1px 8px;padding:8px 10px;border-radius:9px;font-size:15.5px;color:#f4f2ee;opacity:.8;cursor:pointer;}
+.navitem:hover{background:rgba(250,248,243,.06);opacity:1;}
+.navitem.soon{opacity:.38;cursor:default;}
+.navitem.soon:hover{background:transparent;}
+.navitem.soon .pill{margin-left:auto;font-style:italic;font-size:11.5px;border:1px solid rgba(250,248,243,.2);border-radius:9px;padding:0 7px;}
+.navitem.upgrade{border:1px solid rgba(250,248,243,.28);border-radius:10px;margin:10px 8px;justify-content:center;opacity:.95;}
+.navitem.upgrade:hover{background:rgba(250,248,243,.08);opacity:1;}
+.navitem.help{opacity:.5;font-size:14px;}
+.navitem.help:hover{opacity:.85;background:rgba(250,248,243,.05);}
+.navlabel{font-style:italic;font-size:12.5px;opacity:.42;padding:16px 20px 6px;color:#f4f2ee;}
+.recent{margin:0 8px;padding:7px 10px;border-radius:9px;font-size:15px;color:#f4f2ee;opacity:.72;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.recent:hover,.recent.active{background:rgba(250,248,243,.06);opacity:1;}
+.navspacer{flex:1;min-height:16px;}
+.account{display:flex;align-items:center;gap:10px;margin:8px;padding:10px;border-radius:12px;border-top:1px solid rgba(250,248,243,.1);cursor:pointer;}
+.account:hover{background:rgba(250,248,243,.05);}
+.avatar-dot{width:30px;height:30px;border-radius:50%;background:#1d3891;color:#f4f2ee;display:flex;align-items:center;justify-content:center;font-size:13px;font-family:'Cinzel',serif;flex-shrink:0;}
+.account .meta{line-height:1.15;font-size:14.5px;color:#f4f2ee;}
+.account .meta .plan{font-style:italic;opacity:.5;font-size:13px;}
+.acctwrap{position:relative;}
+.acctmenu{position:absolute;bottom:calc(100% - 2px);left:8px;right:8px;z-index:2;background:rgba(6,10,18,.96);border:1px solid rgba(250,248,243,.14);border-radius:12px;padding:6px;display:none;flex-direction:column;box-shadow:0 -8px 30px rgba(0,0,0,.5);}
+.acctmenu.open{display:flex;}
+.acctmenu button{background:transparent;border:none;color:#f4f2ee;font-family:'Cormorant Garamond',serif;font-size:15px;text-align:left;padding:9px 12px;border-radius:8px;cursor:pointer;}
+.acctmenu button:hover{background:rgba(250,248,243,.08);}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:9500;}
+.scrim.on{opacity:1;pointer-events:auto;}
 </style>
 </head>
 <body>
 <div class="psy-top"><button class="menu-btn" aria-label="Menu">&#9776;</button><div class="wordmark">PSYCHE</div></div>
-<nav class="psy-menu" id="psyMenu">
-  <a href="index.html">Home</a>
-  <a href="pricing.html">Pricing</a>
-  <a href="support.html">Support</a>
-  <a href="privacy.html">Privacy</a>
-  <a href="terms.html">Terms</a>
-  <a href="urgent.html">Need support now?</a>
-  <a href="auth.html" class="join">Sign in / Join</a>
+<nav id="nav">
+  <div class="nav-top">
+    <div class="wordmark-side">PSYCHE</div>
+    <button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button>
+  </div>
+  <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
+  <div class="navitem" data-route="assessment.html">My assessment</div>
+  <div class="navitem" data-route="reveal.html">My reveal</div>
+  <div class="navitem" data-route="soon.html?t=Your%20practice">Your practice</div>
+  <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
+  <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
+  <div class="navitem" data-route="soon.html?t=Account%20%26%20earnings">Account &amp; earnings</div>
+  <div class="navitem soon">Meditations <span class="pill">soon</span></div>
+  <div class="navitem soon">Education <span class="pill">soon</span></div>
+  <div class="navitem upgrade" data-route="pricing.html">Upgrade</div>
+  <div class="navlabel">Recents</div>
+  <div id="recents"></div>
+  <div class="navspacer"></div>
+  <div class="navitem help" id="helpBtn" data-route="support.html">Help &amp; feedback</div>
+  <div class="acctwrap">
+    <div class="acctmenu" id="acctMenu">
+      <button id="acctSettings">Settings</button>
+      <button id="acctSignout">Sign out</button>
+    </div>
+    <div class="account" id="account">
+      <div class="avatar-dot">&middot;</div>
+      <div class="meta">Guest<br><span class="plan">Sign in</span></div>
+    </div>
+  </div>
 </nav>
+<div class="scrim" id="scrim"></div>
 
 <!-- ═════════════════════════════════════════
      SCREEN 1 — LANDING
@@ -2594,14 +2647,64 @@ document.addEventListener("keydown", e => {
 <script>(function(){var _b=window.buildReveal;if(typeof _b==="function"){window.buildReveal=function(){var r=_b.apply(this,arguments);try{var inner=document.querySelector('#reveal .rev-inner');if(inner&&!inner.querySelector('.rev-hero')){var fs=inner.querySelector('.rev-sec');if(fs){var h=document.createElement('div');h.className='rev-hero';while(inner.firstChild&&inner.firstChild!==fs){h.appendChild(inner.firstChild);}inner.insertBefore(h,fs);}}}catch(e){}return r;};}})();</script>
 <script>window.addEventListener("load",function(){var cb=document.getElementById("contBtn");if(cb){var prev=cb.onclick;cb.onclick=function(e){if(prev)prev.call(this,e);try{var a=document.getElementById("assess");if(a)a.scrollTop=0;window.scrollTo(0,0);}catch(x){}};}});</script>
 <script>
-window.addEventListener("load",function(){
-  var btn=document.querySelector(".psy-top .menu-btn");
-  var menu=document.getElementById("psyMenu");
-  if(btn&&menu){
-    btn.addEventListener("click",function(e){e.stopPropagation();menu.classList.toggle("open");});
-    document.addEventListener("click",function(e){if(!menu.contains(e.target)&&e.target!==btn){menu.classList.remove("open");}});
-  }
-});
+(function(){
+  var nav=document.getElementById('nav'), scrim=document.getElementById('scrim');
+  function openNav(){ nav.classList.add('open'); scrim.classList.add('on'); }
+  function closeNav(){ nav.classList.remove('open'); scrim.classList.remove('on'); }
+  function toggleNav(){ if(nav.classList.contains('open')) closeNav(); else openNav(); }
+  var menuBtn=document.querySelector(".psy-top .menu-btn");
+  if(menuBtn) menuBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleNav(); });
+  document.getElementById('collapseBtn').addEventListener('click', closeNav);
+  scrim.addEventListener('click', closeNav);
+  document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ location.href=el.getAttribute('data-route'); }; });
+  document.getElementById('newChat').onclick=()=>{ location.href='chat.html'; };
+
+  var acctMenu=document.getElementById('acctMenu');
+  document.getElementById('account').onclick=(e)=>{ e.stopPropagation(); location.href='auth.html'; };
+  document.getElementById('acctSettings').onclick=()=>{ location.href='settings.html'; };
+  document.getElementById('acctSignout').onclick=async()=>{ try{ var sb=window.__sb; if(sb) await sb.auth.signOut(); }catch(e){} location.href='index.html'; };
+  document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!document.getElementById('account').contains(e.target)) acctMenu.classList.remove('open'); });
+
+  // ---- session state: fill account chip when signed in ----
+  try{
+    var sb=window.__sb||(window.__sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb"));
+    sb.auth.getSession().then(async ({data})=>{
+      var session=data && data.session;
+      if(!session || !session.user){ return; }
+      var acct=document.getElementById('account');
+      try{
+        var uid=session.user.id;
+        var r=await sb.from('profiles').select('display_name,plan').eq('id',uid).single();
+        var name=(r.data&&r.data.display_name)||session.user.email||'You';
+        var plan=(r.data&&r.data.plan)?r.data.plan:'free';
+        if(acct){
+          acct.querySelector('.avatar-dot').textContent=name.trim().charAt(0).toUpperCase();
+          acct.querySelector('.meta').innerHTML=name+'<br><span class="plan">'+(plan.charAt(0).toUpperCase()+plan.slice(1))+' plan</span>';
+          acct.onclick=function(e){ e.stopPropagation(); var m=document.getElementById('acctMenu'); if(m) m.classList.toggle('open'); };
+        }
+      }catch(e){}
+    });
+  }catch(e){}
+
+  // ---- recents: read the same conversation list chat.html stores ----
+  (function(){
+    var box=document.getElementById('recents');
+    if(!box) return;
+    var chats=[];
+    try{ chats=JSON.parse(localStorage.getItem('psyche:chats'))||[]; }catch(e){ chats=[]; }
+    var label=document.querySelector('.navlabel');
+    if(!chats.length){ if(label) label.style.display='none'; return; }
+    if(label) label.style.display='';
+    chats.slice().reverse().forEach(function(c){
+      var d=document.createElement('div');
+      d.className='recent';
+      d.textContent=(c.title)||'New conversation';
+      d.title=(c.title)||'';
+      d.onclick=function(){ try{ localStorage.setItem('psyche:current', c.id||''); }catch(e){} location.href='chat.html'; };
+      box.appendChild(d);
+    });
+  })();
+})();
 </script>
 </body>
 </html>
