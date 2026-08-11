@@ -1,5 +1,8 @@
 {
   "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/front-v2.html" }
+  ],
   "functions": {
     "api/chat.js": {
       "maxDuration": 60
