@@ -178,7 +178,7 @@
   <div class="navlabel" id="recentsLabel">Recents</div>
   <div id="recents"></div>
   <div class="navspacer"></div>
-  <div class="navitem help" id="helpBtn">Help &amp; feedback</div>
+  <div class="navitem help" id="helpBtn" data-route="support.html">Help &amp; feedback</div>
   <div class="acctwrap">
     <div class="acctmenu" id="acctMenu">
       <button id="acctSettings">Settings</button>
@@ -371,7 +371,6 @@
   $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
   document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!$("account").contains(e.target)) acctMenu.classList.remove('open'); });
   const fbModal=$("fbModal");
-  $("helpBtn").onclick=()=>{ closeNav(); fbModal.classList.add('open'); setTimeout(()=>$("fbText").focus(),60); };
   $("fbCancel").onclick=()=>fbModal.classList.remove('open');
   $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ try{ const f=JSON.parse(localStorage.getItem("psyche:feedback")||"[]"); f.push({text:t,at:new Date().toISOString()}); localStorage.setItem("psyche:feedback",JSON.stringify(f)); }catch(e){} } $("fbText").value=""; fbModal.classList.remove('open'); alert("Thank you — your feedback was recorded."); };
 
