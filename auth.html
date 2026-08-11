@@ -5,31 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign in · Psyche</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-  // ---- auth: already signed in -> chat ----
-  (function(){
-    try{
-      var sb2=window.__sb||(window.__sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb"));
-      sb2.auth.getSession().then(function(r){ if(r.data && r.data.session) location.replace("chat.html"); });
-      var $=function(id){return document.getElementById(id);};
-      $("google").onclick=function(){ alert("Continue with Google — coming soon. Use email for now."); };
-      async function sendLink(){
-        var email=$("email").value.trim();
-        if(!email || email.indexOf("@")<0){ $("authMsg").textContent="Please enter a valid email address."; return; }
-        var btn=$("emailBtn"); btn.disabled=true; btn.textContent="Sending…";
-        var res=await sb2.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin + "/chat.html" } });
-        btn.disabled=false; btn.textContent="Email me a sign-in link";
-        if(res.error){ $("authMsg").textContent=res.error.message||"Couldn't send the link — please try again."; return; }
-        $("sentTo").textContent=email;
-        $("signinCard").style.display="none";
-        $("sentCard").style.display="block";
-      }
-      $("emailBtn").onclick=sendLink;
-      $("email").addEventListener("keydown",function(ev){ if(ev.key==="Enter") sendLink(); });
-      $("resend").onclick=function(){ $("sentCard").style.display="none"; $("signinCard").style.display="block"; $("email").focus(); };
-    }catch(e){}
-  })();
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --cream:#faf8f3; --night:#06090f; --indigo:#1d3891;
@@ -264,17 +240,32 @@
         var email=$("email").value.trim();
         if(!email || email.indexOf("@")<0){ $("authMsg").textContent="Please enter a valid email address."; return; }
         var btn=$("emailBtn"); btn.disabled=true; btn.textContent="Sending…";
-        var res=await sb2.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin + "/chat.html" } });
-        btn.disabled=false; btn.textContent="Email me a sign-in link";
-        if(res.error){ $("authMsg").textContent=res.error.message||"Couldn't send the link — please try again."; return; }
-        $("sentTo").textContent=email;
-        $("signinCard").style.display="none";
-        $("sentCard").style.display="block";
+        try{
+          var res=await sb2.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin + "/chat.html" } });
+          btn.disabled=false; btn.textContent="Email me a sign-in link";
+          if(res.error){
+            console.error("Psyche auth: signInWithOtp returned an error —", res.error);
+            $("authMsg").textContent=res.error.message||"Couldn't send the link — please try again.";
+            return;
+          }
+          console.log("Psyche auth: sign-in link requested for", email, res);
+          $("sentTo").textContent=email;
+          $("signinCard").style.display="none";
+          $("sentCard").style.display="block";
+        }catch(e){
+          console.error("Psyche auth: signInWithOtp threw —", e);
+          btn.disabled=false; btn.textContent="Email me a sign-in link";
+          $("authMsg").textContent="Couldn't reach the sign-in service — please check your connection and try again.";
+        }
       }
       $("emailBtn").onclick=sendLink;
       $("email").addEventListener("keydown",function(ev){ if(ev.key==="Enter") sendLink(); });
       $("resend").onclick=function(){ $("sentCard").style.display="none"; $("signinCard").style.display="block"; $("email").focus(); };
-    }catch(e){}
+    }catch(e){
+      console.error("Psyche auth: setup failed —", e);
+      var msg=document.getElementById("authMsg");
+      if(msg) msg.textContent="Sign-in is temporarily unavailable — please refresh and try again.";
+    }
   })();
 </script>
 </body>
