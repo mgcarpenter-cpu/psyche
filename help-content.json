@@ -1,0 +1,72 @@
+[
+  {
+    "id": "paid",
+    "group": "Your money",
+    "question": "Where's my money? When do I get paid?",
+    "answer": "Commission is held <b>30 days</b> while the payment clears, then paid on the <b>1st of each month</b> once your balance is over <b>$50</b>.",
+    "source": "account.html — How payouts work"
+  },
+  {
+    "id": "pending",
+    "group": "Your money",
+    "question": "Why is my payout \"pending\"?",
+    "answer": "Pending means the member has paid, but you're inside the 30-day window where a refund could still reverse it. Once it clears, it becomes payable.",
+    "source": "account.html — How payouts work"
+  },
+  {
+    "id": "clawback",
+    "group": "Your money",
+    "question": "Why did my earnings go down?",
+    "answer": "If a member you referred is refunded <b>after</b> you were paid, that commission is clawed back from your next balance.",
+    "source": "account.html — How payouts work"
+  },
+  {
+    "id": "payoutset",
+    "group": "Your money",
+    "question": "How do I set where I get paid?",
+    "answer": "Go to <b>Account → Payout method</b> and add your details. It's required before your first payout can be released.",
+    "source": "account.html — Payout method"
+  },
+  {
+    "id": "apikey",
+    "group": "Getting started",
+    "question": "Getting your API key",
+    "answer": "You bring your own key so usage is billed to you directly — it keeps Psyche's price low. 1. Go to <b>console.anthropic.com</b> and sign in. 2. Open <b>API Keys → Create key</b>. 3. Copy it (starts <b>sk-</b>) — it's shown once. 4. Add billing credit, then paste it into <b>Account → API key</b>.",
+    "source": "account.html — API key"
+  },
+  {
+    "id": "keybroken",
+    "group": "Getting started",
+    "question": "My key isn't working",
+    "answer": "Usually it's missing billing credit, or was pasted incompletely. Check it starts with <b>sk-</b> and that your Anthropic console has credit.",
+    "source": "account.html — API key"
+  },
+  {
+    "id": "share",
+    "group": "Using Psyche",
+    "question": "How do I share pearls?",
+    "answer": "Open the <b>Library</b>, tap a pearl, then tap a platform to post it. The video carries your code inside it.",
+    "source": "library.html"
+  },
+  {
+    "id": "ig",
+    "group": "Using Psyche",
+    "question": "Why didn't it post to Instagram / TikTok?",
+    "answer": "Those apps don't allow posting from a link — <b>save the video first</b> (tap Save to Photos), then open Instagram or TikTok and upload it from there.",
+    "source": "library.html — share panel"
+  },
+  {
+    "id": "reflink",
+    "group": "Using Psyche",
+    "question": "Where's my referral link?",
+    "answer": "It's baked into every video you share, and shown on your <b>Account</b> page.",
+    "source": "account.html"
+  },
+  {
+    "id": "lifetime",
+    "group": "Using Psyche",
+    "question": "What's lifetime? How does voice work?",
+    "answer": "Lifetime is one payment for permanent access — voice, unlimited pearls, the full practice, no recurring fee. For voice, open a chat and tap the microphone.",
+    "source": "account.html — Plan"
+  }
+]

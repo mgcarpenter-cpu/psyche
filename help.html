@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Help · Psyche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#06090f;--surround:#04060a;--bone:#e8e4dc;--bone-dim:#9aa0ab;--bone-faint:#5f6572;--gold:#c8a96e;--indigo:#1d3891;
+    --psy-ig:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);--hair:rgba(232,228,220,.10);--elev:rgba(244,242,238,.05);
+    /* nav tokens (shared with reveal.html / practice.html / library.html / account.html) */
+    --cream:#faf8f3; --night:#06090f; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    background:var(--night);color:var(--bone);font-family:"Cormorant Garamond",Georgia,serif;-webkit-font-smoothing:antialiased;
+    display:flex;height:100dvh;overflow:hidden;
+  }
+  a{color:inherit;}
+
+  /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
+  nav {
+    width: 258px; background: var(--panel);
+    border-right: 1px solid var(--navline);
+    display: flex; flex-direction: column;
+    flex-shrink: 0; overflow-y: auto; scrollbar-width: none;
+    transition: margin-left 0.25s ease;
+    z-index: 5;
+    color: var(--cream); font-family: 'Cormorant Garamond', serif;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav.hidden { margin-left: -258px; }
+  .nav-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 10px; }
+  .wordmark-side { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 0.3em; }
+  .collapse { background: transparent; border: none; color: var(--cream); opacity: 0.5; cursor: pointer; font-size: 16px; }
+  .collapse:hover { opacity: 1; }
+  .newchat {
+    margin: 4px 12px 14px; display: flex; align-items: center; gap: 10px;
+    background: rgba(250,248,243,0.06); border: 1px solid var(--navline);
+    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px;
+    border-radius: 12px; padding: 10px 14px; cursor: pointer;
+  }
+  .newchat:hover { background: rgba(250,248,243,0.1); }
+  .newchat .plus { width: 20px; height: 20px; border-radius: 50%; background: var(--cream); color: var(--night); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .navitem {
+    display: flex; align-items: center; gap: 10px;
+    margin: 1px 8px; padding: 8px 10px; border-radius: 9px;
+    font-size: 15.5px; opacity: 0.8; cursor: pointer;
+  }
+  .navitem:hover { background: rgba(250,248,243,0.06); opacity: 1; }
+  .navitem.active { background: rgba(250,248,243,0.08); opacity: 1; }
+  .navitem.soon { opacity: 0.38; cursor: default; }
+  .navitem.soon:hover { background: transparent; }
+  .navitem.soon .pill { margin-left: auto; font-style: italic; font-size: 11.5px; border: 1px solid rgba(250,248,243,0.2); border-radius: 9px; padding: 0 7px; }
+  .navlabel { font-style: italic; font-size: 12.5px; opacity: 0.42; padding: 16px 20px 6px; }
+  .recent {
+    margin: 0 8px; padding: 7px 10px; border-radius: 9px;
+    font-size: 15px; opacity: 0.72; cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .recent:hover, .recent.active { background: rgba(250,248,243,0.06); opacity: 1; }
+  .navspacer { flex: 1; min-height: 16px; }
+  .account {
+    display: flex; align-items: center; gap: 10px;
+    margin: 8px; padding: 10px; border-radius: 12px;
+    border-top: 1px solid var(--navline); cursor: pointer;
+  }
+  .account:hover { background: rgba(250,248,243,0.05); }
+  .avatar-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; color: var(--cream); }
+  .account .meta { line-height: 1.15; font-size: 14.5px; }
+  .account .meta .plan { font-style: italic; opacity: 0.5; font-size: 13px; }
+  .navitem.upgrade { border: 1px solid rgba(250,248,243,0.28); border-radius: 10px; margin: 10px 8px; justify-content: center; opacity: 0.95; }
+  .navitem.upgrade:hover { background: rgba(250,248,243,0.08); opacity: 1; }
+  .navitem.help { opacity: 0.5; font-size: 14px; }
+  .navitem.help:hover { opacity: 0.85; background: rgba(250,248,243,0.05); }
+
+  .acctwrap { position: relative; }
+  .acctmenu {
+    position: absolute; bottom: calc(100% - 2px); left: 8px; right: 8px; z-index: 9;
+    background: var(--panel); border: 1px solid rgba(250,248,243,0.14);
+    border-radius: 12px; padding: 6px; display: none; flex-direction: column;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
+  }
+  .acctmenu.open { display: flex; }
+  .acctmenu button { background: transparent; border: none; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px; text-align: left; padding: 9px 12px; border-radius: 8px; cursor: pointer; }
+  .acctmenu button:hover { background: rgba(250,248,243,0.08); }
+
+  .fbmodal { position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal.open { display: flex; }
+  .fbcard { background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family: 'Cormorant Garamond', serif; }
+  .fbcard h3 { font-weight: 400; font-size: 22px; margin-bottom: 8px; }
+  .fbcard p { opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
+  .fbcard textarea { width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px; outline: none; resize: none; }
+  .fbcard .row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+  .fbcard .row button { font-family: 'Cormorant Garamond', serif; font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost { background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
+  .fbcard .primary { background: var(--cream); border: none; color: var(--night); }
+
+  @media (max-width: 760px) {
+    nav { position: fixed; z-index: 10; height: 100dvh; margin-left: -258px; }
+    nav.open { margin-left: 0; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
+  }
+
+  /* ================= MAIN — this page is its own fixed-header/fixed-composer
+     chat app, so only .thread scrolls (unlike the document-style shell pages) ================= */
+  main { flex: 1; min-width: 0; overflow: hidden; background: #06090f; display: flex; justify-content: center; }
+  .frame { width: 100%; max-width: 460px; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar {
+    flex: 0 0 auto;
+    display: flex; gap: 14px; align-items: center; padding: 14px 18px;
+  }
+  .menu-btn { background: transparent; border: none; color: #e8e4dc; font-size: 19px; cursor: pointer; opacity: 0.6; }
+  .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: #e8e4dc; }
+
+  /* ===== page content (help-design-v1, verbatim) ===== */
+  .intro{padding:4px 22px 16px;flex:0 0 auto;}
+  .lead{font-style:italic;font-size:20px;line-height:1.4;color:var(--gold);text-shadow:0 0 20px rgba(200,169,110,.18);margin-bottom:6px;}
+  .scope{font-size:14px;color:var(--bone-faint);font-style:italic;line-height:1.5;}
+
+  /* the single dropdown */
+  .picker{padding:0 22px 14px;flex:0 0 auto;position:relative;}
+  .sel{width:100%;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(200,169,110,.3);border-radius:12px;background:var(--elev);padding:15px 18px;cursor:pointer;}
+  .sel .t{font-size:16px;color:var(--bone);}
+  .sel .car{color:var(--bone-faint);font-size:12px;transition:transform .25s;}
+  .picker.open .car{transform:rotate(180deg);}
+  .menu{position:absolute;left:22px;right:22px;top:100%;z-index:9;background:#0a0e15;border:1px solid var(--hair);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;max-height:0;transition:max-height .28s ease;}
+  .picker.open .menu{max-height:460px;overflow-y:auto;}
+  .grp-l{font-family:"Cinzel",serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-faint);padding:14px 18px 6px;}
+  .opt{padding:12px 18px;font-size:16px;color:var(--bone-dim);cursor:pointer;border-top:1px solid rgba(232,228,220,.05);}
+  .opt:hover{background:rgba(200,169,110,.06);color:var(--gold);}
+
+  /* chat space */
+  .thread{flex:1;overflow-y:auto;padding:10px 22px 20px;display:flex;flex-direction:column;gap:18px;}
+  .empty{color:var(--bone-faint);font-style:italic;font-size:15px;text-align:center;margin-top:30px;line-height:1.6;}
+  .usr{align-self:flex-end;max-width:82%;background:var(--elev);border:1px solid var(--hair);border-radius:16px 16px 4px 16px;padding:11px 15px;font-size:15.5px;color:var(--bone);}
+  .psy{max-width:90%;position:relative;}
+  .psy .who{font-family:"Cinzel",serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-faint);margin-bottom:7px;}
+  .psy .msg{font-size:16px;line-height:1.6;color:var(--bone-dim);}
+  .psy .msg b{color:var(--bone);font-weight:500;}
+  .yours{display:block;margin-top:12px;border:1px solid rgba(200,169,110,.28);border-radius:10px;background:linear-gradient(180deg,rgba(200,169,110,.05),transparent);padding:11px 14px;font-style:italic;color:var(--gold);font-size:15px;line-height:1.5;}
+  .yours .lbl{display:block;font-family:"Cinzel",serif;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);font-style:normal;margin-bottom:5px;}
+
+  .actions{display:flex;align-items:center;gap:12px;margin-top:8px;opacity:0;transition:opacity .18s;}
+  .psy:hover .actions{opacity:1;}
+  .actions .time{font-family:"Cinzel",serif;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-faint);}
+  .actions .tb{width:15px;height:15px;color:var(--bone-faint);cursor:pointer;transition:color .15s;display:inline-flex;}
+  .actions .tb:hover{color:var(--bone);}
+  .actions .tb.on{color:var(--gold);}
+  .actions .tb svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;}
+  .esc-btn{margin-top:12px;font-family:"Cormorant Garamond",serif;font-size:15px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:22px;padding:9px 20px;cursor:pointer;box-shadow:0 4px 14px rgba(29,56,145,.35);}
+  .esc-note{margin-top:10px;font-size:13.5px;color:var(--bone-faint);font-style:italic;}
+  .mini{margin-top:10px;} .mini .s{display:flex;gap:10px;padding:5px 0;font-size:15px;} .mini .n{font-style:italic;font-weight:600;color:var(--gold);flex:0 0 auto;}
+
+  .composer{flex:0 0 auto;border-top:1px solid var(--hair);padding:13px 18px;display:flex;align-items:center;gap:11px;background:var(--bg);}
+  .composer input{flex:1;background:var(--elev);border:1px solid var(--hair);border-radius:24px;padding:12px 17px;color:var(--bone);font-family:"Cormorant Garamond",serif;font-size:15px;outline:none;}
+  .composer input::placeholder{color:var(--bone-faint);font-style:italic;}
+  .composer .send{width:40px;height:40px;border-radius:50%;background:var(--psy-ig);border:none;color:#fff;font-size:15px;cursor:pointer;flex:0 0 auto;box-shadow:0 4px 14px rgba(29,56,145,.4);}
+  .composer .send:disabled{opacity:.5;cursor:default;}
+</style>
+</head>
+<body>
+
+<nav id="nav" class="hidden">
+  <div class="nav-top">
+    <div class="wordmark-side">PSYCHE</div>
+    <button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button>
+  </div>
+  <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
+  <div class="navitem" data-route="assessment.html">My assessment</div>
+  <div class="navitem" data-route="reveal.html">My reveal</div>
+  <div class="navitem" data-route="practice.html">Your practice</div>
+  <div class="navitem" data-route="library.html">Library</div>
+  <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
+  <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
+  <div class="navitem" data-route="account.html">Account &amp; earnings</div>
+  <div class="navitem soon">Meditations <span class="pill">soon</span></div>
+  <div class="navitem soon">Education <span class="pill">soon</span></div>
+  <div class="navitem upgrade" data-route="pricing.html">Upgrade</div>
+  <div class="navlabel" id="recentsLabel">Recents</div>
+  <div id="recents"></div>
+  <div class="navspacer"></div>
+  <div class="navitem help active" id="helpBtn" data-route="help.html">Help &amp; feedback</div>
+  <div class="acctwrap">
+    <div class="acctmenu" id="acctMenu">
+      <button id="acctSettings">Settings</button>
+      <button id="acctSignout">Sign out</button>
+    </div>
+    <div class="account" id="account">
+      <div class="avatar-dot">&middot;</div>
+      <div class="meta">Guest<br><span class="plan">Sign in</span></div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="frame">
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn">&#9776;</button>
+      <div class="wordmark">PSYCHE</div>
+    </div>
+
+    <div class="intro">
+      <div class="lead">How can we help?</div>
+      <div class="scope">Using Psyche &mdash; navigating, sharing, your account &amp; payments. This isn&rsquo;t the coaching chat, just app help. Pick a question, then ask anything more below.</div>
+    </div>
+
+    <div class="picker" id="picker">
+      <div class="sel" id="selBtn">
+        <span class="t">Choose a question&hellip;</span><span class="car">&#9662;</span>
+      </div>
+      <div class="menu" id="menu"></div>
+    </div>
+
+    <div class="thread" id="thread">
+      <div class="empty" id="empty">Pick a question above &mdash; the answer appears here,<br>and you can keep asking from there.</div>
+    </div>
+
+    <div class="composer">
+      <input placeholder="Ask about using Psyche&hellip;" id="inp">
+      <button class="send" id="sendBtn">&#8593;</button>
+    </div>
+  </div>
+</main>
+
+<div class="fbmodal" id="fbModal">
+  <div class="fbcard">
+    <h3>Help &amp; feedback</h3>
+    <p>What's working, what isn't, what would make this worth it? Anything helps.</p>
+    <textarea id="fbText" placeholder="Type your thoughts&hellip;"></textarea>
+    <div class="row">
+      <button class="ghost" id="fbCancel">Cancel</button>
+      <button class="primary" id="fbSend">Send</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const $=id=>document.getElementById(id);
+  const nav=$("nav");
+  function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+  // ================= SIDEBAR TOGGLE =================
+  function toggleNav(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
+  function closeNav(){ if(window.innerWidth<=760){ nav.classList.add('hidden'); nav.classList.remove('open'); } }
+  $("menuBtn").addEventListener('click', toggleNav);
+  $("collapseBtn").addEventListener('click', toggleNav);
+
+  // ================= RECENTS =================
+  const CK="psyche:chats", CC="psyche:current";
+  function loadLS(k,d){ try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){ return d; } }
+  let chats=loadLS(CK,[]);
+  function renderSidebar(){
+    const box=$("recents"), label=$("recentsLabel");
+    box.innerHTML="";
+    const list=chats.slice().reverse();
+    if(!list.length){ label.style.display="none"; return; }
+    label.style.display="";
+    list.forEach(c=>{
+      const d=document.createElement('div');
+      d.className="recent";
+      d.textContent=c.title||"New conversation";
+      d.title=c.title||"";
+      d.onclick=()=>{ localStorage.setItem(CC,c.id); location.href="chat.html"; };
+      box.appendChild(d);
+    });
+  }
+  function newConversation(){ localStorage.setItem(CC,""); location.href="chat.html"; }
+  $("newChat").onclick=newConversation;
+  document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ location.href=el.getAttribute('data-route'); }; });
+
+  // ================= SUPABASE =================
+  const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
+  const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
+  const sb=supabase.createClient(SB_URL,SB_KEY);
+  const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+  let acctUid=null, acctToken=null, acctEmail=null, acctProfile=null;
+
+  function renderAccount(){
+    const el=$("account"); if(!el) return;
+    const signedIn=!!acctUid;
+    const name=(acctProfile&&acctProfile.display_name)||"";
+    const label=name||acctEmail||"Guest";
+    const initial=((label.trim()[0])||"·").toUpperCase();
+    const planLabel=signedIn?cap((acctProfile&&acctProfile.plan)||"free"):"Sign in";
+    el.innerHTML='<div class="avatar-dot">'+esc(initial)+'</div><div class="meta">'+esc(label)+'<br><span class="plan">'+esc(signedIn?(planLabel+' · manage'):'Sign in')+'</span></div>';
+    el.onclick=(e)=>{ e.stopPropagation(); if(!signedIn){ location.href="auth.html"; return; } var m=$("acctMenu"); if(m) m.classList.toggle('open'); };
+  }
+
+  // ================= ACCOUNT MENU, HELP & FEEDBACK MODAL (unused entry point kept for shell consistency) =================
+  const acctMenu=$("acctMenu");
+  $("acctSettings").onclick=()=>{ location.href="settings.html"; };
+  $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
+  document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!$("account").contains(e.target)) acctMenu.classList.remove('open'); });
+  const fbModal=$("fbModal");
+  $("fbCancel").onclick=()=>fbModal.classList.remove('open');
+  $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ try{ const f=JSON.parse(localStorage.getItem("psyche:feedback")||"[]"); f.push({text:t,at:new Date().toISOString()}); localStorage.setItem("psyche:feedback",JSON.stringify(f)); }catch(e){} } $("fbText").value=""; fbModal.classList.remove('open'); alert("Thank you — your feedback was recorded."); };
+
+  renderSidebar();
+
+  // ================================================================
+  // HELP CONTENT PACK — the ONLY source of truth the help assistant may
+  // answer from. Starts as the curated set below (mirrors the design mock);
+  // swap the fetch target for a real app-content ingestion pipeline later.
+  // ================================================================
+  let CONTENT=[];
+  async function loadContent(){
+    try{ const res=await fetch("help-content.json"); CONTENT=await res.json(); }catch(e){ CONTENT=[]; }
+  }
+  function renderPicker(){
+    const menu=$("menu");
+    const groups={};
+    CONTENT.forEach(item=>{ (groups[item.group]=groups[item.group]||[]).push(item); });
+    let html="";
+    Object.keys(groups).forEach(g=>{
+      html+='<div class="grp-l">'+esc(g)+'</div>';
+      groups[g].forEach(item=>{
+        html+='<div class="opt" data-id="'+esc(item.id)+'">'+esc(item.question)+'</div>';
+      });
+    });
+    menu.innerHTML=html;
+    menu.querySelectorAll('.opt').forEach(el=>{
+      el.onclick=()=>{ pick(el.getAttribute('data-id')); };
+    });
+  }
+  $("selBtn").onclick=()=>{ $("picker").classList.toggle('open'); };
+  function pick(id){
+    const item=CONTENT.find(c=>c.id===id);
+    if(!item) return;
+    $("picker").classList.remove('open');
+    askHelp(item.question);
+  }
+
+  // ================= ACCOUNT-AWARE CONTEXT (read-only) =================
+  // Real fields come from the signed-in user's own Supabase profile row.
+  // Balance/payout figures aren't backed by a real payouts system yet (same
+  // placeholder data account.html shows), so they're read from the same
+  // public placeholder file rather than invented fresh here.
+  let EARNINGS=null;
+  async function loadEarnings(){
+    try{ const res=await fetch("account-earnings-data.json"); EARNINGS=await res.json(); }catch(e){ EARNINGS=null; }
+  }
+  function referralCode(){
+    const base=((acctProfile&&acctProfile.display_name)||"friend").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,6)||"friend";
+    const suffix=(acctUid||"").replace(/-/g,"").slice(-2)||"00";
+    return "psyche.ai/"+base+suffix;
+  }
+  function accountContext(){
+    if(!acctUid) return { signedIn:false };
+    const plan=(acctProfile&&acctProfile.plan)||"free";
+    const apiKeyConnected=!!(acctProfile&&acctProfile.api_key);
+    const e=EARNINGS||{};
+    const np=e.nextPayout||{};
+    return {
+      signedIn:true,
+      plan,
+      apiKeyConnected,
+      payoutMethodSet: !!e.payoutMethod,
+      pendingPayoutAmount: np.amount||0,
+      pendingPayoutNote: np.note||"",
+      paidToDate: e.paidToDate||0,
+      referralCode: referralCode()
+    };
+  }
+  function accountContextText(){
+    const c=accountContext();
+    if(!c.signedIn) return "The visitor is not signed in — no account facts are available. If a question needs their account, ask them to sign in.";
+    const lines=[
+      "Plan: "+cap(c.plan)+".",
+      "API key: "+(c.apiKeyConnected?"connected":"not connected")+". Never reveal the key value — you don't have it, only this status.",
+      "Payout method: "+(c.payoutMethodSet?"set":"not set")+".",
+      c.pendingPayoutAmount ? ("Next payout: $"+c.pendingPayoutAmount+", "+c.pendingPayoutNote+".") : "No pending payout right now.",
+      "Total paid to date: $"+c.paidToDate+".",
+      "Referral link: "+c.referralCode+"."
+    ];
+    return lines.join(" ");
+  }
+
+  // ================= THE HELP ASSISTANT (reuses the existing /api/chat proxy) =================
+  function contentPackText(){
+    return CONTENT.map(c=>"Q: "+c.question+"\nA: "+c.answer).join("\n\n");
+  }
+  function buildSystem(){
+    return "You are \"Psyche Help\" — a narrow, scoped support assistant for the Psyche app. "
+      + "You are NOT the Psyche coaching persona: you never coach, never discuss feelings or the practice itself, never give life advice. "
+      + "Your only job is helping people use the app — navigating, sharing pearls, their account, payments and payouts.\n\n"
+      + "RULES — follow exactly, every reply:\n"
+      + "1. Answer ONLY using the CONTENT PACK below. Never use outside/general knowledge. Never invent steps, numbers, dates, prices or URLs that aren't in the pack.\n"
+      + "2. If the question is about using the app but the CONTENT PACK doesn't cover it, do not guess. Reply starting with the exact token [ESCALATE] then one short warm sentence saying you can't find that and offering to pass it to Mark.\n"
+      + "3. If the question is off-topic, personal coaching, or anything other than using the app, do not answer it. Reply starting with the exact token [REDIRECT] then one short warm sentence steering them back — this page is only for app help; the coaching chat is a separate space.\n"
+      + "4. Otherwise reply starting with the exact token [ANSWER] then your answer, grounded only in the CONTENT PACK.\n"
+      + "5. Formatting: plain text, <b>bold</b> for key facts only, 1-3 sentences. If — and only if — ACCOUNT CONTEXT below has a fact directly relevant to the question, end an [ANSWER] with exactly one extra line in this exact form: <span class='yours'><span class='lbl'>Your account</span>THE SPECIFIC FACT</span>. Never fabricate an account fact beyond what ACCOUNT CONTEXT states, and never write out an API key value.\n\n"
+      + "CONTENT PACK (the only source of truth — nothing outside this exists):\n" + contentPackText() + "\n\n"
+      + "ACCOUNT CONTEXT (read-only facts about the person you're talking to right now):\n" + accountContextText();
+  }
+
+  // Allowlist sanitizer — the model may only produce <b> and <span class="yours"|"lbl">.
+  function sanitizeHelpHTML(html){
+    const tmp=document.createElement('div');
+    tmp.innerHTML=html;
+    (function clean(node){
+      [...node.childNodes].forEach(child=>{
+        if(child.nodeType!==1) return;
+        const tag=child.tagName.toLowerCase();
+        const okSpan = tag==='span' && (child.className==='yours' || child.className==='lbl');
+        if(tag==='b' || okSpan){
+          [...child.attributes].forEach(a=>{ if(a.name!=='class') child.removeAttribute(a.name); });
+          clean(child);
+        } else {
+          const text=document.createTextNode(child.textContent);
+          node.replaceChild(text,child);
+        }
+      });
+    })(tmp);
+    return tmp.innerHTML;
+  }
+
+  let history=[]; // {role,content} — plain text only, markers stripped, sent back for continuity
+  function clearEmpty(){ const e=$("empty"); if(e) e.remove(); }
+  function scrollThread(){ const t=$("thread"); t.scrollTop=t.scrollHeight; }
+
+  function addUserBubble(text){
+    clearEmpty();
+    const d=document.createElement('div');
+    d.className='usr';
+    d.textContent=text;
+    $("thread").appendChild(d);
+    scrollThread();
+  }
+
+  function addPsyBubble(html, forQuestion){
+    const wrap=document.createElement('div');
+    wrap.className='psy';
+    wrap.innerHTML='<div class="who">Psyche help</div><div class="msg">'+sanitizeHelpHTML(html)+'</div>';
+    const actions=buildThumbs(forQuestion);
+    wrap.appendChild(actions);
+    $("thread").appendChild(wrap);
+    scrollThread();
+    return wrap;
+  }
+
+  function addEscalateOffer(message, forQuestion, source){
+    const wrap=document.createElement('div');
+    wrap.className='psy';
+    wrap.innerHTML='<div class="who">Psyche help</div><div class="msg">'+esc(message)+'</div>';
+    const btn=document.createElement('button');
+    btn.className='esc-btn';
+    btn.textContent='✦ Send to Mark';
+    btn.onclick=()=>sendToMark(forQuestion, source, wrap, btn);
+    wrap.appendChild(btn);
+    $("thread").appendChild(wrap);
+    scrollThread();
+  }
+
+  function buildThumbs(forQuestion){
+    const actions=document.createElement('div');
+    actions.className='actions';
+    const time=document.createElement('span');
+    time.className='time'; time.textContent='now';
+    const up=document.createElement('span'); up.className='tb';
+    up.innerHTML="<svg viewBox='0 0 24 24'><path d='M7 11v9M7 11l3-7a2 2 0 0 1 3 1v4h5a2 2 0 0 1 2 2l-1.5 7a2 2 0 0 1-2 1.5H7'/></svg>";
+    const down=document.createElement('span'); down.className='tb';
+    down.innerHTML="<svg viewBox='0 0 24 24'><path d='M17 13V4M17 13l-3 7a2 2 0 0 1-3-1v-4H6a2 2 0 0 1-2-2l1.5-7A2 2 0 0 1 7.5 5H17'/></svg>";
+    up.onclick=()=>{ up.classList.add('on'); down.classList.remove('on'); };
+    down.onclick=()=>{
+      if(down.classList.contains('on')) return;
+      down.classList.add('on'); up.classList.remove('on');
+      addEscalateOffer("Sorry that didn't land. Want me to pass it to Mark? He'll get your question with your account details so he can help properly.", forQuestion, "thumbs_down");
+    };
+    actions.appendChild(time); actions.appendChild(up); actions.appendChild(down);
+    return actions;
+  }
+
+  async function sendToMark(question, source, wrap, btn){
+    btn.disabled=true; btn.textContent='Sending…';
+    try{
+      const res=await fetch('/api/help-ticket',{
+        method:'POST',
+        headers:Object.assign({'Content-Type':'application/json'}, acctToken?{Authorization:'Bearer '+acctToken}:{}),
+        body:JSON.stringify({ question, source, accountContext: accountContext() })
+      });
+      const data=await res.json();
+      if(!res.ok || !data.ok) throw new Error(data.error||'failed');
+      btn.remove();
+      const note=document.createElement('div');
+      note.className='esc-note';
+      note.textContent="Sent — Mark will follow up if there's more to it.";
+      wrap.appendChild(note);
+    }catch(e){
+      btn.disabled=false; btn.textContent='✦ Send to Mark';
+      alert("Couldn't send that just now — please try again in a moment.");
+    }
+  }
+
+  async function askHelp(question){
+    if(!question || !question.trim()) return;
+    addUserBubble(question);
+    history.push({role:'user', content:question});
+    try{
+      const res=await fetch('/api/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ system:buildSystem(), messages:history, max_tokens:500 })
+      });
+      const data=await res.json();
+      if(!res.ok || !data.content) throw new Error(data.error||'no response');
+      const raw=data.content.filter(x=>x.type==='text').map(x=>x.text).join("\n").trim();
+      const m=raw.match(/^\[(ANSWER|ESCALATE|REDIRECT)\]\s*/i);
+      const mode = m ? m[1].toUpperCase() : 'ANSWER';
+      const body = m ? raw.slice(m[0].length) : raw;
+      history.push({role:'assistant', content:body});
+      if(mode==='ESCALATE'){
+        addEscalateOffer(body.replace(/<[^>]+>/g,''), question, "unanswered");
+      } else {
+        addPsyBubble(body, question);
+      }
+    }catch(e){
+      addEscalateOffer("Couldn't reach help just now — want me to pass this to Mark instead?", question, "unanswered");
+    }
+  }
+
+  function askFree(){
+    const inp=$("inp");
+    const q=inp.value;
+    if(!q || !q.trim()) return;
+    inp.value='';
+    askHelp(q.trim());
+  }
+  $("sendBtn").onclick=askFree;
+  $("inp").addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); askFree(); } });
+
+  // ================= BOOT =================
+  async function boot(){
+    await Promise.all([loadContent(), loadEarnings()]);
+    renderPicker();
+  }
+
+  if(window.PSYCHE_PREVIEW){
+    const p=window.PSYCHE_PREVIEW_PROFILE;
+    acctUid=p.id; acctToken=null; acctEmail=p.email;
+    acctProfile={display_name:p.display_name, plan:p.plan, api_key:""};
+    renderAccount();
+    boot();
+  } else {
+    sb.auth.getSession().then(async({data})=>{
+      const s=data.session;
+      if(s && s.user){
+        acctUid=s.user.id; acctToken=s.access_token; acctEmail=s.user.email||"";
+        const {data:p,error}=await sb.from("profiles").select("display_name,plan,api_key").eq("id",acctUid).single();
+        if(error){ console.error("profile fetch failed:",error); }
+        acctProfile=p||{};
+      }
+      renderAccount();
+      boot();
+    });
+    sb.auth.onAuthStateChange((_e,session)=>{
+      const s=session;
+      acctUid = s&&s.user ? s.user.id : null;
+      acctToken = s ? s.access_token : null;
+      acctEmail = s&&s.user ? (s.user.email||"") : null;
+      if(!acctUid) acctProfile=null;
+      renderAccount();
+    });
+  }
+</script>
+</body>
+</html>
