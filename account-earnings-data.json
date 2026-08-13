@@ -1,0 +1,13 @@
+{
+  "arrived": 1240,
+  "joined": 34,
+  "paidToDate": 408,
+  "nextPayout": { "amount": 72, "note": "clears & pays 1 Sep · once over $50" },
+  "payoutMethod": null,
+  "ledger": [
+    { "id": "l-004", "title": "August (so far)", "detail": "6 members · clears 1 Sep", "amount": 72, "status": "pending" },
+    { "id": "l-003", "title": "Chargeback adjustment", "detail": "1 refund · clawed from next", "amount": -12, "status": "clawback" },
+    { "id": "l-002", "title": "July payout", "detail": "20 members · paid 1 Aug", "amount": 240, "status": "paid" },
+    { "id": "l-001", "title": "June payout", "detail": "14 members · paid 1 Jul", "amount": 168, "status": "paid" }
+  ]
+}
