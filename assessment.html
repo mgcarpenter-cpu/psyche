@@ -1175,7 +1175,7 @@ nav.open{margin-left:0;box-shadow:4px 0 30px rgba(0,0,0,.6);}
   <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
   <div class="navitem" data-route="assessment.html">My assessment</div>
   <div class="navitem" data-route="reveal.html">My reveal</div>
-  <div class="navitem" data-route="soon.html?t=Your%20practice">Your practice</div>
+  <div class="navitem" data-route="practice.html">Your practice</div>
   <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
   <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
   <div class="navitem" data-route="soon.html?t=Account%20%26%20earnings">Account &amp; earnings</div>
@@ -2456,8 +2456,31 @@ function buildReveal() {
     });
   }, 400);
 
+  saveAssessmentResult();
+
   // Now personalise the whole reveal with AI (overwrites generic text when it returns)
   personalizeReveal();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PERSIST — save the latest assessment result (archetype + 12
+   dimension bars) so other pages (e.g. practice.html) can read it.
+   ═══════════════════════════════════════════════════════════ */
+function saveAssessmentResult() {
+  try {
+    const dims = SPIRIT_DIMS.map(sd => {
+      const raw = getVal(sd.k, 1, 16, 20, 88);
+      const val = sd.inv ? Math.max(15, 90 - raw) : raw;
+      return { key: sd.k, label: sd.label, val, lo: sd.lo, hi: sd.hi };
+    });
+    const rec = {
+      archName: (document.getElementById("revName") || {}).textContent || "",
+      archLine: (document.getElementById("revArch") || {}).textContent || "",
+      dims,
+      at: new Date().toISOString()
+    };
+    localStorage.setItem("psyche:assessment", JSON.stringify(rec));
+  } catch (e) {}
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -2590,6 +2613,8 @@ ${list}`;
   if (rArch.status === "fulfilled") ok = applyArch(parseJSON(rArch.value)) || ok;
   if (rA.status === "fulfilled")    ok = applyBars(parseJSON(rA.value))    || ok;
   if (rB.status === "fulfilled")    ok = applyBars(parseJSON(rB.value))    || ok;
+
+  if (ok) saveAssessmentResult();
 
   if (ok) {
     if (banner) banner.style.display = "none";

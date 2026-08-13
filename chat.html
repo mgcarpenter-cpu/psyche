@@ -284,7 +284,7 @@
   <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
   <div class="navitem" data-route="assessment.html">My assessment</div>
   <div class="navitem" data-route="reveal.html">My reveal</div>
-  <div class="navitem" data-route="soon.html?t=Your%20practice">Your practice</div>
+  <div class="navitem" data-route="practice.html">Your practice</div>
   <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
   <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
   <div class="navitem" data-route="soon.html?t=Account%20%26%20earnings">Account &amp; earnings</div>
@@ -543,6 +543,12 @@
       if(!res.ok||data.error){ throw new Error(data.error||"Generation failed"); }
       data.title=c.title; data.chatId=c.id; data.at=new Date().toISOString();
       try{ localStorage.setItem("psyche:reveal",JSON.stringify(data)); }catch(e){}
+      try{
+        let list=[]; try{ list=JSON.parse(localStorage.getItem("psyche:reveals"))||[]; }catch(e){ list=[]; }
+        list=list.filter(r=>r&&r.chatId!==data.chatId);
+        list.push(data);
+        localStorage.setItem("psyche:reveals",JSON.stringify(list));
+      }catch(e){}
       location.href="reveal.html";
     }catch(e){
       btn.disabled=false; btn.innerHTML="✦ &nbsp;Reveal the pattern";

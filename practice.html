@@ -4,24 +4,22 @@
 <script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>The way through · Psyche</title>
+<title>Your practice · Psyche</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --page:#efece4; --card:#faf8f3; --ink:#2a261f; --soft:#6a655c; --muted:#9a948a;
-    --line:#ece7da; --indigo-deep:#16296b;
-    /* nav tokens (separate from this page's own cream palette above) */
-    --cream:#faf8f3; --night:#06090f; --indigo:#1d3891; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
+    --gold:#c8a96e;--indigo:#1d3891;--bone-dim:#9aa0ab;--bone-faint:#5f6572;
+    /* nav tokens (shared with reveal.html) */
+    --cream:#faf8f3; --night:#06090f; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
-    background:var(--night);color:#e8e4dc;font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;
+    background:var(--night);color:#e8e4dc;font-family:"Cormorant Garamond",Georgia,serif;-webkit-font-smoothing:antialiased;
     display:flex;height:100dvh;overflow:hidden;
   }
-  .sans{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
   a{color:inherit;}
 
   /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
@@ -54,6 +52,7 @@
     font-size: 15.5px; opacity: 0.8; cursor: pointer;
   }
   .navitem:hover { background: rgba(250,248,243,0.06); opacity: 1; }
+  .navitem.active { background: rgba(250,248,243,0.08); opacity: 1; }
   .navitem.soon { opacity: 0.38; cursor: default; }
   .navitem.soon:hover { background: transparent; }
   .navitem.soon .pill { margin-left: auto; font-style: italic; font-size: 11.5px; border: 1px solid rgba(250,248,243,0.2); border-radius: 9px; padding: 0 7px; }
@@ -116,56 +115,50 @@
   .menu-btn { background: transparent; border: none; color: #e8e4dc; font-size: 19px; cursor: pointer; opacity: 0.6; }
   .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: #e8e4dc; }
 
-  /* ===== page content (dark reveal — redesigned 12 Aug 2026) ===== */
+  /* ===== page content (practice-v2 design) ===== */
   .page{ padding:12px 20px 80px; }
   .frame{ max-width:500px; margin:0 auto; }
   .inner{ padding:34px 10px 30px; }
 
-  /* wisdom hero */
-  .wisdom{ position:relative; padding:6px 0 40px; text-align:center; display:block; }
-  .wisdom::before{ content:""; position:absolute; left:50%; top:-6px; width:300px; height:200px;
-    transform:translateX(-50%); background:radial-gradient(ellipse at center,rgba(58,95,206,.16),transparent 68%);
-    filter:blur(6px); pointer-events:none; z-index:0; }
-  .wisdom .mark{ display:block; margin-bottom:14px; font-size:40px; line-height:0; color:#1d3891; opacity:.55; font-style:normal; }
-  .wisdom .rtext{ position:relative; z-index:1; font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500;
-    font-size:1.78rem; line-height:1.34; letter-spacing:.005em; color:#a6b8f2; text-shadow:0 0 26px rgba(111,134,214,.4); }
+  /* HEADING DEVICE — full-width square bar, faded right */
+  .barhead{display:block;color:#06090f;font-family:"Cinzel",serif;font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;padding:12px 18px;border-radius:4px;margin-bottom:24px;background:linear-gradient(90deg,#e8e4dc 0%,#e8e4dc 55%,rgba(232,228,220,0) 100%);}
+  .barmeta{font-size:15px;color:var(--bone-faint);font-style:italic;margin:-14px 0 26px 2px;}
 
-  /* sections */
-  .sec{ padding:26px 0; border-top:1px solid rgba(232,228,220,.10); }
-  .rlabel{ font-family:'Cinzel',serif; font-weight:400; font-size:12.5px; letter-spacing:.28em; text-transform:uppercase;
-    color:#a6b8f2; margin-bottom:14px; }
-  .rtext{ font-family:'Cormorant Garamond',serif; font-size:1.2rem; line-height:1.62; color:#e8e4dc; font-weight:400; }
-  .rtext + .rtext{ margin-top:12px; }
+  /* archetype hero */
+  .arch{text-align:center;padding:2px 0 34px;position:relative;}
+  .arch::before{content:"";position:absolute;left:50%;top:-4px;width:260px;height:120px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(200,169,110,.12),transparent 70%);filter:blur(6px);z-index:0;}
+  .arch .name{position:relative;z-index:1;font-style:italic;font-weight:500;font-size:31px;color:var(--gold);text-shadow:0 0 24px rgba(200,169,110,.3);margin-bottom:8px;}
+  .arch .say{position:relative;z-index:1;font-size:16px;color:var(--bone-dim);line-height:1.5;max-width:290px;margin:0 auto;}
 
-  /* practice steps */
-  .practice .rlabel{ margin-bottom:20px; }
-  .step{ display:flex; gap:14px; padding:14px 0; align-items:baseline; }
-  .step:not(:last-child){ border-bottom:1px solid rgba(232,228,220,.05); }
-  .num{ flex:0 0 auto; font-family:'Cormorant Garamond',serif; font-size:27px; font-style:italic; font-weight:600;
-    line-height:1.2; color:#e8e4dc; letter-spacing:.01em; }
-  .num::after{ content:"."; }
-  .step .t{ font-family:'Cormorant Garamond',serif; font-size:1.28rem; font-weight:600; font-style:italic;
-    color:#e8e4dc; margin-bottom:5px; letter-spacing:.01em; }
-  .step .d{ font-family:'Cormorant Garamond',serif; font-size:1.05rem; line-height:1.55; color:#9aa0ab; font-weight:400; }
+  /* 12 dimension bars */
+  .bar-grid{display:grid;gap:24px;margin-top:2px;}
+  .bar-block{border-bottom:1px solid rgba(232,228,220,.10);padding-bottom:20px;}
+  .bar-block:last-child{border-bottom:none;padding-bottom:0;}
+  .bar-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;}
+  .bar-label{font-family:"Cinzel",serif;font-size:13.5px;font-weight:500;letter-spacing:.13em;color:#fff;text-transform:uppercase;}
+  .bar-val{font-family:"Cinzel",serif;font-size:15px;color:#fff;}
+  .bar-track{position:relative;height:15px;background:rgba(244,242,238,.06);border:1px solid rgba(244,242,238,.14);border-radius:9px;}
+  .bar-fill{height:100%;border-radius:8px;background:linear-gradient(to right,rgba(255,255,255,.82),#ffffff);}
+  .bar-ceiling{position:absolute;top:0;right:0;bottom:0;width:14%;border-left:1px dashed rgba(244,242,238,.4);background:repeating-linear-gradient(45deg,rgba(244,242,238,.05),rgba(244,242,238,.05) 4px,transparent 4px,transparent 8px);border-radius:0 8px 8px 0;}
+  .bar-poles{display:flex;justify-content:space-between;margin-top:7px;font-family:"Cinzel",serif;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,242,238,.5);}
 
-  /* actions */
-  .sharebtn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; color:#fff; font-size:1.2rem;
-    font-weight:500; padding:16px 0; border:none; border-radius:40px; cursor:pointer;
-    background:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);
-    box-shadow:0 8px 30px rgba(29,56,145,.42); font-family:'Cormorant Garamond',serif;
-    transition:transform .15s ease; margin-top:34px; letter-spacing:.02em; }
-  .sharebtn:hover{ transform:translateY(-1px); }
-  .sharebtn:active{ transform:scale(.985); }
-  .sharebtn:disabled{ opacity:.7; cursor:default; transform:none; }
-  .backbtn{ display:block; width:100%; text-align:center; color:#a6b8f2; font-size:1.16rem; padding:16px 0;
-    border:1px solid rgba(166,184,242,.4); border-radius:40px; cursor:pointer; background:none; margin-top:14px;
-    font-family:'Cormorant Garamond',serif; text-decoration:none; }
-  .backbtn:hover{ background:rgba(166,184,242,.06); }
-  .saved{ text-align:center; font-family:'Cormorant Garamond',serif; font-size:.98rem; color:#5f6572; margin-top:26px;
-    padding-top:26px; border-top:1px solid rgba(232,228,220,.10); }
-  .saved b{ color:#a6b8f2; font-weight:600; }
-  .crisis{ text-align:center; font-family:'Cormorant Garamond',serif; font-size:.9rem; color:#5f6572; margin-top:18px; line-height:1.5; }
-  .crisis a{ color:#9aa0ab; text-decoration:underline; white-space:nowrap; }
+  .retake{display:block;text-align:center;margin-top:30px;font-size:15px;font-style:italic;color:var(--gold);opacity:.85;text-decoration:none;}
+  .retake:hover{opacity:1;}
+  .portrait{padding-bottom:38px;border-bottom:1px solid rgba(232,228,220,.10);margin-bottom:40px;}
+
+  /* reveal stack */
+  .reveals{display:flex;flex-direction:column;gap:2px;}
+  .rev{padding:22px 4px;border-bottom:1px solid rgba(232,228,220,.06);cursor:pointer;display:flex;gap:14px;align-items:flex-start;transition:opacity .15s ease;}
+  .rev:hover{opacity:.82;}
+  .rev:last-child{border-bottom:none;}
+  .rev .body{flex:1;min-width:0;}
+  .rev .wline{font-style:italic;font-weight:500;font-size:19px;line-height:1.4;color:var(--gold);margin-bottom:8px;text-shadow:0 0 18px rgba(200,169,110,.22);}
+  .rev .from{font-size:14px;color:var(--bone-faint);}
+  .rev .from b{color:var(--bone-dim);font-weight:400;font-style:italic;}
+  .rev .chev{flex:0 0 auto;color:var(--bone-faint);font-size:18px;margin-top:2px;}
+  .rev-empty{font-size:15px;font-style:italic;color:var(--bone-faint);padding:10px 2px 4px;line-height:1.6;}
+  .rev-empty a{color:var(--gold);text-decoration:none;opacity:.9;}
+  .rev-empty a:hover{opacity:1;}
 </style>
 </head>
 <body>
@@ -178,7 +171,7 @@
   <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
   <div class="navitem" data-route="assessment.html">My assessment</div>
   <div class="navitem" data-route="reveal.html">My reveal</div>
-  <div class="navitem" data-route="practice.html">Your practice</div>
+  <div class="navitem active" data-route="practice.html">Your practice</div>
   <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
   <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
   <div class="navitem" data-route="soon.html?t=Account%20%26%20earnings">Account &amp; earnings</div>
@@ -211,57 +204,21 @@
     <div class="frame">
       <div class="inner">
 
-        <!-- WISDOM (hero) -->
-        <div class="wisdom">
-          <span class="mark">“</span>
-          <p class="rtext" id="r_wisdom">The river doesn’t ask you to jump — it just keeps moving, and sooner or later your feet get wet.</p>
+        <div class="portrait" id="portraitBlock">
+          <span class="barhead">Your archetype</span>
+          <div class="arch">
+            <div class="name" id="archName">&mdash;</div>
+            <div class="say" id="archSay">Take the assessment to see your archetype and the twelve dimensions.</div>
+          </div>
+
+          <span class="barhead" id="dimsHead">The Twelve Dimensions</span>
+          <div class="bar-grid" id="barGrid"></div>
+          <a href="assessment.html" class="retake" id="retakeLink">Take the assessment &rarr;</a>
         </div>
 
-        <!-- THE PATTERN -->
-        <section class="sec">
-          <p class="rlabel">The pattern</p>
-          <p class="rtext" id="r_pattern">Every message so far has been a half-step — a greeting, a turn into playfulness, then a near-silence. There’s movement toward something, but the door hasn’t opened yet.</p>
-        </section>
-
-        <!-- WHAT'S UNDERNEATH (root cause + feeling-tone, merged) -->
-        <section class="sec">
-          <p class="rlabel">What’s underneath</p>
-          <p class="rtext" id="r_root">Something here isn’t ready to be named — and that’s alright.</p>
-          <p class="rtext" id="r_tone">The energy arrived quietly, then went quieter still: neutral shading toward unpleasant, neither grasping nor pushing. It’s the feeling of sitting at the edge of the water, unsure whether to wade in.</p>
-        </section>
-
-        <!-- THE PRACTICE -->
-        <section class="sec practice">
-          <p class="rlabel">The practice</p>
-          <div id="steps">
-            <div class="step">
-              <span class="num">1</span>
-              <div>
-                <p class="t">Sit at the edge</p>
-                <p class="d">Don’t try to name what’s going on yet. Just notice: is there something here, even without words? Let that be enough.</p>
-              </div>
-            </div>
-            <div class="step">
-              <span class="num">2</span>
-              <div>
-                <p class="t">Follow the next honest syllable</p>
-                <p class="d">When something does stir — a feeling, an image, even a ‘sort of’ — say that small thing out loud, however incomplete it seems.</p>
-              </div>
-            </div>
-            <div class="step">
-              <span class="num">3</span>
-              <div>
-                <p class="t">Notice what brought you here</p>
-                <p class="d">Something drew you to this door today, even if it was just restlessness. Sit with that one thing — not to solve it, just to look at it gently.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <button class="sharebtn" id="shareBtn">✦ Share this</button>
-        <a href="chat.html" class="backbtn">↩ Back to chat</a>
-        <p class="saved" id="saved">Saved to <b>Your practice</b> — open or regenerate any time</p>
-        <p class="crisis">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
+        <span class="barhead">Your practice</span>
+        <div class="barmeta" id="revealsMeta"></div>
+        <div class="reveals" id="revealsList"></div>
 
       </div>
     </div>
@@ -362,95 +319,75 @@
 
   renderSidebar();
 
-  // Render from the generated reveal if present; otherwise keep the sample content.
-  (function(){
-    let d=null;
-    const rid=new URLSearchParams(location.search).get("id");
-    if(rid){
-      try{
-        const list=JSON.parse(localStorage.getItem("psyche:reveals")||"[]");
-        d=list.find(r=>r&&r.chatId===rid)||null;
-      }catch(e){}
-    }
-    if(!d){
-      try{ d=JSON.parse(localStorage.getItem("psyche:reveal")||"null"); }catch(e){}
-    }
-    if(d){
-      // Fill a field, or hide it when the generator returned nothing (so no placeholder leaks)
-      const setOrHide=(id,v)=>{ const el=document.getElementById(id); if(!el) return;
-        if(v!=null&&String(v).trim()!==""){ el.textContent=v; el.style.display=""; } else { el.style.display="none"; } };
-      setOrHide("r_wisdom", d.wisdom);
-      setOrHide("r_pattern", d.pattern);
-      setOrHide("r_root", d.root_cause);
-      setOrHide("r_tone", d.feeling_tone);   // root_cause + feeling_tone both render under "What's underneath"
-      if(Array.isArray(d.steps)&&d.steps.length){
-        const box=document.getElementById("steps"); box.innerHTML="";
-        d.steps.forEach((s,i)=>{
-          const div=document.createElement("div"); div.className="step";
-          const num=document.createElement("span"); num.className="num"; num.textContent=(i+1);
-          const inner=document.createElement("div");
-          const t=document.createElement("p"); t.className="t"; t.textContent=s.title||"";
-          const de=document.createElement("p"); de.className="d"; de.textContent=s.description||"";
-          inner.appendChild(t); inner.appendChild(de);
-          div.appendChild(num); div.appendChild(inner);
-          box.appendChild(div);
-        });
-      }
-      if(d.title){ const sv=document.getElementById("saved"); if(sv) sv.innerHTML='From “'+String(d.title).replace(/[<>&]/g,"")+'” · saved to <b>Your practice</b>'; }
-    }
+  // ================= DATE FORMATTING =================
+  const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function fmtDate(iso){
+    try{ const d=new Date(iso); if(isNaN(d.getTime())) return ""; return d.getDate()+" "+MONTHS[d.getMonth()]; }
+    catch(e){ return ""; }
+  }
 
+  // ================= ASSESSMENT PORTRAIT =================
+  (function(){
+    let a=null;
+    try{ a=JSON.parse(localStorage.getItem("psyche:assessment")||"null"); }catch(e){}
+    const dimsHead=$("dimsHead"), grid=$("barGrid"), retake=$("retakeLink");
+    if(!a || !Array.isArray(a.dims) || !a.dims.length){
+      $("archName").textContent="Not yet assessed";
+      $("archSay").textContent="Take the assessment to see your archetype and the twelve dimensions.";
+      dimsHead.style.display="none";
+      grid.style.display="none";
+      retake.textContent="Take the assessment →";
+      retake.href="assessment.html";
+      return;
+    }
+    $("archName").textContent=a.archName||"Your archetype";
+    $("archSay").textContent=a.archLine||"";
+    grid.innerHTML="";
+    a.dims.forEach(d=>{
+      const val=Math.max(0,Math.min(100,Number(d.val)||0));
+      const block=document.createElement("div");
+      block.className="bar-block";
+      block.innerHTML=
+        "<div class='bar-head'>"+
+          "<span class='bar-label'>"+esc(d.label)+"</span>"+
+          "<span class='bar-val'>"+val+"</span>"+
+        "</div>"+
+        "<div class='bar-track'><div class='bar-fill' style='width:"+val+"%'></div><div class='bar-ceiling'></div></div>"+
+        "<div class='bar-poles'><span>"+esc(d.lo)+"</span><span>"+esc(d.hi)+"</span></div>";
+      grid.appendChild(block);
+    });
+    retake.textContent="Retake assessment →";
+    retake.href="assessment.html";
   })();
 
-  // ---- Share Card (Pearl: the antidote line, no name) ----
-  function wrapText(ctx,text,cx,topY,maxW,lh){
-    const words=String(text).split(/\s+/); const lines=[]; let cur="";
-    for(const w of words){ const t=cur?cur+" "+w:w; if(ctx.measureText(t).width>maxW && cur){ lines.push(cur); cur=w; } else cur=t; }
-    if(cur) lines.push(cur);
-    const startY=topY-((lines.length-1)*lh)/2;
-    lines.forEach((l,i)=>ctx.fillText(l,cx,startY+i*lh));
-    return lines.length;
-  }
-  async function renderCardBlob(){
-    const line=(document.getElementById("r_wisdom").textContent||"").trim();
-    const W=1080,H=1350, cv=document.createElement("canvas"); cv.width=W; cv.height=H;
-    const ctx=cv.getContext("2d");
-    ctx.fillStyle="#faf8f3"; ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle="rgba(29,56,145,0.16)"; ctx.lineWidth=2; ctx.strokeRect(64,64,W-128,H-128);
-    try{ await document.fonts.load("italic 600 72px Spectral"); await document.fonts.load("600 30px Spectral"); await document.fonts.ready; }catch(e){}
-    ctx.textAlign="center"; ctx.textBaseline="middle";
-    // small mark of three dots
-    ctx.fillStyle="rgba(29,56,145,0.5)";
-    [-26,0,26].forEach(dx=>{ ctx.beginPath(); ctx.arc(W/2+dx,300,5,0,7); ctx.fill(); });
-    // the antidote line
-    ctx.fillStyle="#1d3891"; ctx.font="italic 600 72px Spectral, Georgia, serif";
-    wrapText(ctx,line,W/2,H/2,W-280,92);
-    // wordmark + quiet link
-    ctx.fillStyle="#1d3891"; ctx.font="600 30px Spectral, Georgia, serif";
-    ctx.save(); ctx.translate(W/2,H-176); ctx.fillText("P S Y C H E",0,0); ctx.restore();
-    ctx.fillStyle="#9a948a"; ctx.font="400 24px ui-sans-serif, system-ui, sans-serif";
-    ctx.fillText("psyche-uptf.vercel.app",W/2,H-128);
-    return await new Promise(r=>cv.toBlob(r,"image/png"));
-  }
-  async function shareCard(){
-    const btn=document.getElementById("shareBtn"), label=btn.textContent;
-    btn.disabled=true; btn.textContent="Preparing…";
-    try{
-      const blob=await renderCardBlob();
-      const file=new File([blob],"psyche.png",{type:"image/png"});
-      const line=(document.getElementById("r_wisdom").textContent||"").trim();
-      const caption=line+" — Psyche\npsyche-uptf.vercel.app";
-      if(navigator.canShare && navigator.canShare({files:[file]})){
-        await navigator.share({files:[file],text:caption});
-      } else {
-        const url=URL.createObjectURL(blob); const a=document.createElement("a");
-        a.href=url; a.download="psyche.png"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-        try{ await navigator.clipboard.writeText(caption); }catch(e){}
-        alert("Card saved"+(navigator.clipboard?" — caption copied":"")+".");
-      }
-    }catch(e){ /* user cancelled or unsupported */ }
-    btn.disabled=false; btn.textContent=label;
-  }
-  document.getElementById("shareBtn").onclick=shareCard;
+  // ================= REVEAL STACK =================
+  (function(){
+    let list=[];
+    try{ list=JSON.parse(localStorage.getItem("psyche:reveals")||"[]"); }catch(e){ list=[]; }
+    list=(Array.isArray(list)?list:[]).filter(r=>r&&r.wisdom);
+    list.sort((a,b)=> new Date(b.at||0) - new Date(a.at||0));
+    const meta=$("revealsMeta"), box=$("revealsList");
+    if(!list.length){
+      meta.textContent="";
+      box.innerHTML='<div class="rev-empty">No reveals yet — <a href="chat.html">start a conversation</a> and reveal the pattern to begin your practice.</div>';
+      return;
+    }
+    const since=list[list.length-1].at;
+    meta.textContent=list.length+(list.length===1?" reveal":" reveals")+(since?" · since "+fmtDate(since):"");
+    box.innerHTML="";
+    list.forEach(r=>{
+      const div=document.createElement("div");
+      div.className="rev";
+      div.innerHTML=
+        "<div class='body'>"+
+          "<div class='wline'>"+esc(r.wisdom)+"</div>"+
+          "<div class='from'>From <b>&ldquo;"+esc(r.title||"Untitled conversation")+"&rdquo;</b> &middot; "+fmtDate(r.at)+"</div>"+
+        "</div>"+
+        "<span class='chev'>&rsaquo;</span>";
+      div.onclick=()=>{ location.href="reveal.html?id="+encodeURIComponent(r.chatId||""); };
+      box.appendChild(div);
+    });
+  })();
 </script>
 </body>
 </html>
