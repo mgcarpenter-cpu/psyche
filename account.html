@@ -696,10 +696,8 @@
     }
   }
 
-  // ================= DELETE ACCOUNT (confirm dialog only — no real deletion yet) =================
-  $("deleteBtn").onclick=()=>{
-    if(confirm("Delete your account and all conversations? This can't be undone.")) alert("Delete account — coming soon.");
-  };
+  // ================= DELETE ACCOUNT =================
+  $("deleteBtn").onclick=()=>{ location.href="delete-account.html"; };
 
   // ================= BOOT =================
   function renderAll(){
