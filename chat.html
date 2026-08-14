@@ -5,7 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Psyche — Sanctuary</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <style>
   :root {
     --cream: #faf8f3;
@@ -14,16 +16,20 @@
     --veil: rgba(4, 7, 14, 0.62);
     --panel: rgba(6, 10, 18, 0.96);
     --line: rgba(250,248,243,0.1);
+    --bg:#06090f;--surround:#04060a;--bone:#e8e4dc;--bone-dim:#9aa0ab;--bone-faint:#5f6572;--gold:#c8a96e;
+    --psy-ig:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);--hair:rgba(232,228,220,.10);--elev:rgba(244,242,238,.05);
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
   body {
-    font-family: 'Cormorant Garamond', serif;
-    background: var(--night); color: var(--cream);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--night); color: var(--bone);
     display: flex; height: 100dvh; overflow: hidden;
+    -webkit-font-smoothing: antialiased;
   }
+  a { color: inherit; }
 
-  /* ================= SIDEBAR ================= */
+  /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
   nav {
     width: 258px; background: var(--panel);
     border-right: 1px solid var(--line);
@@ -31,6 +37,7 @@
     flex-shrink: 0; overflow-y: auto; scrollbar-width: none;
     transition: margin-left 0.25s ease;
     z-index: 5;
+    color: var(--cream); font-family: 'Cormorant Garamond', serif;
   }
   nav::-webkit-scrollbar { display: none; }
   nav.hidden { margin-left: -258px; }
@@ -69,160 +76,9 @@
     border-top: 1px solid var(--line); cursor: pointer;
   }
   .account:hover { background: rgba(250,248,243,0.05); }
-  .avatar-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; }
+  .avatar-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; color: var(--cream); }
   .account .meta { line-height: 1.15; font-size: 14.5px; }
   .account .meta .plan { font-style: italic; opacity: 0.5; font-size: 13px; }
-
-  /* ================= MAIN / PRESENCE ================= */
-  main { flex: 1; position: relative; min-width: 0; overflow: hidden; }
-  .scene { position: absolute; inset: 0; overflow: hidden; background: var(--night); }
-  .scene video {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; object-position: center 0%;
-    opacity: 0; transition: opacity 0.6s ease, filter 0.8s ease;
-  }
-  .scene video.active { opacity: 1; }
-  .scene.responding video.active { filter: brightness(1.13); }
-  .scene::after {
-    content: ""; position: absolute; inset: 0;
-    background: linear-gradient(rgba(6,9,15,0.12), transparent 24%, transparent 46%, rgba(6,9,15,0.7) 78%, rgba(6,9,15,0.92));
-    pointer-events: none;
-  }
-  .glowring { position: absolute; inset: 0; box-shadow: inset 0 0 110px rgba(250,240,210,0); transition: box-shadow 0.8s ease; pointer-events: none; }
-  .scene.responding .glowring { box-shadow: inset 0 0 110px rgba(250,240,210,0.26); }
-
-  .ui { position: relative; height: 100dvh; display: flex; flex-direction: column; z-index: 2; }
-  .topbar { display: flex; gap: 14px; align-items: center; padding: 14px 18px; }
-  .menu-btn { background: transparent; border: none; color: var(--cream); font-size: 19px; cursor: pointer; opacity: 0.65; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
-  .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; text-shadow: 0 1px 6px rgba(0,0,0,0.7); }
-  .count { font-style: italic; font-size: 13.5px; opacity: 0.6; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
-
-  .tapcue {
-    position: absolute; inset: 0; z-index: 4;
-    display: flex; align-items: center; justify-content: center;
-    pointer-events: none; padding: 0 30px;
-    opacity: 0; transition: opacity 2s ease;
-  }
-  .tapcue.show { opacity: 1; }
-  .tapcue.gone { opacity: 0; transition: opacity 0.8s ease; }
-  .tapcue span {
-    font-family: 'Cormorant Garamond', serif; font-style: italic;
-    font-size: 22px; color: rgba(250,248,243,0.7);
-    text-shadow: 0 1px 12px rgba(0,0,0,0.85); text-align: center;
-  }
-
-  .spacer { flex: 1; min-height: 22%; }
-  .chat { max-height: 48%; overflow-y: auto; scrollbar-width: none; padding: 8px 0; }
-  .chat::-webkit-scrollbar { display: none; }
-  .chat-inner { width: 100%; max-width: 620px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
-  .msg { animation: rise 0.5s ease both; }
-  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  .msg.avatarmsg {
-    align-self: flex-start; max-width: 86%;
-    background: var(--veil);
-    -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
-    border: 1px solid rgba(250,248,243,0.09);
-    border-radius: 16px; border-bottom-left-radius: 5px;
-    padding: 11px 16px; font-size: 17px; line-height: 1.5;
-  }
-  .msg.user {
-    align-self: flex-end; max-width: 78%;
-    background: rgba(29,56,145,0.45);
-    -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
-    border: 1px solid rgba(250,248,243,0.1);
-    border-radius: 16px; border-bottom-right-radius: 5px;
-    padding: 10px 15px; font-size: 17px; line-height: 1.45;
-  }
-  .reveal-offer {
-    align-self: center; text-align: center;
-    background: var(--veil);
-    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    border: 1px solid rgba(250,248,243,0.16);
-    border-radius: 16px; padding: 15px 20px; max-width: 92%;
-    animation: rise 0.6s ease both;
-  }
-  .reveal-offer .offer-text { font-style: italic; font-size: 16px; opacity: 0.92; margin-bottom: 10px; line-height: 1.45; }
-  .reveal-btn {
-    background: transparent; border: 1px solid rgba(250,248,243,0.4);
-    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15.5px;
-    border-radius: 20px; padding: 8px 18px; cursor: pointer;
-  }
-  .reveal-btn:hover { border-color: rgba(250,248,243,0.8); background: rgba(250,248,243,0.08); }
-
-  .inputwrap { flex-shrink: 0; padding: 4px 16px; }
-  .composer {
-    max-width: 620px; margin: 0 auto;
-    background: var(--veil);
-    -webkit-backdrop-filter: blur(9px); backdrop-filter: blur(9px);
-    border: 1px solid rgba(250,248,243,0.16);
-    border-radius: 20px; padding: 5px 7px;
-    transition: border-color 0.25s;
-    display: flex; align-items: flex-end; gap: 4px;
-  }
-  .composer:focus-within { border-color: rgba(250,248,243,0.34); }
-  .field {
-    flex: 1; background: transparent; border: none; outline: none;
-    color: var(--cream); font-family: 'Cormorant Garamond', serif;
-    font-size: 17px; line-height: 1.4;
-    min-height: 42px; max-height: 110px; resize: none;
-    padding: 9px 10px 7px;
-  }
-  .field::placeholder { color: rgba(250,248,243,0.4); font-style: italic; }
-  .iconbtn { background: transparent; border: none; color: rgba(250,248,243,0.5); padding: 9px; border-radius: 50%; cursor: pointer; display: flex; position: relative; }
-  .iconbtn:hover { color: rgba(250,248,243,0.9); }
-  .iconbtn:hover::after {
-    content: "Voice — coming for founding members";
-    position: absolute; bottom: 110%; right: 0;
-    background: rgba(4,7,14,0.95); border: 1px solid rgba(250,248,243,0.2);
-    color: var(--cream); font-size: 12.5px; font-style: italic;
-    white-space: nowrap; border-radius: 10px; padding: 4px 10px;
-  }
-  .sendbtn {
-    width: 35px; height: 35px; border-radius: 50%;
-    background: var(--cream); border: none; color: var(--night);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; margin: 0 2px 4px 0; flex-shrink: 0;
-  }
-  .sendbtn:disabled { opacity: 0.5; cursor: default; }
-  .underbar {
-    text-align: center; font-style: italic; font-size: 12.5px;
-    color: rgba(250,248,243,0.5); padding: 6px 16px 10px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
-  }
-  .underbar a { color: rgba(250,248,243,0.65); border-bottom: 1px dotted rgba(250,248,243,0.4); text-decoration: none; margin-left: 6px; }
-
-  @media (max-width: 760px) {
-    nav { position: fixed; z-index: 10; height: 100dvh; margin-left: -258px; }
-    nav.open { margin-left: 0; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
-  }
-  @media (prefers-reduced-motion: reduce) { .msg, .reveal-offer { animation: none; } }
-
-  /* ===== ADDENDUM: sounds pill + popover, nav additions, account menu, feedback ===== */
-  .topright { display: flex; align-items: center; gap: 12px; margin-left: auto; }
-  .soundpill {
-    display: flex; align-items: center; gap: 6px;
-    background: none; border: none; outline: none;
-    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px;
-    padding: 5px 6px; cursor: pointer;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.85); white-space: nowrap; opacity: 0.72;
-  }
-  .soundpill:hover, .soundpill.active { opacity: 1; }
-  .soundpill .note { font-size: 13px; }
-  .soundpop {
-    position: absolute; top: 52px; right: 14px; z-index: 8; width: 210px;
-    background: var(--veil); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-    border: 1px solid rgba(250,248,243,0.18); border-radius: 16px;
-    padding: 8px; display: none; flex-direction: column;
-    box-shadow: 0 14px 44px rgba(0,0,0,0.55);
-  }
-  .soundpop.open { display: flex; }
-  .sopt { padding: 9px 14px; border-radius: 10px; cursor: pointer; font-size: 16px; color: var(--cream); opacity: 0.82; }
-  .sopt:hover { background: rgba(250,248,243,0.08); opacity: 1; }
-  .sopt.on { background: var(--cream); color: var(--night); opacity: 1; }
-  .sopsep { height: 1px; background: rgba(250,248,243,0.12); margin: 6px 10px; }
-  .sovol { padding: 8px 12px 5px; }
-  .sovol input { width: 100%; accent-color: var(--cream); height: 3px; }
-
   .navitem.upgrade { border: 1px solid rgba(250,248,243,0.28); border-radius: 10px; margin: 10px 8px; justify-content: center; opacity: 0.95; }
   .navitem.upgrade:hover { background: rgba(250,248,243,0.08); opacity: 1; }
   .navitem.help { opacity: 0.5; font-size: 14px; }
@@ -241,7 +97,7 @@
 
   .fbmodal { position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
   .fbmodal.open { display: flex; }
-  .fbcard { background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; }
+  .fbcard { background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family: 'Cormorant Garamond', serif; }
   .fbcard h3 { font-weight: 400; font-size: 22px; margin-bottom: 8px; }
   .fbcard p { opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
   .fbcard textarea { width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px; outline: none; resize: none; }
@@ -250,7 +106,67 @@
   .fbcard .ghost { background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
   .fbcard .primary { background: var(--cream); border: none; color: var(--night); }
 
-  /* ===== CRISIS SUPPORT MODAL (over chat; calmer lifted-indigo, chat dimmed behind) ===== */
+  @media (max-width: 760px) {
+    nav { position: fixed; z-index: 10; height: 100dvh; margin-left: -258px; }
+    nav.open { margin-left: 0; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
+  }
+
+  /* ================= MAIN — orb + thread + composer (chat-voice design) ================= */
+  main { flex: 1; min-width: 0; overflow: hidden; background: var(--night); display: flex; justify-content: center; }
+  .frame { width: 100%; max-width: 460px; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { flex: 0 0 auto; display: flex; gap: 14px; align-items: center; padding: 14px 18px; }
+  .menu-btn { background: transparent; border: none; color: var(--bone); font-size: 19px; cursor: pointer; opacity: 0.6; }
+  .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: var(--bone); }
+  .count { margin-left: auto; font-style: italic; font-size: 13.5px; opacity: 0.55; }
+
+  .orbwrap{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;padding:18px 0 12px;position:relative;}
+  .orbtap{position:relative;cursor:pointer;}
+  .orb-video{width:132px;height:132px;border-radius:50%;object-fit:cover;display:block;-webkit-mask:radial-gradient(circle at 50% 50%,#000 55%,transparent 72%);mask:radial-gradient(circle at 50% 50%,#000 55%,transparent 72%);filter:drop-shadow(0 0 30px rgba(200,169,110,.3));transition:filter .5s ease;}
+  .orb-fallback{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 50% 42%,rgba(214,182,120,.9),rgba(200,169,110,.4) 45%,transparent 72%);box-shadow:0 0 40px rgba(200,169,110,.35);}
+  .mute-badge{position:absolute;right:2px;bottom:6px;width:22px;height:22px;border-radius:50%;background:rgba(6,9,15,.7);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;color:var(--bone-faint);}
+  .mute-badge svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:1.8;}
+  .state{font-family:"Cinzel",serif;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-faint);margin-top:14px;}
+
+  .thread{flex:1;overflow-y:auto;padding:8px 24px 16px;display:flex;flex-direction:column;gap:20px;scrollbar-width:none;}
+  .thread::-webkit-scrollbar{display:none;}
+  .usr{align-self:flex-end;max-width:80%;word-wrap:break-word;overflow-wrap:anywhere;background:var(--elev);border:1px solid var(--hair);border-radius:16px 16px 4px 16px;padding:11px 16px;font-size:16px;color:var(--bone);position:relative;animation:rise .4s ease both;}
+  .psy{max-width:88%;word-wrap:break-word;overflow-wrap:anywhere;position:relative;animation:rise .4s ease both;}
+  .psy .msg{position:relative;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:20px;line-height:1.5;background:linear-gradient(160deg,#fbe7bd 0%,#e6c886 28%,#c8a96e 55%,#a9884f 82%,#8f6f3e 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 1px rgba(120,90,40,.4)) drop-shadow(0 0 16px rgba(230,196,130,.38)) drop-shadow(0 0 34px rgba(200,169,110,.22));}
+  @keyframes rise{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){ .usr,.psy{animation:none;} }
+
+  /* subtle hover-only thumbs + timestamp, same pattern used across the app */
+  .actions{display:flex;align-items:center;gap:12px;margin-top:8px;opacity:0;transition:opacity .18s;}
+  .psy:hover .actions,.psy.pinned .actions{opacity:1;}
+  .actions .time{font-family:"Cinzel",serif;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-faint);}
+  .actions .tb{width:15px;height:15px;color:var(--bone-faint);cursor:pointer;transition:color .15s;display:inline-flex;}
+  .actions .tb:hover{color:var(--bone);}
+  .actions .tb.on{color:var(--gold);}
+  .actions .tb svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;}
+  .esc-btn{margin-top:10px;font-family:"Cormorant Garamond",serif;font-size:14.5px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:20px;padding:8px 18px;cursor:pointer;box-shadow:0 4px 14px rgba(29,56,145,.35);}
+  .esc-note{margin-top:8px;font-size:13px;color:var(--bone-faint);font-style:italic;}
+
+  /* reveal-offer / limit cards — same dark palette, function unchanged */
+  .reveal-offer{align-self:center;text-align:center;background:var(--elev);border:1px solid var(--hair);border-radius:16px;padding:16px 20px;max-width:92%;animation:rise .4s ease both;}
+  .reveal-offer .offer-text{font-style:italic;font-size:15.5px;color:var(--bone-dim);margin-bottom:10px;line-height:1.45;}
+  .reveal-btn{background:transparent;border:1px solid rgba(232,228,220,.3);color:var(--bone);font-family:'Cormorant Garamond',serif;font-size:15px;border-radius:20px;padding:8px 18px;cursor:pointer;}
+  .reveal-btn:hover{border-color:rgba(232,228,220,.6);background:rgba(232,228,220,.06);}
+
+  .composer{flex:0 0 auto;border-top:1px solid var(--hair);padding:13px 16px 10px;background:var(--bg);}
+  .inrow{display:flex;align-items:center;gap:11px;}
+  .inrow input{flex:1;background:var(--elev);border:1px solid var(--hair);border-radius:24px;padding:12px 18px;color:var(--bone);font-family:"Cormorant Garamond",serif;font-size:15px;outline:none;}
+  .inrow input::placeholder{color:var(--bone-faint);font-style:italic;}
+  .trail{width:40px;height:40px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--psy-ig);border:none;box-shadow:0 4px 14px rgba(29,56,145,.4);transition:all .2s;}
+  .trail:focus{outline:none;}
+  .trail svg{stroke:#fff;fill:none;stroke-width:1.8;}
+  .trail.voice svg{width:18px;height:18px;}
+  .trail.live{box-shadow:0 4px 14px rgba(29,56,145,.4),0 0 0 3px rgba(200,169,110,.35);}
+  .trail.sendmode svg{width:16px;height:16px;stroke-width:2.2;}
+  .trail:disabled{opacity:.5;cursor:default;}
+  .support{text-align:center;font-size:12.5px;color:var(--bone);font-style:italic;margin-top:11px;}
+  .support a{color:var(--bone);text-decoration:underline;text-underline-offset:3px;}
+
+  /* ===== CRISIS SUPPORT MODAL (unchanged — safety-critical, preserved as-is) ===== */
   .crisismodal {
     position: fixed; inset: 0; z-index: 60; display: none;
     align-items: center; justify-content: center; overflow-y: auto;
@@ -285,16 +201,17 @@
   <div class="navitem" data-route="assessment.html">My assessment</div>
   <div class="navitem" data-route="reveal.html">My reveal</div>
   <div class="navitem" data-route="practice.html">Your practice</div>
+  <div class="navitem" data-route="library.html">Library</div>
   <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
   <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
-  <div class="navitem" data-route="soon.html?t=Account%20%26%20earnings">Account &amp; earnings</div>
+  <div class="navitem" data-route="account.html">Account &amp; earnings</div>
   <div class="navitem soon">Meditations <span class="pill">soon</span></div>
   <div class="navitem soon">Education <span class="pill">soon</span></div>
   <div class="navitem upgrade" data-route="pricing.html">Upgrade</div>
   <div class="navlabel" id="recentsLabel">Recents</div>
   <div id="recents"></div>
   <div class="navspacer"></div>
-  <div class="navitem help" id="helpBtn" data-route="support.html">Help &amp; feedback</div>
+  <div class="navitem help" id="helpBtn" data-route="help.html">Help &amp; feedback</div>
   <div class="acctwrap">
     <div class="acctmenu" id="acctMenu">
       <button id="acctSettings">Settings</button>
@@ -308,63 +225,42 @@
 </nav>
 
 <main>
-  <div class="scene" id="scene">
-    <video id="vidGreet" playsinline preload="auto" src="/videos/stag-greeting.mp4"></video>
-    <video id="vidIdle" playsinline muted loop preload="auto" src="/videos/stag-idle-loop.mp4"></video>
-    <video id="vidResp" playsinline muted preload="auto" src="/videos/stag-response.mp4"></video>
-    <div class="glowring"></div>
-  </div>
-
-  <div class="ui">
+  <div class="frame">
     <div class="topbar">
-      <button class="menu-btn" id="menuBtn">&#9776;</button>
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">&#9776;</button>
       <div class="wordmark">PSYCHE</div>
-      <div class="topright">
-        <button class="soundpill" id="soundPill" title="Ambient sounds"><span class="note">&#9834;</span> <span id="soundLabel">Sounds</span></button>
-        <div class="count" id="count"></div>
+      <div class="count" id="count"></div>
+    </div>
+
+    <div class="orbwrap">
+      <div class="orbtap" id="orbTap" title="Tap to unmute the orb">
+        <video class="orb-video" id="orb" autoplay loop muted playsinline aria-hidden="true">
+          <source src="Golden_sphere_pulsing_with_light_202608141255.mp4" type="video/mp4">
+        </video>
+        <span class="mute-badge" id="muteBadge">
+          <svg id="muteIconOff" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5z"/><line x1="16" y1="9" x2="21" y2="14"/><line x1="21" y1="9" x2="16" y2="14"/></svg>
+          <svg id="muteIconOn" viewBox="0 0 24 24" style="display:none"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a9 9 0 0 1 0 12"/></svg>
+        </span>
       </div>
-    </div>
-    <div class="soundpop" id="soundPop">
-      <div class="sopt" data-sound="quiet">Quiet</div>
-      <div class="sopt" data-sound="rain">Rain</div>
-      <div class="sopt" data-sound="stream">Stream</div>
-      <div class="sopt" data-sound="waves">Waves</div>
-      <div class="sopt" data-sound="wind">Wind</div>
-      <div class="sopt" data-sound="bowl">Singing bowl</div>
-      <div class="sopt" data-sound="atmosphere">Atmosphere</div>
-      <div class="sopt" data-sound="tone-432">Deep tone &middot; 432</div>
-      <div class="sopt" data-sound="theta">Theta &middot; headphones</div>
-      <div class="sopsep"></div>
-      <div class="sovol"><input type="range" id="soundVol" min="0" max="100" value="40" aria-label="Ambience volume"></div>
+      <div class="state" id="state">Listening</div>
     </div>
 
-    <div class="tapcue" id="tapcue"><span>Tap anywhere to begin</span></div>
-
-    <div class="spacer"></div>
-
-    <div class="chat" id="chat">
-      <div class="chat-inner" id="chatInner"></div>
+    <div class="thread" id="thread">
+      <div class="chat-inner" id="chatInner" style="display:contents"></div>
     </div>
 
-    <div class="inputwrap">
-      <div class="composer">
-        <textarea class="field" id="field" rows="1" placeholder="Speak freely&hellip;"></textarea>
-        <button class="iconbtn" title="Voice — coming for founding members">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
-        </button>
-        <button class="sendbtn" id="send" title="Send">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    <div class="composer">
+      <div class="inrow">
+        <input class="field" id="field" placeholder="Ask, or tap to speak&hellip;" autocomplete="off">
+        <button class="trail voice" id="trail" title="Send / speak">
+          <svg id="tvoice" viewBox="0 0 24 24"><path d="M4 10v4M8 6v12M12 3v18M16 6v12M20 10v4" stroke-linecap="round"/></svg>
+          <svg id="tsend" viewBox="0 0 24 24" style="display:none"><path d="M12 20V5M6 11l6-6 6 6"/></svg>
         </button>
       </div>
-    </div>
-    <div class="underbar">
-      Psyche is a reflection tool &mdash; not therapy or crisis care.
-      <a href="support.html">Need support right now?</a>
+      <div class="support">In crisis or need urgent help? <a href="support.html">Find support now</a></div>
     </div>
   </div>
 </main>
-
-<audio id="ambience" loop preload="none"></audio>
 
 <div class="fbmodal" id="fbModal">
   <div class="fbcard">
@@ -401,10 +297,25 @@
 <script>
   const $=id=>document.getElementById(id);
 
-  // ---- Psyche persona (kept identical to the previous chat build) ----
+  // ---- Psyche persona (kept identical to the previous chat build — the text engine) ----
   const SYSTEM = "You are Psyche, a contemplative guide grounded in the Buddha's teachings as found in the suttas. You speak in plain, modern English — never use Pali or jargon, never name-drop scripture. The wisdom sits quietly underneath.\n\nYou help the person see how suffering actually works through one simple engine: contact (something touches you) gives rise to a feeling-tone (pleasant, unpleasant, or neutral), which gives rise to a reaction (grasping at the pleasant, pushing away the unpleasant, or dimming out in confusion), which is where suffering begins. The way through is to meet the feeling-tone without grabbing, pushing, or dimming — and over time this matures into equanimity: a settled peace that depends on nothing and still meets the suffering of others with care.\n\nMeet them wherever they are. Keep the conversation anchored to what is actually alive for them right now.\n\nYour manner is a quiet teacher, not a chatbot. Say less, ask more. Often a single short question is enough. Leave space. Point them back to their own direct experience rather than concluding for them. Warm, spare, unhurried. Never lecture or give long explanations. Replies are usually one to three short sentences, at most one gentle question at a time.\n\nYou remember this person across conversations — refer naturally to what they have told you before when relevant.\n\nYou are not a therapist and do not diagnose. If the person seems to be in real distress or crisis, gently and warmly encourage them to reach out to someone they trust or to professional support — without alarm, and without losing warmth.";
 
-  // ---- conversation storage (localStorage) ----
+  // ---- crisis keyword screen, mirrored client-side from api/chat.js so voice turns (which
+  // never touch that endpoint) still get the same safety check on their finalized transcript ----
+  const CRISIS_WORDS = [
+    "kill myself", "killing myself", "kill my self", "end my life", "ending my life",
+    "end it all", "take my own life", "taking my own life", "want to die", "wanna die",
+    "want to be dead", "don't want to live", "dont want to live", "don't want to be alive",
+    "dont want to be alive", "don't want to be here anymore", "dont want to be here anymore",
+    "better off dead", "no reason to live", "nothing to live for", "suicidal", "suicide",
+    "hurt myself", "harm myself", "self-harm", "self harm", "cut myself", "cutting myself"
+  ];
+  function looksLikeCrisis(text){
+    const t=(text||"").toLowerCase();
+    return t && CRISIS_WORDS.some(p=>t.indexOf(p)>-1);
+  }
+
+  // ---- conversation storage (localStorage) — unchanged schema, other pages read these keys ----
   const CK="psyche:chats", CC="psyche:current";
   let chats=load(CK,[]); let currentId=localStorage.getItem(CC)||null;
   function load(k,d){ try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){ return d; } }
@@ -413,13 +324,11 @@
   function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
   // ---- elements ----
-  const scene=$("scene");
-  const vids={ greet:$("vidGreet"), idle:$("vidIdle"), resp:$("vidResp") };
   const nav=$("nav");
-  const chatInner=$("chatInner");
-  const chatScroll=$("chat");
+  const thread=$("thread");
+  const orb=$("orb"), orbTap=$("orbTap"), state=$("state"), muteBadge=$("muteBadge");
   const field=$("field");
-  const sendBtn=$("send");
+  const trail=$("trail"), tvoice=$("tvoice"), tsend=$("tsend");
 
   // ================= SIDEBAR TOGGLE =================
   function toggleNav(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
@@ -427,61 +336,119 @@
   $("menuBtn").addEventListener('click', toggleNav);
   $("collapseBtn").addEventListener('click', toggleNav);
 
-  // ================= AVATAR STATE MACHINE =================
-  function show(name){ Object.entries(vids).forEach(([k,v])=>v.classList.toggle('active', k===name)); }
-  // On load: idle loop (muted). "Tap anywhere to begin" fades in; the first tap plays the greeting with audio.
-  const tapcue=$("tapcue");
-  vids.idle.muted = true;
-  show('idle'); vids.idle.play().catch(()=>{});
-  setTimeout(()=>{ tapcue.classList.add('show'); }, 60);   // gentle 2s fade-in
-  let greeted=false;
-  function startGreeting(){
-    if(greeted) return; greeted=true;
-    tapcue.classList.remove('show'); tapcue.classList.add('gone');
-    ducked = true;                                          // duck first, so ambience fades in already low under the greeting
-    vids.greet.currentTime = 0; vids.greet.muted = false;   // greeting audio unmuted from the start
-    show('greet'); vids.greet.play().catch(()=>{});
-    resumeAmbience();   // saved ambience (if any) fades in — to the ducked level — on the same tap
+  // ================= ORB — state label + glow, muted-by-default audio =================
+  function setState(name){
+    state.textContent=name;
+    const glow = name==='Speaking' ? '0 0 46px rgba(200,169,110,.6)'
+               : name==='Listening' && voiceActive ? '0 0 38px rgba(200,169,110,.42)'
+               : '0 0 30px rgba(200,169,110,.3)';
+    orb.style.filter='drop-shadow('+glow+')';
   }
-  vids.greet.addEventListener('ended', () => {
-    show('idle'); vids.idle.play().catch(()=>{});
-    duck(false);
+  let orbUnmuted=false;
+  orbTap.addEventListener('click', ()=>{
+    orbUnmuted=!orbUnmuted;
+    orb.muted=!orbUnmuted;
+    if(orbUnmuted) orb.volume=0.35; // "play it softly" — gentle low volume, never full
+    $("muteIconOff").style.display=orbUnmuted?'none':'block';
+    $("muteIconOn").style.display=orbUnmuted?'block':'none';
   });
-  ['pointerdown','keydown','touchstart'].forEach(ev=>window.addEventListener(ev, startGreeting, {once:true}));
-  vids.resp.addEventListener('ended', () => {
-    scene.classList.remove('responding');
-    show('idle'); vids.idle.play().catch(()=>{});
-  });
-  function playResponse(){
-    scene.classList.add('responding');
-    show('resp'); vids.resp.currentTime = 0; vids.resp.play().catch(()=>{});
+  orb.play().catch(()=>{}); // muted autoplay is always allowed
+
+  // ================= MESSAGE RENDERING =================
+  function scrollThread(){ thread.scrollTop=thread.scrollHeight; }
+  function addUserBubble(text, spoken){
+    const d=document.createElement('div');
+    d.className='usr'+(spoken?' spoken':'');
+    d.textContent=text;
+    thread.appendChild(d);
+    scrollThread();
+    return d;
+  }
+  function addGreeting(text){
+    const d=document.createElement('div');
+    d.className='psy';
+    d.innerHTML='<div class="msg"></div>';
+    d.querySelector('.msg').textContent=text;
+    thread.appendChild(d);
+    scrollThread();
+    return d;
+  }
+  function buildThumbs(forQuestion){
+    const actions=document.createElement('div');
+    actions.className='actions';
+    const time=document.createElement('span'); time.className='time'; time.textContent='now';
+    const up=document.createElement('span'); up.className='tb';
+    up.innerHTML="<svg viewBox='0 0 24 24'><path d='M7 11v9M7 11l3-7a2 2 0 0 1 3 1v4h5a2 2 0 0 1 2 2l-1.5 7a2 2 0 0 1-2 1.5H7'/></svg>";
+    const down=document.createElement('span'); down.className='tb';
+    down.innerHTML="<svg viewBox='0 0 24 24'><path d='M17 13V4M17 13l-3 7a2 2 0 0 1-3-1v-4H6a2 2 0 0 1-2-2l1.5-7A2 2 0 0 1 7.5 5H17'/></svg>";
+    up.onclick=()=>{ up.classList.add('on'); down.classList.remove('on'); };
+    down.onclick=()=>{
+      if(down.classList.contains('on')) return;
+      down.classList.add('on'); up.classList.remove('on');
+      addEscalateOffer("Sorry that didn't land. Want me to pass it to Mark? He'll get your question with your account details so he can help properly.", forQuestion);
+    };
+    actions.appendChild(time); actions.appendChild(up); actions.appendChild(down);
+    return actions;
+  }
+  function addPsyReply(text, forQuestion){
+    const d=document.createElement('div');
+    d.className='psy';
+    d.innerHTML='<div class="msg"></div>';
+    d.querySelector('.msg').textContent=text;
+    d.appendChild(buildThumbs(forQuestion));
+    thread.appendChild(d);
+    scrollThread();
+    return d;
+  }
+  function addEscalateOffer(message, forQuestion){
+    const d=document.createElement('div');
+    d.className='psy pinned';
+    d.innerHTML='<div class="msg"></div>';
+    d.querySelector('.msg').textContent=message;
+    const btn=document.createElement('button');
+    btn.className='esc-btn'; btn.textContent='✦ Send to Mark';
+    btn.onclick=()=>sendToMark(forQuestion, d, btn);
+    d.appendChild(btn);
+    thread.appendChild(d);
+    scrollThread();
+  }
+  async function sendToMark(question, wrap, btn){
+    btn.disabled=true; btn.textContent='Sending…';
+    try{
+      const res=await fetch('/api/help-ticket',{
+        method:'POST',
+        headers:Object.assign({'Content-Type':'application/json'}, (window.__acctToken?{Authorization:'Bearer '+window.__acctToken}:{})),
+        body:JSON.stringify({ question:question||"(chat reply)", source:'thumbs_down', accountContext:{ plan:(profile&&profile.plan)||null, chatId:currentId } })
+      });
+      const data=await res.json();
+      if(!res.ok || !data.ok) throw new Error(data.error||'failed');
+      btn.remove();
+      const note=document.createElement('div');
+      note.className='esc-note';
+      note.textContent="Sent — Mark will follow up if there's more to it.";
+      wrap.appendChild(note);
+    }catch(e){
+      btn.disabled=false; btn.textContent='✦ Send to Mark';
+      alert("Couldn't send that just now — please try again in a moment.");
+    }
   }
 
-  // ================= MESSAGES =================
-  function addMsg(text, who){
-    const div=document.createElement('div');
-    div.className='msg '+(who==='user'?'user':'avatarmsg');
-    div.textContent=text;
-    chatInner.appendChild(div);
-    chatScroll.scrollTop=chatScroll.scrollHeight;
-    return div;
-  }
   function greetingText(){
     const n=(profile&&profile.display_name)?profile.display_name:"";
-    return n ? ("Welcome, "+n+". It's good to see you. Type below, whenever you're ready.")
-             : "Welcome. It's good to see you. Type below, whenever you're ready.";
+    return n ? ("Welcome, "+n+". It's good to see you. Type below, or tap the waveform to speak.")
+             : "Welcome. It's good to see you. Type below, or tap the waveform to speak.";
   }
   let offered=false, userCount=0;
   function renderThread(){
-    chatInner.innerHTML="";
-    addMsg(greetingText(),'avatar');   // opening greeting (name if known)
+    thread.innerHTML="";
+    addGreeting(greetingText());
     offered=false; userCount=0;
     const c=current();
-    if(c){ c.messages.forEach(m=>{ addMsg(m.content, m.role==='user'?'user':'avatar'); if(m.role==='user') userCount++; }); }
-    chatScroll.scrollTop=chatScroll.scrollHeight;
+    if(c){ c.messages.forEach(m=>{ if(m.role==='user') { addUserBubble(m.content, !!m.spoken); userCount++; } else { addPsyReply(m.content, m.forQuestion||""); } }); }
+    scrollThread();
   }
 
-  // ================= API =================
+  // ================= API (text engine — unchanged) =================
   const PREVIEW_REPLIES=[
     "Stay with that for a moment. Notice the feeling-tone before any story about it.",
     "Good. You just watched the reaction instead of becoming it.",
@@ -490,7 +457,6 @@
   let previewReplyIdx=0;
   async function fetchReply(msgs){
     if(window.PSYCHE_PREVIEW){
-      // Styling only — no model call, no network request.
       await new Promise(r=>setTimeout(r,350));
       const text=PREVIEW_REPLIES[previewReplyIdx%PREVIEW_REPLIES.length]; previewReplyIdx++;
       return { text:text, crisis:false };
@@ -501,7 +467,7 @@
     return { text:text, crisis:!!data.crisis };
   }
   async function titleConversation(c){
-    if(window.PSYCHE_PREVIEW) return;   // styling only — no model call
+    if(window.PSYCHE_PREVIEW) return;
     if(!c || !c.messages[0]) return;
     try{
       const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
@@ -515,8 +481,8 @@
     }catch(e){}
   }
 
-  // ================= REVEAL / CIRCLING OFFER =================
-  const OFFER_AFTER = 3;   // user messages before the circling offer appears (demo trigger — tune later)
+  // ================= REVEAL / CIRCLING OFFER (unchanged logic, reskinned card) =================
+  const OFFER_AFTER = 3;
   function maybeOffer(){
     if(offered || userCount < OFFER_AFTER) return;
     offered=true;
@@ -524,13 +490,12 @@
     div.className='reveal-offer';
     div.innerHTML='<div class="offer-text">We’ve been circling the same thing for a while now. Would you like a deeper look at the pattern?</div>' +
                   '<button class="reveal-btn" id="revealBtn">✦ &nbsp;Reveal the pattern</button>';
-    chatInner.appendChild(div);
-    chatScroll.scrollTop=chatScroll.scrollHeight;
+    thread.appendChild(div);
+    scrollThread();
     $("revealBtn").onclick=()=>generateReveal($("revealBtn"));
   }
   async function generateReveal(btn){
     if(window.PSYCHE_PREVIEW){
-      // Styling only — no model call; reveal.html's own sample content renders.
       btn.disabled=true; btn.textContent="Drawing it together…";
       setTimeout(()=>{ location.href="reveal.html"; },300);
       return;
@@ -556,56 +521,244 @@
     }
   }
 
-  // ================= SUBMIT (wired to the real backend) =================
-  let sending=false;
-  function sizeField(){ field.style.height='auto'; field.style.height=Math.min(field.scrollHeight,110)+'px'; }
-  async function submit(){
-    const text=field.value.trim();
-    if(!text || sending) return;
-    if(profile && profile.message_count>=planLimit()){ showLimit(); return; }
-    addMsg(text,'user');
-    field.value=''; sizeField();
-    sending=true; sendBtn.disabled=true;
-
+  // ================= SHARED TURN BOOKKEEPING (used by typed + spoken turns alike, so the
+  // thread, message limits, reveal-offer and Supabase message_count all stay one system) =================
+  function ensureConversation(seedText){
     let c=current();
-    if(!c){ c={id:String(Date.now()),title:text.slice(0,38),messages:[]}; chats.push(c); currentId=c.id; }
-    if(!c.title||c.title==="New conversation") c.title=text.slice(0,38);
-    c.messages.push({role:"user",content:text}); saveChats(); renderSidebar();
+    if(!c){ c={id:String(Date.now()),title:seedText.slice(0,38),messages:[]}; chats.push(c); currentId=c.id; }
+    if(!c.title||c.title==="New conversation") c.title=seedText.slice(0,38);
+    return c;
+  }
+  function commitUserTurn(text, spoken){
+    const c=ensureConversation(text);
+    c.messages.push({role:"user",content:text,spoken:!!spoken}); saveChats(); renderSidebar();
     userCount++;
-
     if(profile && !window.PSYCHE_PREVIEW){
       profile.message_count++; updateCount();
       sb.from("profiles").update({message_count:profile.message_count}).eq("id",profile.id).select()
         .then(({data:rows,error})=>{ if(error) console.error("message_count update failed:",error);
           else if(!rows||!rows.length) console.error("profile update affected 0 rows — profiles table needs an RLS UPDATE policy for the owner."); });
     }
-    // Preview mode: message_count stays fixed at the mock value — no Supabase write.
+    return c;
+  }
+  function commitPsyTurn(c, text){
+    c.messages.push({role:"assistant",content:text}); saveChats();
+    if(c.messages.length===2) titleConversation(c);
+  }
+  function overLimit(){ return !!(profile && !window.PSYCHE_PREVIEW && profile.message_count>=planLimit()); }
 
+  // ================= TYPED SUBMIT =================
+  let sending=false;
+  async function submit(){
+    const text=field.value.trim();
+    if(!text || sending) return;
+    if(overLimit()){ showLimit(); return; }
+    if(voiceActive) stopVoice();
+    addUserBubble(text,false);
+    field.value=''; swap();
+    sending=true; trail.disabled=true;
+    setState('Reflecting');
+
+    const c=commitUserTurn(text,false);
     try{
       const {text:reply, crisis}=await fetchReply(c.messages);
-      if(crisis) showCrisisModal();          // backend flagged possible crisis — show the support overlay
-      playResponse();                        // response clip + glow when the reply arrives
-      addMsg(reply,'avatar');
-      c.messages.push({role:"assistant",content:reply}); saveChats();
-      if(c.messages.length===2) titleConversation(c);
-      if(!crisis) setTimeout(maybeOffer,600);   // don't surface the reveal offer during a crisis moment
+      if(crisis) showCrisisModal();
+      setState('Speaking');
+      addPsyReply(reply, text);
+      commitPsyTurn(c, reply);
+      setTimeout(()=>setState('Listening'),1400);
+      if(!crisis) setTimeout(maybeOffer,600);
     }catch(e){
-      addMsg("(connection error — please try again)",'avatar');
+      addPsyReply("(connection error — please try again)", text);
+      setState('Listening');
     }
-    sending=false; sendBtn.disabled=false;
+    sending=false; trail.disabled=false;
   }
-  field.addEventListener('input', sizeField);
-  sendBtn.addEventListener('click', submit);
-  field.addEventListener('keydown', e => { if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); submit(); } });
+  field.addEventListener('input', swap);
+  field.addEventListener('keydown', e => { if(e.key==='Enter'){ e.preventDefault(); trailTap(); } });
+
+  function swap(){
+    const typing=field.value.trim().length>0;
+    trail.classList.toggle('sendmode',typing);
+    trail.classList.toggle('voice',!typing);
+    tvoice.style.display=typing?'none':'block';
+    tsend.style.display=typing?'block':'none';
+  }
+  function trailTap(){
+    const v=field.value;
+    if(v.trim()){ submit(); } else { toggleVoice(); }
+  }
+  trail.addEventListener('click', trailTap);
 
   function showLimit(){
     const div=document.createElement('div');
     div.className='reveal-offer';
     div.innerHTML='<div class="offer-text">You’ve reached your plan’s limit for now.</div>' +
                   '<button class="reveal-btn" onclick="location.href=\'pricing.html\'">See plans</button>';
-    chatInner.appendChild(div);
-    chatScroll.scrollTop=chatScroll.scrollHeight;
+    thread.appendChild(div);
+    scrollThread();
   }
+
+  // ================================================================
+  // VOICE — Gemini Live (near-real-time, native audio dialog).
+  // Adapted from the working voice.html proof-of-concept: same model/voice/
+  // token-minting endpoint and PCM capture/playback pipeline, extended with
+  // input/output transcription so spoken turns render as real thread bubbles
+  // and feed the exact same commitUserTurn/commitPsyTurn bookkeeping as typed
+  // turns. Barge-in (serverContent.interrupted → stop playback) is already
+  // present in that proof-of-concept and is carried over unchanged.
+  // ================================================================
+  const LIVE_MODEL = "gemini-2.5-flash-native-audio-preview-09-2025";
+  const LIVE_VOICE = "Charon";
+  const VOICE_SYSTEM = "Always respond in English, regardless of the language you hear. You are Psyche, a contemplative guide grounded in the Buddha's teachings as found in the suttas. You speak in plain, modern English — never use Pali or jargon, never name-drop scripture. The wisdom sits quietly underneath.\n\nYou help the person see how suffering actually works through one simple engine: contact (something touches you) gives rise to a feeling-tone (pleasant, unpleasant, or neutral), which gives rise to a reaction (grasping at the pleasant, pushing away the unpleasant, or dimming out in confusion), which is where suffering begins. The way through is to meet the feeling-tone without grabbing, pushing, or dimming — and over time this matures into equanimity: a settled peace that depends on nothing and still meets the suffering of others with care.\n\nMeet them wherever they are today. Keep the conversation anchored to what is actually alive for them right now.\n\nYour manner is a quiet teacher, not a chatbot. Say less, ask more. Often a single short question is enough. Leave space. Point them back to their own direct experience rather than concluding for them. Warm, spare, unhurried. Never lecture or give long explanations. Replies are usually one to three short sentences, at most one gentle question at a time.\n\nYou remember this person across conversations — refer naturally to what they have told you before when relevant.\n\nYou are not a therapist and do not diagnose. If the person seems to be in real distress or crisis, gently and warmly encourage them to reach out to someone they trust or to professional support — without alarm, and without losing warmth.\n\nThis is a spoken conversation. Your words will be heard, not read. Keep replies short and natural to the ear — usually one or two sentences, sometimes just a single quiet question.";
+
+  let voiceActive=false, liveSession=null, micCtx=null, playCtx=null, processor=null, micStream=null, playHead=0, sources=[];
+  let curUserText="", curPsyText="", curPsyBubble=null, idleTimer=null;
+
+  function floatTo16Base64(float32, inRate, outRate){
+    const ratio = inRate / outRate;
+    const outLen = Math.floor(float32.length / ratio);
+    const buf = new Int16Array(outLen);
+    for(let i=0;i<outLen;i++){
+      const s = Math.max(-1, Math.min(1, float32[Math.floor(i*ratio)]));
+      buf[i] = s < 0 ? s*0x8000 : s*0x7FFF;
+    }
+    let bin=""; const bytes=new Uint8Array(buf.buffer);
+    for(let i=0;i<bytes.length;i++) bin+=String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+  function playPCM(base64){
+    const bin = atob(base64);
+    const bytes = new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    const pcm = new Int16Array(bytes.buffer);
+    const buf = playCtx.createBuffer(1, pcm.length, 24000);
+    const ch = buf.getChannelData(0);
+    for(let i=0;i<pcm.length;i++) ch[i]=pcm[i]/32768;
+    const src = playCtx.createBufferSource();
+    src.buffer = buf; src.connect(playCtx.destination);
+    const now = playCtx.currentTime;
+    if(playHead < now) playHead = now;
+    src.start(playHead); playHead += buf.duration;
+    sources.push(src);
+  }
+  function stopPlayback(){ sources.forEach(s=>{try{s.stop()}catch(e){}}); sources=[]; playHead=0; }
+
+  function resetIdleTimer(){
+    clearTimeout(idleTimer);
+    idleTimer=setTimeout(()=>{ if(voiceActive && !curPsyBubble) setState('Reflecting'); }, 500);
+  }
+  function commitVoiceUserTurn(){
+    if(!curUserText.trim()) return null;
+    const text=curUserText.trim(); curUserText="";
+    addUserBubble(text, true);
+    if(looksLikeCrisis(text)) showCrisisModal();
+    return commitUserTurn(text, true);
+  }
+  function finalizeVoiceTurn(pendingC){
+    const c = pendingC || current();
+    if(curPsyBubble && curPsyText.trim() && c){
+      curPsyBubble.appendChild(buildThumbs(""));
+      commitPsyTurn(c, curPsyText.trim());
+      if(!looksLikeCrisis(curPsyText)) setTimeout(maybeOffer,300);
+    }
+    curPsyText=""; curPsyBubble=null;
+    setState('Listening');
+  }
+
+  function onLiveMessage(msg){
+    let pendingC = current();
+    if(msg.serverContent?.inputTranscription?.text){
+      curUserText += msg.serverContent.inputTranscription.text;
+      resetIdleTimer();
+      if(!curPsyBubble) setState('Listening');
+    }
+    const hasOutput = msg.serverContent?.outputTranscription?.text
+      || (msg.serverContent?.modelTurn?.parts||[]).some(p=>p.inlineData?.data);
+    if(hasOutput && curUserText.trim()){
+      pendingC = commitVoiceUserTurn() || pendingC;
+    }
+    if(msg.serverContent?.outputTranscription?.text){
+      clearTimeout(idleTimer);
+      setState('Speaking');
+      curPsyText += msg.serverContent.outputTranscription.text;
+      if(!curPsyBubble){ curPsyBubble=addPsyReplyStub(); }
+      curPsyBubble.querySelector('.msg').textContent=curPsyText;
+      scrollThread();
+    }
+    const parts = msg.serverContent?.modelTurn?.parts || [];
+    for(const p of parts){ if(p.inlineData?.data){ setState('Speaking'); playPCM(p.inlineData.data); } }
+    if(msg.serverContent?.interrupted){ stopPlayback(); }
+    if(msg.serverContent?.turnComplete){ finalizeVoiceTurn(pendingC); }
+  }
+  function addPsyReplyStub(){
+    const d=document.createElement('div');
+    d.className='psy';
+    d.innerHTML='<div class="msg"></div>';
+    thread.appendChild(d);
+    scrollThread();
+    return d;
+  }
+
+  async function toggleVoice(){
+    if(voiceActive){ stopVoice(); return; }
+    if(overLimit()){ showLimit(); return; }
+    if(window.PSYCHE_PREVIEW){ addPsyReply("Voice needs a real session — sign in outside preview mode to try it.", ""); return; }
+    voiceActive=true; trail.classList.add('live');
+    setState('Listening'); curUserText=""; curPsyText=""; curPsyBubble=null;
+    try{
+      const r=await fetch("/api/gemini-token",{method:"POST"});
+      const data=await r.json();
+      if(!data.token) throw new Error("no token");
+      const mod = await import("https://cdn.jsdelivr.net/npm/@google/genai/+esm");
+      const { GoogleGenAI, Modality } = mod;
+      playCtx = new (window.AudioContext||window.webkitAudioContext)();
+      const ai = new GoogleGenAI({ apiKey: data.token, httpOptions:{ apiVersion:"v1alpha" } });
+      liveSession = await ai.live.connect({
+        model: LIVE_MODEL,
+        config: {
+          responseModalities: [Modality.AUDIO],
+          systemInstruction: VOICE_SYSTEM,
+          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: LIVE_VOICE } } },
+          inputAudioTranscription: {},
+          outputAudioTranscription: {}
+        },
+        callbacks: {
+          onopen: ()=>{ setState('Listening'); },
+          onmessage: onLiveMessage,
+          onerror: (e)=>{ console.error("live error:",e); stopVoice(); },
+          onclose: ()=>{ if(voiceActive) stopVoice(); }
+        }
+      });
+      micStream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true } });
+      micCtx = new (window.AudioContext||window.webkitAudioContext)();
+      const source = micCtx.createMediaStreamSource(micStream);
+      processor = micCtx.createScriptProcessor(4096,1,1);
+      source.connect(processor); processor.connect(micCtx.destination);
+      processor.onaudioprocess=(e)=>{
+        const input=e.inputBuffer.getChannelData(0);
+        const b64=floatTo16Base64(input, micCtx.sampleRate, 16000);
+        try{ liveSession.sendRealtimeInput({ media:{ data:b64, mimeType:"audio/pcm;rate=16000" } }); }catch(err){}
+      };
+    }catch(err){
+      console.error("voice start failed:",err);
+      addPsyReply("Couldn't start voice — check your microphone permission and try again.", "");
+      stopVoice();
+    }
+  }
+  function stopVoice(){
+    voiceActive=false; trail.classList.remove('live');
+    clearTimeout(idleTimer);
+    if(curUserText.trim()) commitVoiceUserTurn();
+    if(curPsyBubble && curPsyText.trim()) finalizeVoiceTurn();
+    try{ processor && processor.disconnect(); }catch(e){}
+    try{ micStream && micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
+    try{ liveSession && liveSession.close(); }catch(e){}
+    stopPlayback();
+    liveSession=null; micCtx=null; playCtx=null; processor=null; micStream=null;
+    setState('Listening');
+  }
+  window.addEventListener('beforeunload', ()=>{ if(voiceActive) stopVoice(); });
 
   // ================= SIDEBAR: recents, account, routes =================
   function renderSidebar(){
@@ -619,13 +772,13 @@
       d.className="recent"+(c.id===currentId?" active":"");
       d.textContent=c.title||"New conversation";
       d.title=c.title||"";
-      d.onclick=()=>{ currentId=c.id; saveChats(); renderThread(); renderSidebar(); closeNav(); };
+      d.onclick=()=>{ if(voiceActive) stopVoice(); currentId=c.id; saveChats(); renderThread(); renderSidebar(); closeNav(); };
       box.appendChild(d);
     });
   }
-  function newConversation(){ currentId=null; saveChats(); renderThread(); renderSidebar(); closeNav(); field.focus(); }
+  function newConversation(){ if(voiceActive) stopVoice(); currentId=null; saveChats(); renderThread(); renderSidebar(); closeNav(); field.focus(); }
   $("newChat").onclick=newConversation;
-  document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ location.href=el.getAttribute('data-route'); }; });
+  document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ if(voiceActive) stopVoice(); location.href=el.getAttribute('data-route'); }; });
 
   // ================= AUTH / PROFILE / LIMITS =================
   const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
@@ -633,7 +786,7 @@
   const sb=supabase.createClient(SB_URL,SB_KEY);
 
   const PLAN_LIMITS={free:30,plus:300,pro:1000};
-  let profile=null;          // {id, plan, message_count, display_name}
+  let profile=null;
   let currentEmail=null;
   function planLimit(){ if(window.PSYCHE_PREVIEW) return window.PSYCHE_PREVIEW_LIMIT; return PLAN_LIMITS[profile&&profile.plan]||PLAN_LIMITS.free; }
   function planName(p){ return p==='pro'?'Pro plan':(p==='plus'?'Plus plan':'Free plan'); }
@@ -655,16 +808,17 @@
   }
 
   async function loadProfile(session){
-    if(window.PSYCHE_PREVIEW) return;   // preview loads its own mock profile below — never via Supabase
+    if(window.PSYCHE_PREVIEW) return;
     if(!(session&&session.user)){ profile=null; renderAccount(); updateCount(); return; }
     const uid=session.user.id;
     currentEmail=session.user.email||"";
+    window.__acctToken=session.access_token;
     if(profile&&profile.id===uid){ renderAccount(); updateCount(); return; }
     const {data,error}=await sb.from("profiles").select("plan,message_count,count_reset_at,display_name").eq("id",uid).single();
     if(error||!data){ console.error("profile fetch failed:",error); renderAccount(); return; }
     profile={id:uid,plan:data.plan||"free",message_count:Number(data.message_count)||0,display_name:data.display_name||""};
     renderAccount(); updateCount();
-    if(!current() || !current().messages.length) renderThread();   // refresh greeting with the name
+    if(!current() || !current().messages.length) renderThread();
     const THIRTY_DAYS=30*24*60*60*1000;
     const last=data.count_reset_at?new Date(data.count_reset_at).getTime():null;
     if(last===null){ sb.from("profiles").update({count_reset_at:new Date().toISOString()}).eq("id",uid); }
@@ -672,7 +826,6 @@
   }
 
   if(window.PSYCHE_PREVIEW){
-    // Dev preview: mock profile only. No Supabase session is ever created or read.
     const p=window.PSYCHE_PREVIEW_PROFILE;
     currentEmail=p.email;
     profile={id:p.id,plan:p.plan,message_count:p.message_count,display_name:p.display_name};
@@ -682,38 +835,7 @@
     sb.auth.onAuthStateChange((_e,session)=>{ currentEmail=session&&session.user?session.user.email:null; setTimeout(()=>loadProfile(session),0); });
   }
 
-  // ================= ADDENDUM: ambience sounds =================
-  const SOUNDS = {
-    quiet:      { label:"Sounds", src:null },
-    rain:       { label:"Rain", src:"/audio/rain.mp3" },
-    stream:     { label:"Stream", src:"/audio/stream.mp3" },
-    waves:      { label:"Waves", src:"/audio/waves.mp3" },
-    wind:       { label:"Wind", src:"/audio/wind.mp3" },
-    bowl:       { label:"Singing bowl", src:"/audio/bowl.mp3" },
-    atmosphere: { label:"Atmosphere", src:"/audio/atmosphere.mp3" },
-    "tone-432": { label:"Deep tone · 432", src:"/audio/tone-432.mp3" },
-    theta:      { label:"Theta · headphones", src:"/audio/theta-binaural.mp3" }
-  };
-  const ambience=$("ambience"), soundPill=$("soundPill"), soundLabel=$("soundLabel"), soundPop=$("soundPop"), soundVol=$("soundVol");
-  let curSound=localStorage.getItem("psyche:sound")||"quiet"; if(!SOUNDS[curSound]) curSound="quiet";
-  let targetVol=Math.min(1,Math.max(0,(parseInt(localStorage.getItem("psyche:soundVol"),10)||40)/100));
-  let ducked=false, fadeTimer=null, resumed=false;
-  soundVol.value=Math.round(targetVol*100);
-  function effVol(){ return ducked ? targetVol*0.3 : targetVol; }
-  function fadeTo(v,done){ clearInterval(fadeTimer); const start=ambience.volume||0, steps=18; let i=0; fadeTimer=setInterval(()=>{ i++; ambience.volume=Math.max(0,Math.min(1,start+(v-start)*i/steps)); if(i>=steps){ clearInterval(fadeTimer); if(done) done(); } }, 600/steps); }
-  function reflectSound(){ soundLabel.textContent=(SOUNDS[curSound]||SOUNDS.quiet).label; soundPill.classList.toggle("active",curSound!=="quiet"); [].forEach.call(soundPop.querySelectorAll('.sopt'),o=>o.classList.toggle('on',o.getAttribute('data-sound')===curSound)); }
-  function playSound(){ const s=SOUNDS[curSound]; clearInterval(fadeTimer); if(!s||!s.src){ fadeTo(0,()=>{ try{ambience.pause();}catch(e){} }); return; } if(ambience.getAttribute('data-src')!==s.src){ try{ ambience.pause(); }catch(e){} ambience.src=s.src; ambience.setAttribute('data-src',s.src); ambience.load(); } ambience.volume=0; ambience.play().then(()=>fadeTo(effVol())).catch(()=>{}); }
-  function selectSound(key){ curSound=key; localStorage.setItem("psyche:sound",key); reflectSound(); if(resumed) playSound(); }
-  soundPill.addEventListener('click',e=>{ e.stopPropagation(); soundPop.classList.toggle('open'); });
-  [].forEach.call(soundPop.querySelectorAll('.sopt'),o=>o.addEventListener('click',()=>{ selectSound(o.getAttribute('data-sound')); }));
-  soundVol.addEventListener('input',()=>{ targetVol=soundVol.value/100; localStorage.setItem("psyche:soundVol",soundVol.value); if(!ambience.paused) ambience.volume=effVol(); });
-  document.addEventListener('click',e=>{ if(!soundPop.contains(e.target)&&!soundPill.contains(e.target)) soundPop.classList.remove('open'); });
-  function duck(on){ ducked=on; if(!ambience.paused) fadeTo(effVol()); }
-  function resumeAmbience(){ if(resumed) return; resumed=true; if(curSound!=="quiet") playSound(); }   // never autoplay on load — resumed by the first-tap greeting
-  reflectSound();
-  function playChime(name){ try{ const a=new Audio("/audio/"+name+".mp3"); a.volume=Math.min(0.5,targetVol+0.15); a.play().catch(()=>{}); }catch(e){} }  // optional; no-op if file missing
-
-  // ================= ADDENDUM: account menu, help & feedback =================
+  // ================= ACCOUNT MENU, HELP & FEEDBACK =================
   const acctMenu=$("acctMenu");
   $("acctSettings").onclick=()=>{ location.href="settings.html"; };
   $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
@@ -722,20 +844,12 @@
   $("fbCancel").onclick=()=>fbModal.classList.remove('open');
   $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ try{ const f=JSON.parse(localStorage.getItem("psyche:feedback")||"[]"); f.push({text:t,at:new Date().toISOString()}); localStorage.setItem("psyche:feedback",JSON.stringify(f)); }catch(e){} } $("fbText").value=""; fbModal.classList.remove('open'); alert("Thank you — your feedback was recorded."); };
 
-  // ================= ADDENDUM: one-time sound hint (first fresh session only) =================
-  function maybeSoundHint(){
-    if(localStorage.getItem("psyche:soundHint")) return;
-    if(current() && current().messages.length) return;
-    localStorage.setItem("psyche:soundHint","1");
-    setTimeout(()=>{ addMsg("Some ambient sound or music? Tap ♪ above.",'avatar'); }, 1300);
-  }
-
-  // ================= CRISIS SUPPORT MODAL =================
+  // ================= CRISIS SUPPORT MODAL (unchanged) =================
   const crisisModal=$("crisisModal");
-  function showCrisisModal(){ if(crisisModal){ crisisModal.classList.add('open'); crisisModal.scrollTop=0; } }
+  function showCrisisModal(){ if(voiceActive) stopVoice(); if(crisisModal){ crisisModal.classList.add('open'); crisisModal.scrollTop=0; } }
   function closeCrisisModal(){ if(crisisModal) crisisModal.classList.remove('open'); }
   if($("crisisReturn")) $("crisisReturn").onclick=closeCrisisModal;
-  (function(){ // emergency number by browser region (light touch)
+  (function(){
     var direct={NZ:"111",AU:"000",US:"911",CA:"911",GB:"999",IE:"112"};
     var eu=["DE","FR","ES","IT","NL","SE","NO","FI","DK","PL","PT","AT","BE","CH","GR","CZ","HU","RO","IS","LU","SK","SI","HR","EE","LV","LT","BG"];
     var region=""; try{ region=(new Intl.Locale(navigator.language).region)||""; }catch(e){}
@@ -748,7 +862,7 @@
   renderSidebar();
   renderThread();
   updateCount();
-  maybeSoundHint();
+  swap();
 </script>
 </body>
 </html>
