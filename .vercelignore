@@ -1,0 +1,3 @@
+# Source material and backups — version-controlled in git, but not part of
+# the deployed site. Keeps orphan pages off public URLs.
+design/
