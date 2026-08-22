@@ -415,7 +415,7 @@ function svg(key, size){
   return '<svg viewBox="0 0 22 22" width="' + s + '" height="' + s + '" fill="none" stroke="currentColor" ' +
          'stroke-width="1.05" stroke-linecap="round">' + I[key] + '</svg>';
 }
-document.querySelectorAll('[data-icon]').forEach(function(el){ el.innerHTML = svg(el.dataset.icon, 28); });
+document.querySelectorAll('[data-icon]').forEach(function(el){ el.innerHTML = svg(el.dataset.icon, 24); });
 
 var features = [
   { title:'What it is',         glyph:'scroll',  points:['Ancient teachings on the mind, integrated with modern psychology','Plain English — nothing to believe'] },
@@ -438,7 +438,7 @@ var earnSteps = [
 function rows(list, into){
   document.getElementById(into).innerHTML = list.map(function(x){
     return '<li><details><summary>' +
-             '<span class="side-icon">' + svg(x.glyph, 28) + '</span>' +
+             '<span class="side-icon">' + svg(x.glyph, 24) + '</span>' +
              '<span class="side-name">' + x.title + '</span>' +
              '<span class="chev"></span>' +
            '</summary><ul class="side-points">' +
