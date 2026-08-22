@@ -72,6 +72,36 @@ is its own chat thread that "remembers" the person.
   provider call goes through a serverless function in `api/`.
 - Prices shown ($12/mo, $/month) are placeholders ("placeholder price").
 
+## Landing page v2 — locked decisions (2026-08-21)
+
+Source of truth: `design/landing-handoff/` (Claude Design bundle + `claude-code-handoff-landing-v2-FULL.md`).
+Built as `landing-v2.html` — a **reference file for review**, desktop-only (>=1024px).
+The live landing page is untouched until this is approved.
+
+- **Single CTA:** "Download free", fixed top-right, exactly 54px tall, indigo gradient
+  `#3a5fce -> #1d3891 -> #132a6b`. The page's only button-styled action. Hidden below 768px.
+- **Ask box is a download router, not chat.** No API call on the landing page, ever.
+  On submit it stores the question in `localStorage` under `psyche_q` and shows one line on a
+  hairline rule: "Psyche is ready to answer this properly — in the app, free to download.
+  Your question will be waiting." + a "Download free" text link. No pending/"Listening" state.
+  The README's `askPsyche()` live-AI section is superseded and dead.
+- **Founders band is preview only:** heading "Founding Members Wanted", three stats
+  (First / Real / Zero), no button, no modal.
+- **Band 2 heading:** "Earn real money".
+- **Sidebar "How you earn"** (5 rows, copy per README): Real money / Your own link /
+  Content made for you / No selling / Fully automated payments.
+- **No income figures or percentages anywhere on the landing page.** ("1,000 founding places"
+  stands — a scarcity count, not an earnings claim.)
+- **Hero is 85vh** so the avatar card tops break the fold; play discs sit at `top:30%` of cards.
+- Where the bundle's README and `Psyche Landing v1.dc.html` disagree, **the .dc.html wins**
+  (it is what was visually approved). Notably: send button `#6f6c66`, wordmark weight 700, and
+  the body/UI font stack leads with **Poiret One**, not Jost — Jost is used only by the CTA and
+  the two sidebar section headings.
+
+Parked, not this session: byte-for-byte overwrite of the live landing page; mobile build
+(drawer nav, stacked hero, bottom download bar); download routing + auth flow; voice glyph
+wiring; picking up `psyche_q` inside the app.
+
 ## Planned next steps (NOT yet built — understand, don't implement unprompted)
 
 1. **Supabase** — auth, usage limits (the "15 minutes free, no email" free tier needs
