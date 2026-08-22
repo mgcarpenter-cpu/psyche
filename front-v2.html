@@ -9,299 +9,167 @@
 <link href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* ------------------------------------------------------------------
-   landing-v2 — REFERENCE FILE for review. Not the live landing page.
-   Built from design/landing-handoff/ (README.md is the spec, but the
-   .dc.html logic class holds the exact values and wins on conflict).
-   Overrides applied per claude-code-handoff-landing-v2-FULL.md:
-     · ask box makes NO API call — stores psyche_q, shows download line
-     · desktop only (>=1024px); CTA still hides below 768px
-     · CTA -> #download; routing is a later task
+   Landing page — rebuilt 1:1 from "psyche-final 3.html" (Claude Design
+   export, design/landing-handoff/psyche-final-3.html), the approved
+   canvas. All values are that file's rendered values, verbatim.
+   Deviations, by explicit instruction:
+     · ask box stores psyche_q + shows a download line — NO API call
+     · sidebar never scrolls: overflow hidden; icons compress via vh
+       below ~900px-tall windows (design keeps 28px and scrolls)
+     · links wired to real pages; CTA -> #download
    ------------------------------------------------------------------ */
-
 :root{
-  /* SANS leads with Poiret One exactly as the .dc.html does — flip these two
-     names to put Jost first if the typography decision ever changes */
   --sans:'Poiret One','Jost',-apple-system,'Helvetica Neue',Arial,sans-serif;
   --display:'Poiret One','Jost','Helvetica Neue',Arial,sans-serif;
   --jost:'Jost',-apple-system,'Helvetica Neue',Arial,sans-serif;
-
-  --bg:#000000;
-  --cream:#ede6dc;
-  --muted:rgba(237,230,220,.62);
-  --faint:rgba(237,230,220,.34);
-  --line:rgba(237,230,220,.16);
-  --ink:#111014;
-
-  --gutter:clamp(20px,3.43vw,48px);
-  --band-heading:clamp(56px,6.8vw,90px);
-  --fade:linear-gradient(0deg,#3e3a34 0%,#2a2723 28%,#151413 58%,#000000 100%) bottom / 100% 300px no-repeat, #000000;
+  --cream:#ede6dc; --ink:#111014;
+  --gutter:clamp(10px,3.43vw,24px);
+  --band-heading:clamp(28px,6.8vw,58px);
+  --fade:linear-gradient(0deg,#3e3a34 0%,#2a2723 28%,#151413 58%,#000 100%) center bottom / 100% 150px no-repeat, #000;
 }
-
 html,body{margin:0;padding:0;background:#050507;}
 *{box-sizing:border-box;}
 a{text-decoration:none;color:inherit;}
 input::placeholder{color:rgba(17,16,20,.5);}
 summary::-webkit-details-marker{display:none;}
 details[open] summary .chev{transform:rotate(-135deg);}
+@media (max-width:767px){ #float-cta{display:none !important;} }
 ::-webkit-scrollbar{height:0;width:0;}
 
-.root{
-  background:var(--bg);color:var(--cream);font-family:var(--sans);
-  min-height:100vh;overflow-x:clip;display:flex;align-items:flex-start;
-}
+/* The white bar is painted as a fixed underlay spanning the full viewport
+   height at every scroll position — it cannot end early regardless of how
+   the flex column resolves. The sidebar content sits above it (z-index 20). */
+body::before{content:'';position:fixed;left:0;top:0;bottom:0;width:clamp(140px,28vw,260px);background:#fff;z-index:10;}
+.root{background:#000;color:var(--cream);font-family:var(--sans);min-height:100vh;overflow-x:clip;display:flex;align-items:flex-start;}
 
 /* ---------- white sidebar ---------- */
-.side{
-  flex:0 0 auto;width:clamp(360px,30vw,540px);align-self:stretch;z-index:20;
-  background:#ffffff;color:var(--ink);display:flex;flex-direction:column;
-}
-/* 'clip' on .root rather than 'hidden' keeps this sticky panel working */
-/* the white column runs the full length of the page and never scrolls on
-   its own — content flows down it, no nested scrollport */
-.side-sticky{
-  min-height:100%;
-  padding:clamp(24px,4vh,56px) clamp(34px,2.8vw,52px);
-  display:flex;flex-direction:column;gap:0;
-}
-
-.side-mark{
-  flex:0 0 auto;font-family:var(--sans);font-size:clamp(26px,3.55vh,33px);
-  font-weight:700;letter-spacing:.06em;line-height:1;color:var(--ink);
-}
-.row{display:flex;align-items:center;gap:14px;color:var(--ink);}
-.row-tight{padding:clamp(2px,.4vh,8px) 0;}
-.row-loose{padding:clamp(5px,.85vh,16px) 0;}
-.row-login{margin-top:clamp(8px,1.2vh,18px);}
+.side{flex:0 0 auto;width:clamp(140px,28vw,260px);align-self:stretch;z-index:20;background:#fff;color:var(--ink);display:flex;flex-direction:column;}
+/* pinned and unable to scroll; the design's own inner panel scrolls on
+   short windows — instead the icons compress below ~900px tall */
+.side-sticky{position:sticky;top:0;height:100vh;overflow:hidden;padding:clamp(12px,4vh,28px) clamp(17px,2.8vw,26px);display:flex;flex-direction:column;gap:0;}
+.side-mark{flex:0 0 auto;font-family:var(--sans);font-size:clamp(14px,3.8vh,24px);font-weight:700;letter-spacing:.06em;line-height:1;color:var(--ink);}
+.row{display:flex;align-items:center;gap:7px;color:var(--ink);}
+.row-tight{padding:clamp(1px,.4vh,4px) 0;}
+.row-loose{padding:clamp(2.5px,.85vh,8px) 0;}
+.row-login{margin-top:clamp(4px,1.2vh,9px);}
 .row-icon{flex:0 0 auto;display:flex;align-items:center;color:var(--ink);}
 .row-icon.dim{opacity:.75;}
-.row-label{font-family:var(--sans);font-size:clamp(15px,1.95vh,18px);font-weight:400;letter-spacing:.04em;line-height:1.35;}
-
-.side-nav{flex:0 0 auto;display:flex;flex-direction:column;padding-bottom:clamp(10px,1.8vh,28px);}
-.side-group{
-  flex:0 0 auto;margin-top:clamp(14px,2.2vh,34px);padding-top:clamp(8px,1.4vh,24px);
-  display:flex;flex-direction:column;gap:clamp(6px,1vh,16px);
-}
-.side-group-title{
-  margin:0;font-family:var(--jost);font-size:clamp(13px,1.69vh,16px);font-weight:300;
-  letter-spacing:.14em;text-transform:uppercase;line-height:1;color:var(--ink);
-}
+.row-label{font-family:var(--sans);font-size:clamp(8.5px,2.3vh,14px);font-weight:400;letter-spacing:.04em;line-height:1.35;}
+.side-icon svg,.row-icon svg{width:clamp(16px,2.2vh,28px);height:clamp(16px,2.2vh,28px);}
+.side-nav{flex:0 0 auto;display:flex;flex-direction:column;padding-bottom:clamp(5px,1.8vh,14px);}
+.side-group{flex:0 0 auto;margin-top:clamp(7px,2.2vh,17px);padding-top:clamp(4px,1.4vh,12px);display:flex;flex-direction:column;gap:clamp(3px,1vh,8px);}
+.side-group-title{margin:0;font-family:var(--jost);font-size:clamp(8px,2vh,13px);font-weight:300;letter-spacing:.14em;text-transform:uppercase;line-height:1;color:var(--ink);}
 .side-list{margin:0;padding:0;list-style:none;}
 .side-list details{width:100%;}
-.side-list summary{
-  display:flex;align-items:center;gap:clamp(12px,1.1vw,18px);
-  cursor:pointer;list-style:none;
-}
-.side-list.works summary{padding:clamp(5px,.85vh,16px) 0;}
-.side-list.earn summary{padding:clamp(2px,.4vh,8px) 0;}
+.side-list summary{display:flex;align-items:center;gap:clamp(6px,1.1vw,9px);cursor:pointer;list-style:none;}
+.side-list.works summary{padding:clamp(2.5px,.85vh,8px) 0;}
+.side-list.earn summary{padding:clamp(1px,.4vh,4px) 0;}
 .side-icon{flex:0 0 auto;display:flex;align-items:center;color:var(--ink);opacity:.8;}
-.side-name{display:block;font-family:var(--display);font-size:clamp(15px,1.95vh,18px);font-weight:400;line-height:1.35;color:var(--ink);}
-.side-list.earn .side-name{font-family:var(--sans);}
-.chev{
-  flex:0 0 auto;margin-left:auto;margin-right:6px;width:13px;height:13px;
-  border-right:2px solid rgba(17,16,20,.6);border-bottom:2px solid rgba(17,16,20,.6);
-  transform:rotate(45deg);
+.side-name{display:block;font-family:var(--display);font-size:clamp(8.5px,2.3vh,14px);font-weight:400;line-height:1.35;color:var(--ink);}
+.chev{flex:0 0 auto;margin-left:auto;margin-right:3px;width:6.5px;height:6.5px;border-right:1px solid rgba(17,16,20,.6);border-bottom:1px solid rgba(17,16,20,.6);transform:rotate(45deg);}
+.side-points{margin:0 0 clamp(5px,1.5vh,10px);padding:0 0 0 clamp(17px,3vw,26px);list-style:none;display:flex;flex-direction:column;gap:5px;}
+.side-points li{font-family:var(--sans);font-size:clamp(8.5px,2.3vh,14px);font-weight:400;line-height:1.45;color:var(--ink);}
+.side-foot{margin-top:auto;padding-top:clamp(8px,1.2vh,18px);display:flex;flex-direction:column;}
+/* short windows: the design would scroll internally here; since this bar
+   must never scroll, the whole nav compresses with viewport height */
+@media (max-height:820px){
+  .row-label,.side-name,.side-points li{font-size:clamp(8.5px,1.75vh,13px);}
+  .side-icon svg,.row-icon svg{width:clamp(13px,1.9vh,16px);height:clamp(13px,1.9vh,16px);}
+  .side-group-title{font-size:clamp(8px,1.6vh,12px);}
+  .side-mark{font-size:clamp(14px,3.2vh,22px);}
+  .side-sticky{padding:clamp(10px,2.5vh,18px) clamp(17px,2.8vw,26px);}
+  .row-loose{padding:clamp(1px,.5vh,4px) 0;}
+  .side-list.works summary{padding:clamp(1.5px,.5vh,4px) 0;}
+  .side-group{margin-top:clamp(5px,1.5vh,11px);padding-top:clamp(3px,1vh,8px);}
+  .side-nav{padding-bottom:clamp(3px,.9vh,7px);}
 }
-.side-points{
-  margin:0 0 clamp(10px,1.5vh,20px);padding:0 0 0 clamp(34px,3vw,52px);
-  list-style:none;display:flex;flex-direction:column;gap:10px;
-}
-.side-points li{font-family:var(--sans);font-size:clamp(15px,1.95vh,18px);font-weight:400;line-height:1.45;color:var(--ink);}
+.acct-avatar{flex:0 0 auto;width:14px;height:14px;border-radius:999px;border:.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:6.5px;font-weight:500;letter-spacing:.02em;line-height:1;color:var(--ink);}
 
-.side-foot{margin-top:auto;padding-top:clamp(16px,2.4vh,36px);display:flex;flex-direction:column;}
-.acct-avatar{
-  flex:0 0 auto;width:28px;height:28px;border-radius:999px;border:1px solid var(--ink);
-  display:flex;align-items:center;justify-content:center;font-family:var(--sans);
-  font-size:13px;font-weight:500;letter-spacing:.02em;line-height:1;color:var(--ink);
-}
+/* ---------- floating CTA ---------- */
+#float-cta{position:fixed;top:12px;right:12px;z-index:80;display:inline-flex;align-items:center;justify-content:center;height:27px;padding:0 20px;background:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);color:#fff;font-family:var(--jost);font-size:8.25px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;box-shadow:0 5px 14px rgba(0,0,0,.45);}
 
-/* ---------- floating CTA — the page's only button-styled action ---------- */
-#float-cta{
-  position:fixed;top:24px;right:24px;z-index:80;
-  display:inline-flex;align-items:center;justify-content:center;
-  height:54px;padding:0 40px;
-  background:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);
-  color:#ffffff;font-family:var(--jost);font-size:16.5px;font-weight:500;
-  letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;
-  box-shadow:0 10px 28px rgba(0,0,0,.45);
-}
-@media (max-width:767px){ #float-cta{display:none !important;} }
+/* ---------- main column ---------- */
+.main{flex:1 1 auto;min-width:0;background:#000;}
+.shell{width:100%;max-width:max(590px,94vw);margin:0 auto;padding:0 var(--gutter);}
 
-/* ---------- main black column ---------- */
-.main{flex:1 1 auto;min-width:0;background:var(--bg);}
-.shell{width:100%;max-width:max(1180px,94vw);margin:0 auto;padding:0 var(--gutter);}
-
-.hero{
-  position:relative;padding:56px 0;min-height:85vh;background:var(--fade);
-  display:flex;flex-direction:column;justify-content:center;
-}
+.hero{position:relative;padding-top:28px;padding-bottom:28px;min-height:85vh;background:var(--fade);display:flex;flex-direction:column;justify-content:center;}
 .hero-type{position:relative;z-index:3;text-align:center;padding:0 var(--gutter);}
-.hero h1{
-  margin:0 auto;max-width:820px;font-family:var(--display);font-weight:400;
-  font-size:var(--band-heading);line-height:1.08;letter-spacing:.01em;
-  color:var(--cream);text-align:center;text-wrap:balance;
-}
-.kicker{
-  margin:28px 0 0;text-align:center;font-family:var(--sans);
-  font-size:clamp(13px,1.1vw,16px);font-weight:400;letter-spacing:.32em;
-  text-transform:uppercase;color:rgba(237,230,220,.72);
-}
-
-.ask-outer{position:relative;z-index:4;display:flex;justify-content:center;padding:0 var(--gutter);margin-top:28px;}
-.ask-col{width:min(100%,820px);margin-inline:auto;}
-.ask-box{
-  display:flex;align-items:center;gap:clamp(4px,.35vw,8px);width:100%;
-  height:clamp(72px,6vw,112px);background:#ffffff;color:var(--ink);border-radius:0;
-  padding:0 clamp(16px,1.4vw,26px) 0 30px;border:1px solid #c9c5bd;
-}
-.ask-input{
-  flex:1;min-width:0;background:none;border:none;outline:none;color:var(--ink);
-  font-family:var(--sans);font-size:clamp(22px,1.74vw,26px);font-weight:300;letter-spacing:.02em;
-}
-/* voice glyph is visual only for now — to be wired later */
-.voice{
-  flex:0 0 auto;display:flex;align-items:center;justify-content:center;
-  width:clamp(74px,6.4vw,110px);height:clamp(62px,5.4vw,92px);
-  background:none;color:var(--ink);cursor:pointer;
-}
-.send{
-  flex:0 0 auto;display:flex;align-items:center;justify-content:center;
-  width:clamp(46px,3.8vw,64px);height:clamp(46px,3.8vw,64px);
-  background:#6f6c66;color:#ffffff;cursor:pointer;
-}
-
-/* the download line that replaces the dead live-AI reply */
-.ask-answer{margin-top:36px;padding-top:28px;border-top:1px solid var(--line);text-align:left;}
+.hero h1{margin:0 auto;max-width:410px;font-family:var(--display);font-weight:400;font-size:var(--band-heading);line-height:1.08;letter-spacing:.01em;color:var(--cream);text-align:center;text-wrap:balance;}
+.kicker{margin:14px 0 0;text-align:center;font-family:var(--sans);font-size:clamp(6.5px,1.43vw,11px);font-weight:400;letter-spacing:.32em;text-transform:uppercase;color:rgba(237,230,220,.72);}
+.ask-outer{position:relative;z-index:4;display:flex;justify-content:center;padding:0 var(--gutter);margin-top:14px;}
+.ask-col{width:min(100%,410px);margin-inline:auto;}
+.ask-box{display:flex;align-items:center;gap:clamp(2px,.35vw,4px);width:100%;height:clamp(36px,6vw,56px);background:#fff;color:var(--ink);border-radius:0;padding:0 clamp(8px,1.4vw,13px) 0 15px;border:.5px solid #c9c5bd;}
+.ask-input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--ink);font-family:var(--sans);font-size:clamp(12px,2.6vw,22px);font-weight:300;letter-spacing:.02em;}
+.voice{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:clamp(37px,6.4vw,55px);height:clamp(31px,5.4vw,46px);background:none;color:var(--ink);cursor:pointer;}
+.send{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:clamp(23px,3.8vw,32px);height:clamp(23px,3.8vw,32px);background:#6f6c66;color:#fff;cursor:pointer;}
+.ask-answer{margin-top:17px;padding-top:14px;border-top:.5px solid rgba(237,230,220,.16);text-align:left;}
 .ask-answer[hidden]{display:none;}
-.ask-answer p{
-  margin:0;font-family:var(--sans);font-size:clamp(16px,1.42vw,20px);font-weight:400;
-  line-height:1.7;letter-spacing:.01em;color:rgba(237,230,220,.9);
-}
-.ask-answer a{
-  display:inline-block;margin-top:14px;font-family:var(--sans);
-  font-size:clamp(16px,1.42vw,20px);color:var(--cream);
-  text-decoration:underline;text-underline-offset:6px;
-  text-decoration-color:rgba(237,230,220,.45);
-}
+.ask-answer p{margin:0;font-family:var(--sans);font-size:clamp(8.5px,1.42vw,11px);font-weight:400;line-height:1.7;letter-spacing:.01em;color:rgba(237,230,220,.9);}
+.ask-answer a{display:inline-block;margin-top:7px;font-family:var(--sans);font-size:clamp(8.5px,1.42vw,11px);color:var(--cream);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(237,230,220,.45);}
 
-.band{padding:56px 0;min-height:max(43vh,612px);background:var(--fade);display:flex;flex-direction:column;justify-content:flex-start;}
-.band-equal{padding:56px 0;min-height:max(22vh,306px);background:var(--fade);display:flex;flex-direction:column;justify-content:flex-start;}
-.head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:40px;flex-wrap:wrap;}
-.head-col{flex:1 1 380px;min-width:min(100%,380px);}
+.band{padding:28px 0;min-height:max(43vh,306px);background:var(--fade);display:flex;flex-direction:column;justify-content:flex-start;}
+.band-equal{padding:28px 0;min-height:max(22vh,153px);background:var(--fade);display:flex;flex-direction:column;justify-content:flex-start;}
+.head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.head-col{flex:1 1 190px;min-width:min(100%,190px);}
 .head-title{margin:0;font-family:var(--display);font-size:var(--band-heading);font-weight:400;line-height:1.02;letter-spacing:.01em;color:var(--cream);}
-.head-sub{
-  margin:20px 0 0;max-width:30ch;font-family:var(--sans);font-size:clamp(14px,1.15vw,17px);
-  font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
-}
+.head-sub{margin:10px 0 0;max-width:30ch;font-family:var(--sans);font-size:clamp(7px,1.49vw,11px);font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:rgba(237,230,220,.62);}
 
 /* ---------- avatar cards ---------- */
-.rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:28px 24px;margin-top:88px;}
+.rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(75px,100%),1fr));gap:14px 12px;margin-top:44px;}
 .pearl{min-width:0;cursor:pointer;display:flex;flex-direction:column;}
-.frame{
-  min-width:0;width:100%;aspect-ratio:7 / 10;border:1px solid rgba(237,230,220,.14);
-  overflow:hidden;position:relative;background:#0b0b0d;
-}
+.frame{min-width:0;width:100%;aspect-ratio:7 / 10;border:.5px solid rgba(237,230,220,.14);overflow:hidden;position:relative;background:#0b0b0d;}
 .frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(5,5,7,.5) 0%,transparent 40%);}
-.slot{
-  position:absolute;left:0;right:0;top:46%;bottom:18%;display:flex;align-items:center;
-  justify-content:center;text-align:center;font-family:var(--sans);
-  font-size:clamp(15px,1.2vw,17px);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
-}
-.play{
-  position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);z-index:4;
-  width:clamp(46px,4vw,68px);height:clamp(46px,4vw,68px);
-  display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .25s;
-}
+.slot{position:absolute;inset:46% 0 18%;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--sans);font-size:clamp(7.5px,1.56vw,11.5px);letter-spacing:.14em;text-transform:uppercase;color:rgba(237,230,220,.34);}
+.play{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);z-index:4;width:clamp(23px,4vw,34px);height:clamp(23px,4vw,34px);display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .25s;}
 .pearl.sounding .play{opacity:0;}
-.disc{
-  position:relative;width:clamp(44px,3.8vw,64px);height:clamp(44px,3.8vw,64px);border-radius:999px;
-  display:flex;align-items:center;justify-content:center;background:rgba(237,230,220,.18);
-  backdrop-filter:blur(10px) saturate(140%) brightness(112%);
-  -webkit-backdrop-filter:blur(10px) saturate(140%) brightness(112%);
-  border:1px solid rgba(237,230,220,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);
-}
-.tri{
-  width:0;height:0;margin-left:3px;
-  border-left:clamp(12px,1.05vw,17px) solid rgba(255,255,255,.92);
-  border-top:clamp(8px,.7vw,11px) solid transparent;
-  border-bottom:clamp(8px,.7vw,11px) solid transparent;
-}
-.rank{
-  position:absolute;left:clamp(24px,2vw,34px);top:clamp(20px,1.7vw,28px);z-index:3;
-  font-family:var(--display);font-size:clamp(20px,1.8vw,26px);line-height:1;color:var(--cream);
-}
-.time{
-  position:absolute;right:clamp(24px,2vw,34px);top:clamp(24px,2vw,32px);z-index:3;
-  font-family:var(--sans);font-size:clamp(15px,1.2vw,17px);letter-spacing:.1em;color:var(--cream);
-}
-.caption{padding-top:clamp(16px,1.4vw,24px);}
-.meta{
-  margin:0;font-family:var(--sans);font-size:clamp(14px,1.15vw,17px);font-weight:400;
-  letter-spacing:.16em;text-transform:uppercase;color:#ffffff;
-}
+.disc{position:relative;width:clamp(22px,3.8vw,32px);height:clamp(22px,3.8vw,32px);border-radius:999px;display:flex;align-items:center;justify-content:center;background:rgba(237,230,220,.18);backdrop-filter:blur(5px) saturate(140%) brightness(112%);-webkit-backdrop-filter:blur(5px) saturate(140%) brightness(112%);border:.5px solid rgba(237,230,220,.42);box-shadow:inset 0 .5px 0 rgba(255,255,255,.3);}
+.tri{width:0;height:0;margin-left:1.5px;border-left:clamp(6px,1.05vw,8.5px) solid rgba(255,255,255,.92);border-top:clamp(4px,.7vw,5.5px) solid transparent;border-bottom:clamp(4px,.7vw,5.5px) solid transparent;}
+.rank{position:absolute;left:clamp(12px,2vw,17px);top:clamp(10px,1.7vw,14px);z-index:3;font-family:var(--display);font-size:clamp(11px,2.34vw,19.5px);line-height:1;color:var(--cream);}
+.time{position:absolute;right:clamp(12px,2vw,17px);top:clamp(12px,2vw,16px);z-index:3;font-family:var(--sans);font-size:clamp(7.5px,1.56vw,11.5px);letter-spacing:.1em;color:var(--cream);}
+.caption{padding-top:clamp(8px,1.4vw,12px);}
+.meta{margin:0;font-family:var(--sans);font-size:clamp(7px,1.49vw,11.5px);font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:#fff;}
 
 /* ---------- founding members ---------- */
-.found-top{display:flex;align-items:flex-start;justify-content:space-between;gap:40px;flex-wrap:wrap;}
-.found-left{flex:1 1 380px;min-width:min(100%,380px);display:flex;flex-direction:column;align-items:flex-start;gap:20px;}
+.found-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.found-left{flex:1 1 190px;min-width:min(100%,190px);display:flex;flex-direction:column;align-items:flex-start;gap:10px;}
 .found-title{margin:0;max-width:14ch;font-family:var(--display);font-size:var(--band-heading);font-weight:400;line-height:1.02;letter-spacing:.01em;color:var(--cream);}
-.found-note{margin:0;max-width:34ch;font-family:var(--sans);font-size:clamp(16px,1.4vw,20px);font-weight:400;line-height:1.55;color:rgba(237,230,220,.8);text-wrap:pretty;}
-.found-cols{display:grid;grid-template-columns:repeat(3,minmax(150px,1fr));gap:40px 32px;margin-top:56px;}
-.found-item{display:flex;flex-direction:column;gap:16px;padding-top:20px;border-top:1px solid rgba(237,230,220,.22);}
-.found-num{font-family:var(--display);font-size:clamp(28px,2.6vw,38px);line-height:1;color:rgba(237,230,220,.4);}
-.found-text{max-width:28ch;font-family:var(--sans);font-size:clamp(16px,1.4vw,20px);font-weight:400;line-height:1.45;color:rgba(237,230,220,.82);text-wrap:pretty;}
+.found-note{margin:0;max-width:34ch;font-family:var(--sans);font-size:clamp(8.5px,1.82vw,14.5px);font-weight:400;line-height:1.55;color:rgba(237,230,220,.8);text-wrap:pretty;}
+.found-cols{display:grid;grid-template-columns:repeat(3,minmax(75px,1fr));gap:20px 16px;margin-top:28px;}
+.found-item{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:.5px solid rgba(237,230,220,.22);}
+.found-num{font-family:var(--display);font-size:clamp(15px,3.38vw,30px);line-height:1;color:rgba(237,230,220,.4);}
+.found-text{max-width:28ch;font-family:var(--sans);font-size:clamp(8.5px,1.82vw,15px);font-weight:400;line-height:1.45;color:rgba(237,230,220,.82);text-wrap:pretty;}
 </style>
 </head>
 <body>
-
 <div class="root">
-
   <aside class="side">
     <div class="side-sticky">
       <span class="side-mark">PSYCHE</span>
-
       <a href="auth.html" class="row row-tight row-login">
-        <span class="row-icon" data-icon="person"></span>
-        <span class="row-label">Log in</span>
+        <span class="row-icon" data-icon="person"></span><span class="row-label">Log in</span>
       </a>
       <a href="#download" class="row row-tight">
-        <span class="row-icon" data-icon="download"></span>
-        <span class="row-label">Join &amp; download</span>
+        <span class="row-icon" data-icon="download"></span><span class="row-label">Join &amp; download</span>
       </a>
-
       <nav class="side-nav">
         <a href="help.html" class="row row-tight">
-          <span class="row-icon dim" data-icon="question"></span>
-          <span class="row-label">Questions / FAQ</span>
+          <span class="row-icon dim" data-icon="question"></span><span class="row-label">Questions / FAQ</span>
         </a>
       </nav>
-
       <div class="side-group">
         <p class="side-group-title">How it works</p>
         <ul class="side-list works" id="worksList"></ul>
       </div>
-
       <div class="side-group">
         <p class="side-group-title">How you earn</p>
         <ul class="side-list earn" id="earnList"></ul>
       </div>
-
       <nav class="side-foot">
-        <a href="privacy.html" class="row row-loose">
-          <span class="row-icon" data-icon="shield"></span>
-          <span class="row-label">Private &amp; secure</span>
-        </a>
-        <a href="terms.html" class="row row-loose">
-          <span class="row-icon" data-icon="ban"></span>
-          <span class="row-label">Terms &amp; conditions</span>
-        </a>
-        <a href="urgent.html" class="row row-loose">
-          <span class="row-icon" data-icon="mic"></span>
-          <span class="row-label">Need urgent help</span>
-        </a>
-        <a href="#" class="row row-loose">
-          <span class="acct-avatar">G</span>
-          <span class="row-label">Guest</span>
-        </a>
+        <a href="privacy.html" class="row row-loose"><span class="row-icon" data-icon="shield"></span><span class="row-label">Private &amp; secure</span></a>
+        <a href="terms.html" class="row row-loose"><span class="row-icon" data-icon="ban"></span><span class="row-label">Terms &amp; conditions</span></a>
+        <a href="urgent.html" class="row row-loose"><span class="row-icon" data-icon="mic"></span><span class="row-label">Need urgent help</span></a>
+        <a href="#" class="row row-loose"><span class="acct-avatar">G</span><span class="row-label">Guest</span></a>
       </nav>
     </div>
   </aside>
@@ -309,34 +177,26 @@ details[open] summary .chev{transform:rotate(-135deg);}
   <a href="#download" id="float-cta">Download free</a>
 
   <div class="main">
-
     <section class="hero">
       <div class="hero-type">
         <h1>Find clarity</h1>
         <p class="kicker">Your personal AI wisdom coach</p>
       </div>
-
       <div class="ask-outer">
         <div class="ask-col">
           <div class="ask-box">
             <input type="text" id="askInput" class="ask-input" placeholder="Ask Psyche anything&hellip;" autocomplete="off">
-            <span class="voice" id="voiceGlyph" aria-hidden="true">
-              <svg viewBox="0 0 24 18" style="width:clamp(34px,3vw,48px);height:clamp(26px,2.3vw,36px)" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square">
-                <line x1="3" y1="6" x2="3" y2="12"></line>
-                <line x1="7.5" y1="3" x2="7.5" y2="15"></line>
-                <line x1="12" y1="1" x2="12" y2="17"></line>
-                <line x1="16.5" y1="3" x2="16.5" y2="15"></line>
-                <line x1="21" y1="6" x2="21" y2="12"></line>
+            <span class="voice" aria-hidden="true">
+              <svg viewBox="0 0 24 18" style="width:clamp(17px,3vw,24px);height:clamp(13px,2.3vw,18px)" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square">
+                <line x1="3" y1="6" x2="3" y2="12"></line><line x1="7.5" y1="3" x2="7.5" y2="15"></line><line x1="12" y1="1" x2="12" y2="17"></line><line x1="16.5" y1="3" x2="16.5" y2="15"></line><line x1="21" y1="6" x2="21" y2="12"></line>
               </svg>
             </span>
             <span class="send" id="sendBtn" role="button" tabindex="0" aria-label="Send">
-              <svg viewBox="0 0 20 20" style="width:clamp(20px,1.7vw,28px);height:clamp(20px,1.7vw,28px)" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
-                <line x1="10" y1="17" x2="10" y2="3"></line>
-                <path d="M4 9l6-6 6 6"></path>
+              <svg viewBox="0 0 20 20" style="width:clamp(10px,1.7vw,14px);height:clamp(10px,1.7vw,14px)" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+                <line x1="10" y1="17" x2="10" y2="3"></line><path d="M4 9l6-6 6 6"></path>
               </svg>
             </span>
           </div>
-
           <div class="ask-answer" id="askAnswer" hidden>
             <p>Psyche is ready to answer this properly &mdash; in the app, free to download. Your question will be waiting.</p>
             <a href="#download">Download free</a>
@@ -347,46 +207,31 @@ details[open] summary .chev{transform:rotate(-135deg);}
 
     <section class="band">
       <div class="shell">
-        <div class="head-row">
-          <div class="head-col">
-            <h2 class="head-title">Earn real money</h2>
-            <p class="head-sub">Share a pearl. Earn from everyone who joins through you.</p>
-          </div>
-        </div>
+        <div class="head-row"><div class="head-col">
+          <h2 class="head-title">Earn real money</h2>
+          <p class="head-sub">Share a pearl. Earn from everyone who joins through you.</p>
+        </div></div>
       </div>
       <div class="shell rail" id="rail"></div>
     </section>
 
     <section class="band-equal">
       <div class="shell">
-        <div class="found-top">
-          <div class="found-left">
-            <h2 class="found-title">Founding Members Wanted</h2>
-            <p class="found-note">Get in first. Earn from everyone who follows.</p>
-          </div>
-        </div>
+        <div class="found-top"><div class="found-left">
+          <h2 class="found-title">Founding Members Wanted</h2>
+          <p class="found-note">Get in first. Earn from everyone who follows.</p>
+        </div></div>
         <div class="found-cols">
-          <div class="found-item">
-            <span class="found-num">First</span>
-            <span class="found-text">1,000 founding places. Then the price rises.</span>
-          </div>
-          <div class="found-item">
-            <span class="found-num">Real</span>
-            <span class="found-text">Money, month after month, fully automated.</span>
-          </div>
-          <div class="found-item">
-            <span class="found-num">Zero</span>
-            <span class="found-text">Selling. The content is made for you.</span>
-          </div>
+          <div class="found-item"><span class="found-num">First</span><span class="found-text">1,000 founding places. Then the price rises.</span></div>
+          <div class="found-item"><span class="found-num">Real</span><span class="found-text">Money, month after month, fully automated.</span></div>
+          <div class="found-item"><span class="found-num">Zero</span><span class="found-text">Selling. The content is made for you.</span></div>
         </div>
       </div>
     </section>
-
   </div>
 </div>
 
 <script>
-/* icon paths copied verbatim from the design's I map */
 var I = {
   mic:'<rect x="8.6" y="2.4" width="4.8" height="9" rx="2.4"></rect><path d="M5.6 10.6a5.4 5.4 0 0 0 10.8 0"></path><line x1="11" y1="16" x2="11" y2="19.4"></line>',
   person:'<circle cx="11" cy="7.4" r="3.4"></circle><path d="M4.6 18.8c1.1-3.4 3.6-5.2 6.4-5.2s5.3 1.8 6.4 5.2"></path>',
@@ -409,12 +254,8 @@ var I = {
   shield:'<path d="M11 19c3.6-1.6 5.6-4.2 5.6-7.8V5.8L11 3.6 5.4 5.8v5.4C5.4 14.8 7.4 17.4 11 19z"></path>',
   spark:'<line x1="11" y1="3.2" x2="11" y2="18.8"></line><line x1="3.2" y1="11" x2="18.8" y2="11"></line><line x1="5.8" y1="5.8" x2="16.2" y2="16.2"></line><line x1="16.2" y1="5.8" x2="5.8" y2="16.2"></line>'
 };
-function svg(key, size){
-  var s = size || 22;
-  return '<svg viewBox="0 0 22 22" width="' + s + '" height="' + s + '" fill="none" stroke="currentColor" ' +
-         'stroke-width="1.05" stroke-linecap="round">' + I[key] + '</svg>';
-}
-document.querySelectorAll('[data-icon]').forEach(function(el){ el.innerHTML = svg(el.dataset.icon, 24); });
+function svg(key){return '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round">'+I[key]+'</svg>';}
+document.querySelectorAll('[data-icon]').forEach(function(el){ el.innerHTML = svg(el.dataset.icon); });
 
 var features = [
   { title:'What it is',         glyph:'scroll',  points:['Ancient teachings on the mind, integrated with modern psychology','Plain English — nothing to believe'] },
@@ -436,77 +277,54 @@ var earnSteps = [
 ];
 function rows(list, into){
   document.getElementById(into).innerHTML = list.map(function(x){
-    return '<li><details><summary>' +
-             '<span class="side-icon">' + svg(x.glyph, 24) + '</span>' +
-             '<span class="side-name">' + x.title + '</span>' +
-             '<span class="chev"></span>' +
-           '</summary><ul class="side-points">' +
-             x.points.map(function(t){ return '<li>' + t + '</li>'; }).join('') +
-           '</ul></details></li>';
+    return '<li><details><summary><span class="side-icon">'+svg(x.glyph)+'</span>'+
+      '<span class="side-name">'+x.title+'</span><span class="chev"></span></summary>'+
+      '<ul class="side-points">'+x.points.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></details></li>';
   }).join('');
 }
-rows(features, 'worksList');
-rows(earnSteps, 'earnList');
+rows(features,'worksList'); rows(earnSteps,'earnList');
 
-/* the two Lion cards have no clip yet — they show the placeholder slot */
 var pearls = [
-  { rank:1, time:'2:14', meta:'Lion · Courage',      src:null,            slot:'Lion portrait' },
-  { rank:2, time:'3:02', meta:'Owl · Stillness',     src:'owl-v2.mp4',    slot:'Owl portrait' },
-  { rank:3, time:'1:47', meta:'Wolf · Solitude',     src:'wolf-v2.mp4',   slot:'Wolf portrait' },
-  { rank:4, time:'2:38', meta:'Stag · Patience',     src:'stag-v2.mp4',   slot:'Stag portrait' },
-  { rank:5, time:'4:05', meta:'Panda · Gentleness',  src:'panda-v2.mp4',  slot:'Panda portrait' },
-  { rank:6, time:'2:51', meta:'Lion · Courage',      src:null,            slot:'Lion portrait' }
+  { rank:1, time:'2:14', meta:'Lion · Courage',     src:null,           slot:'Lion portrait' },
+  { rank:2, time:'3:02', meta:'Owl · Stillness',    src:'owl-v2.mp4',   slot:'Owl portrait' },
+  { rank:3, time:'1:47', meta:'Wolf · Solitude',    src:'wolf-v2.mp4',  slot:'Wolf portrait' },
+  { rank:4, time:'2:38', meta:'Stag · Patience',    src:'stag-v2.mp4',  slot:'Stag portrait' },
+  { rank:5, time:'4:05', meta:'Panda · Gentleness', src:'panda-v2.mp4', slot:'Panda portrait' },
+  { rank:6, time:'2:51', meta:'Lion · Courage',     src:null,           slot:'Lion portrait' }
 ];
 document.getElementById('rail').innerHTML = pearls.map(function(p){
-  return '<article class="pearl" data-rank="' + p.rank + '">' +
-           '<div class="frame">' +
-             '<div class="scrim"></div>' +
-             '<div class="slot">' + p.slot + '</div>' +
-             (p.src ? '<video src="' + p.src + '" muted playsinline loop autoplay preload="metadata"></video>' : '') +
-             '<span class="play"><span class="disc"><span class="tri"></span></span></span>' +
-             '<span class="rank">' + p.rank + '</span>' +
-             '<span class="time">' + p.time + '</span>' +
-           '</div>' +
-           '<div class="caption"><p class="meta">' + p.meta + '</p></div>' +
-         '</article>';
+  return '<article class="pearl" data-rank="'+p.rank+'"><div class="frame">'+
+    '<div class="scrim"></div><div class="slot">'+p.slot+'</div>'+
+    (p.src?'<video src="'+p.src+'" muted playsinline loop autoplay preload="metadata"></video>':'')+
+    '<span class="play"><span class="disc"><span class="tri"></span></span></span>'+
+    '<span class="rank">'+p.rank+'</span><span class="time">'+p.time+'</span></div>'+
+    '<div class="caption"><p class="meta">'+p.meta+'</p></div></article>';
 }).join('');
-
 document.querySelectorAll('.frame video').forEach(function(v){
-  v.muted = true; v.defaultMuted = true;
-  var go = function(){ v.play().catch(function(){}); };
-  go();
-  v.addEventListener('loadeddata', go, { once:true });
+  v.muted=true; v.defaultMuted=true;
+  var go=function(){v.play().catch(function(){});};
+  go(); v.addEventListener('loadeddata',go,{once:true});
 });
-
-/* one video sounding at a time; its play mark hides while it sounds */
 document.querySelectorAll('.pearl').forEach(function(card){
-  card.addEventListener('click', function(){
-    var v = card.querySelector('video');
-    if (!v) return;
-    var turningOn = v.muted;
-    document.querySelectorAll('.frame video').forEach(function(o){ if (o !== v) o.muted = true; });
-    document.querySelectorAll('.pearl').forEach(function(c){ if (c !== card) c.classList.remove('sounding'); });
-    v.muted = !turningOn;
-    v.play().catch(function(){});
-    card.classList.toggle('sounding', turningOn);
+  card.addEventListener('click',function(){
+    var v=card.querySelector('video'); if(!v) return;
+    var on=v.muted;
+    document.querySelectorAll('.frame video').forEach(function(o){if(o!==v)o.muted=true;});
+    document.querySelectorAll('.pearl').forEach(function(c){if(c!==card)c.classList.remove('sounding');});
+    v.muted=!on; v.play().catch(function(){}); card.classList.toggle('sounding',on);
   });
 });
 
-/* ---- ask box: no API call, ever. Stores the question, shows the download line ---- */
-var askInput  = document.getElementById('askInput');
-var askAnswer = document.getElementById('askAnswer');
+/* ask box: no API call, ever */
+var askInput=document.getElementById('askInput'), askAnswer=document.getElementById('askAnswer');
 function submitAsk(){
-  var q = askInput.value.trim();
-  if (!q) return;
-  try { localStorage.setItem('psyche_q', q); } catch (e) {}
-  askAnswer.hidden = false;
+  var q=askInput.value.trim(); if(!q) return;
+  try{localStorage.setItem('psyche_q',q);}catch(e){}
+  askAnswer.hidden=false;
 }
-askInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') submitAsk(); });
-document.getElementById('sendBtn').addEventListener('click', submitAsk);
-document.getElementById('sendBtn').addEventListener('keydown', function(e){
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); submitAsk(); }
-});
-/* voice glyph: to be wired later — deliberately inert */
+askInput.addEventListener('keydown',function(e){if(e.key==='Enter')submitAsk();});
+document.getElementById('sendBtn').addEventListener('click',submitAsk);
+document.getElementById('sendBtn').addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();submitAsk();}});
 </script>
 </body>
 </html>
