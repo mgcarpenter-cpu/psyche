@@ -72,35 +72,32 @@ is its own chat thread that "remembers" the person.
   provider call goes through a serverless function in `api/`.
 - Prices shown ($12/mo, $/month) are placeholders ("placeholder price").
 
-## Landing page v2 — locked decisions (2026-08-21)
+## Landing page (live) — shipped 2026-08-22
 
-Source of truth: `design/landing-handoff/` (Claude Design bundle + `claude-code-handoff-landing-v2-FULL.md`).
-Built as `landing-v2.html` — a **reference file for review**, desktop-only (>=1024px).
-The live landing page is untouched until this is approved.
+Live at psyche-uptf.vercel.app (root 307s to /front-v2; `front-v2.html` is the page).
+**Source of truth: `design/landing-handoff/psyche-final-3.html`** — the approved Claude
+Design export. It supersedes the older bundle in `design/landing-handoff/design_handoff_psyche_landing/`
+(that bundle's values are ~2x too large; do not build from it again).
 
-- **Single CTA:** "Download free", fixed top-right, exactly 54px tall, indigo gradient
-  `#3a5fce -> #1d3891 -> #132a6b`. The page's only button-styled action. Hidden below 768px.
-- **Ask box is a download router, not chat.** No API call on the landing page, ever.
-  On submit it stores the question in `localStorage` under `psyche_q` and shows one line on a
-  hairline rule: "Psyche is ready to answer this properly — in the app, free to download.
-  Your question will be waiting." + a "Download free" text link. No pending/"Listening" state.
-  The README's `askPsyche()` live-AI section is superseded and dead.
-- **Founders band is preview only:** heading "Founding Members Wanted", three stats
-  (First / Real / Zero), no button, no modal.
-- **Band 2 heading:** "Earn real money".
-- **Sidebar "How you earn"** (5 rows, copy per README): Real money / Your own link /
-  Content made for you / No selling / Fully automated payments.
-- **No income figures or percentages anywhere on the landing page.** ("1,000 founding places"
-  stands — a scarcity count, not an earnings claim.)
-- **Hero is 85vh** so the avatar card tops break the fold; play discs sit at `top:30%` of cards.
-- Where the bundle's README and `Psyche Landing v1.dc.html` disagree, **the .dc.html wins**
-  (it is what was visually approved). Notably: send button `#6f6c66`, wordmark weight 700, and
-  the body/UI font stack leads with **Poiret One**, not Jost — Jost is used only by the CTA and
-  the two sidebar section headings.
+- All type/chrome values come 1:1 from psyche-final-3: sidebar `clamp(140px,28vw,260px)`,
+  nav rows 14px, headings `clamp(28px,6.8vw,58px)`, ask box 410x56, CTA 129x27 @ 8.25px.
+- **White bar never scrolls** (owner requirement, deviates from the design file which
+  scrolls it internally): viewport-fixed white underlay + sticky `overflow:hidden` nav;
+  icons/spacing compress via vh on windows shorter than ~820px.
+- Ask box = download router: stores question in localStorage `psyche_q`, shows a download
+  line. **No API calls on the landing page, ever.**
+- Founders band preview-only; single CTA "Download free" -> #download, hidden <768px;
+  no income figures ("1,000 founding places" is a scarcity count, allowed).
+- Sidebar links wired: auth / help / privacy / terms / urgent; videos owl/wolf/stag/panda-v2.mp4,
+  two Lion cards use placeholder slots.
+- Old page backup: `design/front-v2.pre-landing-v2-20260822.backup.html`. `design/` is
+  in `.vercelignore` (git-tracked, not deployed).
+- Lesson: the owner reviews the **deployed URL**, not localhost — push and verify the
+  live page (curl for a marker string) before asking for review. Full-page screenshot
+  tools letterbox pages using sticky/100vh; judge by live scroll, not captures.
 
-Parked, not this session: byte-for-byte overwrite of the live landing page; mobile build
-(drawer nav, stacked hero, bottom download bar); download routing + auth flow; voice glyph
-wiring; picking up `psyche_q` inside the app.
+Parked: mobile build (drawer nav, stacked hero, bottom download bar), download routing
++ auth flow, voice glyph wiring, `psyche_q` pickup inside the app.
 
 ## Planned next steps (NOT yet built — understand, don't implement unprompted)
 
