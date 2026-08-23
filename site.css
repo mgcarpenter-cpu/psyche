@@ -137,9 +137,9 @@ nav.site-nav .side-sticky::-webkit-scrollbar{width:0;height:0;}
   body.site-shell.has-side::before{content:none;}  /* body is a flex shell; the column itself paints white */
   /* collapsed: a small floating hamburger reopens it */
   .site-topbar{display:none;}
-  body:has(nav.site-nav.hidden) .site-topbar{display:flex;align-items:center;gap:10px;position:fixed;left:10px;top:10px;right:auto;height:auto;padding:6px 12px 6px 9px;z-index:55;background:var(--white);color:var(--ink);border:.5px solid rgba(17,16,20,.25);}
-  body:has(nav.site-nav.hidden) .site-topbar .wordmark{display:inline;font-family:var(--font-sans);font-weight:700;letter-spacing:.06em;font-size:16px;color:var(--ink);}
-  body:has(nav.site-nav.hidden) .site-topbar .menu-btn{background:none;border:0;color:inherit;font-size:17px;cursor:pointer;opacity:.75;padding:0;}
+  body:has(nav.site-nav.hidden) .site-topbar{display:flex;align-items:center;gap:10px;position:fixed;left:14px;top:12px;right:auto;height:auto;padding:0;z-index:55;background:none;color:#fff;border:0;}
+  body:has(nav.site-nav.hidden) .site-topbar .wordmark{display:inline;font-family:var(--font-sans);font-weight:700;letter-spacing:.06em;font-size:16px;color:#fff;}
+  body:has(nav.site-nav.hidden) .site-topbar .menu-btn{background:none;border:0;color:#fff;font-size:17px;cursor:pointer;opacity:.85;padding:0;}
 }
 /* below desktop: slide-in drawer driven by the page's existing .hidden/.open toggling */
 @media (max-width:1023px){
