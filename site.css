@@ -139,7 +139,8 @@ nav.site-nav .side-sticky::-webkit-scrollbar{width:0;height:0;}
   .site-topbar{display:none;}
   body:has(nav.site-nav.hidden) .site-topbar{display:flex;align-items:center;gap:10px;position:fixed;left:var(--nav-pad-x);top:var(--nav-pad-y);right:auto;height:auto;padding:0;z-index:55;background:none;color:#fff;border:0;}
   body:has(nav.site-nav.hidden) .site-topbar .wordmark{display:inline;font-family:var(--font-sans);font-weight:700;letter-spacing:.06em;font-size:var(--nav-mark);line-height:1;color:#fff;}
-  body:has(nav.site-nav.hidden) .site-topbar .menu-btn{background:none;border:0;color:#fff;font-size:calc(var(--nav-mark) * .85);line-height:1;cursor:pointer;opacity:.85;padding:0;}
+  body:has(nav.site-nav.hidden) .site-topbar .menu-btn{background:none;border:0;color:#fff;cursor:pointer;opacity:.9;padding:0;display:flex;align-items:center;}
+  body:has(nav.site-nav.hidden) .site-topbar .menu-btn svg{width:var(--nav-mark);height:var(--nav-mark);}
 }
 /* below desktop: slide-in drawer driven by the page's existing .hidden/.open toggling */
 @media (max-width:1023px){
@@ -155,7 +156,8 @@ nav.site-nav .side-sticky::-webkit-scrollbar{width:0;height:0;}
 .site-topbar{display:none;}
 @media (max-width:1023px){
   .site-topbar{display:flex;align-items:center;gap:12px;position:fixed;left:0;top:0;right:0;height:44px;padding:0 14px;z-index:55;background:var(--white);color:var(--ink);border-bottom:.5px solid rgba(17,16,20,.2);}
-  .site-topbar .menu-btn{background:none;border:0;color:inherit;font-size:19px;cursor:pointer;opacity:.7;padding:0;}
+  .site-topbar .menu-btn{background:none;border:0;color:inherit;cursor:pointer;opacity:.8;padding:0;display:flex;align-items:center;}
+  .site-topbar .menu-btn svg{width:18px;height:18px;}
   .site-topbar .wordmark{font-family:var(--font-sans);font-weight:700;letter-spacing:.06em;font-size:16px;}
   body.has-side>main,body.has-side>.site-main{padding-top:44px;}
 }
@@ -172,4 +174,5 @@ body.site-shell>.site-main{flex:1 1 auto;min-width:0;}
 @media (min-width:1024px) and (max-height:820px){
   body:has(nav.site-nav.hidden) .site-topbar{top:clamp(10px,2.5vh,18px);}
   body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-size:clamp(14px,3.2vh,22px);}
+  body:has(nav.site-nav.hidden) .site-topbar .menu-btn svg{width:clamp(14px,3.2vh,22px);height:clamp(14px,3.2vh,22px);}
 }
