@@ -49,8 +49,13 @@
       (it.soon ? '<span class="pill">soon</span>' : '') + '</div>';
   }
 
+  // Desktop opens expanded unless the visitor collapsed it last time; mobile starts as a closed drawer.
+  var desktop = window.matchMedia('(min-width:1024px)').matches;
+  var remembered = null; try { remembered = localStorage.getItem('psyche:nav'); } catch (e) {}
+  var initial = (desktop && remembered !== 'collapsed') ? 'open' : 'hidden';
+
   var html =
-    '<nav id="nav" class="side site-nav hidden">' +
+    '<nav id="nav" class="side site-nav ' + initial + '">' +
       '<div class="side-sticky">' +
         '<div class="nav-top"><span class="side-mark wordmark-side">PSYCHE</span>' +
           '<button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button></div>' +
@@ -83,6 +88,15 @@
   s.insertAdjacentHTML('beforebegin', html +
     '<div class="site-topbar"><button class="menu-btn" id="menuBtn" aria-label="Menu">&#9776;</button><span class="wordmark">PSYCHE</span></div>');
   document.body.classList.add('has-side');
+
+  // remember the desktop collapse state across pages (observes the class the page JS toggles)
+  (function () {
+    var nav = document.getElementById('nav');
+    new MutationObserver(function () {
+      if (!window.matchMedia('(min-width:1024px)').matches) return;
+      try { localStorage.setItem('psyche:nav', nav.classList.contains('hidden') ? 'collapsed' : 'open'); } catch (e) {}
+    }).observe(nav, { attributes: true, attributeFilter: ['class'] });
+  })();
 
   // Pages that never had their own drawer toggling (data-toggle on the script
   // tag) get a minimal one here; app pages keep binding #menuBtn themselves.

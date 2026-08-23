@@ -128,11 +128,18 @@ nav.site-nav .side-sticky::-webkit-scrollbar{width:0;height:0;}
 .site-nav .avatar-dot{flex:0 0 auto;width:14px;height:14px;border-radius:999px;border:.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);font-size:6.5px;font-weight:500;line-height:1;color:var(--ink);background:none;}
 
 
-/* desktop: the white nav is a persistent column; the drawer toggles are inert */
+/* desktop: the white nav is a column that collapses on demand (the page's own
+   #collapseBtn / #menuBtn toggle .hidden). The landing's nav (.side without
+   .site-nav) is exempt and stays fixed. */
 @media (min-width:1024px){
-  nav.site-nav{position:static;transform:none;margin-left:0 !important;}
-  .site-nav .collapse{display:none;}
+  nav.site-nav{position:static;transform:none;margin-left:0;transition:margin-left .25s ease;}
+  nav.site-nav.hidden{margin-left:calc(-1 * var(--nav-w));}
   body.site-shell.has-side::before{content:none;}  /* body is a flex shell; the column itself paints white */
+  /* collapsed: a small floating hamburger reopens it */
+  .site-topbar{display:none;}
+  body:has(nav.site-nav.hidden) .site-topbar{display:flex;position:fixed;left:10px;top:10px;right:auto;height:auto;padding:6px 9px;z-index:55;background:var(--white);color:var(--ink);border:.5px solid rgba(17,16,20,.25);}
+  body:has(nav.site-nav.hidden) .site-topbar .wordmark{display:none;}
+  body:has(nav.site-nav.hidden) .site-topbar .menu-btn{background:none;border:0;color:inherit;font-size:17px;cursor:pointer;opacity:.75;padding:0;}
 }
 /* below desktop: slide-in drawer driven by the page's existing .hidden/.open toggling */
 @media (max-width:1023px){
