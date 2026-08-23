@@ -7,7 +7,7 @@
 <title>Creator setup · Psyche</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
   :root{
     --page:#efece4; --card:#faf8f3; --ink:#2a261f; --soft:#615c52; --muted:#9a948a;
@@ -15,7 +15,7 @@
     --grad:linear-gradient(180deg,#3550A8 0%,#1D3891 52%,#16275F 100%);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  body{background:var(--page);color:var(--ink);font-family:"Spectral",Georgia,serif;-webkit-font-smoothing:antialiased;padding:40px 20px 70px;}
+  body{background:var(--page);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;}
   .sans{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
   a{color:inherit;}
 
@@ -56,7 +56,9 @@
   .foot{text-align:center;font-size:.74rem;color:var(--muted);margin-top:22px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
 </style>
 </head>
-<body>
+<body class="site-shell">
+<script src="site-header.js" data-toggle></script>
+<main class="site-main" style="padding:40px 20px 70px">
   <div class="frame">
     <div class="barhead">
       <a href="account.html" class="back" title="Back">←</a>
@@ -100,5 +102,6 @@
       <p class="foot">You can change any of this anytime in your account.</p>
     </div>
   </div>
+</main>
 </body>
 </html>

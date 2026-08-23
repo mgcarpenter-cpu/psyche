@@ -1,0 +1,162 @@
+/* ==========================================================================
+   Psyche — shared site chrome
+   Extracted from front-v2.html (the approved landing, built 1:1 from
+   design/landing-handoff/psyche-final-3.html). Single source for:
+     · font imports + stacks
+     · colour and spacing tokens
+     · the white nav (landing sidebar + app nav rendered by site-header.js)
+     · the floating CTA
+   Page bodies keep their own styles; they only consume the tokens.
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Poiret+One&family=Jost:wght@300;400;500&display=swap");
+
+:root{
+  /* fonts — Poiret One leads the body stack exactly as the approved canvas renders */
+  --font-sans:'Poiret One','Jost',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --font-display:'Poiret One','Jost','Helvetica Neue',Arial,sans-serif;
+  --font-jost:'Jost',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  /* aliases used by front-v2.html */
+  --sans:var(--font-sans); --display:var(--font-display); --jost:var(--font-jost);
+
+  /* colour */
+  --cream:#ede6dc; --ink:#111014; --black:#000; --page:#050507; --white:#fff;
+  --cream-muted:rgba(237,230,220,.62); --cream-faint:rgba(237,230,220,.34);
+  --hairline:rgba(237,230,220,.16); --ink-muted:rgba(17,16,20,.5);
+  --cta-gradient:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);
+  --fade:linear-gradient(0deg,#3e3a34 0%,#2a2723 28%,#151413 58%,#000 100%) center bottom / 100% 150px no-repeat, #000;
+
+  /* spacing — page */
+  --gutter:clamp(10px,3.43vw,24px);
+  --shell-max:max(590px,94vw);
+  --band-pad:28px;
+  --band-heading:clamp(28px,6.8vw,58px);
+
+  /* spacing + type — nav */
+  --nav-w:clamp(140px,28vw,260px);
+  --nav-pad-y:clamp(12px,4vh,28px);
+  --nav-pad-x:clamp(17px,2.8vw,26px);
+  --nav-gap:7px;
+  --nav-row-pad:clamp(1px,.4vh,4px);
+  --nav-row-pad-loose:clamp(2.5px,.85vh,8px);
+  --nav-mark:clamp(14px,3.8vh,24px);
+  --nav-type:clamp(8.5px,2.3vh,14px);
+  --nav-title:clamp(8px,2vh,13px);
+  --nav-icon:clamp(16px,2.2vh,28px);
+  --nav-group-mt:clamp(7px,2.2vh,17px);
+  --nav-group-pt:clamp(4px,1.4vh,12px);
+  --nav-group-gap:clamp(3px,1vh,8px);
+  --nav-indent:clamp(17px,3vw,26px);
+}
+
+/* ---------- white nav: shared by the landing (.side) and app pages (nav#nav) ---------- */
+.side{flex:0 0 auto;width:var(--nav-w);align-self:stretch;z-index:20;background:var(--white);color:var(--ink);display:flex;flex-direction:column;}
+/* The white bar is painted as a fixed underlay spanning the viewport height at
+   every scroll position — it cannot end early regardless of page layout. */
+body.has-side::before{content:'';position:fixed;left:0;top:0;bottom:0;width:var(--nav-w);background:var(--white);z-index:10;}
+/* pinned; cannot scroll. Design file scrolls it internally — owner requirement overrides. */
+.side-sticky{position:sticky;top:0;height:100vh;overflow:hidden;padding:var(--nav-pad-y) var(--nav-pad-x);display:flex;flex-direction:column;gap:0;}
+.side-mark{flex:0 0 auto;font-family:var(--font-sans);font-size:var(--nav-mark);font-weight:700;letter-spacing:.06em;line-height:1;color:var(--ink);}
+.row{display:flex;align-items:center;gap:var(--nav-gap);color:var(--ink);}
+.row-tight{padding:var(--nav-row-pad) 0;}
+.row-loose{padding:var(--nav-row-pad-loose) 0;}
+.row-login{margin-top:clamp(4px,1.2vh,9px);}
+.row-icon{flex:0 0 auto;display:flex;align-items:center;color:var(--ink);}
+.row-icon.dim{opacity:.75;}
+.row-label{font-family:var(--font-sans);font-size:var(--nav-type);font-weight:400;letter-spacing:.04em;line-height:1.35;}
+.side-icon svg,.row-icon svg{width:var(--nav-icon);height:var(--nav-icon);}
+.side-nav{flex:0 0 auto;display:flex;flex-direction:column;padding-bottom:clamp(5px,1.8vh,14px);}
+.side-group{flex:0 0 auto;margin-top:var(--nav-group-mt);padding-top:var(--nav-group-pt);display:flex;flex-direction:column;gap:var(--nav-group-gap);}
+.side-group-title{margin:0;font-family:var(--font-jost);font-size:var(--nav-title);font-weight:300;letter-spacing:.14em;text-transform:uppercase;line-height:1;color:var(--ink);}
+.side-list{margin:0;padding:0;list-style:none;}
+.side-list details{width:100%;}
+.side-list summary{display:flex;align-items:center;gap:clamp(6px,1.1vw,9px);cursor:pointer;list-style:none;}
+.side-list summary::-webkit-details-marker{display:none;}
+.side-list.works summary{padding:var(--nav-row-pad-loose) 0;}
+.side-list.earn summary{padding:var(--nav-row-pad) 0;}
+.side-icon{flex:0 0 auto;display:flex;align-items:center;color:var(--ink);opacity:.8;}
+.side-name{display:block;font-family:var(--font-display);font-size:var(--nav-type);font-weight:400;line-height:1.35;color:var(--ink);}
+.chev{flex:0 0 auto;margin-left:auto;margin-right:3px;width:6.5px;height:6.5px;border-right:1px solid rgba(17,16,20,.6);border-bottom:1px solid rgba(17,16,20,.6);transform:rotate(45deg);}
+details[open] summary .chev{transform:rotate(-135deg);}
+.side-points{margin:0 0 clamp(5px,1.5vh,10px);padding:0 0 0 var(--nav-indent);list-style:none;display:flex;flex-direction:column;gap:5px;}
+.side-points li{font-family:var(--font-sans);font-size:var(--nav-type);font-weight:400;line-height:1.45;color:var(--ink);}
+.side-foot{margin-top:auto;padding-top:clamp(8px,1.2vh,18px);display:flex;flex-direction:column;}
+.acct-avatar{flex:0 0 auto;width:14px;height:14px;border-radius:999px;border:.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);font-size:6.5px;font-weight:500;letter-spacing:.02em;line-height:1;color:var(--ink);}
+/* short windows: the design would scroll here; this bar must not, so it compresses */
+@media (max-height:820px){
+  .row-label,.side-name,.side-points li{font-size:clamp(8.5px,1.75vh,13px);}
+  .side-icon svg,.row-icon svg{width:clamp(13px,1.9vh,16px);height:clamp(13px,1.9vh,16px);}
+  .side-group-title{font-size:clamp(8px,1.6vh,12px);}
+  .side-mark{font-size:clamp(14px,3.2vh,22px);}
+  .side-sticky{padding:clamp(10px,2.5vh,18px) var(--nav-pad-x);}
+  .row-loose{padding:clamp(1px,.5vh,4px) 0;}
+  .side-list.works summary{padding:clamp(1.5px,.5vh,4px) 0;}
+  .side-group{margin-top:clamp(5px,1.5vh,11px);padding-top:clamp(3px,1vh,8px);}
+  .side-nav{padding-bottom:clamp(3px,.9vh,7px);}
+}
+
+/* ---------- app nav (rendered by site-header.js into nav#nav) ---------- */
+/* defensive: page stylesheets reuse generic class names (.plan, .pill, .meta, .row, .account…);
+   neutralise box styling inside the nav so only the shared rules apply */
+.site-nav .row,.site-nav .meta,.site-nav .plan,.site-nav .pill,.site-nav .account,.site-nav .navitem,.site-nav .recent,.site-nav .newchat{
+  border:0;border-radius:0;background:none;box-shadow:none;margin:0;width:auto;height:auto;min-height:0;text-transform:none;letter-spacing:normal;}
+.site-nav .plan{display:inline;padding:0;font:inherit;}
+.site-nav .meta{padding:0;}
+nav.site-nav{border:0;margin:0;}
+nav.site-nav .side-sticky{overflow-y:auto;scrollbar-width:none;}   /* recents can grow */
+nav.site-nav .side-sticky::-webkit-scrollbar{width:0;height:0;}
+.site-nav .nav-top{display:flex;align-items:center;justify-content:space-between;}
+.site-nav .collapse{background:none;border:0;color:var(--ink);opacity:.5;cursor:pointer;font-size:12px;padding:0;}
+.site-nav .newchat{background:none;border:0;padding:var(--nav-row-pad) 0;margin:clamp(4px,1.2vh,9px) 0 0;cursor:pointer;text-align:left;width:100%;}
+.site-nav .navitem{cursor:pointer;padding:var(--nav-row-pad-loose) 0;}
+.site-nav .navitem:hover .row-label,.site-nav .navitem.active .row-label{font-weight:500;}
+.site-nav .navitem.soon{cursor:default;opacity:.45;}
+.site-nav .navitem .pill{margin-left:auto;font-family:var(--font-jost);font-size:calc(var(--nav-type) * .75);font-weight:300;letter-spacing:.08em;text-transform:uppercase;border:.5px solid rgba(17,16,20,.35);padding:0 5px;line-height:1.6;}
+.site-nav .navitem.upgrade .row-label{font-family:var(--font-jost);font-weight:500;letter-spacing:.18em;text-transform:uppercase;font-size:calc(var(--nav-type) * .8);}
+.site-nav .navlabel{margin-top:var(--nav-group-mt);padding-top:var(--nav-group-pt);}
+.site-nav #recents{display:flex;flex-direction:column;}
+.site-nav .recent{font-family:var(--font-sans);font-size:var(--nav-type);line-height:1.35;letter-spacing:.04em;color:var(--ink);padding:var(--nav-row-pad) 0 var(--nav-row-pad) var(--nav-indent);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.8;}
+.site-nav .recent:hover,.site-nav .recent.active{opacity:1;font-weight:500;}
+.site-nav .navspacer{flex:1;min-height:8px;}
+.site-nav .acctwrap{position:relative;}
+.site-nav .acctmenu{position:absolute;bottom:100%;left:0;right:0;z-index:9;background:var(--white);border:.5px solid rgba(17,16,20,.3);padding:4px 0;display:none;flex-direction:column;}
+.site-nav .acctmenu.open{display:flex;}
+.site-nav .acctmenu button{background:none;border:0;font-family:var(--font-sans);font-size:var(--nav-type);letter-spacing:.04em;color:var(--ink);text-align:left;padding:var(--nav-row-pad-loose) var(--nav-pad-x);cursor:pointer;}
+.site-nav .acctmenu button:hover{font-weight:500;}
+.site-nav .account{cursor:pointer;}
+.site-nav .account .meta{font-family:var(--font-sans);font-size:var(--nav-type);letter-spacing:.04em;line-height:1.25;color:var(--ink);}
+.site-nav .account .meta .plan{opacity:.55;}
+.site-nav .avatar-dot{flex:0 0 auto;width:14px;height:14px;border-radius:999px;border:.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);font-size:6.5px;font-weight:500;line-height:1;color:var(--ink);background:none;}
+
+
+/* desktop: the white nav is a persistent column; the drawer toggles are inert */
+@media (min-width:1024px){
+  nav.site-nav{position:static;transform:none;margin-left:0 !important;}
+  .site-nav .collapse{display:none;}
+  body.site-shell.has-side::before{content:none;}  /* body is a flex shell; the column itself paints white */
+}
+/* below desktop: slide-in drawer driven by the page's existing .hidden/.open toggling */
+@media (max-width:1023px){
+  nav.site-nav{position:fixed;left:0;top:0;height:100dvh;width:260px;z-index:60;transform:translateX(-100%);transition:transform .25s ease;box-shadow:0 0 40px rgba(0,0,0,.35);}
+  nav.site-nav.open{transform:none;}
+  body.has-side::before{content:none;}
+}
+
+/* legacy .topbar containers that still hold page widgets (#count, #topRight) keep their row layout */
+.topbar{display:flex;align-items:center;gap:14px;padding:14px 18px;}
+
+/* mobile topbar injected by site-header.js on pages without one */
+.site-topbar{display:none;}
+@media (max-width:1023px){
+  .site-topbar{display:flex;align-items:center;gap:12px;position:fixed;left:0;top:0;right:0;height:44px;padding:0 14px;z-index:55;background:var(--white);color:var(--ink);border-bottom:.5px solid rgba(17,16,20,.2);}
+  .site-topbar .menu-btn{background:none;border:0;color:inherit;font-size:19px;cursor:pointer;opacity:.7;padding:0;}
+  .site-topbar .wordmark{font-family:var(--font-sans);font-weight:700;letter-spacing:.06em;font-size:16px;}
+  body.has-side>main,body.has-side>.site-main{padding-top:44px;}
+}
+
+/* nav-less pages that adopt the shell */
+body.site-shell{display:flex;min-height:100dvh;}
+body.site-shell>.site-main{flex:1 1 auto;min-width:0;}
+
+/* ---------- floating CTA (landing) ---------- */
+#float-cta{position:fixed;top:12px;right:12px;z-index:80;display:inline-flex;align-items:center;justify-content:center;height:27px;padding:0 20px;background:var(--cta-gradient);color:#fff;font-family:var(--font-jost);font-size:8.25px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;box-shadow:0 5px 14px rgba(0,0,0,.45);}
+@media (max-width:767px){ #float-cta{display:none !important;} }

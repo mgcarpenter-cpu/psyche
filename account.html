@@ -7,7 +7,7 @@
 <title>Account · Psyche</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
   :root{
     --bg:#06090f;--surround:#04060a;--bone:#e8e4dc;--bone-dim:#9aa0ab;--bone-faint:#5f6572;--gold:#c8a96e;--indigo:#1d3891;
@@ -18,104 +18,73 @@
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
-    background:var(--night);color:var(--bone);font-family:"Cormorant Garamond",Georgia,serif;-webkit-font-smoothing:antialiased;
+    background:var(--night);color:var(--bone);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;
     display:flex;height:100dvh;overflow:hidden;
   }
   a{color:inherit;}
 
   /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
-  nav {
+  nav{
     width: 258px; background: var(--panel);
     border-right: 1px solid var(--navline);
     display: flex; flex-direction: column;
     flex-shrink: 0; overflow-y: auto; scrollbar-width: none;
     transition: margin-left 0.25s ease;
     z-index: 5;
-    color: var(--cream); font-family: 'Cormorant Garamond', serif;
+    color: var(--cream); font-family:var(--font-sans);
   }
-  nav::-webkit-scrollbar { display: none; }
-  nav.hidden { margin-left: -258px; }
-  .nav-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 10px; }
-  .wordmark-side { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 0.3em; }
-  .collapse { background: transparent; border: none; color: var(--cream); opacity: 0.5; cursor: pointer; font-size: 16px; }
-  .collapse:hover { opacity: 1; }
-  .newchat {
-    margin: 4px 12px 14px; display: flex; align-items: center; gap: 10px;
-    background: rgba(250,248,243,0.06); border: 1px solid var(--navline);
-    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px;
-    border-radius: 12px; padding: 10px 14px; cursor: pointer;
-  }
-  .newchat:hover { background: rgba(250,248,243,0.1); }
-  .newchat .plus { width: 20px; height: 20px; border-radius: 50%; background: var(--cream); color: var(--night); display: flex; align-items: center; justify-content: center; font-size: 15px; }
-  .navitem {
-    display: flex; align-items: center; gap: 10px;
-    margin: 1px 8px; padding: 8px 10px; border-radius: 9px;
-    font-size: 15.5px; opacity: 0.8; cursor: pointer;
-  }
-  .navitem:hover { background: rgba(250,248,243,0.06); opacity: 1; }
-  .navitem.active { background: rgba(250,248,243,0.08); opacity: 1; }
-  .navitem.soon { opacity: 0.38; cursor: default; }
-  .navitem.soon:hover { background: transparent; }
-  .navitem.soon .pill { margin-left: auto; font-style: italic; font-size: 11.5px; border: 1px solid rgba(250,248,243,0.2); border-radius: 9px; padding: 0 7px; }
-  .navlabel { font-style: italic; font-size: 12.5px; opacity: 0.42; padding: 16px 20px 6px; }
-  .recent {
-    margin: 0 8px; padding: 7px 10px; border-radius: 9px;
-    font-size: 15px; opacity: 0.72; cursor: pointer;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .recent:hover, .recent.active { background: rgba(250,248,243,0.06); opacity: 1; }
-  .navspacer { flex: 1; min-height: 16px; }
-  .account {
-    display: flex; align-items: center; gap: 10px;
-    margin: 8px; padding: 10px; border-radius: 12px;
-    border-top: 1px solid var(--navline); cursor: pointer;
-  }
-  .account:hover { background: rgba(250,248,243,0.05); }
-  .avatar-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; color: var(--cream); }
-  .account .meta { line-height: 1.15; font-size: 14.5px; }
-  .account .meta .plan { font-style: italic; opacity: 0.5; font-size: 13px; }
-  .navitem.upgrade { border: 1px solid rgba(250,248,243,0.28); border-radius: 10px; margin: 10px 8px; justify-content: center; opacity: 0.95; }
-  .navitem.upgrade:hover { background: rgba(250,248,243,0.08); opacity: 1; }
-  .navitem.help { opacity: 0.5; font-size: 14px; }
-  .navitem.help:hover { opacity: 0.85; background: rgba(250,248,243,0.05); }
 
-  .acctwrap { position: relative; }
-  .acctmenu {
-    position: absolute; bottom: calc(100% - 2px); left: 8px; right: 8px; z-index: 9;
-    background: var(--panel); border: 1px solid rgba(250,248,243,0.14);
-    border-radius: 12px; padding: 6px; display: none; flex-direction: column;
-    box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
-  }
-  .acctmenu.open { display: flex; }
-  .acctmenu button { background: transparent; border: none; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px; text-align: left; padding: 9px 12px; border-radius: 8px; cursor: pointer; }
-  .acctmenu button:hover { background: rgba(250,248,243,0.08); }
 
-  .fbmodal { position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
-  .fbmodal.open { display: flex; }
-  .fbcard { background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family: 'Cormorant Garamond', serif; }
-  .fbcard h3 { font-weight: 400; font-size: 22px; margin-bottom: 8px; }
-  .fbcard p { opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
-  .fbcard textarea { width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px; outline: none; resize: none; }
-  .fbcard .row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-  .fbcard .row button { font-family: 'Cormorant Garamond', serif; font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
-  .fbcard .ghost { background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
-  .fbcard .primary { background: var(--cream); border: none; color: var(--night); }
 
-  @media (max-width: 760px) {
-    nav { position: fixed; z-index: 10; height: 100dvh; margin-left: -258px; }
-    nav.open { margin-left: 0; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .fbmodal{ position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal.open{ display: flex; }
+  .fbcard{ background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family:var(--font-sans); }
+  .fbcard h3{ font-weight: 400; font-size: 22px; margin-bottom: 8px; }
+  .fbcard p{ opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
+  .fbcard textarea{ width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family:var(--font-sans); font-size: 16px; outline: none; resize: none; }
+  .fbcard .row{ display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+  .fbcard .row button{ font-family:var(--font-sans); font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
+  .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
   /* ================= MAIN ================= */
-  main { flex: 1; min-width: 0; overflow-y: auto; background: #06090f; }
-  .topbar {
-    position: sticky; top: 0; z-index: 6;
-    display: flex; gap: 14px; align-items: center; padding: 14px 18px;
-    background: linear-gradient(rgba(6,9,15,.92),rgba(6,9,15,.5) 70%,transparent);
-  }
-  .menu-btn { background: transparent; border: none; color: #e8e4dc; font-size: 19px; cursor: pointer; opacity: 0.6; }
-  .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: #e8e4dc; }
-  .topbar-right{margin-left:auto;font-family:"Cormorant Garamond",serif;font-size:15px;color:var(--bone-dim);cursor:pointer;text-decoration:none;}
+  main{ flex: 1; min-width: 0; overflow-y: auto; background: #06090f; }
+
+
+
+  .topbar-right{margin-left:auto;font-family:var(--font-sans);font-size:15px;color:var(--bone-dim);cursor:pointer;text-decoration:none;}
   .topbar-right:hover{color:var(--bone);}
 
   /* ===== page content (account-design-v1, verbatim) ===== */
@@ -123,10 +92,10 @@
   .frame{max-width:430px;margin:0 auto;}
   .inner{padding:30px 26px 60px;}
 
-  .barhead{display:block;color:#06090f;font-family:"Cinzel",serif;font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;padding:12px 18px;border-radius:4px;margin-bottom:22px;background:linear-gradient(90deg,var(--bone) 0%,var(--bone) 55%,rgba(232,228,220,0) 100%);}
+  .barhead{display:block;color:#06090f;font-family:var(--font-display);font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;padding:12px 18px;border-radius:4px;margin-bottom:22px;background:linear-gradient(90deg,var(--bone) 0%,var(--bone) 55%,rgba(232,228,220,0) 100%);}
 
   .who{display:flex;align-items:center;gap:15px;margin-bottom:22px;}
-  .avatar{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#1a2540,#0a0e15);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:18px;color:var(--gold);flex:0 0 auto;}
+  .avatar{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#1a2540,#0a0e15);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:var(--gold);flex:0 0 auto;}
   .who .n{font-size:22px;color:var(--bone);}
   .who .e{font-size:14px;color:var(--bone-faint);font-style:italic;}
 
@@ -136,43 +105,43 @@
   .acc-head .lbl{font-size:17px;color:var(--bone-dim);}
   .acc-head .r{display:flex;align-items:center;gap:12px;}
   .acc-head .val{font-size:16px;color:var(--bone);}
-  .acc-head .val.plan{font-family:"Cinzel",serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);}
+  .acc-head .val.plan{font-family:var(--font-display);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);}
   .acc-head .car{color:var(--bone-faint);font-size:12px;transition:transform .25s;}
   .acc.open .car{transform:rotate(180deg);}
   .acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
   .acc.open .acc-body{max-height:420px;}
   .acc-inner{padding:4px 2px 20px;}
   .field{display:flex;align-items:center;gap:10px;border:1px solid var(--hair);background:var(--elev);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
-  .field .k{flex:1;font-family:"Cinzel",serif;font-size:14px;letter-spacing:.04em;color:var(--bone);}
-  .field input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--bone);font-family:"Cormorant Garamond",serif;font-size:15px;}
+  .field .k{flex:1;font-family:var(--font-display);font-size:14px;letter-spacing:.04em;color:var(--bone);}
+  .field input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--bone);font-family:var(--font-sans);font-size:15px;}
   .field input::placeholder{color:var(--bone-faint);}
   .field .acts{display:flex;align-items:center;gap:14px;flex:0 0 auto;}
-  .field .act{font-family:"Cinzel",serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);cursor:pointer;}
+  .field .act{font-family:var(--font-display);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);cursor:pointer;}
   .field .act.rm{color:#c98b6e;}
   .muted{color:var(--bone-faint);font-style:italic;line-height:1.5;margin-top:4px;}
-  .btn-ig{display:inline-flex;align-items:center;gap:7px;font-family:"Cormorant Garamond",serif;font-size:15px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:24px;padding:9px 20px;cursor:pointer;box-shadow:0 5px 16px rgba(29,56,145,.36);}
-  .btn-ghost{display:inline-flex;align-items:center;gap:7px;font-family:"Cormorant Garamond",serif;font-size:15px;color:var(--bone);background:none;border:1px solid rgba(232,228,220,.3);border-radius:24px;padding:9px 20px;cursor:pointer;}
+  .btn-ig{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-sans);font-size:15px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:24px;padding:9px 20px;cursor:pointer;box-shadow:0 5px 16px rgba(29,56,145,.36);}
+  .btn-ghost{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-sans);font-size:15px;color:var(--bone);background:none;border:1px solid rgba(232,228,220,.3);border-radius:24px;padding:9px 20px;cursor:pointer;}
 
   .section{margin-top:44px;}
   /* upgrade hero */
   .upsell{position:relative;overflow:hidden;border:1px solid rgba(200,169,110,.28);border-radius:18px;background:linear-gradient(180deg,rgba(58,95,206,.10),rgba(19,42,107,.06));padding:26px 22px 22px;margin-bottom:34px;text-align:center;}
   .upsell-glow{position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:260px;height:180px;background:radial-gradient(ellipse,rgba(58,95,206,.28),transparent 70%);filter:blur(10px);pointer-events:none;}
-  .upsell .ut{position:relative;font-family:"Cinzel",serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone);margin-bottom:10px;}
+  .upsell .ut{position:relative;font-family:var(--font-display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone);margin-bottom:10px;}
   .upsell .ud{position:relative;font-size:16.5px;color:var(--bone-dim);line-height:1.5;margin-bottom:20px;}
-  .upsell-btn{position:relative;display:inline-block;width:100%;font-family:"Cormorant Garamond",serif;font-size:19px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:40px;padding:16px 0;cursor:pointer;box-shadow:0 10px 30px rgba(29,56,145,.5);margin-bottom:14px;}
-  .upsell .uf{position:relative;font-family:"Cinzel",serif;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);}
-  .plan-up{font-family:"Cormorant Garamond",serif;font-size:14px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:20px;padding:6px 16px;cursor:pointer;box-shadow:0 4px 12px rgba(29,56,145,.4);}
+  .upsell-btn{position:relative;display:inline-block;width:100%;font-family:var(--font-sans);font-size:19px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:40px;padding:16px 0;cursor:pointer;box-shadow:0 10px 30px rgba(29,56,145,.5);margin-bottom:14px;}
+  .upsell .uf{position:relative;font-family:var(--font-display);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);}
+  .plan-up{font-family:var(--font-sans);font-size:14px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:20px;padding:6px 16px;cursor:pointer;box-shadow:0 4px 12px rgba(29,56,145,.4);}
 
   /* earnings summary */
   .earn-top{display:flex;border:1px solid var(--hair);border-radius:16px;overflow:hidden;background:var(--elev);margin-bottom:12px;}
   .earn-top .cell{flex:1;padding:20px 10px;text-align:center;border-right:1px solid rgba(232,228,220,.08);}
   .earn-top .cell:last-child{border-right:none;}
-  .earn-top .num{font-family:"Cinzel",serif;font-size:23px;color:var(--bone);}
+  .earn-top .num{font-family:var(--font-display);font-size:23px;color:var(--bone);}
   .earn-top .num.paid{color:var(--gold);}
-  .earn-top .lbl{font-family:"Cinzel",serif;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-faint);margin-top:6px;}
+  .earn-top .lbl{font-family:var(--font-display);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-faint);margin-top:6px;}
   .balance{display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(200,169,110,.3);border-radius:14px;background:linear-gradient(180deg,rgba(200,169,110,.06),transparent);padding:16px 18px;margin-bottom:20px;}
-  .balance .l .t{font-family:"Cinzel",serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);margin-bottom:5px;}
-  .balance .l .a{font-family:"Cinzel",serif;font-size:24px;color:var(--gold);}
+  .balance .l .t{font-family:var(--font-display);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);margin-bottom:5px;}
+  .balance .l .a{font-family:var(--font-display);font-size:24px;color:var(--gold);}
   .balance .l .d{font-size:13px;color:var(--bone-faint);font-style:italic;margin-top:3px;}
 
   /* ledger rows inside dropdown */
@@ -180,59 +149,27 @@
   .lrow:last-child{border-bottom:none;}
   .lrow .left .t{font-size:16px;color:var(--bone);}
   .lrow .left .d{font-size:13.5px;color:var(--bone-faint);font-style:italic;margin-top:3px;}
-  .lrow .amt{font-family:"Cinzel",serif;font-size:16px;color:var(--gold);}
+  .lrow .amt{font-family:var(--font-display);font-size:16px;color:var(--gold);}
   .lrow .amt.neg{color:#c98b6e;}
-  .lrow .status{font-family:"Cinzel",serif;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border-radius:12px;border:1px solid var(--hair);color:var(--bone-dim);margin-left:10px;}
+  .lrow .status{font-family:var(--font-display);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border-radius:12px;border:1px solid var(--hair);color:var(--bone-dim);margin-left:10px;}
   .lrow .status.paid{color:#06090f;background:var(--bone);border-color:var(--bone);}
   .lrow .status.claw{color:#c98b6e;border-color:rgba(201,139,110,.5);}
   .lrow .rt{display:flex;align-items:center;}
 
   .muted{color:var(--bone-faint);font-style:italic;line-height:1.55;margin-top:16px;}
-  .signout{display:block;width:100%;text-align:center;margin-top:34px;font-family:"Cinzel",serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-dim);background:transparent;border:1px solid rgba(232,228,220,.2);border-radius:12px;padding:16px 0;cursor:pointer;}
+  .signout{display:block;width:100%;text-align:center;margin-top:34px;font-family:var(--font-display);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-dim);background:transparent;border:1px solid rgba(232,228,220,.2);border-radius:12px;padding:16px 0;cursor:pointer;}
   .signout:hover{border-color:rgba(232,228,220,.4);color:var(--bone);}
   .legal{text-align:center;margin-top:40px;margin-bottom:30px;font-size:13px;color:var(--bone-faint);}
   .legal a{color:var(--bone-dim);text-decoration:underline;text-underline-offset:3px;}
   .danger{display:block;text-align:center;margin-top:14px;font-size:13px;color:#8a5a4a;font-style:italic;cursor:pointer;}
 </style>
 </head>
-<body>
+<body class="site-shell">
 
-<nav id="nav" class="hidden">
-  <div class="nav-top">
-    <div class="wordmark-side">PSYCHE</div>
-    <button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button>
-  </div>
-  <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
-  <div class="navitem" data-route="assessment.html">My assessment</div>
-  <div class="navitem" data-route="reveal.html">My reveal</div>
-  <div class="navitem" data-route="practice.html">Your practice</div>
-  <div class="navitem" data-route="library.html">Library</div>
-  <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
-  <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
-  <div class="navitem active" data-route="account.html">Account &amp; earnings</div>
-  <div class="navitem soon">Meditations <span class="pill">soon</span></div>
-  <div class="navitem soon">Education <span class="pill">soon</span></div>
-  <div class="navitem upgrade" data-route="pricing.html">Upgrade</div>
-  <div class="navlabel" id="recentsLabel">Recents</div>
-  <div id="recents"></div>
-  <div class="navspacer"></div>
-  <div class="navitem help" id="helpBtn" data-route="support.html">Help &amp; feedback</div>
-  <div class="acctwrap">
-    <div class="acctmenu" id="acctMenu">
-      <button id="acctSettings">Settings</button>
-      <button id="acctSignout">Sign out</button>
-    </div>
-    <div class="account" id="account">
-      <div class="avatar-dot">&middot;</div>
-      <div class="meta">Guest<br><span class="plan">Sign in</span></div>
-    </div>
-  </div>
-</nav>
+<script src="site-header.js"></script>
 
 <main>
   <div class="topbar">
-    <button class="menu-btn" id="menuBtn">&#9776;</button>
-    <div class="wordmark">PSYCHE</div>
     <a class="topbar-right" id="topRight" href="auth.html">Log in</a>
   </div>
 

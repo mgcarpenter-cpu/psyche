@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
 /* ------------------------------------------------------------------
    Landing page — rebuilt 1:1 from "psyche-final 3.html" (Claude Design
@@ -18,75 +18,14 @@
        below ~900px-tall windows (design keeps 28px and scrolls)
      · links wired to real pages; CTA -> #download
    ------------------------------------------------------------------ */
-:root{
-  --sans:'Poiret One','Jost',-apple-system,'Helvetica Neue',Arial,sans-serif;
-  --display:'Poiret One','Jost','Helvetica Neue',Arial,sans-serif;
-  --jost:'Jost',-apple-system,'Helvetica Neue',Arial,sans-serif;
-  --cream:#ede6dc; --ink:#111014;
-  --gutter:clamp(10px,3.43vw,24px);
-  --band-heading:clamp(28px,6.8vw,58px);
-  --fade:linear-gradient(0deg,#3e3a34 0%,#2a2723 28%,#151413 58%,#000 100%) center bottom / 100% 150px no-repeat, #000;
-}
 html,body{margin:0;padding:0;background:#050507;}
 *{box-sizing:border-box;}
 a{text-decoration:none;color:inherit;}
 input::placeholder{color:rgba(17,16,20,.5);}
 summary::-webkit-details-marker{display:none;}
-details[open] summary .chev{transform:rotate(-135deg);}
-@media (max-width:767px){ #float-cta{display:none !important;} }
 ::-webkit-scrollbar{height:0;width:0;}
 
-/* The white bar is painted as a fixed underlay spanning the full viewport
-   height at every scroll position — it cannot end early regardless of how
-   the flex column resolves. The sidebar content sits above it (z-index 20). */
-body::before{content:'';position:fixed;left:0;top:0;bottom:0;width:clamp(140px,28vw,260px);background:#fff;z-index:10;}
 .root{background:#000;color:var(--cream);font-family:var(--sans);min-height:100vh;overflow-x:clip;display:flex;align-items:flex-start;}
-
-/* ---------- white sidebar ---------- */
-.side{flex:0 0 auto;width:clamp(140px,28vw,260px);align-self:stretch;z-index:20;background:#fff;color:var(--ink);display:flex;flex-direction:column;}
-/* pinned and unable to scroll; the design's own inner panel scrolls on
-   short windows — instead the icons compress below ~900px tall */
-.side-sticky{position:sticky;top:0;height:100vh;overflow:hidden;padding:clamp(12px,4vh,28px) clamp(17px,2.8vw,26px);display:flex;flex-direction:column;gap:0;}
-.side-mark{flex:0 0 auto;font-family:var(--sans);font-size:clamp(14px,3.8vh,24px);font-weight:700;letter-spacing:.06em;line-height:1;color:var(--ink);}
-.row{display:flex;align-items:center;gap:7px;color:var(--ink);}
-.row-tight{padding:clamp(1px,.4vh,4px) 0;}
-.row-loose{padding:clamp(2.5px,.85vh,8px) 0;}
-.row-login{margin-top:clamp(4px,1.2vh,9px);}
-.row-icon{flex:0 0 auto;display:flex;align-items:center;color:var(--ink);}
-.row-icon.dim{opacity:.75;}
-.row-label{font-family:var(--sans);font-size:clamp(8.5px,2.3vh,14px);font-weight:400;letter-spacing:.04em;line-height:1.35;}
-.side-icon svg,.row-icon svg{width:clamp(16px,2.2vh,28px);height:clamp(16px,2.2vh,28px);}
-.side-nav{flex:0 0 auto;display:flex;flex-direction:column;padding-bottom:clamp(5px,1.8vh,14px);}
-.side-group{flex:0 0 auto;margin-top:clamp(7px,2.2vh,17px);padding-top:clamp(4px,1.4vh,12px);display:flex;flex-direction:column;gap:clamp(3px,1vh,8px);}
-.side-group-title{margin:0;font-family:var(--jost);font-size:clamp(8px,2vh,13px);font-weight:300;letter-spacing:.14em;text-transform:uppercase;line-height:1;color:var(--ink);}
-.side-list{margin:0;padding:0;list-style:none;}
-.side-list details{width:100%;}
-.side-list summary{display:flex;align-items:center;gap:clamp(6px,1.1vw,9px);cursor:pointer;list-style:none;}
-.side-list.works summary{padding:clamp(2.5px,.85vh,8px) 0;}
-.side-list.earn summary{padding:clamp(1px,.4vh,4px) 0;}
-.side-icon{flex:0 0 auto;display:flex;align-items:center;color:var(--ink);opacity:.8;}
-.side-name{display:block;font-family:var(--display);font-size:clamp(8.5px,2.3vh,14px);font-weight:400;line-height:1.35;color:var(--ink);}
-.chev{flex:0 0 auto;margin-left:auto;margin-right:3px;width:6.5px;height:6.5px;border-right:1px solid rgba(17,16,20,.6);border-bottom:1px solid rgba(17,16,20,.6);transform:rotate(45deg);}
-.side-points{margin:0 0 clamp(5px,1.5vh,10px);padding:0 0 0 clamp(17px,3vw,26px);list-style:none;display:flex;flex-direction:column;gap:5px;}
-.side-points li{font-family:var(--sans);font-size:clamp(8.5px,2.3vh,14px);font-weight:400;line-height:1.45;color:var(--ink);}
-.side-foot{margin-top:auto;padding-top:clamp(8px,1.2vh,18px);display:flex;flex-direction:column;}
-/* short windows: the design would scroll internally here; since this bar
-   must never scroll, the whole nav compresses with viewport height */
-@media (max-height:820px){
-  .row-label,.side-name,.side-points li{font-size:clamp(8.5px,1.75vh,13px);}
-  .side-icon svg,.row-icon svg{width:clamp(13px,1.9vh,16px);height:clamp(13px,1.9vh,16px);}
-  .side-group-title{font-size:clamp(8px,1.6vh,12px);}
-  .side-mark{font-size:clamp(14px,3.2vh,22px);}
-  .side-sticky{padding:clamp(10px,2.5vh,18px) clamp(17px,2.8vw,26px);}
-  .row-loose{padding:clamp(1px,.5vh,4px) 0;}
-  .side-list.works summary{padding:clamp(1.5px,.5vh,4px) 0;}
-  .side-group{margin-top:clamp(5px,1.5vh,11px);padding-top:clamp(3px,1vh,8px);}
-  .side-nav{padding-bottom:clamp(3px,.9vh,7px);}
-}
-.acct-avatar{flex:0 0 auto;width:14px;height:14px;border-radius:999px;border:.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:6.5px;font-weight:500;letter-spacing:.02em;line-height:1;color:var(--ink);}
-
-/* ---------- floating CTA ---------- */
-#float-cta{position:fixed;top:12px;right:12px;z-index:80;display:inline-flex;align-items:center;justify-content:center;height:27px;padding:0 20px;background:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);color:#fff;font-family:var(--jost);font-size:8.25px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;box-shadow:0 5px 14px rgba(0,0,0,.45);}
 
 /* ---------- main column ---------- */
 .main{flex:1 1 auto;min-width:0;background:#000;}
@@ -141,7 +80,7 @@ body::before{content:'';position:fixed;left:0;top:0;bottom:0;width:clamp(140px,2
 .found-text{max-width:28ch;font-family:var(--sans);font-size:clamp(8.5px,1.82vw,15px);font-weight:400;line-height:1.45;color:rgba(237,230,220,.82);text-wrap:pretty;}
 </style>
 </head>
-<body>
+<body class="has-side">
 <div class="root">
   <aside class="side">
     <div class="side-sticky">

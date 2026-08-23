@@ -5,18 +5,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Psyche — Settings</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
   :root{ --cream:#faf8f3; --night:#06090f; --indigo:#1d3891; --panel:rgba(6,10,18,0.96); --line:rgba(250,248,243,0.1); }
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{height:100%;}
   body{
-    font-family:'Cormorant Garamond',serif;background:var(--night);color:var(--cream);
+    font-family:var(--font-sans);background:var(--night);color:var(--cream);
     display:flex;height:100dvh;overflow:hidden;
   }
 
   /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
-  nav {
+  nav{
     width: 258px; background: var(--panel);
     border-right: 1px solid var(--line);
     display: flex; flex-direction: column;
@@ -24,87 +24,56 @@
     transition: margin-left 0.25s ease;
     z-index: 5;
   }
-  nav::-webkit-scrollbar { display: none; }
-  nav.hidden { margin-left: -258px; }
-  .nav-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 10px; }
-  .wordmark-side { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 0.3em; }
-  .collapse { background: transparent; border: none; color: var(--cream); opacity: 0.5; cursor: pointer; font-size: 16px; }
-  .collapse:hover { opacity: 1; }
-  .newchat {
-    margin: 4px 12px 14px; display: flex; align-items: center; gap: 10px;
-    background: rgba(250,248,243,0.06); border: 1px solid var(--line);
-    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px;
-    border-radius: 12px; padding: 10px 14px; cursor: pointer;
-  }
-  .newchat:hover { background: rgba(250,248,243,0.1); }
-  .newchat .plus { width: 20px; height: 20px; border-radius: 50%; background: var(--cream); color: var(--night); display: flex; align-items: center; justify-content: center; font-size: 15px; }
-  .navitem {
-    display: flex; align-items: center; gap: 10px;
-    margin: 1px 8px; padding: 8px 10px; border-radius: 9px;
-    font-size: 15.5px; opacity: 0.8; cursor: pointer;
-  }
-  .navitem:hover { background: rgba(250,248,243,0.06); opacity: 1; }
-  .navitem.soon { opacity: 0.38; cursor: default; }
-  .navitem.soon:hover { background: transparent; }
-  .navitem.soon .pill { margin-left: auto; font-style: italic; font-size: 11.5px; border: 1px solid rgba(250,248,243,0.2); border-radius: 9px; padding: 0 7px; }
-  .navlabel { font-style: italic; font-size: 12.5px; opacity: 0.42; padding: 16px 20px 6px; }
-  .recent {
-    margin: 0 8px; padding: 7px 10px; border-radius: 9px;
-    font-size: 15px; opacity: 0.72; cursor: pointer;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .recent:hover, .recent.active { background: rgba(250,248,243,0.06); opacity: 1; }
-  .navspacer { flex: 1; min-height: 16px; }
-  .account {
-    display: flex; align-items: center; gap: 10px;
-    margin: 8px; padding: 10px; border-radius: 12px;
-    border-top: 1px solid var(--line); cursor: pointer;
-  }
-  .account:hover { background: rgba(250,248,243,0.05); }
-  .avatar-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; }
-  .account .meta { line-height: 1.15; font-size: 14.5px; }
-  .account .meta .plan { font-style: italic; opacity: 0.5; font-size: 13px; }
-  .navitem.upgrade { border: 1px solid rgba(250,248,243,0.28); border-radius: 10px; margin: 10px 8px; justify-content: center; opacity: 0.95; }
-  .navitem.upgrade:hover { background: rgba(250,248,243,0.08); opacity: 1; }
-  .navitem.help { opacity: 0.5; font-size: 14px; }
-  .navitem.help:hover { opacity: 0.85; background: rgba(250,248,243,0.05); }
 
-  .acctwrap { position: relative; }
-  .acctmenu {
-    position: absolute; bottom: calc(100% - 2px); left: 8px; right: 8px; z-index: 9;
-    background: var(--panel); border: 1px solid rgba(250,248,243,0.14);
-    border-radius: 12px; padding: 6px; display: none; flex-direction: column;
-    box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
-  }
-  .acctmenu.open { display: flex; }
-  .acctmenu button { background: transparent; border: none; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px; text-align: left; padding: 9px 12px; border-radius: 8px; cursor: pointer; }
-  .acctmenu button:hover { background: rgba(250,248,243,0.08); }
 
-  .fbmodal { position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
-  .fbmodal.open { display: flex; }
-  .fbcard { background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; }
-  .fbcard h3 { font-weight: 400; font-size: 22px; margin-bottom: 8px; }
-  .fbcard p { opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
-  .fbcard textarea { width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px; outline: none; resize: none; }
-  .fbcard .row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-  .fbcard .row button { font-family: 'Cormorant Garamond', serif; font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
-  .fbcard .ghost { background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
-  .fbcard .primary { background: var(--cream); border: none; color: var(--night); }
 
-  @media (max-width: 760px) {
-    nav { position: fixed; z-index: 10; height: 100dvh; margin-left: -258px; }
-    nav.open { margin-left: 0; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .fbmodal{ position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal.open{ display: flex; }
+  .fbcard{ background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; }
+  .fbcard h3{ font-weight: 400; font-size: 22px; margin-bottom: 8px; }
+  .fbcard p{ opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
+  .fbcard textarea{ width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family:var(--font-sans); font-size: 16px; outline: none; resize: none; }
+  .fbcard .row{ display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+  .fbcard .row button{ font-family:var(--font-sans); font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
+  .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
   /* ================= MAIN ================= */
-  main { flex: 1; min-width: 0; overflow-y: auto; }
-  .topbar {
-    position: sticky; top: 0; z-index: 6;
-    display: flex; gap: 14px; align-items: center; padding: 14px 18px;
-    background: linear-gradient(rgba(6,9,15,.85),rgba(6,9,15,.5) 70%,transparent);
-  }
-  .menu-btn { background: transparent; border: none; color: var(--cream); font-size: 19px; cursor: pointer; opacity: 0.65; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
-  .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; text-shadow: 0 1px 6px rgba(0,0,0,0.7); }
+  main{ flex: 1; min-width: 0; overflow-y: auto; }
+
+
+
 
   /* ===== page content ===== */
   .page{padding:12px 24px 60px;}
@@ -114,7 +83,7 @@
   .row .lbl{font-style:italic;opacity:.5;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
   .row .val{font-size:18px;}
   .actions{margin-top:30px;display:flex;flex-direction:column;gap:12px;}
-  button, .linkbtn{font-family:'Cormorant Garamond',serif;font-size:16px;border-radius:24px;padding:12px 22px;cursor:pointer;text-align:center;text-decoration:none;}
+  button, .linkbtn{font-family:var(--font-sans);font-size:16px;border-radius:24px;padding:12px 22px;cursor:pointer;text-align:center;text-decoration:none;}
   .signout{background:rgba(250,248,243,.06);border:1px solid rgba(250,248,243,.2);color:#faf8f3;}
   .signout:hover{background:rgba(250,248,243,.12);}
   .danger{background:transparent;border:1px solid rgba(224,120,86,.5);color:#e07856;}
@@ -122,46 +91,11 @@
   .note{opacity:.45;font-style:italic;font-size:14px;margin-top:8px;line-height:1.5;}
 </style>
 </head>
-<body>
+<body class="site-shell">
 
-<nav id="nav" class="hidden">
-  <div class="nav-top">
-    <div class="wordmark-side">PSYCHE</div>
-    <button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button>
-  </div>
-  <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
-  <div class="navitem" data-route="assessment.html">My assessment</div>
-  <div class="navitem" data-route="reveal.html">My reveal</div>
-  <div class="navitem" data-route="practice.html">Your practice</div>
-  <div class="navitem" data-route="library.html">Library</div>
-  <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
-  <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
-  <div class="navitem" data-route="account.html">Account &amp; earnings</div>
-  <div class="navitem soon">Meditations <span class="pill">soon</span></div>
-  <div class="navitem soon">Education <span class="pill">soon</span></div>
-  <div class="navitem upgrade" data-route="pricing.html">Upgrade</div>
-  <div class="navlabel" id="recentsLabel">Recents</div>
-  <div id="recents"></div>
-  <div class="navspacer"></div>
-  <div class="navitem help" id="helpBtn" data-route="help.html">Help &amp; feedback</div>
-  <div class="acctwrap">
-    <div class="acctmenu" id="acctMenu">
-      <button id="acctSettings">Settings</button>
-      <button id="acctSignout">Sign out</button>
-    </div>
-    <div class="account" id="account">
-      <div class="avatar-dot">&middot;</div>
-      <div class="meta">Guest<br><span class="plan">Sign in</span></div>
-    </div>
-  </div>
-</nav>
+<script src="site-header.js"></script>
 
 <main>
-  <div class="topbar">
-    <button class="menu-btn" id="menuBtn">&#9776;</button>
-    <div class="wordmark">PSYCHE</div>
-  </div>
-
   <div class="page">
     <div class="wrap">
       <h1>Settings</h1>

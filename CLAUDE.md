@@ -39,6 +39,16 @@ is its own chat thread that "remembers" the person.
 - `voice.html` — parked voice prototype. Mic → Gemini Live native-audio → spoken
   replies. Standalone, Chrome-only, uses its own system prompt (same Psyche persona,
   tuned for spoken/heard replies). Not linked from the main app.
+- `site.css` + `site-header.js` — **shared site chrome**, extracted from front-v2.html: font
+  imports/stacks, colour + spacing tokens, the white nav, floating CTA. Every page links
+  `site.css` and renders its nav with `<script src="site-header.js"></script>` placed where
+  `<nav id="nav">` used to be. The partial keeps the app nav's items and every ID page
+  scripts bind (`menuBtn collapseBtn newChat recents recentsLabel helpBtn acctMenu
+  acctSettings acctSignout account`) and the `.hidden`/`.open` toggle contract, so auth/
+  nav logic is untouched. Desktop (>=1024px): persistent white column. Below: slide-in
+  drawer + shared mobile topbar. Pages without their own toggle JS mark the script tag
+  `data-toggle`. Active item is auto-detected from the URL. Change nav items in ONE place:
+  the `items` array in site-header.js.
 - `api/chat.js`, `api/gemini-token.js` — see above.
 - `images/` — themed reflection images named by tier: `t1_*` (wealth/comfort: yacht,
   ferrari, penthouse), `t2_*` (conflict/hardship), `t3_*` (nature/reflection),

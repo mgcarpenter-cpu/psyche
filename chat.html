@@ -7,9 +7,9 @@
 <title>Psyche — Sanctuary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
-  :root {
+  :root{
     --cream: #faf8f3;
     --night: #06090f;
     --indigo: #1d3891;
@@ -19,105 +19,78 @@
     --bg:#06090f;--surround:#04060a;--bone:#e8e4dc;--bone-dim:#9aa0ab;--bone-faint:#5f6572;--gold:#c8a96e;
     --psy-ig:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);--hair:rgba(232,228,220,.10);--elev:rgba(244,242,238,.05);
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; }
-  body {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+  *{ margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body{ height: 100%; }
+  body{
+    font-family:var(--font-sans);
     background: var(--night); color: var(--bone);
     display: flex; height: 100dvh; overflow: hidden;
     -webkit-font-smoothing: antialiased;
   }
-  a { color: inherit; }
+  a{ color: inherit; }
 
   /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
-  nav {
+  nav{
     width: 258px; background: var(--panel);
     border-right: 1px solid var(--line);
     display: flex; flex-direction: column;
     flex-shrink: 0; overflow-y: auto; scrollbar-width: none;
     transition: margin-left 0.25s ease;
     z-index: 5;
-    color: var(--cream); font-family: 'Cormorant Garamond', serif;
+    color: var(--cream); font-family:var(--font-sans);
   }
-  nav::-webkit-scrollbar { display: none; }
-  nav.hidden { margin-left: -258px; }
-  .nav-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 10px; }
-  .wordmark-side { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 0.3em; }
-  .collapse { background: transparent; border: none; color: var(--cream); opacity: 0.5; cursor: pointer; font-size: 16px; }
-  .collapse:hover { opacity: 1; }
-  .newchat {
-    margin: 4px 12px 14px; display: flex; align-items: center; gap: 10px;
-    background: rgba(250,248,243,0.06); border: 1px solid var(--line);
-    color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px;
-    border-radius: 12px; padding: 10px 14px; cursor: pointer;
-  }
-  .newchat:hover { background: rgba(250,248,243,0.1); }
-  .newchat .plus { width: 20px; height: 20px; border-radius: 50%; background: var(--cream); color: var(--night); display: flex; align-items: center; justify-content: center; font-size: 15px; }
-  .navitem {
-    display: flex; align-items: center; gap: 10px;
-    margin: 1px 8px; padding: 8px 10px; border-radius: 9px;
-    font-size: 15.5px; opacity: 0.8; cursor: pointer;
-  }
-  .navitem:hover { background: rgba(250,248,243,0.06); opacity: 1; }
-  .navitem.soon { opacity: 0.38; cursor: default; }
-  .navitem.soon:hover { background: transparent; }
-  .navitem.soon .pill { margin-left: auto; font-style: italic; font-size: 11.5px; border: 1px solid rgba(250,248,243,0.2); border-radius: 9px; padding: 0 7px; }
-  .navlabel { font-style: italic; font-size: 12.5px; opacity: 0.42; padding: 16px 20px 6px; }
-  .recent {
-    margin: 0 8px; padding: 7px 10px; border-radius: 9px;
-    font-size: 15px; opacity: 0.72; cursor: pointer;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .recent:hover, .recent.active { background: rgba(250,248,243,0.06); opacity: 1; }
-  .navspacer { flex: 1; min-height: 16px; }
-  .account {
-    display: flex; align-items: center; gap: 10px;
-    margin: 8px; padding: 10px; border-radius: 12px;
-    border-top: 1px solid var(--line); cursor: pointer;
-  }
-  .account:hover { background: rgba(250,248,243,0.05); }
-  .avatar-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--indigo); display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; color: var(--cream); }
-  .account .meta { line-height: 1.15; font-size: 14.5px; }
-  .account .meta .plan { font-style: italic; opacity: 0.5; font-size: 13px; }
-  .navitem.upgrade { border: 1px solid rgba(250,248,243,0.28); border-radius: 10px; margin: 10px 8px; justify-content: center; opacity: 0.95; }
-  .navitem.upgrade:hover { background: rgba(250,248,243,0.08); opacity: 1; }
-  .navitem.help { opacity: 0.5; font-size: 14px; }
-  .navitem.help:hover { opacity: 0.85; background: rgba(250,248,243,0.05); }
 
-  .acctwrap { position: relative; }
-  .acctmenu {
-    position: absolute; bottom: calc(100% - 2px); left: 8px; right: 8px; z-index: 9;
-    background: var(--panel); border: 1px solid rgba(250,248,243,0.14);
-    border-radius: 12px; padding: 6px; display: none; flex-direction: column;
-    box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
-  }
-  .acctmenu.open { display: flex; }
-  .acctmenu button { background: transparent; border: none; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 15px; text-align: left; padding: 9px 12px; border-radius: 8px; cursor: pointer; }
-  .acctmenu button:hover { background: rgba(250,248,243,0.08); }
 
-  .fbmodal { position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
-  .fbmodal.open { display: flex; }
-  .fbcard { background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family: 'Cormorant Garamond', serif; }
-  .fbcard h3 { font-weight: 400; font-size: 22px; margin-bottom: 8px; }
-  .fbcard p { opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
-  .fbcard textarea { width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 16px; outline: none; resize: none; }
-  .fbcard .row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-  .fbcard .row button { font-family: 'Cormorant Garamond', serif; font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
-  .fbcard .ghost { background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
-  .fbcard .primary { background: var(--cream); border: none; color: var(--night); }
 
-  @media (max-width: 760px) {
-    nav { position: fixed; z-index: 10; height: 100dvh; margin-left: -258px; }
-    nav.open { margin-left: 0; box-shadow: 4px 0 30px rgba(0,0,0,0.6); }
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .fbmodal{ position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal.open{ display: flex; }
+  .fbcard{ background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family:var(--font-sans); }
+  .fbcard h3{ font-weight: 400; font-size: 22px; margin-bottom: 8px; }
+  .fbcard p{ opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
+  .fbcard textarea{ width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family:var(--font-sans); font-size: 16px; outline: none; resize: none; }
+  .fbcard .row{ display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+  .fbcard .row button{ font-family:var(--font-sans); font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
+  .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
   /* ================= MAIN — orb + thread + composer (chat-voice design) ================= */
-  main { flex: 1; min-width: 0; overflow: hidden; background: var(--night); display: flex; justify-content: center; }
-  .frame { width: 100%; max-width: 460px; display: flex; flex-direction: column; overflow: hidden; }
-  .topbar { flex: 0 0 auto; display: flex; gap: 14px; align-items: center; padding: 14px 18px; }
-  .menu-btn { background: transparent; border: none; color: var(--bone); font-size: 19px; cursor: pointer; opacity: 0.6; }
-  .wordmark { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.3em; color: var(--bone); }
-  .count { margin-left: auto; font-style: italic; font-size: 13.5px; opacity: 0.55; }
+  main{ flex: 1; min-width: 0; overflow: hidden; background: var(--night); display: flex; justify-content: center; }
+  .frame{ width: 100%; max-width: 460px; display: flex; flex-direction: column; overflow: hidden; }
+
+
+
+  .count{ margin-left: auto; font-style: italic; font-size: 13.5px; opacity: 0.55; }
 
   .orbwrap{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;padding:18px 0 12px;position:relative;}
   .orbtap{position:relative;cursor:pointer;}
@@ -125,36 +98,36 @@
   .orb-fallback{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 50% 42%,rgba(214,182,120,.9),rgba(200,169,110,.4) 45%,transparent 72%);box-shadow:0 0 40px rgba(200,169,110,.35);}
   .mute-badge{position:absolute;right:2px;bottom:6px;width:22px;height:22px;border-radius:50%;background:rgba(6,9,15,.7);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;color:var(--bone-faint);}
   .mute-badge svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:1.8;}
-  .state{font-family:"Cinzel",serif;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-faint);margin-top:14px;}
+  .state{font-family:var(--font-display);font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-faint);margin-top:14px;}
 
   .thread{flex:1;overflow-y:auto;padding:8px 24px 16px;display:flex;flex-direction:column;gap:20px;scrollbar-width:none;}
   .thread::-webkit-scrollbar{display:none;}
   .usr{align-self:flex-end;max-width:80%;word-wrap:break-word;overflow-wrap:anywhere;background:var(--elev);border:1px solid var(--hair);border-radius:16px 16px 4px 16px;padding:11px 16px;font-size:16px;color:var(--bone);position:relative;animation:rise .4s ease both;}
   .psy{max-width:88%;word-wrap:break-word;overflow-wrap:anywhere;position:relative;animation:rise .4s ease both;}
-  .psy .msg{position:relative;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:20px;line-height:1.5;background:linear-gradient(160deg,#fbe7bd 0%,#e6c886 28%,#c8a96e 55%,#a9884f 82%,#8f6f3e 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 1px rgba(120,90,40,.4)) drop-shadow(0 0 16px rgba(230,196,130,.38)) drop-shadow(0 0 34px rgba(200,169,110,.22));}
+  .psy .msg{position:relative;font-family:var(--font-sans);font-style:italic;font-weight:500;font-size:20px;line-height:1.5;background:linear-gradient(160deg,#fbe7bd 0%,#e6c886 28%,#c8a96e 55%,#a9884f 82%,#8f6f3e 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 1px rgba(120,90,40,.4)) drop-shadow(0 0 16px rgba(230,196,130,.38)) drop-shadow(0 0 34px rgba(200,169,110,.22));}
   @keyframes rise{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
   @media (prefers-reduced-motion: reduce){ .usr,.psy{animation:none;} }
 
   /* subtle hover-only thumbs + timestamp, same pattern used across the app */
   .actions{display:flex;align-items:center;gap:12px;margin-top:8px;opacity:0;transition:opacity .18s;}
   .psy:hover .actions,.psy.pinned .actions{opacity:1;}
-  .actions .time{font-family:"Cinzel",serif;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-faint);}
+  .actions .time{font-family:var(--font-display);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-faint);}
   .actions .tb{width:15px;height:15px;color:var(--bone-faint);cursor:pointer;transition:color .15s;display:inline-flex;}
   .actions .tb:hover{color:var(--bone);}
   .actions .tb.on{color:var(--gold);}
   .actions .tb svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;}
-  .esc-btn{margin-top:10px;font-family:"Cormorant Garamond",serif;font-size:14.5px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:20px;padding:8px 18px;cursor:pointer;box-shadow:0 4px 14px rgba(29,56,145,.35);}
+  .esc-btn{margin-top:10px;font-family:var(--font-sans);font-size:14.5px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:20px;padding:8px 18px;cursor:pointer;box-shadow:0 4px 14px rgba(29,56,145,.35);}
   .esc-note{margin-top:8px;font-size:13px;color:var(--bone-faint);font-style:italic;}
 
   /* reveal-offer / limit cards — same dark palette, function unchanged */
   .reveal-offer{align-self:center;text-align:center;background:var(--elev);border:1px solid var(--hair);border-radius:16px;padding:16px 20px;max-width:92%;animation:rise .4s ease both;}
   .reveal-offer .offer-text{font-style:italic;font-size:15.5px;color:var(--bone-dim);margin-bottom:10px;line-height:1.45;}
-  .reveal-btn{background:transparent;border:1px solid rgba(232,228,220,.3);color:var(--bone);font-family:'Cormorant Garamond',serif;font-size:15px;border-radius:20px;padding:8px 18px;cursor:pointer;}
+  .reveal-btn{background:transparent;border:1px solid rgba(232,228,220,.3);color:var(--bone);font-family:var(--font-sans);font-size:15px;border-radius:20px;padding:8px 18px;cursor:pointer;}
   .reveal-btn:hover{border-color:rgba(232,228,220,.6);background:rgba(232,228,220,.06);}
 
   .composer{flex:0 0 auto;border-top:1px solid var(--hair);padding:13px 16px 10px;background:var(--bg);}
   .inrow{display:flex;align-items:center;gap:11px;}
-  .inrow input{flex:1;background:var(--elev);border:1px solid var(--hair);border-radius:24px;padding:12px 18px;color:var(--bone);font-family:"Cormorant Garamond",serif;font-size:15px;outline:none;}
+  .inrow input{flex:1;background:var(--elev);border:1px solid var(--hair);border-radius:24px;padding:12px 18px;color:var(--bone);font-family:var(--font-sans);font-size:15px;outline:none;}
   .inrow input::placeholder{color:var(--bone-faint);font-style:italic;}
   .trail{width:40px;height:40px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--psy-ig);border:none;box-shadow:0 4px 14px rgba(29,56,145,.4);transition:all .2s;}
   .trail:focus{outline:none;}
@@ -167,68 +140,36 @@
   .support a{color:var(--bone);text-decoration:underline;text-underline-offset:3px;}
 
   /* ===== CRISIS SUPPORT MODAL (unchanged — safety-critical, preserved as-is) ===== */
-  .crisismodal {
+  .crisismodal{
     position: fixed; inset: 0; z-index: 60; display: none;
     align-items: center; justify-content: center; overflow-y: auto;
     padding: 26px 22px calc(26px + env(safe-area-inset-bottom));
     background: radial-gradient(ellipse at 50% 22%, rgba(19,27,54,0.97), rgba(10,15,30,0.98) 70%);
     -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
   }
-  .crisismodal.open { display: flex; }
-  .crisisbox { width: 100%; max-width: 460px; text-align: center; margin: auto; }
-  .crisisbox h1 { font-weight: 400; font-size: clamp(27px, 6.5vw, 37px); line-height: 1.2; margin-bottom: 14px; }
-  .clede { font-style: italic; font-size: 19px; line-height: 1.5; opacity: 0.85; margin-bottom: 32px; }
-  .ccard { background: rgba(4,7,14,0.5); border: 1px solid rgba(250,248,243,0.16); border-radius: 18px; padding: 22px; margin-bottom: 16px; text-align: left; }
-  .ctitle { font-size: 20px; margin-bottom: 6px; }
-  .cdesc { font-style: italic; font-size: 15.5px; opacity: 0.75; line-height: 1.45; margin-bottom: 14px; }
-  .cbig { display: block; width: 100%; background: var(--cream); color: #0a0f1e; font-family: 'Cormorant Garamond', serif; font-size: 19px; text-align: center; text-decoration: none; border: none; border-radius: 30px; padding: 14px 20px; cursor: pointer; }
-  .cbig:hover { background: #fff; }
-  .cghost { display: block; width: 100%; background: transparent; color: var(--cream); font-family: 'Cormorant Garamond', serif; font-size: 18px; text-align: center; text-decoration: none; border: 1px solid rgba(250,248,243,0.4); border-radius: 30px; padding: 13px 20px; cursor: pointer; }
-  .cghost:hover { border-color: rgba(250,248,243,0.8); background: rgba(250,248,243,0.06); }
-  .creturn { margin-top: 26px; font-style: italic; font-size: 16px; color: rgba(250,248,243,0.6); background: none; border: none; border-bottom: 1px dotted rgba(250,248,243,0.35); cursor: pointer; font-family: 'Cormorant Garamond', serif; }
-  .creturn:hover { color: rgba(250,248,243,0.95); }
-  .cnote { margin: 34px auto 0; font-style: italic; font-size: 13.5px; opacity: 0.5; line-height: 1.5; max-width: 400px; }
+  .crisismodal.open{ display: flex; }
+  .crisisbox{ width: 100%; max-width: 460px; text-align: center; margin: auto; }
+  .crisisbox h1{ font-weight: 400; font-size: clamp(27px, 6.5vw, 37px); line-height: 1.2; margin-bottom: 14px; }
+  .clede{ font-style: italic; font-size: 19px; line-height: 1.5; opacity: 0.85; margin-bottom: 32px; }
+  .ccard{ background: rgba(4,7,14,0.5); border: 1px solid rgba(250,248,243,0.16); border-radius: 18px; padding: 22px; margin-bottom: 16px; text-align: left; }
+  .ctitle{ font-size: 20px; margin-bottom: 6px; }
+  .cdesc{ font-style: italic; font-size: 15.5px; opacity: 0.75; line-height: 1.45; margin-bottom: 14px; }
+  .cbig{ display: block; width: 100%; background: var(--cream); color: #0a0f1e; font-family:var(--font-sans); font-size: 19px; text-align: center; text-decoration: none; border: none; border-radius: 30px; padding: 14px 20px; cursor: pointer; }
+  .cbig:hover{ background: #fff; }
+  .cghost{ display: block; width: 100%; background: transparent; color: var(--cream); font-family:var(--font-sans); font-size: 18px; text-align: center; text-decoration: none; border: 1px solid rgba(250,248,243,0.4); border-radius: 30px; padding: 13px 20px; cursor: pointer; }
+  .cghost:hover{ border-color: rgba(250,248,243,0.8); background: rgba(250,248,243,0.06); }
+  .creturn{ margin-top: 26px; font-style: italic; font-size: 16px; color: rgba(250,248,243,0.6); background: none; border: none; border-bottom: 1px dotted rgba(250,248,243,0.35); cursor: pointer; font-family:var(--font-sans); }
+  .creturn:hover{ color: rgba(250,248,243,0.95); }
+  .cnote{ margin: 34px auto 0; font-style: italic; font-size: 13.5px; opacity: 0.5; line-height: 1.5; max-width: 400px; }
 </style>
 </head>
-<body>
+<body class="site-shell">
 
-<nav id="nav" class="hidden">
-  <div class="nav-top">
-    <div class="wordmark-side">PSYCHE</div>
-    <button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button>
-  </div>
-  <button class="newchat" id="newChat"><span class="plus">+</span> New conversation</button>
-  <div class="navitem" data-route="assessment.html">My assessment</div>
-  <div class="navitem" data-route="reveal.html">My reveal</div>
-  <div class="navitem" data-route="practice.html">Your practice</div>
-  <div class="navitem" data-route="library.html">Library</div>
-  <div class="navitem" data-route="soon.html?t=Daily%20pearls">Daily pearls</div>
-  <div class="navitem" data-route="soon.html?t=Your%20avatar">Your avatar</div>
-  <div class="navitem" data-route="account.html">Account &amp; earnings</div>
-  <div class="navitem soon">Meditations <span class="pill">soon</span></div>
-  <div class="navitem soon">Education <span class="pill">soon</span></div>
-  <div class="navitem upgrade" data-route="pricing.html">Upgrade</div>
-  <div class="navlabel" id="recentsLabel">Recents</div>
-  <div id="recents"></div>
-  <div class="navspacer"></div>
-  <div class="navitem help" id="helpBtn" data-route="help.html">Help &amp; feedback</div>
-  <div class="acctwrap">
-    <div class="acctmenu" id="acctMenu">
-      <button id="acctSettings">Settings</button>
-      <button id="acctSignout">Sign out</button>
-    </div>
-    <div class="account" id="account">
-      <div class="avatar-dot">&middot;</div>
-      <div class="meta">Guest<br><span class="plan">Sign in</span></div>
-    </div>
-  </div>
-</nav>
+<script src="site-header.js"></script>
 
 <main>
   <div class="frame">
     <div class="topbar">
-      <button class="menu-btn" id="menuBtn" aria-label="Menu">&#9776;</button>
-      <div class="wordmark">PSYCHE</div>
       <div class="count" id="count"></div>
     </div>
 
