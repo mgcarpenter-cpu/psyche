@@ -84,12 +84,16 @@
   .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
   .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
-  /* ================= MAIN — thread + composer (psyche-chat-page 1 design) ================= */
-  main{ flex: 1; min-width: 0; overflow: hidden; background: #000; display: flex; justify-content: center; }
+  /* ================= MAIN — thread + composer (psyche-chat-page 2 design) ================= */
+  main{ flex: 1; min-width: 0; overflow: hidden; background: var(--fade); display: flex; justify-content: center; }
   .frame{ width: 100%; display: flex; flex-direction: column; overflow: hidden; }
 
-  .topbar{ flex: 0 0 auto; justify-content: flex-end; padding: 22px 34px 0; }
-  .count{ margin-left: auto; font-family: var(--font-sans); font-style: normal; font-size: 15px; letter-spacing: .06em; color: rgba(237,230,220,.62); opacity: 1; }
+  .topbar{ flex: 0 0 auto; align-items: baseline; gap: 30px; padding: 22px 34px 12px; border-bottom: 1px solid rgba(237,230,220,.12); }
+  .tab{ font-family: var(--font-jost); font-size: 13px; font-weight: 400; letter-spacing: .24em; text-transform: uppercase; cursor: pointer; padding: 6px 0; color: rgba(237,230,220,.45); border-bottom: 1px solid transparent; }
+  .tab.active{ color: #ede6dc; border-bottom-color: #ede6dc; }
+  .count{ margin-left: auto; font-family: var(--font-sans); font-style: normal; font-size: 13px; letter-spacing: .06em; color: rgba(237,230,220,.62); opacity: 1; }
+
+  #unlock-cta{ position: fixed; top: 12px; right: 12px; z-index: 80; display: inline-flex; align-items: center; justify-content: center; height: 27px; padding: 0 20px; background: var(--cta-gradient); color: #fff; font-family: var(--font-jost); font-size: 8.25px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 5px 14px rgba(0,0,0,.45); text-decoration: none; }
 
   /* the orb stays in the DOM (voice JS drives it) but the design retires it */
   .orbwrap{display:none;flex:0 0 auto;flex-direction:column;align-items:center;padding:18px 0 12px;position:relative;}
@@ -126,18 +130,25 @@
   .reveal-btn{background:transparent;border:1px solid rgba(232,228,220,.3);color:var(--bone);font-family:var(--font-sans);font-size:15px;border-radius:20px;padding:8px 18px;cursor:pointer;}
   .reveal-btn:hover{border-color:rgba(232,228,220,.6);background:rgba(232,228,220,.06);}
 
-  .composer{flex:0 0 auto;padding:0 34px 18px;background:#000;}
-  .inrow{display:flex;align-items:center;gap:4px;max-width:760px;margin:0 auto;height:56px;background:#fff;border:1px solid #c9c5bd;padding:0 10px 0 20px;}
-  .inrow input{flex:1;min-width:0;background:none;border:none;padding:0;color:#111014;font-family:var(--font-jost);font-weight:300;font-size:17px;letter-spacing:.01em;outline:none;}
-  .inrow input::placeholder{color:rgba(17,16,20,.5);font-style:normal;}
+  .composer{flex:0 0 auto;padding:0 34px 22px;background:none;}
+  .genrow{display:flex;justify-content:flex-end;margin:0 auto 10px;max-width:760px;}
+  .genbtn{font-family:var(--font-jost);font-size:12px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:rgba(237,230,220,.65);border:1px solid rgba(237,230,220,.28);padding:8px 18px;cursor:pointer;background:none;}
+  .genbtn:disabled{opacity:.5;cursor:default;}
+  .limitcard{display:none;align-items:center;gap:18px;max-width:760px;margin:0 auto;min-height:56px;padding:10px 10px 10px 20px;border:1px solid rgba(237,230,220,.28);background:rgba(237,230,220,.05);}
+  .limitcard.on{display:flex;}
+  .limitcard p{flex:1;min-width:0;margin:0;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1.5;color:#ede6dc;}
+  .limitcard a{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 22px;background:var(--cta-gradient);color:#fff;font-family:var(--font-jost);font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;text-decoration:none;}
+  .inrow{display:flex;align-items:center;gap:4px;max-width:760px;margin:0 auto;height:56px;background:#000;border:1px solid rgba(237,230,220,.35);padding:0 10px 0 20px;}
+  .inrow input{flex:1;min-width:0;background:none;border:none;padding:0;color:#ede6dc;font-family:var(--font-jost);font-weight:300;font-size:17px;letter-spacing:.01em;outline:none;}
+  .inrow input::placeholder{color:rgba(237,230,220,.45);font-style:normal;}
   .trail{flex:0 0 auto;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;border-radius:0;transition:all .2s;}
   .trail:focus{outline:none;}
   .trail svg{fill:none;stroke-linecap:square;}
-  .trail.voice{width:52px;height:46px;background:none;box-shadow:none;color:#6f6c66;}
+  .trail.voice{width:52px;height:46px;background:none;box-shadow:none;color:rgba(237,230,220,.65);}
   .trail.voice svg{width:26px;height:18px;stroke:currentColor;stroke-width:2;}
   .trail.live{box-shadow:0 0 0 3px rgba(200,169,110,.35);}
-  .trail.sendmode{width:38px;height:38px;background:#6f6c66;box-shadow:none;}
-  .trail.sendmode svg{width:17px;height:17px;stroke:#fff;stroke-width:1.6;}
+  .trail.sendmode{width:38px;height:38px;background:rgba(237,230,220,.2);box-shadow:none;}
+  .trail.sendmode svg{width:17px;height:17px;stroke:#ede6dc;stroke-width:1.6;}
   .trail:disabled{opacity:.5;cursor:default;}
   .support{max-width:760px;margin:12px auto 0;text-align:center;font-family:var(--font-jost);font-weight:300;font-style:normal;font-size:13.5px;color:rgba(237,230,220,.62);}
   .support a{color:#ede6dc;text-decoration:underline;text-underline-offset:3px;}
@@ -170,9 +181,13 @@
 
 <script src="site-header.js"></script>
 
+<a href="pricing.html" id="unlock-cta">Unlock more</a>
+
 <main>
   <div class="frame">
     <div class="topbar">
+      <span class="tab active">Chat</span>
+      <span class="tab" onclick="location.href='reveal.html'">Practice</span>
       <div class="count" id="count"></div>
     </div>
 
@@ -194,8 +209,13 @@
     </div>
 
     <div class="composer">
-      <div class="inrow">
-        <input class="field" id="field" placeholder="Ask, or tap to speak&hellip;" autocomplete="off">
+      <div class="genrow"><button class="genbtn" id="genBtn" type="button">Generate a practice &rarr;</button></div>
+      <div class="limitcard" id="limitCard">
+        <p>You&rsquo;ve reached your plan&rsquo;s limit for now.</p>
+        <a href="pricing.html">Keep talking</a>
+      </div>
+      <div class="inrow" id="inrow">
+        <input class="field" id="field" placeholder="Ask Psyche anything&hellip;" autocomplete="off">
         <button class="trail voice" id="trail" title="Send / speak">
           <svg id="tvoice" viewBox="0 0 34 24"><line x1="4" y1="8" x2="4" y2="16"/><line x1="10.5" y1="4" x2="10.5" y2="20"/><line x1="17" y1="1" x2="17" y2="23"/><line x1="23.5" y1="4" x2="23.5" y2="20"/><line x1="30" y1="8" x2="30" y2="16"/></svg>
           <svg id="tsend" viewBox="0 0 24 24" style="display:none"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6,12 12,5.5 18,12"/></svg>
@@ -439,6 +459,7 @@
     $("revealBtn").onclick=()=>generateReveal($("revealBtn"));
   }
   async function generateReveal(btn){
+    const origLabel=btn.innerHTML;
     if(window.PSYCHE_PREVIEW){
       btn.disabled=true; btn.textContent="Drawing it together…";
       setTimeout(()=>{ location.href="reveal.html"; },300);
@@ -460,10 +481,11 @@
       }catch(e){}
       location.href="reveal.html";
     }catch(e){
-      btn.disabled=false; btn.innerHTML="✦ &nbsp;Reveal the pattern";
+      btn.disabled=false; btn.innerHTML=origLabel;
       alert("Couldn’t generate just now — please try again in a moment.");
     }
   }
+  $("genBtn").onclick=()=>generateReveal($("genBtn"));
 
   // ================= SHARED TURN BOOKKEEPING (used by typed + spoken turns alike, so the
   // thread, message limits, reveal-offer and Supabase message_count all stay one system) =================
@@ -535,12 +557,8 @@
   trail.addEventListener('click', trailTap);
 
   function showLimit(){
-    const div=document.createElement('div');
-    div.className='reveal-offer';
-    div.innerHTML='<div class="offer-text">You’ve reached your plan’s limit for now.</div>' +
-                  '<button class="reveal-btn" onclick="location.href=\'pricing.html\'">See plans</button>';
-    thread.appendChild(div);
-    scrollThread();
+    $("limitCard").classList.add('on');
+    $("inrow").style.display='none';
   }
 
   // ================================================================
@@ -739,6 +757,8 @@
     const el=$("count"); if(!el) return;
     if(profile){ el.textContent=profile.message_count+" of "+planLimit(); el.style.visibility="visible"; }
     else { el.textContent=""; el.style.visibility="hidden"; }
+    if(overLimit()) showLimit();
+    else { $("limitCard").classList.remove('on'); $("inrow").style.display=''; }
   }
   function renderAccount(){
     const el=$("account"); if(!el) return;
