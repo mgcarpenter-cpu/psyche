@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="site.css">
 <style>
   :root{
-    --gold:#c8a96e;--indigo:#1d3891;--bone-dim:#9aa0ab;--bone-faint:#5f6572;
+    --gold:rgba(213,185,134,.9);--indigo:#1d3891;--bone-dim:#9aa0ab;--bone-faint:#5f6572;
     --psy-ig:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);
     --hair:rgba(232,228,220,.10);
     /* nav tokens (shared with reveal.html / practice.html) */
@@ -80,40 +80,38 @@
   .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
   .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
-  /* ================= MAIN ================= */
-  main{ flex: 1; min-width: 0; overflow-y: auto; background: #06090f; }
-  .stickytop{ position:sticky; top:0; z-index:6; background:#06090f; }
+  /* ================= MAIN (psyche-avatar-library design) ================= */
+  main{ flex: 1; min-width: 0; overflow-y: auto; background: #000; }
 
+  /* Arrived · Joined · Earned this month */
+  .statsrow{ display:flex; gap:44px; padding:26px 40px 10px; }
+  .statitem{ display:flex; flex-direction:column; gap:6px; }
+  .statnum{ font-family:var(--font-sans); font-size:30px; font-weight:400; line-height:1; color:#ede6dc; }
+  .statlabel{ font-family:var(--font-jost); font-size:10px; font-weight:400; letter-spacing:.24em; text-transform:uppercase; color:rgba(237,230,220,.5); }
 
+  #boost-cta{ position:fixed; top:12px; right:12px; z-index:80; display:inline-flex; align-items:center; justify-content:center; height:27px; padding:0 20px; background:var(--psy-ig); color:#fff; font-family:var(--font-jost); font-size:8.25px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; white-space:nowrap; box-shadow:0 5px 14px rgba(0,0,0,.45); text-decoration:none; }
 
+  /* ===== page content ===== */
+  .page{ padding-bottom:20px; }
+  .band{ background:var(--fade); padding:34px 0 56px; }
+  .libshell{ max-width:1060px; margin:0 auto; padding:0 40px; }
+  .bandhead{ margin:0 0 24px; font-family:var(--font-sans); font-size:26px; font-weight:400; letter-spacing:.12em; text-transform:uppercase; color:#ede6dc; }
 
-  /* Arrived · Joined totals strip */
-  .totals{ display:flex; gap:38px; padding:15px 24px; border-bottom:1px solid var(--hair); background:#06090f; }
-  .totals .t .num{ font-family:var(--font-display); font-size:21px; color:var(--bone,#e8e4dc); }
-  .totals .t .lbl{ font-family:var(--font-display); font-size:8px; letter-spacing:.2em; text-transform:uppercase; color:var(--bone-faint); margin-top:3px; }
-
-  /* ===== page content (library-design-v1) ===== */
-  .page{ padding:12px 20px 80px; }
-  .frame{ max-width:500px; margin:0 auto; }
-  .inner{ padding:26px 10px 30px; }
-
-  .barhead{display:block;color:#06090f;font-family:var(--font-display);font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;padding:12px 18px;border-radius:4px;margin:0 0 16px;background:linear-gradient(90deg,#e8e4dc 0%,#e8e4dc 55%,rgba(232,228,220,0) 100%);}
-  .railwrap{margin-bottom:34px;}
+  .grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }
+  @media (max-width:900px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width:600px){ .grid{ grid-template-columns:1fr; } .libshell{ padding:0 20px; } .statsrow{ padding:20px 20px 8px; gap:28px; } }
 
   /* fixed identical card everywhere */
-  .card{border-radius:11px;overflow:hidden;border:1px solid var(--hair);background:#0a0e15;display:flex;flex-direction:column;}
-  .poster{position:relative;aspect-ratio:3/4;background:radial-gradient(120% 80% at 50% 18%,rgba(200,169,110,.1),transparent 60%),linear-gradient(160deg,#0c1017,#06090f);display:flex;align-items:center;justify-content:center;text-align:center;padding:16px 12px;cursor:pointer;}
-  .poster .q{font-style:italic;font-weight:500;font-size:14px;line-height:1.34;color:var(--gold);text-shadow:0 0 16px rgba(200,169,110,.25);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
-  .poster.video .q{position:absolute;bottom:12px;left:12px;right:12px;font-size:12px;-webkit-line-clamp:2;}
-  .poster .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(232,228,220,.7);background:rgba(6,9,15,.4);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--bone,#e8e4dc);padding-left:3px;}
-  .tag{position:absolute;top:8px;right:8px;font-family:var(--font-display);font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:#06090f;background:#e8e4dc;border-radius:16px;padding:2px 7px;z-index:2;}
-  .sharebar{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 0;background:var(--psy-ig);color:#fff;font-family:var(--font-sans);font-size:14.5px;font-weight:500;cursor:pointer;border:none;width:100%;}
-  .card.shared{border-color:rgba(255,255,255,.7);box-shadow:0 0 22px rgba(255,255,255,.18);}
-  .sharebar.done{background:rgba(255,255,255,.06);color:#fff;border-top:1px solid rgba(255,255,255,.2);font-family:var(--font-display);font-size:10px;letter-spacing:.14em;text-transform:uppercase;}
-  .sharebar.done .spk{color:#06090f;background:#fff;width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;}
-  .card.shared .poster::after{content:"\2713";position:absolute;top:8px;left:8px;width:20px;height:20px;border-radius:50%;background:#fff;color:#06090f;font-size:11px;display:flex;align-items:center;justify-content:center;z-index:2;}
-
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
+  .card{ position:relative; display:flex; flex-direction:column; height:clamp(280px,30vw,400px); background:#0b0b0d; box-shadow:0 0 0 1px rgba(237,230,220,.14); padding:14px 14px 0; }
+  .card.shared{ box-shadow:0 0 0 1px rgba(237,230,220,.6), 0 0 22px rgba(237,230,220,.12); }
+  .card.shared::before{ content:"\2713"; position:absolute; top:10px; left:10px; width:20px; height:20px; border-radius:50%; background:#ede6dc; color:#0b0b0d; font-size:11px; display:flex; align-items:center; justify-content:center; z-index:2; }
+  .mid{ flex:1; display:flex; align-items:center; justify-content:center; padding:0 14px; cursor:pointer; }
+  .ring{ width:clamp(38px,5vw,64px); height:clamp(38px,5vw,64px); border-radius:50%; border:1px solid rgba(237,230,220,.55); display:flex; align-items:center; justify-content:center; }
+  .tri{ width:0; height:0; margin-left:3px; border-left:clamp(9px,1.8vw,14px) solid rgba(237,230,220,.8); border-top:clamp(6px,1.2vw,10px) solid transparent; border-bottom:clamp(6px,1.2vw,10px) solid transparent; }
+  .quote{ flex:0 0 auto; margin:0 0 clamp(8px,1.6vh,16px); display:flex; align-items:center; justify-content:center; font-family:var(--font-sans); font-size:clamp(12px,1.3vw,15px); font-weight:400; line-height:1.4; text-align:center; color:var(--gold); padding:0 6px; cursor:pointer; }
+  .share{ flex:0 0 auto; display:flex; align-items:center; justify-content:center; padding:clamp(9px,1.4vh,13px) 0; margin:clamp(10px,1.6vh,14px) -14px 0; background:var(--psy-ig); color:#fff; font-family:var(--font-jost); font-size:12px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; text-decoration:none; cursor:pointer; }
+  .share svg{ margin-right:8px; }
+  .share.done{ background:rgba(237,230,220,.14); color:#ede6dc; }
 
   /* ===== lightbox (expand) ===== */
   .scrim{position:fixed;inset:0;background:rgba(3,4,7,.82);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:30;padding:26px;}
@@ -128,6 +126,7 @@
   .expand .close{position:absolute;top:12px;right:14px;z-index:3;background:rgba(6,9,15,.5);border:1px solid var(--hair);color:var(--bone,#e8e4dc);width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;}
 
   /* ===== share panel (share-grid-1) ===== */
+  .barhead{display:block;color:#06090f;font-family:var(--font-display);font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;padding:12px 18px;border-radius:4px;margin:0 0 16px;background:linear-gradient(90deg,#e8e4dc 0%,#e8e4dc 55%,rgba(232,228,220,0) 100%);}
   .shscrim{position:fixed;inset:0;background:rgba(3,4,7,.74);backdrop-filter:blur(3px);z-index:40;display:none;}
   .shscrim.open{display:block;}
   .shpanel{position:fixed;left:0;right:0;bottom:0;background:#0a0e15;border-top:1px solid var(--hair);border-radius:22px 22px 0 0;padding:16px 22px 26px;z-index:41;box-shadow:0 -20px 60px rgba(0,0,0,.6);max-height:88vh;overflow-y:auto;display:none;}
@@ -171,33 +170,36 @@
 
 <script src="site-header.js"></script>
 
+<a href="pricing.html" id="boost-cta">Boost my earnings</a>
+
 <main>
-  <div class="stickytop">
-    <div class="totals">
-      <div class="t"><div class="num" id="totalArrived">0</div><div class="lbl">Arrived</div></div>
-      <div class="t"><div class="num" id="totalJoined">0</div><div class="lbl">Joined</div></div>
-    </div>
-  </div>
-
   <div class="page">
-    <div class="frame">
-      <div class="inner">
-
-        <div class="railwrap">
-          <span class="barhead">Hot</span>
-          <div class="grid" id="hotGrid"></div>
-        </div>
-
-        <div class="railwrap">
-          <span class="barhead">New today</span>
-          <div class="grid" id="newGrid"></div>
-        </div>
-
-        <span class="barhead">Library</span>
-        <div class="grid" id="libGrid"></div>
-
-      </div>
+    <div class="statsrow">
+      <span class="statitem"><span class="statnum" id="totalArrived">0</span><span class="statlabel">Arrived</span></span>
+      <span class="statitem"><span class="statnum" id="totalJoined">0</span><span class="statlabel">Joined</span></span>
+      <span class="statitem"><span class="statnum" id="totalEarned">$0</span><span class="statlabel">Earned this month</span></span>
     </div>
+
+    <section class="band">
+      <div class="libshell">
+        <h2 class="bandhead">New today</h2>
+        <div class="grid" id="newGrid"></div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="libshell">
+        <h2 class="bandhead">Hot</h2>
+        <div class="grid" id="hotGrid"></div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="libshell">
+        <h2 class="bandhead">Library</h2>
+        <div class="grid" id="libGrid"></div>
+      </div>
+    </section>
   </div>
 </main>
 
@@ -373,42 +375,35 @@
   }
 
   // ---- rendering ----
-  function tagFor(item){
-    if(item.section==="new") return "New";
-    if(item.section==="hot") return (item.joined||0)+" joined";
-    return null;
-  }
+  const SHARE_ICON='<svg viewBox="0 0 22 22" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="16.5" cy="5.5" r="2.3"></circle><circle cx="5.5" cy="11" r="2.3"></circle><circle cx="16.5" cy="16.5" r="2.3"></circle><line x1="7.5" y1="9.8" x2="14.5" y2="6.6"></line><line x1="7.5" y1="12.2" x2="14.5" y2="15.4"></line></svg>';
   function cardHTML(item){
     const shared=isCardSharedToday(item.id);
-    const tag=tagFor(item);
-    const isVideo=item.type==="video";
-    return '<div class="card'+(shared?' shared':'')+'" data-id="'+item.id+'">'
-      + '<div class="poster'+(isVideo?' video':'')+'" onclick="openEx(\''+item.id+'\')">'
-      + (tag?'<span class="tag">'+esc(tag)+'</span>':'')
-      + (isVideo?'<span class="play">&#9654;</span>':'')
-      + '<div class="q">'+esc(item.pearlText)+'</div>'
-      + '</div>'
-      + '<button class="sharebar'+(shared?' done':'')+'" onclick="event.stopPropagation();openShare(\''+item.id+'\')">'
-      + (shared?'<span class="spk">&#10003;</span> Shared':'&#10022; Share')
-      + '</button>'
-      + '</div>';
+    return '<article class="card'+(shared?' shared':'')+'" data-id="'+item.id+'">'
+      + '<div class="mid" onclick="openEx(\''+item.id+'\')"><span class="ring"><span class="tri"></span></span></div>'
+      + '<p class="quote" onclick="openEx(\''+item.id+'\')">'+esc(item.pearlText)+'</p>'
+      + '<a href="#" class="share'+(shared?' done':'')+'" onclick="event.preventDefault();event.stopPropagation();openShare(\''+item.id+'\')">'
+      + SHARE_ICON+(shared?'Shared':'Share')
+      + '</a>'
+      + '</article>';
   }
   function renderSection(sectionKey, elId){
     const el=$(elId);
     el.innerHTML = ITEMS.filter(i=>i.section===sectionKey).map(cardHTML).join("");
   }
+  const EARN_PER_JOIN=6; // placeholder rate — no billing wired up yet, same convention as pricing.html's "$12/mo"
   function renderTotals(){
     const arrived=ITEMS.reduce((s,i)=>s+(i.arrived||0),0);
     const joined=ITEMS.reduce((s,i)=>s+(i.joined||0),0);
     $("totalArrived").textContent=arrived.toLocaleString("en-US");
     $("totalJoined").textContent=joined.toLocaleString("en-US");
+    $("totalEarned").textContent="$"+(joined*EARN_PER_JOIN).toLocaleString("en-US");
   }
   function refreshCardSharedState(id){
     const card=document.querySelector('.card[data-id="'+id+'"]');
     if(!card) return;
     card.classList.add("shared");
-    const bar=card.querySelector(".sharebar");
-    if(bar){ bar.classList.add("done"); bar.innerHTML='<span class="spk">&#10003;</span> Shared'; }
+    const bar=card.querySelector(".share");
+    if(bar){ bar.classList.add("done"); bar.innerHTML=SHARE_ICON+"Shared"; }
   }
 
   // ---- lightbox ----
@@ -591,8 +586,8 @@
   (async function initLibrary(){
     await loadData();
     renderTotals();
-    renderSection("hot","hotGrid");
     renderSection("new","newGrid");
+    renderSection("hot","hotGrid");
     renderSection("library","libGrid");
   })();
 </script>

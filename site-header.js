@@ -33,7 +33,7 @@
     { soon:true,               icon:'doc',   label:'Education' }
   ];
   var earn = [
-    { route:'share-earn.html', icon:'book',  label:'Avatar library' },
+    { route:'library.html',    icon:'book',  label:'Avatar library' },
     { route:'soon.html?t=Daily%20pearls', icon:'pearl', label:'Daily pearls' },
     { route:'account.html',    icon:'coin',  label:'Account &amp; earnings' }
   ];
