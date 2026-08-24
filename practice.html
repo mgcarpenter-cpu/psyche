@@ -11,7 +11,7 @@
 <style>
   :root{
     --gold:#c8a96e;--indigo:#1d3891;--bone-dim:#9aa0ab;--bone-faint:#5f6572;
-    /* nav tokens (shared with reveal.html) */
+    /* nav tokens */
     --cream:#faf8f3; --night:#06090f; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -85,6 +85,28 @@
   .tab{ font-family:var(--font-jost); font-size:13px; font-weight:400; letter-spacing:.24em; text-transform:uppercase; cursor:pointer; padding:6px 0; color:rgba(237,230,220,.45); border-bottom:1px solid transparent; }
   .tab.active{ color:#ede6dc; border-bottom-color:#ede6dc; }
 
+  #unlock-cta{ position:fixed; top:12px; right:12px; z-index:80; display:inline-flex; align-items:center; justify-content:center; height:27px; padding:0 20px; background:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%); color:#fff; font-family:var(--font-jost); font-size:8.25px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; white-space:nowrap; box-shadow:0 5px 14px rgba(0,0,0,.45); text-decoration:none; }
+
+  /* ===== single-practice detail view (psyche-chat-page — isReveal state) ===== */
+  .prquote{ margin:0 0 54px; font-family:var(--font-sans); font-size:clamp(28px,3.2vw,42px); font-weight:400; line-height:1.3; text-align:center; color:#ede6dc; }
+  .prblock{ padding:30px 0; border-top:1px solid rgba(237,230,220,.16); }
+  .prblocklast{ padding:30px 0 8px; border-top:1px solid rgba(237,230,220,.16); }
+  .prlabel{ margin:0 0 14px; font-family:var(--font-jost); font-size:13px; font-weight:300; letter-spacing:.3em; text-transform:uppercase; color:rgba(237,230,220,.5); }
+  .prbody{ margin:0 0 14px; font-family:var(--font-jost); font-weight:300; font-size:19px; line-height:1.6; color:#ede6dc; max-width:62ch; }
+  .prbody:last-child{ margin-bottom:0; }
+  .step{ display:flex; gap:18px; padding:22px 0; border-top:1px solid rgba(237,230,220,.16); }
+  .step:first-child{ border-top:none; padding-top:0; }
+  .num{ flex:0 0 auto; width:34px; font-family:var(--font-sans); font-size:24px; font-weight:400; line-height:1.2; color:#ede6dc; }
+  .step .t{ margin:0 0 10px; font-family:var(--font-sans); font-size:23px; font-weight:400; line-height:1.25; color:#ede6dc; }
+  .step .d{ margin:0; font-family:var(--font-jost); font-weight:300; font-size:17px; line-height:1.6; color:rgba(237,230,220,.72); }
+  .prcta{ display:flex; flex-direction:column; gap:14px; margin:44px 0 0; }
+  .backbtn{ display:flex; align-items:center; justify-content:center; height:54px; text-align:center; color:#ede6dc;
+    font-family:var(--font-jost); font-size:14px; font-weight:400; letter-spacing:.18em; text-transform:uppercase;
+    border:1px solid rgba(237,230,220,.45); cursor:pointer; background:none; text-decoration:none; }
+  .backbtn:hover{ background:rgba(237,230,220,.06); }
+  .saved{ text-align:center; font-family:var(--font-jost); font-weight:300; font-size:14px; color:rgba(237,230,220,.55); margin-top:40px; }
+  .saved b{ font-weight:400; color:rgba(237,230,220,.75); }
+
   /* ===== page content ===== */
   .page{ padding:64px 34px 40px; }
   .frame{ max-width:680px; margin:0 auto; }
@@ -131,6 +153,8 @@
 
 <script src="site-header.js"></script>
 
+<a href="pricing.html" id="unlock-cta">Unlock more</a>
+
 <main>
   <div class="topbar">
     <span class="tab" onclick="location.href='chat.html'">Chat</span>
@@ -140,22 +164,71 @@
   <div class="page">
     <div class="frame">
 
-      <div class="portrait" id="portraitBlock">
-        <p class="grouplabel">Your archetype</p>
-        <div class="arch">
-          <div class="name" id="archName">&mdash;</div>
-          <div class="say" id="archSay">Take the assessment to see your archetype and the twelve dimensions.</div>
+      <div id="listView">
+        <div class="portrait" id="portraitBlock">
+          <p class="grouplabel">Your archetype</p>
+          <div class="arch">
+            <div class="name" id="archName">&mdash;</div>
+            <div class="say" id="archSay">Take the assessment to see your archetype and the twelve dimensions.</div>
+          </div>
+
+          <p class="grouplabel" id="dimsHead">The twelve dimensions</p>
+          <div class="bar-grid" id="barGrid"></div>
+          <a href="assessment.html" class="retake" id="retakeLink">Take the assessment &rarr;</a>
         </div>
 
-        <p class="grouplabel" id="dimsHead">The twelve dimensions</p>
-        <div class="bar-grid" id="barGrid"></div>
-        <a href="assessment.html" class="retake" id="retakeLink">Take the assessment &rarr;</a>
+        <h2 class="sectitle">Your practice</h2>
+        <p class="secsub">Every practice Psyche has written for you, with the conversation it came from.</p>
+        <p class="revcount" id="revealsCount"></p>
+        <div id="revealsList"></div>
       </div>
 
-      <h2 class="sectitle">Your practice</h2>
-      <p class="secsub">Every practice Psyche has written for you, with the conversation it came from.</p>
-      <p class="revcount" id="revealsCount"></p>
-      <div id="revealsList"></div>
+      <div id="detailView" style="display:none">
+        <p class="prquote" id="r_wisdom">The river doesn’t ask you to jump — it just keeps moving, and sooner or later your feet get wet.</p>
+
+        <div class="prblock">
+          <p class="prlabel">The pattern</p>
+          <p class="prbody" id="r_pattern">Every message so far has been a half-step — a greeting, a turn into playfulness, then a near-silence. There’s movement toward something, but the door hasn’t opened yet.</p>
+        </div>
+
+        <div class="prblock">
+          <p class="prlabel">What’s underneath</p>
+          <p class="prbody" id="r_root">Something here isn’t ready to be named — and that’s alright.</p>
+          <p class="prbody" id="r_tone">The energy arrived quietly, then went quieter still: neutral shading toward unpleasant, neither grasping nor pushing. It’s the feeling of sitting at the edge of the water, unsure whether to wade in.</p>
+        </div>
+
+        <div class="prblocklast">
+          <p class="prlabel">The practice</p>
+          <div id="steps">
+            <div class="step">
+              <span class="num">1.</span>
+              <div>
+                <p class="t">Sit at the edge</p>
+                <p class="d">Don’t try to name what’s going on yet. Just notice: is there something here, even without words? Let that be enough.</p>
+              </div>
+            </div>
+            <div class="step">
+              <span class="num">2.</span>
+              <div>
+                <p class="t">Follow the next honest syllable</p>
+                <p class="d">When something does stir — a feeling, an image, even a ‘sort of’ — say that small thing out loud, however incomplete it seems.</p>
+              </div>
+            </div>
+            <div class="step">
+              <span class="num">3.</span>
+              <div>
+                <p class="t">Notice what brought you here</p>
+                <p class="d">Something drew you to this door today, even if it was just restlessness. Sit with that one thing — not to solve it, just to look at it gently.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prcta">
+          <a href="chat.html" class="backbtn">Back to chat</a>
+        </div>
+        <p class="saved" id="saved">Saved to <b>Your practice</b> — open or regenerate any time</p>
+      </div>
 
     </div>
   </div>
@@ -320,9 +393,45 @@
           "<div class='from'>From <b>&ldquo;"+esc(r.title||"Untitled conversation")+"&rdquo;</b> &middot; "+fmtDate(r.at)+"</div>"+
         "</div>"+
         "<span class='chev'>&rsaquo;</span>";
-      div.onclick=()=>{ location.href="reveal.html?id="+encodeURIComponent(r.chatId||""); };
+      div.onclick=()=>{ location.href="practice.html?id="+encodeURIComponent(r.chatId||""); };
       box.appendChild(div);
     });
+  })();
+
+  // ================= SINGLE-PRACTICE DETAIL (only when ?id= is present) =================
+  (function(){
+    const rid=new URLSearchParams(location.search).get("id");
+    if(!rid) return;
+    let d=null;
+    try{
+      const list=JSON.parse(localStorage.getItem("psyche:reveals")||"[]");
+      d=list.find(r=>r&&r.chatId===rid)||null;
+    }catch(e){}
+    $("listView").style.display="none";
+    $("detailView").style.display="";
+    if(d){
+      // Fill a field, or hide it when the generator returned nothing (so no placeholder leaks)
+      const setOrHide=(id,v)=>{ const el=document.getElementById(id); if(!el) return;
+        if(v!=null&&String(v).trim()!==""){ el.textContent=v; el.style.display=""; } else { el.style.display="none"; } };
+      setOrHide("r_wisdom", d.wisdom);
+      setOrHide("r_pattern", d.pattern);
+      setOrHide("r_root", d.root_cause);
+      setOrHide("r_tone", d.feeling_tone);   // root_cause + feeling_tone both render under "What's underneath"
+      if(Array.isArray(d.steps)&&d.steps.length){
+        const box=document.getElementById("steps"); box.innerHTML="";
+        d.steps.forEach((s,i)=>{
+          const div=document.createElement("div"); div.className="step";
+          const num=document.createElement("span"); num.className="num"; num.textContent=(i+1)+".";
+          const inner=document.createElement("div");
+          const t=document.createElement("p"); t.className="t"; t.textContent=s.title||"";
+          const de=document.createElement("p"); de.className="d"; de.textContent=s.description||"";
+          inner.appendChild(t); inner.appendChild(de);
+          div.appendChild(num); div.appendChild(inner);
+          box.appendChild(div);
+        });
+      }
+      if(d.title){ const sv=document.getElementById("saved"); if(sv) sv.innerHTML='From “'+String(d.title).replace(/[<>&]/g,"")+'” · saved to <b>Your practice</b>'; }
+    }
   })();
 </script>
 </body>

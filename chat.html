@@ -456,24 +456,23 @@
     const origLabel=btn.innerHTML;
     if(window.PSYCHE_PREVIEW){
       btn.disabled=true; btn.textContent="Drawing it together…";
-      setTimeout(()=>{ location.href="reveal.html"; },300);
+      setTimeout(()=>{ location.href="practice.html"; },300);
       return;
     }
-    const c=current(); if(!c || !c.messages.length){ location.href="reveal.html"; return; }
+    const c=current(); if(!c || !c.messages.length){ location.href="practice.html"; return; }
     btn.disabled=true; btn.textContent="Drawing it together…";
     try{
       const res=await fetch("/api/generate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:(profile&&profile.display_name)||"",messages:c.messages.map(m=>({role:m.role,content:m.content}))})});
       const data=await res.json();
       if(!res.ok||data.error){ throw new Error(data.error||"Generation failed"); }
       data.title=c.title; data.chatId=c.id; data.at=new Date().toISOString();
-      try{ localStorage.setItem("psyche:reveal",JSON.stringify(data)); }catch(e){}
       try{
         let list=[]; try{ list=JSON.parse(localStorage.getItem("psyche:reveals"))||[]; }catch(e){ list=[]; }
         list=list.filter(r=>r&&r.chatId!==data.chatId);
         list.push(data);
         localStorage.setItem("psyche:reveals",JSON.stringify(list));
       }catch(e){}
-      location.href="reveal.html";
+      location.href="practice.html?id="+encodeURIComponent(data.chatId);
     }catch(e){
       btn.disabled=false; btn.innerHTML=origLabel;
       alert("Couldn’t generate just now — please try again in a moment.");
