@@ -78,6 +78,26 @@ summary::-webkit-details-marker{display:none;}
 .found-item{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:.5px solid rgba(237,230,220,.22);}
 .found-num{font-family:var(--display);font-size:clamp(15px,3.38vw,30px);line-height:1;color:rgba(237,230,220,.4);}
 .found-text{max-width:28ch;font-family:var(--sans);font-size:clamp(8.5px,1.82vw,15px);font-weight:400;line-height:1.45;color:rgba(237,230,220,.82);text-wrap:pretty;}
+
+/* white bar adjustments — from psyche-white-sidebar 1.html, this page only
+   (site.css stays shared with the app nav; short windows keep compressing so
+   the bar still never scrolls) */
+.side .side-icon svg,.side .row-icon svg{width:22px;height:22px;}
+.side .row-icon.dim{opacity:.8;}
+.side .row-tight .row-label{letter-spacing:0;}
+.side .side-nav{padding-bottom:0;}
+.side .side-list.earn summary{padding:var(--nav-row-pad-loose) 0;}
+.side .side-foot{padding-top:clamp(10px,3vh,24px);}
+/* below ~970px tall the loose spacing pushes Guest off the never-scrolling bar,
+   so earn rows and the footer gap fall back to the shipped tighter values */
+@media (max-height:969px){
+  .side .side-icon svg,.side .row-icon svg{width:clamp(16px,2.2vh,22px);height:clamp(16px,2.2vh,22px);}
+  .side .side-list.earn summary{padding:var(--nav-row-pad) 0;}
+  .side .side-foot{padding-top:clamp(8px,1.2vh,18px);}
+}
+@media (max-height:820px){
+  .side .side-icon svg,.side .row-icon svg{width:clamp(13px,1.9vh,16px);height:clamp(13px,1.9vh,16px);}
+}
 </style>
 </head>
 <body class="has-side">
@@ -105,10 +125,10 @@ summary::-webkit-details-marker{display:none;}
         <ul class="side-list earn" id="earnList"></ul>
       </div>
       <nav class="side-foot">
-        <a href="privacy.html" class="row row-loose"><span class="row-icon" data-icon="shield"></span><span class="row-label">Private &amp; secure</span></a>
-        <a href="terms.html" class="row row-loose"><span class="row-icon" data-icon="ban"></span><span class="row-label">Terms &amp; conditions</span></a>
-        <a href="urgent.html" class="row row-loose"><span class="row-icon" data-icon="mic"></span><span class="row-label">Need urgent help</span></a>
-        <a href="#" class="row row-loose"><span class="acct-avatar">G</span><span class="row-label">Guest</span></a>
+        <a href="privacy.html" class="row row-loose"><span class="row-icon" data-icon="lock"></span><span class="row-label">Private &amp; secure</span></a>
+        <a href="terms.html" class="row row-loose"><span class="row-icon" data-icon="doc"></span><span class="row-label">Terms &amp; conditions</span></a>
+        <a href="urgent.html" class="row row-loose"><span class="row-icon" data-icon="cross"></span><span class="row-label">Need urgent help</span></a>
+        <a href="#" class="row row-loose"><span class="row-icon" data-icon="guest"></span><span class="row-label">Guest</span></a>
       </nav>
     </div>
   </aside>
@@ -183,7 +203,11 @@ var I = {
   link:'<path d="M9.2 12.8a3.4 3.4 0 0 1 0-4.8l2-2a3.4 3.4 0 0 1 4.8 4.8l-1 1"></path><path d="M12.8 9.2a3.4 3.4 0 0 1 0 4.8l-2 2a3.4 3.4 0 0 1-4.8-4.8l1-1"></path>',
   chart:'<line x1="4" y1="18.4" x2="18" y2="18.4"></line><rect x="6" y="12" width="2.6" height="6.4"></rect><rect x="10.2" y="8.6" width="2.6" height="9.8"></rect><rect x="14.4" y="5.2" width="2.6" height="13.2"></rect>',
   ban:'<circle cx="11" cy="11" r="8.4"></circle><line x1="5.4" y1="16.6" x2="16.6" y2="5.4"></line>',
-  coin:'<circle cx="11" cy="11" r="8.4"></circle><path d="M13.4 8.2a2.6 2.6 0 1 0-2.4 3.4 2.6 2.6 0 1 1-2.4 3.4"></path>',
+  coin:'<circle cx="11" cy="11" r="8.4"></circle><line x1="11" y1="5.2" x2="11" y2="16.8"></line><path d="M13.6 8.2a2.7 2.7 0 1 0-2.6 3.4 2.7 2.7 0 1 1-2.6 3.4"></path>',
+  lock:'<rect x="4.6" y="9.6" width="12.8" height="10" rx="1.6"></rect><path d="M7.8 9.6V6.8a3.2 3.2 0 0 1 6.4 0v2.8"></path><circle cx="11" cy="14.4" r="1.1"></circle>',
+  doc:'<rect x="5" y="3.6" width="12" height="14.8"></rect><path d="M8.2 8h5.6M8.2 11.2h5.6M8.2 14.4h3.6"></path>',
+  cross:'<circle cx="11" cy="11" r="8.4"></circle><path d="M11 7.4v7.2M7.4 11h7.2"></path>',
+  guest:'<circle cx="11" cy="11" r="8.4"></circle><text x="11" y="14.4" text-anchor="middle" font-family="Jost,Helvetica,Arial,sans-serif" font-size="9.5" stroke="none" fill="currentColor">G</text>',
   handOff:'<path d="M3.4 12.6h4l2.6 2.6h3.4"></path><path d="M13.4 15.2l4.2-4.2-2.4-2.4-3.4 3"></path><path d="M3.4 8.4h4.2l2.4-2.2"></path>',
   download:'<path d="M11 3.4v10"></path><path d="M6.6 9.4L11 13.8l4.4-4.4"></path><path d="M4 18.4h14"></path>',
   lotus:'<path d="M11 18.6c-3.8 0-6.8-2.4-6.8-5.4 1.9 0 3.6.7 4.8 1.8"></path><path d="M11 18.6c3.8 0 6.8-2.4 6.8-5.4-1.9 0-3.6.7-4.8 1.8"></path><path d="M11 18.6c-2.2-2-3.4-4.4-3.4-7 0-2.6 1.4-4.6 3.4-6.2 2 1.6 3.4 3.6 3.4 6.2 0 2.6-1.2 5-3.4 7z"></path>',
