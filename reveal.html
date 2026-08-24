@@ -81,62 +81,42 @@
   .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
   .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
-  /* ================= MAIN ================= */
-  main{ flex: 1; min-width: 0; overflow-y: auto; background: #06090f; }
+  /* ================= MAIN (psyche-chat-page — isReveal state) ================= */
+  main{ flex: 1; min-width: 0; overflow-y: auto; background: #000; }
 
+  .page{ padding:64px 34px; }
+  .frame{ max-width:680px; margin:0 auto; }
 
+  .prquote{ margin:0 0 54px; font-family:var(--font-sans); font-size:clamp(28px,3.2vw,42px); font-weight:400; line-height:1.3; text-align:center; color:#ede6dc; }
 
-
-  /* ===== page content (dark reveal — redesigned 12 Aug 2026) ===== */
-  .page{ padding:12px 20px 80px; }
-  .frame{ max-width:500px; margin:0 auto; }
-  .inner{ padding:34px 10px 30px; }
-
-  /* wisdom hero */
-  .wisdom{ position:relative; padding:6px 0 40px; text-align:center; display:block; }
-  .wisdom::before{ content:""; position:absolute; left:50%; top:-6px; width:300px; height:200px;
-    transform:translateX(-50%); background:radial-gradient(ellipse at center,rgba(58,95,206,.16),transparent 68%);
-    filter:blur(6px); pointer-events:none; z-index:0; }
-  .wisdom .mark{ display:block; margin-bottom:14px; font-size:40px; line-height:0; color:#1d3891; opacity:.55; font-style:normal; }
-  .wisdom .rtext{ position:relative; z-index:1; font-family:var(--font-sans); font-style:italic; font-weight:500;
-    font-size:1.78rem; line-height:1.34; letter-spacing:.005em; color:#a6b8f2; text-shadow:0 0 26px rgba(111,134,214,.4); }
-
-  /* sections */
-  .sec{ padding:26px 0; border-top:1px solid rgba(232,228,220,.10); }
-  .rlabel{ font-family:var(--font-display); font-weight:400; font-size:12.5px; letter-spacing:.28em; text-transform:uppercase;
-    color:#a6b8f2; margin-bottom:14px; }
-  .rtext{ font-family:var(--font-sans); font-size:1.2rem; line-height:1.62; color:#e8e4dc; font-weight:400; }
-  .rtext + .rtext{ margin-top:12px; }
+  .prblock{ padding:30px 0; border-top:1px solid rgba(237,230,220,.16); }
+  .prblocklast{ padding:30px 0 8px; border-top:1px solid rgba(237,230,220,.16); }
+  .prlabel{ margin:0 0 14px; font-family:var(--font-jost); font-size:13px; font-weight:300; letter-spacing:.3em; text-transform:uppercase; color:rgba(237,230,220,.5); }
+  .prbody{ margin:0 0 14px; font-family:var(--font-jost); font-weight:300; font-size:19px; line-height:1.6; color:#ede6dc; max-width:62ch; }
+  .prbody:last-child{ margin-bottom:0; }
 
   /* practice steps */
-  .practice .rlabel{ margin-bottom:20px; }
-  .step{ display:flex; gap:14px; padding:14px 0; align-items:baseline; }
-  .step:not(:last-child){ border-bottom:1px solid rgba(232,228,220,.05); }
-  .num{ flex:0 0 auto; font-family:var(--font-sans); font-size:27px; font-style:italic; font-weight:600;
-    line-height:1.2; color:#e8e4dc; letter-spacing:.01em; }
-  .num::after{ content:"."; }
-  .step .t{ font-family:var(--font-sans); font-size:1.28rem; font-weight:600; font-style:italic;
-    color:#e8e4dc; margin-bottom:5px; letter-spacing:.01em; }
-  .step .d{ font-family:var(--font-sans); font-size:1.05rem; line-height:1.55; color:#9aa0ab; font-weight:400; }
+  .step{ display:flex; gap:18px; padding:22px 0; border-top:1px solid rgba(237,230,220,.16); }
+  .step:first-child{ border-top:none; padding-top:0; }
+  .num{ flex:0 0 auto; width:34px; font-family:var(--font-sans); font-size:24px; font-weight:400; line-height:1.2; color:#ede6dc; }
+  .step .t{ margin:0 0 10px; font-family:var(--font-sans); font-size:23px; font-weight:400; line-height:1.25; color:#ede6dc; }
+  .step .d{ margin:0; font-family:var(--font-jost); font-weight:300; font-size:17px; line-height:1.6; color:rgba(237,230,220,.72); }
 
   /* actions */
-  .sharebtn{ display:flex; align-items:center; justify-content:center; gap:8px; width:100%; color:#fff; font-size:1.2rem;
-    font-weight:500; padding:16px 0; border:none; border-radius:40px; cursor:pointer;
-    background:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);
-    box-shadow:0 8px 30px rgba(29,56,145,.42); font-family:var(--font-sans);
-    transition:transform .15s ease; margin-top:34px; letter-spacing:.02em; }
-  .sharebtn:hover{ transform:translateY(-1px); }
-  .sharebtn:active{ transform:scale(.985); }
-  .sharebtn:disabled{ opacity:.7; cursor:default; transform:none; }
-  .backbtn{ display:block; width:100%; text-align:center; color:#a6b8f2; font-size:1.16rem; padding:16px 0;
-    border:1px solid rgba(166,184,242,.4); border-radius:40px; cursor:pointer; background:none; margin-top:14px;
-    font-family:var(--font-sans); text-decoration:none; }
-  .backbtn:hover{ background:rgba(166,184,242,.06); }
-  .saved{ text-align:center; font-family:var(--font-sans); font-size:.98rem; color:#5f6572; margin-top:26px;
-    padding-top:26px; border-top:1px solid rgba(232,228,220,.10); }
-  .saved b{ color:#a6b8f2; font-weight:600; }
-  .crisis{ text-align:center; font-family:var(--font-sans); font-size:.9rem; color:#5f6572; margin-top:18px; line-height:1.5; }
-  .crisis a{ color:#9aa0ab; text-decoration:underline; white-space:nowrap; }
+  .prcta{ display:flex; flex-direction:column; gap:14px; margin:44px 0 0; }
+  .sharebtn{ display:flex; align-items:center; justify-content:center; height:54px; color:#fff; font-family:var(--font-jost); font-size:14px;
+    font-weight:500; letter-spacing:.18em; text-transform:uppercase; border:none; cursor:pointer;
+    background:var(--psy-ig); transition:opacity .15s ease; }
+  .sharebtn:hover{ opacity:.92; }
+  .sharebtn:disabled{ opacity:.6; cursor:default; }
+  .backbtn{ display:flex; align-items:center; justify-content:center; height:54px; text-align:center; color:#ede6dc;
+    font-family:var(--font-jost); font-size:14px; font-weight:400; letter-spacing:.18em; text-transform:uppercase;
+    border:1px solid rgba(237,230,220,.45); cursor:pointer; background:none; text-decoration:none; }
+  .backbtn:hover{ background:rgba(237,230,220,.06); }
+  .saved{ text-align:center; font-family:var(--font-jost); font-weight:300; font-size:14px; color:rgba(237,230,220,.55); margin-top:40px; }
+  .saved b{ font-weight:400; color:rgba(237,230,220,.75); }
+  .crisis{ text-align:center; font-family:var(--font-jost); font-weight:300; font-size:13px; color:rgba(237,230,220,.45); margin-top:14px; line-height:1.5; }
+  .crisis a{ color:#ede6dc; text-decoration:underline; text-underline-offset:3px; white-space:nowrap; }
 </style>
 </head>
 <body class="site-shell">
@@ -146,61 +126,54 @@
 <main>
   <div class="page">
     <div class="frame">
-      <div class="inner">
 
-        <!-- WISDOM (hero) -->
-        <div class="wisdom">
-          <span class="mark">“</span>
-          <p class="rtext" id="r_wisdom">The river doesn’t ask you to jump — it just keeps moving, and sooner or later your feet get wet.</p>
-        </div>
+      <p class="prquote" id="r_wisdom">The river doesn’t ask you to jump — it just keeps moving, and sooner or later your feet get wet.</p>
 
-        <!-- THE PATTERN -->
-        <section class="sec">
-          <p class="rlabel">The pattern</p>
-          <p class="rtext" id="r_pattern">Every message so far has been a half-step — a greeting, a turn into playfulness, then a near-silence. There’s movement toward something, but the door hasn’t opened yet.</p>
-        </section>
+      <div class="prblock">
+        <p class="prlabel">The pattern</p>
+        <p class="prbody" id="r_pattern">Every message so far has been a half-step — a greeting, a turn into playfulness, then a near-silence. There’s movement toward something, but the door hasn’t opened yet.</p>
+      </div>
 
-        <!-- WHAT'S UNDERNEATH (root cause + feeling-tone, merged) -->
-        <section class="sec">
-          <p class="rlabel">What’s underneath</p>
-          <p class="rtext" id="r_root">Something here isn’t ready to be named — and that’s alright.</p>
-          <p class="rtext" id="r_tone">The energy arrived quietly, then went quieter still: neutral shading toward unpleasant, neither grasping nor pushing. It’s the feeling of sitting at the edge of the water, unsure whether to wade in.</p>
-        </section>
+      <div class="prblock">
+        <p class="prlabel">What’s underneath</p>
+        <p class="prbody" id="r_root">Something here isn’t ready to be named — and that’s alright.</p>
+        <p class="prbody" id="r_tone">The energy arrived quietly, then went quieter still: neutral shading toward unpleasant, neither grasping nor pushing. It’s the feeling of sitting at the edge of the water, unsure whether to wade in.</p>
+      </div>
 
-        <!-- THE PRACTICE -->
-        <section class="sec practice">
-          <p class="rlabel">The practice</p>
-          <div id="steps">
-            <div class="step">
-              <span class="num">1</span>
-              <div>
-                <p class="t">Sit at the edge</p>
-                <p class="d">Don’t try to name what’s going on yet. Just notice: is there something here, even without words? Let that be enough.</p>
-              </div>
-            </div>
-            <div class="step">
-              <span class="num">2</span>
-              <div>
-                <p class="t">Follow the next honest syllable</p>
-                <p class="d">When something does stir — a feeling, an image, even a ‘sort of’ — say that small thing out loud, however incomplete it seems.</p>
-              </div>
-            </div>
-            <div class="step">
-              <span class="num">3</span>
-              <div>
-                <p class="t">Notice what brought you here</p>
-                <p class="d">Something drew you to this door today, even if it was just restlessness. Sit with that one thing — not to solve it, just to look at it gently.</p>
-              </div>
+      <div class="prblocklast">
+        <p class="prlabel">The practice</p>
+        <div id="steps">
+          <div class="step">
+            <span class="num">1.</span>
+            <div>
+              <p class="t">Sit at the edge</p>
+              <p class="d">Don’t try to name what’s going on yet. Just notice: is there something here, even without words? Let that be enough.</p>
             </div>
           </div>
-        </section>
-
-        <button class="sharebtn" id="shareBtn">✦ Share this</button>
-        <a href="chat.html" class="backbtn">↩ Back to chat</a>
-        <p class="saved" id="saved">Saved to <b>Your practice</b> — open or regenerate any time</p>
-        <p class="crisis">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
-
+          <div class="step">
+            <span class="num">2.</span>
+            <div>
+              <p class="t">Follow the next honest syllable</p>
+              <p class="d">When something does stir — a feeling, an image, even a ‘sort of’ — say that small thing out loud, however incomplete it seems.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="num">3.</span>
+            <div>
+              <p class="t">Notice what brought you here</p>
+              <p class="d">Something drew you to this door today, even if it was just restlessness. Sit with that one thing — not to solve it, just to look at it gently.</p>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div class="prcta">
+        <button class="sharebtn" id="shareBtn">Share this</button>
+        <a href="chat.html" class="backbtn">Back to chat</a>
+      </div>
+      <p class="saved" id="saved">Saved to <b>Your practice</b> — open or regenerate any time</p>
+      <p class="crisis">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
+
     </div>
   </div>
 </main>
@@ -324,7 +297,7 @@
         const box=document.getElementById("steps"); box.innerHTML="";
         d.steps.forEach((s,i)=>{
           const div=document.createElement("div"); div.className="step";
-          const num=document.createElement("span"); num.className="num"; num.textContent=(i+1);
+          const num=document.createElement("span"); num.className="num"; num.textContent=(i+1)+".";
           const inner=document.createElement("div");
           const t=document.createElement("p"); t.className="t"; t.textContent=s.title||"";
           const de=document.createElement("p"); de.className="d"; de.textContent=s.description||"";

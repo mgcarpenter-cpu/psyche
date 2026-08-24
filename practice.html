@@ -78,56 +78,53 @@
   .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
   .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
-  /* ================= MAIN ================= */
-  main{ flex: 1; min-width: 0; overflow-y: auto; background: #06090f; }
+  /* ================= MAIN (psyche-chat-page tab pair — Practice side) ================= */
+  main{ flex: 1; min-width: 0; overflow-y: auto; background: #000; }
 
+  .topbar{ flex:0 0 auto; display:flex; align-items:baseline; gap:30px; padding:22px 34px 12px; border-bottom:1px solid rgba(237,230,220,.12); }
+  .tab{ font-family:var(--font-jost); font-size:13px; font-weight:400; letter-spacing:.24em; text-transform:uppercase; cursor:pointer; padding:6px 0; color:rgba(237,230,220,.45); border-bottom:1px solid transparent; }
+  .tab.active{ color:#ede6dc; border-bottom-color:#ede6dc; }
 
+  /* ===== page content ===== */
+  .page{ padding:64px 34px 40px; }
+  .frame{ max-width:680px; margin:0 auto; }
 
+  .sectitle{ margin:0 0 12px; font-family:var(--font-sans); font-size:clamp(28px,3vw,38px); font-weight:400; line-height:1.2; color:#ede6dc; }
+  .secsub{ margin:0 0 8px; font-family:var(--font-jost); font-weight:300; font-size:16px; line-height:1.55; color:rgba(237,230,220,.6); }
+  .revcount{ margin:0 0 34px; font-family:var(--font-jost); font-weight:300; font-size:13.5px; color:rgba(237,230,220,.4); }
 
-  /* ===== page content (practice-v2 design) ===== */
-  .page{ padding:12px 20px 80px; }
-  .frame{ max-width:500px; margin:0 auto; }
-  .inner{ padding:34px 10px 30px; }
-
-  /* HEADING DEVICE — full-width square bar, faded right */
-  .barhead{display:block;color:#06090f;font-family:var(--font-display);font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;padding:12px 18px;border-radius:4px;margin-bottom:24px;background:linear-gradient(90deg,#e8e4dc 0%,#e8e4dc 55%,rgba(232,228,220,0) 100%);}
-  .barmeta{font-size:15px;color:var(--bone-faint);font-style:italic;margin:-14px 0 26px 2px;}
-
-  /* archetype hero */
-  .arch{text-align:center;padding:2px 0 34px;position:relative;}
-  .arch::before{content:"";position:absolute;left:50%;top:-4px;width:260px;height:120px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(200,169,110,.12),transparent 70%);filter:blur(6px);z-index:0;}
-  .arch .name{position:relative;z-index:1;font-style:italic;font-weight:500;font-size:31px;color:var(--gold);text-shadow:0 0 24px rgba(200,169,110,.3);margin-bottom:8px;}
-  .arch .say{position:relative;z-index:1;font-size:16px;color:var(--bone-dim);line-height:1.5;max-width:290px;margin:0 auto;}
+  /* archetype portrait */
+  .portrait{ padding-bottom:8px; margin-bottom:48px; border-bottom:1px solid rgba(237,230,220,.16); }
+  .grouplabel{ margin:0 0 20px; font-family:var(--font-jost); font-size:13px; font-weight:300; letter-spacing:.3em; text-transform:uppercase; color:rgba(237,230,220,.5); }
+  .arch{ text-align:center; padding:2px 0 40px; }
+  .arch .name{ font-family:var(--font-sans); font-weight:400; font-size:32px; color:#ede6dc; margin-bottom:10px; }
+  .arch .say{ font-family:var(--font-jost); font-weight:300; font-size:16px; color:rgba(237,230,220,.6); line-height:1.55; max-width:340px; margin:0 auto; }
 
   /* 12 dimension bars */
-  .bar-grid{display:grid;gap:24px;margin-top:2px;}
-  .bar-block{border-bottom:1px solid rgba(232,228,220,.10);padding-bottom:20px;}
-  .bar-block:last-child{border-bottom:none;padding-bottom:0;}
-  .bar-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;}
-  .bar-label{font-family:var(--font-display);font-size:13.5px;font-weight:500;letter-spacing:.13em;color:#fff;text-transform:uppercase;}
-  .bar-val{font-family:var(--font-display);font-size:15px;color:#fff;}
-  .bar-track{position:relative;height:15px;background:rgba(244,242,238,.06);border:1px solid rgba(244,242,238,.14);border-radius:9px;}
-  .bar-fill{height:100%;border-radius:8px;background:linear-gradient(to right,rgba(255,255,255,.82),#ffffff);}
-  .bar-ceiling{position:absolute;top:0;right:0;bottom:0;width:14%;border-left:1px dashed rgba(244,242,238,.4);background:repeating-linear-gradient(45deg,rgba(244,242,238,.05),rgba(244,242,238,.05) 4px,transparent 4px,transparent 8px);border-radius:0 8px 8px 0;}
-  .bar-poles{display:flex;justify-content:space-between;margin-top:7px;font-family:var(--font-display);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,242,238,.5);}
+  .bar-grid{ display:grid; gap:26px; }
+  .bar-block{ border-top:1px solid rgba(237,230,220,.16); padding-top:20px; }
+  .bar-block:first-child{ border-top:none; padding-top:0; }
+  .bar-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px; }
+  .bar-label{ font-family:var(--font-jost); font-size:13px; font-weight:400; letter-spacing:.13em; color:#ede6dc; text-transform:uppercase; }
+  .bar-val{ font-family:var(--font-jost); font-size:14px; color:rgba(237,230,220,.6); }
+  .bar-track{ position:relative; height:6px; background:rgba(237,230,220,.1); border-radius:3px; }
+  .bar-fill{ height:100%; border-radius:3px; background:rgba(237,230,220,.85); }
+  .bar-ceiling{ position:absolute; top:0; right:0; bottom:0; width:14%; border-left:1px dashed rgba(237,230,220,.3); border-radius:0 3px 3px 0; }
+  .bar-poles{ display:flex; justify-content:space-between; margin-top:8px; font-family:var(--font-jost); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:rgba(237,230,220,.4); }
 
-  .retake{display:block;text-align:center;margin-top:30px;font-size:15px;font-style:italic;color:var(--gold);opacity:.85;text-decoration:none;}
-  .retake:hover{opacity:1;}
-  .portrait{padding-bottom:38px;border-bottom:1px solid rgba(232,228,220,.10);margin-bottom:40px;}
+  .retake{ display:block; text-align:center; margin-top:34px; font-family:var(--font-jost); font-size:13px; letter-spacing:.1em; color:rgba(237,230,220,.65); text-decoration:none; }
+  .retake:hover{ color:#ede6dc; }
 
-  /* reveal stack */
-  .reveals{display:flex;flex-direction:column;gap:2px;}
-  .rev{padding:22px 4px;border-bottom:1px solid rgba(232,228,220,.06);cursor:pointer;display:flex;gap:14px;align-items:flex-start;transition:opacity .15s ease;}
-  .rev:hover{opacity:.82;}
-  .rev:last-child{border-bottom:none;}
-  .rev .body{flex:1;min-width:0;}
-  .rev .wline{font-style:italic;font-weight:500;font-size:19px;line-height:1.4;color:var(--gold);margin-bottom:8px;text-shadow:0 0 18px rgba(200,169,110,.22);}
-  .rev .from{font-size:14px;color:var(--bone-faint);}
-  .rev .from b{color:var(--bone-dim);font-weight:400;font-style:italic;}
-  .rev .chev{flex:0 0 auto;color:var(--bone-faint);font-size:18px;margin-top:2px;}
-  .rev-empty{font-size:15px;font-style:italic;color:var(--bone-faint);padding:10px 2px 4px;line-height:1.6;}
-  .rev-empty a{color:var(--gold);text-decoration:none;opacity:.9;}
-  .rev-empty a:hover{opacity:1;}
+  /* reveal ledger */
+  .rev{ display:flex; align-items:center; gap:18px; padding:22px 0; border-top:1px solid rgba(237,230,220,.16); cursor:pointer; }
+  .rev:hover{ opacity:.85; }
+  .rev .body{ flex:1; min-width:0; }
+  .rev .wline{ margin:0 0 8px; font-family:var(--font-sans); font-size:21px; font-weight:400; line-height:1.35; color:#ede6dc; }
+  .rev .from{ margin:0; font-family:var(--font-jost); font-weight:300; font-size:13.5px; letter-spacing:.04em; color:rgba(237,230,220,.5); }
+  .rev .from b{ font-weight:400; color:rgba(237,230,220,.65); }
+  .rev .chev{ flex:0 0 auto; width:8px; height:8px; border-right:1px solid rgba(237,230,220,.6); border-top:1px solid rgba(237,230,220,.6); transform:rotate(45deg); }
+  .rev-empty{ font-family:var(--font-jost); font-weight:300; font-size:15px; color:rgba(237,230,220,.5); padding:10px 0 4px; line-height:1.6; }
+  .rev-empty a{ color:#ede6dc; text-decoration:underline; text-underline-offset:3px; }
 </style>
 </head>
 <body class="site-shell">
@@ -135,27 +132,31 @@
 <script src="site-header.js"></script>
 
 <main>
+  <div class="topbar">
+    <span class="tab" onclick="location.href='chat.html'">Chat</span>
+    <span class="tab active">Practice</span>
+  </div>
+
   <div class="page">
     <div class="frame">
-      <div class="inner">
 
-        <div class="portrait" id="portraitBlock">
-          <span class="barhead">Your archetype</span>
-          <div class="arch">
-            <div class="name" id="archName">&mdash;</div>
-            <div class="say" id="archSay">Take the assessment to see your archetype and the twelve dimensions.</div>
-          </div>
-
-          <span class="barhead" id="dimsHead">The Twelve Dimensions</span>
-          <div class="bar-grid" id="barGrid"></div>
-          <a href="assessment.html" class="retake" id="retakeLink">Take the assessment &rarr;</a>
+      <div class="portrait" id="portraitBlock">
+        <p class="grouplabel">Your archetype</p>
+        <div class="arch">
+          <div class="name" id="archName">&mdash;</div>
+          <div class="say" id="archSay">Take the assessment to see your archetype and the twelve dimensions.</div>
         </div>
 
-        <span class="barhead">Your practice</span>
-        <div class="barmeta" id="revealsMeta"></div>
-        <div class="reveals" id="revealsList"></div>
-
+        <p class="grouplabel" id="dimsHead">The twelve dimensions</p>
+        <div class="bar-grid" id="barGrid"></div>
+        <a href="assessment.html" class="retake" id="retakeLink">Take the assessment &rarr;</a>
       </div>
+
+      <h2 class="sectitle">Your practice</h2>
+      <p class="secsub">Every practice Psyche has written for you, with the conversation it came from.</p>
+      <p class="revcount" id="revealsCount"></p>
+      <div id="revealsList"></div>
+
     </div>
   </div>
 </main>
@@ -301,7 +302,7 @@
     try{ list=JSON.parse(localStorage.getItem("psyche:reveals")||"[]"); }catch(e){ list=[]; }
     list=(Array.isArray(list)?list:[]).filter(r=>r&&r.wisdom);
     list.sort((a,b)=> new Date(b.at||0) - new Date(a.at||0));
-    const meta=$("revealsMeta"), box=$("revealsList");
+    const meta=$("revealsCount"), box=$("revealsList");
     if(!list.length){
       meta.textContent="";
       box.innerHTML='<div class="rev-empty">No reveals yet — <a href="chat.html">start a conversation</a> and reveal the pattern to begin your practice.</div>';
