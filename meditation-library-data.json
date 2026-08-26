@@ -1,0 +1,110 @@
+[
+ {
+  "id": "m-001",
+  "type": "pearl",
+  "pearlText": "A five-minute sit with what you’re avoiding.",
+  "videoUrl": null,
+  "arrived": 40,
+  "joined": 0,
+  "section": "new"
+ },
+ {
+  "id": "m-002",
+  "type": "pearl",
+  "pearlText": "Meeting a hard feeling without flinching.",
+  "videoUrl": null,
+  "arrived": 55,
+  "joined": 1,
+  "section": "new"
+ },
+ {
+  "id": "m-003",
+  "type": "pearl",
+  "pearlText": "Settling the body before you decide anything.",
+  "videoUrl": null,
+  "arrived": 22,
+  "joined": 0,
+  "section": "new"
+ },
+ {
+  "id": "m-004",
+  "type": "pearl",
+  "pearlText": "Letting a craving move through you, unfed.",
+  "videoUrl": null,
+  "arrived": 210,
+  "joined": 9,
+  "section": "hot"
+ },
+ {
+  "id": "m-005",
+  "type": "pearl",
+  "pearlText": "The equanimity sit — for when everything feels urgent.",
+  "videoUrl": null,
+  "arrived": 165,
+  "joined": 6,
+  "section": "hot"
+ },
+ {
+  "id": "m-006",
+  "type": "pearl",
+  "pearlText": "Coming back to the breath, again and again, without shame.",
+  "videoUrl": null,
+  "arrived": 132,
+  "joined": 4,
+  "section": "hot"
+ },
+ {
+  "id": "m-007",
+  "type": "pearl",
+  "pearlText": "A sit for aversion — softening what you push away.",
+  "videoUrl": null,
+  "arrived": 118,
+  "joined": 3,
+  "section": "library"
+ },
+ {
+  "id": "m-008",
+  "type": "pearl",
+  "pearlText": "Noticing feeling-tone before the story starts.",
+  "videoUrl": null,
+  "arrived": 96,
+  "joined": 2,
+  "section": "library"
+ },
+ {
+  "id": "m-009",
+  "type": "pearl",
+  "pearlText": "Resting in not-knowing for five minutes.",
+  "videoUrl": null,
+  "arrived": 84,
+  "joined": 2,
+  "section": "library"
+ },
+ {
+  "id": "m-010",
+  "type": "pearl",
+  "pearlText": "A sit for sleep — putting the day down.",
+  "videoUrl": null,
+  "arrived": 77,
+  "joined": 1,
+  "section": "library"
+ },
+ {
+  "id": "m-011",
+  "type": "pearl",
+  "pearlText": "Meeting confusion with curiosity instead of panic.",
+  "videoUrl": null,
+  "arrived": 61,
+  "joined": 1,
+  "section": "library"
+ },
+ {
+  "id": "m-012",
+  "type": "pearl",
+  "pearlText": "The long exhale — a sit for when you’re wound tight.",
+  "videoUrl": null,
+  "arrived": 54,
+  "joined": 0,
+  "section": "library"
+ }
+]

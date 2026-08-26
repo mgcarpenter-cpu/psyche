@@ -4,7 +4,7 @@
 <script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Avatar library · Psyche</title>
+<title>Meditation library · Psyche</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="site.css">
@@ -177,7 +177,7 @@
 
 <main>
   <div class="page">
-    <h1 class="pagetitle">Avatar Library</h1>
+    <h1 class="pagetitle">Meditation Library</h1>
     <p class="pagesub">Watch and share on your socials &mdash; every share carries your link.</p>
     <div class="statsrow">
       <span class="statitem"><span class="statnum" id="totalArrived">0</span><span class="statlabel">Arrived</span></span>
@@ -222,7 +222,7 @@
 <div class="shpanel" id="shPanel">
   <div class="shpanel-inner">
     <div class="grab"></div>
-    <span class="barhead">Share this pearl</span>
+    <span class="barhead">Share this meditation</span>
 
     <div class="payload">
       <div class="thumb" id="shThumb"></div>
@@ -337,7 +337,7 @@
 
   async function loadData(){
     try{
-      const res=await fetch("library-data.json");
+      const res=await fetch("meditation-library-data.json");
       ITEMS=await res.json();
     }catch(e){ ITEMS=[]; }
   }
@@ -467,7 +467,7 @@
     if(!item) return;
     const thumb=$("shThumb");
     thumb.innerHTML = item.type==="video" ? '<span class="pl">&#9654;</span>' : "";
-    $("shKind").textContent = item.type==="video" ? "Video" : "Pearl";
+    $("shKind").textContent = item.type==="video" ? "Video" : "Meditation";
     $("shQ").textContent = item.pearlText;
     renderShareGrid(item);
     $("shScrim").classList.add("open");

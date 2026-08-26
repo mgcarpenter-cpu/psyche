@@ -1,0 +1,110 @@
+[
+ {
+  "id": "t-001",
+  "type": "pearl",
+  "pearlText": "Craving isn’t hunger. It’s a story about what will finally be enough.",
+  "videoUrl": null,
+  "arrived": 40,
+  "joined": 0,
+  "section": "new"
+ },
+ {
+  "id": "t-002",
+  "type": "pearl",
+  "pearlText": "You don’t rise above a feeling. You go all the way through it.",
+  "videoUrl": null,
+  "arrived": 55,
+  "joined": 1,
+  "section": "new"
+ },
+ {
+  "id": "t-003",
+  "type": "pearl",
+  "pearlText": "Confusion is just contact with something you haven’t named yet.",
+  "videoUrl": null,
+  "arrived": 22,
+  "joined": 0,
+  "section": "new"
+ },
+ {
+  "id": "t-004",
+  "type": "pearl",
+  "pearlText": "The Three Poisons, in one breath: wanting, resisting, not seeing clearly.",
+  "videoUrl": null,
+  "arrived": 210,
+  "joined": 9,
+  "section": "hot"
+ },
+ {
+  "id": "t-005",
+  "type": "pearl",
+  "pearlText": "Nothing pleasant lasts — and that’s not the tragedy you think it is.",
+  "videoUrl": null,
+  "arrived": 165,
+  "joined": 6,
+  "section": "hot"
+ },
+ {
+  "id": "t-006",
+  "type": "pearl",
+  "pearlText": "Equanimity isn’t distance. It’s presence without a grip.",
+  "videoUrl": null,
+  "arrived": 132,
+  "joined": 4,
+  "section": "hot"
+ },
+ {
+  "id": "t-007",
+  "type": "pearl",
+  "pearlText": "Aversion is craving wearing a different coat.",
+  "videoUrl": null,
+  "arrived": 118,
+  "joined": 3,
+  "section": "library"
+ },
+ {
+  "id": "t-008",
+  "type": "pearl",
+  "pearlText": "The eight worldly winds blow through everyone. You don’t have to sail by them.",
+  "videoUrl": null,
+  "arrived": 96,
+  "joined": 2,
+  "section": "library"
+ },
+ {
+  "id": "t-009",
+  "type": "pearl",
+  "pearlText": "Feeling-tone comes first. The story comes after — and it’s optional.",
+  "videoUrl": null,
+  "arrived": 84,
+  "joined": 2,
+  "section": "library"
+ },
+ {
+  "id": "t-010",
+  "type": "pearl",
+  "pearlText": "You can’t think your way out of a feeling. You can only meet it.",
+  "videoUrl": null,
+  "arrived": 77,
+  "joined": 1,
+  "section": "library"
+ },
+ {
+  "id": "t-011",
+  "type": "pearl",
+  "pearlText": "Suffering isn’t the event. It’s the second arrow you fire at yourself.",
+  "videoUrl": null,
+  "arrived": 61,
+  "joined": 1,
+  "section": "library"
+ },
+ {
+  "id": "t-012",
+  "type": "pearl",
+  "pearlText": "Awareness doesn’t fix the weather. It’s the sky it happens in.",
+  "videoUrl": null,
+  "arrived": 54,
+  "joined": 0,
+  "section": "library"
+ }
+]
