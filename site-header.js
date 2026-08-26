@@ -22,7 +22,8 @@
     coin:'<circle cx="11" cy="11" r="8.4"></circle><line x1="11" y1="5.2" x2="11" y2="16.8"></line><path d="M13.6 8.2a2.7 2.7 0 1 0-2.6 3.4 2.7 2.7 0 1 1-2.6 3.4"></path>',
     doc:'<rect x="5" y="3.6" width="12" height="14.8"></rect><path d="M8.2 8h5.6M8.2 11.2h5.6M8.2 14.4h3.6"></path>',
     lock:'<rect x="4.6" y="9.6" width="12.8" height="10" rx="1.6"></rect><path d="M7.8 9.6V6.8a3.2 3.2 0 0 1 6.4 0v2.8"></path><circle cx="11" cy="14.4" r="1.1"></circle>',
-    cross:'<circle cx="11" cy="11" r="8.4"></circle><path d="M11 7.4v7.2M7.4 11h7.2"></path>'
+    cross:'<circle cx="11" cy="11" r="8.4"></circle><path d="M11 7.4v7.2M7.4 11h7.2"></path>',
+    target:'<circle cx="11" cy="11" r="8.4"></circle><circle cx="11" cy="11" r="3"></circle>'
   };
   function svg(k){ return '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round">' + I[k] + '</svg>'; }
 
@@ -36,6 +37,9 @@
     { route:'library.html',    icon:'book',  label:'Avatar library' },
     { route:'soon.html?t=Daily%20pearls', icon:'pearl', label:'Daily pearls' },
     { route:'account.html',    icon:'coin',  label:'Account &amp; earnings' }
+  ];
+  var membership = [
+    { route:'pricing.html', icon:'target', label:'Membership' }
   ];
   var foot = [
     { route:'privacy.html', icon:'lock',  label:'Private &amp; secure' },
@@ -75,6 +79,7 @@
         '<div class="side-list">' + path.map(row).join('') + '</div>' +
         '<p class="side-group-title">Share &amp; earn</p>' +
         '<div class="side-list">' + earn.map(row).join('') + '</div>' +
+        '<div class="side-list" style="margin-top:clamp(10px,1.6vh,18px)">' + membership.map(row).join('') + '</div>' +
         '<nav class="side-foot">' +
           foot.map(row).join('') +
           '<div class="acctwrap">' +
