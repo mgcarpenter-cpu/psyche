@@ -17,7 +17,6 @@
     clock:'<circle cx="11" cy="11" r="8.4"></circle><path d="M11 6.4V11l3.2 2.2"></path>',
     chart:'<line x1="4" y1="18.4" x2="18" y2="18.4"></line><rect x="6" y="12" width="2.6" height="6.4"></rect><rect x="10.2" y="8.6" width="2.6" height="9.8"></rect><rect x="14.4" y="5.2" width="2.6" height="13.2"></rect>',
     book:'<path d="M4.4 4.6h5.2a1.4 1.4 0 0 1 1.4 1.4v11.4a1.4 1.4 0 0 0-1.4-1.4H4.4z"></path><path d="M17.6 4.6h-5.2a1.4 1.4 0 0 0-1.4 1.4v11.4a1.4 1.4 0 0 1 1.4-1.4h5.2z"></path>',
-    pearl:'<circle cx="11" cy="12" r="4.6"></circle><path d="M11 2.8c1.8 1.8 1.8 3.6 0 4.6-1.8-1-1.8-2.8 0-4.6z"></path>',
     lotus:'<path d="M11 18.6c-3.8 0-6.8-2.4-6.8-5.4 1.9 0 3.6.7 4.8 1.8"></path><path d="M11 18.6c3.8 0 6.8-2.4 6.8-5.4-1.9 0-3.6.7-4.8 1.8"></path><path d="M11 18.6c-2.2-2-3.4-4.4-3.4-7 0-2.6 1.4-4.6 3.4-6.2 2 1.6 3.4 3.6 3.4 6.2 0 2.6-1.2 5-3.4 7z"></path>',
     coin:'<circle cx="11" cy="11" r="8.4"></circle><line x1="11" y1="5.2" x2="11" y2="16.8"></line><path d="M13.6 8.2a2.7 2.7 0 1 0-2.6 3.4 2.7 2.7 0 1 1-2.6 3.4"></path>',
     doc:'<rect x="5" y="3.6" width="12" height="14.8"></rect><path d="M8.2 8h5.6M8.2 11.2h5.6M8.2 14.4h3.6"></path>',
@@ -35,7 +34,6 @@
   ];
   var earn = [
     { route:'library.html',    icon:'book',  label:'Avatar library' },
-    { route:'soon.html?t=Daily%20pearls', icon:'pearl', label:'Daily pearls' },
     { route:'account.html',    icon:'coin',  label:'Account &amp; earnings' }
   ];
   var membership = [
