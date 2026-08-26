@@ -12,7 +12,7 @@
   :root{
     --indigo:#1d3891;--bone:#e8e4dc;--bone-dim:#9aa0ab;--bone-faint:#5f6572;
     --psy-ig:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);
-    --hair:rgba(232,228,220,.10);
+    --hair:rgba(237,230,220,.14);
     /* --cream here is the mock's text cream (the white nav is styled by site.css, not this token) */
     --cream:#ede6dc; --night:#06090f; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
   }
@@ -66,11 +66,29 @@
   .cta{display:flex;align-items:center;justify-content:center;width:100%;height:54px;background:var(--psy-ig);color:#fff;font-family:'Jost';font-size:14px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;border:none;cursor:pointer;}
   .cta:hover{opacity:.92;}
   .cta[disabled]{opacity:.55;cursor:default;}
-  .footer-note{margin-top:16px;font-weight:300;font-size:13px;color:var(--bone-faint);}
-  .footer-note a{text-decoration:underline;text-underline-offset:3px;color:inherit;}
+  /* ---------- Country / tax calculator ---------- */
+  .country-row{margin:0 0 26px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;text-align:left;}
+  .cap-main{margin:0;font-weight:300;font-size:13.5px;color:rgba(237,230,220,.75);}
+  .cap-sub{margin:3px 0 0;font-weight:300;font-style:italic;font-size:12.5px;color:rgba(237,230,220,.5);}
+  .dd{position:relative;display:inline-block;min-width:150px;text-align:left;}
+  .dd-trigger{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--hair);padding:7px 11px 7px 12px;font-weight:300;font-size:12.5px;letter-spacing:.06em;color:var(--cream);cursor:pointer;}
+  .dd-chev{font-size:10px;color:rgba(237,230,220,.55);transition:transform .18s;}
+  .dd.open .dd-chev{transform:rotate(180deg);}
+  .dd-list{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:20;background:#0a0e17;border:1px solid var(--hair);}
+  .dd.open .dd-list{display:block;}
+  .dd-opt{padding:7px 12px;font-weight:300;font-size:12.5px;letter-spacing:.04em;color:rgba(237,230,220,.75);cursor:pointer;}
+  .dd-opt:hover{background:rgba(58,95,206,.12);color:var(--cream);}
+  .tax-break{margin:0 0 44px;border:1px solid var(--hair);}
+  .tax-break:empty{border:none;}  /* keeps the mock's 44px gap without a stray hairline */
+  .tb-row{display:flex;font-weight:300;font-size:14px;color:rgba(237,230,220,.7);border-top:1px solid var(--hair);}
+  .tb-row:first-child{border-top:none;}
+  .tb-row span{flex:1;padding:11px 8px;text-align:center;}
+  .tb-row span:first-child{text-align:left;padding-left:16px;color:var(--cream);}
+  .tb-row b{flex:1;padding:11px 8px;text-align:center;color:var(--cream);font-weight:400;}
+  .tb-head span{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(237,230,220,.45);}
 
   /* ---------- Earn panel ---------- */
-  .earn{border:1px solid var(--indigo);background:rgba(58,95,206,.08);padding:34px 30px 30px;text-align:center;margin:46px 0;}
+  .earn{border:1px solid #3a5fce;background:rgba(58,95,206,.08);padding:38px 34px 34px;text-align:center;margin:0 0 46px;}
   .earn-head{display:inline-block;margin:0 0 18px;padding:4px 14px;background:var(--psy-ig);color:#fff;font-size:10.5px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;}
   .earn-figure{font-family:'Poiret One';font-size:60px;line-height:1;color:var(--cream);margin-bottom:14px;}
   .earn-body{margin:0 auto 16px;max-width:400px;font-weight:300;font-size:15px;line-height:1.6;color:var(--bone);}
@@ -128,6 +146,35 @@
       <h1>Start your journey</h1>
       <p class="subhead">For everything you keep carrying — a way through, at your own pace.</p>
 
+      <div class="country-row">
+        <div class="tax-cap">
+          <p class="cap-main">Prices are in USD, for US customers — tax excluded.</p>
+          <p class="cap-sub">Outside the US? Calculate your added tax:</p>
+        </div>
+        <div class="dd" id="countryDD">
+          <div class="dd-trigger" onclick="document.getElementById('countryDD').classList.toggle('open')"><span id="ddLabel">United States</span><span class="dd-chev">▾</span></div>
+          <div class="dd-list">
+            <div class="dd-opt" data-r="0" onclick="pickCountry(this)">United States</div>
+            <div class="dd-opt" data-r="10" onclick="pickCountry(this)">Australia</div>
+            <div class="dd-opt" data-r="13" onclick="pickCountry(this)">Canada</div>
+            <div class="dd-opt" data-r="20" onclick="pickCountry(this)">France</div>
+            <div class="dd-opt" data-r="19" onclick="pickCountry(this)">Germany</div>
+            <div class="dd-opt" data-r="18" onclick="pickCountry(this)">India</div>
+            <div class="dd-opt" data-r="22" onclick="pickCountry(this)">Italy</div>
+            <div class="dd-opt" data-r="10" onclick="pickCountry(this)">Japan</div>
+            <div class="dd-opt" data-r="16" onclick="pickCountry(this)">Mexico</div>
+            <div class="dd-opt" data-r="21" onclick="pickCountry(this)">Netherlands</div>
+            <div class="dd-opt" data-r="15" onclick="pickCountry(this)">New Zealand</div>
+            <div class="dd-opt" data-r="9" onclick="pickCountry(this)">Singapore</div>
+            <div class="dd-opt" data-r="15" onclick="pickCountry(this)">South Africa</div>
+            <div class="dd-opt" data-r="21" onclick="pickCountry(this)">Spain</div>
+            <div class="dd-opt" data-r="25" onclick="pickCountry(this)">Sweden</div>
+            <div class="dd-opt" data-r="8.1" onclick="pickCountry(this)">Switzerland</div>
+            <div class="dd-opt" data-r="20" onclick="pickCountry(this)">United Kingdom</div>
+          </div>
+        </div>
+      </div>
+
       <div class="plans">
         <div class="plan" id="pm" onclick="pick('m')">
           <p class="plan-name">Monthly</p>
@@ -143,7 +190,8 @@
       </div>
 
       <button class="cta" id="cta">Begin — $349 / yr</button>
-      <p class="footer-note" style="margin-bottom:52px"><a href="chat.html">Try Psyche free first</a> · Cancel anytime</p>
+
+      <div class="tax-break" id="taxBreak"></div>
 
       <div class="earn">
         <p class="earn-head">Share &amp; earn</p>
@@ -282,6 +330,31 @@
     $("cta").textContent=label;
     $("ctaSticky").textContent=label;
   }
+
+  // ================= COUNTRY / TAX CALCULATOR =================
+  function pickCountry(el){
+    $("ddLabel").textContent = el.textContent;
+    $("countryDD").classList.remove('open');
+    window._taxRate = parseFloat(el.dataset.r);
+    taxCalc();
+  }
+  window._taxRate = 0;
+  document.addEventListener('click', function(e){
+    const dd = $("countryDD");
+    if(!dd.contains(e.target)) dd.classList.remove('open');
+  });
+  function taxCalc(){
+    const out = $("taxBreak");
+    const r = window._taxRate;
+    if(r === 0){ out.innerHTML = ''; return; }
+    const head = '<div class="tb-row tb-head"><span>Plan</span><span>Price</span><span>Tax</span><span>Total</span></div>';
+    const mt = (39*r/100).toFixed(2), mTot = (39*(1+r/100)).toFixed(2);
+    const yt = (349*r/100).toFixed(2), yTot = (349*(1+r/100)).toFixed(2);
+    out.innerHTML = head
+      + '<div class="tb-row"><span>Monthly</span><span>$39</span><span>$'+mt+'</span><b>$'+mTot+'</b></div>'
+      + '<div class="tb-row"><span>Annual</span><span>$349</span><span>$'+yt+'</span><b>$'+yTot+'</b></div>';
+  }
+  taxCalc();
 
   // ================= PADDLE (sandbox) =================
   // NOTE: these two membership prices don't exist in Paddle yet — create a $39/mo
