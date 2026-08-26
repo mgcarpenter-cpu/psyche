@@ -295,13 +295,15 @@
     try{
       const res=await fetch("account-earnings-data.json");
       const data=await res.json();
-      const np=(data && data.nextPayout) || {};
-      pendingAmount = Number(np.amount) || 0;
-      pendingNote = np.note || "";
+      const pend=(data && data.pending) || {};
+      const ready=(data && data.nextPayout) || {};
+      // Forfeited on deletion = anything not yet paid out: still-clearing + ready-but-unpaid.
+      pendingAmount = (Number(pend.amount)||0) + (Number(ready.amount)||0);
+      pendingNote = pend.note || ready.note || "";
     }catch(e){ pendingAmount=0; pendingNote=""; }
   }
   function payDate(){
-    const m = pendingNote.match(/pays\s+([^·]+)/i);
+    const m = pendingNote.match(/(?:pays|clears)\s+([^·]+)/i);
     return m ? m[1].trim() : "your clearing date";
   }
 

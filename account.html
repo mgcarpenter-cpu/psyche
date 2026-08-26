@@ -10,9 +10,10 @@
 <link rel="stylesheet" href="site.css">
 <style>
   :root{
-    --bg:#06090f;--surround:#04060a;--bone:#e8e4dc;--bone-dim:#9aa0ab;--bone-faint:#5f6572;--gold:#c8a96e;--indigo:#1d3891;
-    --psy-ig:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);--hair:rgba(232,228,220,.10);--elev:rgba(244,242,238,.05);
-    /* nav tokens (shared with practice.html / library.html) */
+    --gold:rgba(213,185,134,.9);--indigo:#1d3891;--bone:#e8e4dc;--bone-dim:#9aa0ab;--bone-faint:#5f6572;
+    --psy-ig:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);
+    --hair:rgba(232,228,220,.10);--elev:rgba(244,242,238,.05);--danger:#c25c4a;
+    /* nav tokens (shared with library.html / practice.html / delete-account.html) */
     --cream:#faf8f3; --night:#06090f; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -34,40 +35,6 @@
     color: var(--cream); font-family:var(--font-sans);
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   .fbmodal{ position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
   .fbmodal.open{ display: flex; }
   .fbcard{ background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family:var(--font-sans); }
@@ -80,88 +47,77 @@
   .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
   /* ================= MAIN ================= */
-  main{ flex: 1; min-width: 0; overflow-y: auto; background: #06090f; }
-
-
-
+  main{ flex:1; min-width:0; overflow-y:auto; background:#06090f; }
   .topbar-right{margin-left:auto;font-family:var(--font-sans);font-size:15px;color:var(--bone-dim);cursor:pointer;text-decoration:none;}
   .topbar-right:hover{color:var(--bone);}
 
-  /* ===== page content (account-design-v1, verbatim) ===== */
+  /* ===== page content (psyche-account-earnings-v12, adapted to real data) ===== */
   .page{padding:0 0 20px;}
-  .frame{max-width:430px;margin:0 auto;}
+  .frame{max-width:460px;margin:0 auto;}
   .inner{padding:30px 26px 60px;}
 
-  .barhead{display:block;color:#06090f;font-family:var(--font-display);font-size:12px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;padding:12px 18px;border-radius:4px;margin-bottom:22px;background:linear-gradient(90deg,var(--bone) 0%,var(--bone) 55%,rgba(232,228,220,0) 100%);}
+  h1{font-weight:400;font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--bone-faint);margin-bottom:16px;}
+  .acct-name{margin:0;font-family:var(--font-display);font-size:26px;color:var(--bone);}
+  .acct-email{margin:2px 0 30px;font-weight:300;font-size:14px;color:var(--bone-faint);}
 
-  .who{display:flex;align-items:center;gap:15px;margin-bottom:22px;}
-  .avatar{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#1a2540,#0a0e15);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:var(--gold);flex:0 0 auto;}
-  .who .n{font-size:22px;color:var(--bone);}
-  .who .e{font-size:14px;color:var(--bone-faint);font-style:italic;}
+  .tabs{display:flex;border:1px solid var(--hair);border-radius:12px;overflow:hidden;margin-bottom:34px;}
+  .tab{flex:1;background:none;border:none;cursor:pointer;padding:13px 0;font-family:var(--font-sans);font-size:12.5px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-faint);}
+  .tab+.tab{border-left:1px solid var(--hair);}
+  .tab.active{background:rgba(58,95,206,.10);color:var(--bone);}
 
-  /* expandable rows */
-  .acc{border-bottom:1px solid rgba(232,228,220,.08);}
-  .acc-head{display:flex;align-items:center;justify-content:space-between;padding:16px 2px;cursor:pointer;}
-  .acc-head .lbl{font-size:17px;color:var(--bone-dim);}
-  .acc-head .r{display:flex;align-items:center;gap:12px;}
-  .acc-head .val{font-size:16px;color:var(--bone);}
-  .acc-head .val.plan{font-family:var(--font-display);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);}
-  .acc-head .car{color:var(--bone-faint);font-size:12px;transition:transform .25s;}
-  .acc.open .car{transform:rotate(180deg);}
-  .acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
-  .acc.open .acc-body{max-height:420px;}
-  .acc-inner{padding:4px 2px 20px;}
-  .field{display:flex;align-items:center;gap:10px;border:1px solid var(--hair);background:var(--elev);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
-  .field .k{flex:1;font-family:var(--font-display);font-size:14px;letter-spacing:.04em;color:var(--bone);}
-  .field input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--bone);font-family:var(--font-sans);font-size:15px;}
-  .field input::placeholder{color:var(--bone-faint);}
-  .field .acts{display:flex;align-items:center;gap:14px;flex:0 0 auto;}
-  .field .act{font-family:var(--font-display);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);cursor:pointer;}
-  .field .act.rm{color:#c98b6e;}
-  .muted{color:var(--bone-faint);font-style:italic;line-height:1.5;margin-top:4px;}
-  .btn-ig{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-sans);font-size:15px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:24px;padding:9px 20px;cursor:pointer;box-shadow:0 5px 16px rgba(29,56,145,.36);}
-  .btn-ghost{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-sans);font-size:15px;color:var(--bone);background:none;border:1px solid rgba(232,228,220,.3);border-radius:24px;padding:9px 20px;cursor:pointer;}
+  .sect{margin:0 0 14px;font-size:12px;font-weight:400;letter-spacing:.24em;text-transform:uppercase;color:var(--bone-faint);}
+  .listrows{border:1px solid var(--hair);border-radius:12px;margin-bottom:36px;overflow:hidden;}
+  .listrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 16px;border-top:1px solid var(--hair);font-weight:300;font-size:14.5px;color:var(--bone);}
+  .listrow:first-child{border-top:none;}
+  .rowval{color:var(--bone-dim);font-size:13.5px;white-space:nowrap;}
+  .inline-link{font-size:13px;color:var(--gold);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+  .danger-link{font-size:13.5px;color:var(--danger);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
 
-  .section{margin-top:44px;}
-  /* upgrade hero */
-  .upsell{position:relative;overflow:hidden;border:1px solid rgba(200,169,110,.28);border-radius:18px;background:linear-gradient(180deg,rgba(58,95,206,.10),rgba(19,42,107,.06));padding:26px 22px 22px;margin-bottom:34px;text-align:center;}
-  .upsell-glow{position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:260px;height:180px;background:radial-gradient(ellipse,rgba(58,95,206,.28),transparent 70%);filter:blur(10px);pointer-events:none;}
-  .upsell .ut{position:relative;font-family:var(--font-display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone);margin-bottom:10px;}
-  .upsell .ud{position:relative;font-size:16.5px;color:var(--bone-dim);line-height:1.5;margin-bottom:20px;}
-  .upsell-btn{position:relative;display:inline-block;width:100%;font-family:var(--font-sans);font-size:19px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:40px;padding:16px 0;cursor:pointer;box-shadow:0 10px 30px rgba(29,56,145,.5);margin-bottom:14px;}
-  .upsell .uf{position:relative;font-family:var(--font-display);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);}
-  .plan-up{font-family:var(--font-sans);font-size:14px;font-weight:500;color:#fff;background:var(--psy-ig);border:none;border-radius:20px;padding:6px 16px;cursor:pointer;box-shadow:0 4px 12px rgba(29,56,145,.4);}
+  .inline-form{display:flex;gap:10px;padding:14px 16px;border-top:1px solid var(--hair);}
+  .inline-form input{flex:1;min-width:0;background:transparent;border:1px solid var(--hair);border-radius:8px;color:var(--bone);font-family:var(--font-sans);font-weight:300;font-size:14px;padding:10px 12px;outline:none;}
+  .inline-form input::placeholder{color:var(--bone-faint);}
+  .inline-form button{background:var(--psy-ig);border:none;border-radius:8px;color:#fff;font-family:var(--font-sans);font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;padding:0 16px;cursor:pointer;}
+  .inline-form button:disabled{opacity:.35;cursor:default;}
 
-  /* earnings summary */
-  .earn-top{display:flex;border:1px solid var(--hair);border-radius:16px;overflow:hidden;background:var(--elev);margin-bottom:12px;}
-  .earn-top .cell{flex:1;padding:20px 10px;text-align:center;border-right:1px solid rgba(232,228,220,.08);}
-  .earn-top .cell:last-child{border-right:none;}
-  .earn-top .num{font-family:var(--font-display);font-size:23px;color:var(--bone);}
-  .earn-top .num.paid{color:var(--gold);}
-  .earn-top .lbl{font-family:var(--font-display);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-faint);margin-top:6px;}
-  .balance{display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(200,169,110,.3);border-radius:14px;background:linear-gradient(180deg,rgba(200,169,110,.06),transparent);padding:16px 18px;margin-bottom:20px;}
-  .balance .l .t{font-family:var(--font-display);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);margin-bottom:5px;}
-  .balance .l .a{font-family:var(--font-display);font-size:24px;color:var(--gold);}
-  .balance .l .d{font-size:13px;color:var(--bone-faint);font-style:italic;margin-top:3px;}
+  .danger-zone{text-align:left;margin:0 0 20px;}
+  .danger-zone summary{list-style:none;cursor:pointer;display:inline;font-weight:300;font-size:12px;color:var(--bone-faint);text-decoration:underline;text-underline-offset:3px;}
+  .danger-zone summary::-webkit-details-marker{display:none;}
+  .danger-zone summary:hover{color:var(--bone-dim);}
+  .danger-body{margin-top:14px;border:1px solid var(--hair);border-radius:12px;padding:16px 18px 18px;}
+  .danger-body p{margin:0 0 12px;font-weight:300;font-size:13.5px;line-height:1.6;color:var(--bone-dim);}
+  .danger-btn{display:inline-block;background:none;border:1px solid var(--danger);color:var(--danger);border-radius:20px;font-family:var(--font-sans);font-size:13px;padding:9px 18px;cursor:pointer;}
+  .danger-btn:hover{background:rgba(194,92,74,.1);}
 
-  /* ledger rows inside dropdown */
-  .lrow{display:flex;align-items:center;justify-content:space-between;padding:14px 2px;border-bottom:1px solid rgba(232,228,220,.06);}
-  .lrow:last-child{border-bottom:none;}
-  .lrow .left .t{font-size:16px;color:var(--bone);}
-  .lrow .left .d{font-size:13.5px;color:var(--bone-faint);font-style:italic;margin-top:3px;}
-  .lrow .amt{font-family:var(--font-display);font-size:16px;color:var(--gold);}
-  .lrow .amt.neg{color:#c98b6e;}
-  .lrow .status{font-family:var(--font-display);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border-radius:12px;border:1px solid var(--hair);color:var(--bone-dim);margin-left:10px;}
-  .lrow .status.paid{color:#06090f;background:var(--bone);border-color:var(--bone);}
-  .lrow .status.claw{color:#c98b6e;border-color:rgba(201,139,110,.5);}
-  .lrow .rt{display:flex;align-items:center;}
+  /* ---------- Earnings tab ---------- */
+  .linkbox{display:flex;border:1px solid var(--indigo);background:rgba(58,95,206,.08);border-radius:12px;overflow:hidden;margin-bottom:14px;}
+  .linktext{flex:1;display:flex;align-items:center;padding:0 16px;height:50px;font-weight:300;font-size:15px;letter-spacing:.01em;color:var(--bone);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .copybtn{flex:0 0 auto;border:none;cursor:pointer;padding:0 22px;background:var(--psy-ig);color:#fff;font-family:var(--font-sans);font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;}
+  .copybtn:hover{opacity:.9;}
+  .sharerow{display:flex;gap:10px;margin-bottom:14px;}
+  .sharebtn{flex:1;border:1px solid var(--hair);border-radius:10px;padding:13px 8px;font-weight:300;font-size:13px;color:var(--bone);cursor:pointer;text-align:center;transition:border-color .18s;background:none;font-family:var(--font-sans);}
+  .sharebtn:hover{border-color:rgba(232,228,220,.3);}
+  .earn-line{margin:0 0 36px;font-weight:300;font-style:italic;font-size:13.5px;line-height:1.6;color:var(--bone-dim);}
 
-  .muted{color:var(--bone-faint);font-style:italic;line-height:1.55;margin-top:16px;}
-  .signout{display:block;width:100%;text-align:center;margin-top:34px;font-family:var(--font-display);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-dim);background:transparent;border:1px solid rgba(232,228,220,.2);border-radius:12px;padding:16px 0;cursor:pointer;}
-  .signout:hover{border-color:rgba(232,228,220,.4);color:var(--bone);}
-  .legal{text-align:center;margin-top:40px;margin-bottom:30px;font-size:13px;color:var(--bone-faint);}
-  .legal a{color:var(--bone-dim);text-decoration:underline;text-underline-offset:3px;}
-  .danger{display:block;text-align:center;margin-top:14px;font-size:13px;color:#8a5a4a;font-style:italic;cursor:pointer;}
+  .stats{display:flex;gap:10px;margin-bottom:36px;}
+  .stat{flex:1;border:1px solid var(--hair);border-radius:12px;padding:18px 8px 15px;text-align:center;}
+  .stat.accent{border-color:var(--indigo);background:rgba(58,95,206,.08);}
+  .stat-num{font-family:var(--font-display);font-size:26px;line-height:1;color:var(--bone);margin-bottom:7px;}
+  .stat-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);}
+  .stat-note{margin-top:6px;font-weight:300;font-style:italic;font-size:11px;color:var(--bone-faint);}
+
+  .yr{border:1px solid var(--hair);border-top:none;text-align:left;}
+  .yr:first-of-type{border-top:1px solid var(--hair);border-radius:12px 12px 0 0;}
+  .yr:last-of-type{border-radius:0 0 12px 12px;margin-bottom:36px;}
+  .yr summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;font-weight:300;font-size:14px;color:var(--bone);}
+  .yr summary::-webkit-details-marker{display:none;}
+  .yr[open] summary{border-bottom:1px solid var(--hair);}
+  .yr-rows{padding:2px 0;}
+  .yr-row{display:flex;justify-content:space-between;padding:9px 16px;font-weight:300;font-size:13px;color:var(--bone-dim);}
+  .yr-row .amt{color:var(--gold);}
+  .yr-row .amt.neg{color:var(--danger);}
+  .yr-empty{padding:14px 16px;font-weight:300;font-style:italic;font-size:13px;color:var(--bone-faint);}
+
+  @media (max-width:640px){ .stats{flex-wrap:wrap;} .stat{flex:1 1 40%;} .sharerow{flex-direction:column;} }
 </style>
 </head>
 <body class="site-shell">
@@ -177,123 +133,86 @@
     <div class="frame">
       <div class="inner">
 
-        <!-- ACCOUNT -->
-        <span class="barhead">Your account</span>
-        <div class="who">
-          <div class="avatar" id="avatar">&middot;</div>
-          <div><div class="n" id="whoName">&hellip;</div><div class="e" id="whoEmail">&hellip;</div></div>
+        <h1>Account &amp; earnings</h1>
+        <p class="acct-name" id="whoName">&hellip;</p>
+        <p class="acct-email" id="whoEmail">&hellip;</p>
+
+        <div class="tabs">
+          <button class="tab active" id="tab-acct" onclick="showTab('acct')">Account</button>
+          <button class="tab" id="tab-earn" onclick="showTab('earn')">Earnings</button>
         </div>
 
-        <!-- UPGRADE HERO (hidden entirely for lifetime members) -->
-        <div class="upsell" id="upsellHero">
-          <div class="upsell-glow"></div>
-          <div class="ut">Unlock everything</div>
-          <div class="ud">Lifetime access &mdash; voice, unlimited pearls, the full practice. One payment, yours for good. Price rises with each wave.</div>
-          <button class="upsell-btn" id="upsellBtn">&#10022; Upgrade to Lifetime</button>
-          <div class="uf">Wave 1 &middot; closes at 10,000 licences</div>
-        </div>
+        <!-- ================= ACCOUNT ================= -->
+        <div id="pane-acct">
+          <p class="sect">Your membership</p>
+          <div class="listrows">
+            <div class="listrow"><span>Status</span><span class="rowval" id="planStatus">&hellip;</span></div>
+            <div class="listrow"><span>Plan</span><span class="rowval" id="planLabel">&hellip;</span></div>
+            <div class="listrow"><span>Billing</span><span class="rowval" id="billingAction">&hellip;</span></div>
+          </div>
 
-        <!-- Signed in with -->
-        <div class="acc" id="rowProvider" onclick="tog(this)">
-          <div class="acc-head"><span class="lbl">Signed in with</span><div class="r"><span class="val" id="providerVal">&hellip;</span><span class="car">&#9662;</span></div></div>
-          <div class="acc-body"><div class="acc-inner">
-            <div class="field"><span class="k" id="providerEmail">&hellip;</span><div class="acts"><span class="act" id="providerManage" style="display:none;">Manage</span></div></div>
-            <div class="muted" id="providerNote">&hellip;</div>
-          </div></div>
-        </div>
-
-        <!-- Contact email -->
-        <div class="acc" onclick="tog(this)">
-          <div class="acc-head"><span class="lbl">Contact email</span><div class="r"><span class="val" id="contactVal">&hellip;</span><span class="car">&#9662;</span></div></div>
-          <div class="acc-body"><div class="acc-inner">
-            <div class="field">
-              <input id="contactInput" type="email" placeholder="you@example.com" onclick="event.stopPropagation()">
-              <div class="acts"><span class="act" id="contactSave" onclick="event.stopPropagation()">Save</span></div>
+          <p class="sect">Your details</p>
+          <div class="listrows">
+            <div class="listrow"><span>Signed in with</span><span class="rowval" id="providerVal">&hellip;</span></div>
+            <div class="listrow"><span>Contact email</span><span class="rowval"><span id="contactVal">&hellip;</span> · <span class="inline-link" onclick="document.getElementById('emailEdit').style.display='flex'">Change</span></span></div>
+            <div class="inline-form" id="emailEdit" style="display:none">
+              <input id="contactInput" type="email" placeholder="New contact email">
+              <button id="contactSave">Save</button>
             </div>
-            <div class="muted">Where we send receipts, payout notices and account updates. Can differ from your sign-in email.</div>
-          </div></div>
-        </div>
+            <div class="listrow"><span>Sign out of Psyche</span><span class="rowval"><span class="inline-link" id="signOutLink">Sign out</span></span></div>
+          </div>
 
-        <!-- Plan -->
-        <div class="acc" onclick="tog(this)">
-          <div class="acc-head"><span class="lbl">Plan</span><div class="r"><span class="val" id="planVal" style="color:var(--bone-dim)">&hellip;</span><button class="plan-up" id="planUpBtn" onclick="event.stopPropagation();openUpgrade()">Upgrade</button><span class="car">&#9662;</span></div></div>
-          <div class="acc-body"><div class="acc-inner" id="planBody"></div></div>
-        </div>
-
-        <!-- API key -->
-        <div class="acc" onclick="tog(this)">
-          <div class="acc-head"><span class="lbl">API key</span><div class="r"><span class="val" id="apiKeyVal">Not set</span><span class="car">&#9662;</span></div></div>
-          <div class="acc-body"><div class="acc-inner">
-            <div class="field">
-              <input id="apiKeyInput" type="password" placeholder="sk-&hellip;" autocomplete="off" onclick="event.stopPropagation()">
-              <div class="acts">
-                <span class="act" id="apiKeySave" onclick="event.stopPropagation()">Replace</span>
-                <span class="act rm" id="apiKeyRemove" onclick="event.stopPropagation()" style="display:none;">Remove</span>
-              </div>
+          <details class="danger-zone">
+            <summary>Close my account</summary>
+            <div class="danger-body">
+              <p>Closing your account ends your membership, removes your conversations, and stops your referral link working. Anyone who joined through it stops earning for you.</p>
+              <p>Any earnings that are ready are paid out first if you wait for them — deleting before then forfeits what's still pending.</p>
+              <button class="danger-btn" id="closeBtn">Continue to close my account</button>
             </div>
-            <div class="muted">Paste a new key to replace it. Removing the key pauses your chats until a new one is added.</div>
-          </div></div>
+          </details>
         </div>
 
-        <!-- Pearls -->
-        <div class="acc" onclick="tog(this)">
-          <div class="acc-head"><span class="lbl">Daily pearls</span><div class="r"><span class="val" id="pearlsVal">&hellip;</span><span class="car">&#9662;</span></div></div>
-          <div class="acc-body"><div class="acc-inner">
-            <div class="field"><span class="k">Pearls per day</span><span class="act" id="pearlCountAct" onclick="event.stopPropagation();editPearlCount()">&hellip;</span></div>
-            <div class="field"><span class="k">Delivery time</span><span class="act" id="pearlTimeAct" onclick="event.stopPropagation();editPearlTime()">&hellip;</span></div>
-            <div class="field"><span class="k">Daily reminder</span><span class="act" id="pearlReminderAct" onclick="event.stopPropagation();toggleReminder()">&hellip;</span></div>
-          </div></div>
+        <!-- ================= EARNINGS ================= -->
+        <div id="pane-earn" style="display:none">
+          <p class="sect">Your link</p>
+          <div class="linkbox">
+            <span class="linktext" id="refLink">&hellip;</span>
+            <button class="copybtn" id="copyLinkBtn">Copy</button>
+          </div>
+          <div class="sharerow">
+            <button class="sharebtn" data-kind="an avatar">Share an avatar</button>
+            <button class="sharebtn" data-kind="a mini meditation">Share a mini meditation</button>
+            <button class="sharebtn" data-kind="a mini teaching">Share a mini teaching</button>
+          </div>
+          <p class="earn-line">Everything you share carries your link. When someone joins through it, you earn 30% of every payment they make — accruing month after month, for as long as they stay.</p>
+
+          <p class="sect">Your balance</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-num" id="earnPending">&hellip;</div><div class="stat-label">Pending</div><div class="stat-note" id="pendingNote"></div></div>
+            <div class="stat accent"><div class="stat-num" id="earnReady">&hellip;</div><div class="stat-label">Ready</div><div class="stat-note" id="readyNote"></div></div>
+          </div>
+
+          <p class="sect">Your referrals</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-num" id="earnArrived">&hellip;</div><div class="stat-label">Arrived</div></div>
+            <div class="stat"><div class="stat-num" id="earnJoined">&hellip;</div><div class="stat-label">Joined</div></div>
+            <div class="stat"><div class="stat-num" id="earnRetained">&hellip;</div><div class="stat-label">Still with us</div></div>
+            <div class="stat"><div class="stat-num" id="earnPaid">&hellip;</div><div class="stat-label">Paid to date</div></div>
+          </div>
+
+          <p class="sect">Paid into</p>
+          <div class="listrows">
+            <div class="listrow"><span id="payoutMethodVal">&hellip;</span><span class="rowval"><span class="inline-link" id="addPayoutBtn">Add / change</span></span></div>
+          </div>
+
+          <p class="sect">Payout history</p>
+          <div class="yr">
+            <div class="yr-rows" id="ledgerRows"></div>
+          </div>
+
+          <p class="sect">How payouts work</p>
+          <p class="earn-line" style="margin-bottom:0">You earn 30% of every payment, excluding tax, from members who joined through your link — for as long as they stay. New commission stays pending for up to 12 days while the payment settles, then it's ready. Ready earnings of $50 or more are paid to your account on the 1st and 15th of each month. If a payment behind your commission is refunded or reversed, that commission is removed. You're responsible for any tax on your earnings — your payout history above is your record, ready for your accountant.</p>
         </div>
-
-        <!-- EARNINGS -->
-        <div class="section">
-          <span class="barhead">Your earnings</span>
-
-          <div class="earn-top">
-            <div class="cell"><div class="num" id="earnArrived">&hellip;</div><div class="lbl">Arrived</div></div>
-            <div class="cell"><div class="num" id="earnJoined">&hellip;</div><div class="lbl">Joined</div></div>
-            <div class="cell"><div class="num paid" id="earnPaid">&hellip;</div><div class="lbl">Paid to date</div></div>
-          </div>
-
-          <div class="balance">
-            <div class="l">
-              <div class="t">Next payout</div>
-              <div class="a" id="payoutAmt">&hellip;</div>
-              <div class="d" id="payoutNote">&hellip;</div>
-            </div>
-            <div class="car">&#9662;</div>
-          </div>
-
-          <!-- Payout method -->
-          <div class="acc" onclick="tog(this)">
-            <div class="acc-head"><span class="lbl">Payout method</span><div class="r"><span class="val" id="payoutMethodVal">&hellip;</span><span class="car">&#9662;</span></div></div>
-            <div class="acc-body"><div class="acc-inner">
-              <div class="muted" style="margin-top:0;margin-bottom:14px;">Add where your earnings should land. Required before your first payout can be released.</div>
-              <button class="btn-ig" id="addPayoutBtn" onclick="event.stopPropagation();addPayoutMethod()">&#10022; Add payout method</button>
-            </div></div>
-          </div>
-
-          <!-- Ledger -->
-          <div class="acc" onclick="tog(this)">
-            <div class="acc-head"><span class="lbl">Payout history</span><div class="r"><span class="val" id="ledgerCount">&hellip;</span><span class="car">&#9662;</span></div></div>
-            <div class="acc-body" style="transition:max-height .35s ease;"><div class="acc-inner" id="ledgerRows"></div></div>
-          </div>
-
-          <!-- How it works -->
-          <div class="acc" onclick="tog(this)">
-            <div class="acc-head"><span class="lbl">How payouts work</span><div class="r"><span class="car">&#9662;</span></div></div>
-            <div class="acc-body" style="transition:max-height .4s ease;"><div class="acc-inner">
-              <div class="muted" style="margin-top:0;">Commission is held for 30 days while the member&rsquo;s payment clears, then paid on the 1st of each month once your balance is over $50.</div>
-              <div class="muted">A refund or chargeback inside the 30 days removes that commission before it&rsquo;s ever paid. If one lands after payout, the amount is clawed back from your next balance.</div>
-              <div class="muted">Pending amounts aren&rsquo;t final until they clear.</div>
-            </div></div>
-          </div>
-        </div>
-
-        <div class="legal">
-          <a href="payment-terms.html">Payout terms</a> &middot; <a href="terms.html">Terms of use</a> &middot; <a href="privacy.html">Privacy</a>
-        </div>
-        <div class="danger" id="deleteBtn">Delete account &amp; data</div>
 
       </div>
     </div>
@@ -313,15 +232,14 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <script>
   const $=id=>document.getElementById(id);
   const nav=$("nav");
   function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+  const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
 
   // ================= SIDEBAR TOGGLE =================
   function toggleNav(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
-  function closeNav(){ if(window.innerWidth<=760){ nav.classList.add('hidden'); nav.classList.remove('open'); } }
   $("menuBtn").addEventListener('click', toggleNav);
   $("collapseBtn").addEventListener('click', toggleNav);
 
@@ -344,18 +262,22 @@
       box.appendChild(d);
     });
   }
-  function newConversation(){ localStorage.setItem(CC,""); location.href="chat.html"; }
-  $("newChat").onclick=newConversation;
+  $("newChat").onclick=()=>{ localStorage.setItem(CC,""); location.href="chat.html"; };
   document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ location.href=el.getAttribute('data-route'); }; });
+  renderSidebar();
 
-  // ================= ACCORDION ROWS =================
-  function tog(el){ el.classList.toggle('open'); }
+  // ================= TABS =================
+  function showTab(w){
+    $("tab-earn").classList.toggle('active', w==='earn');
+    $("tab-acct").classList.toggle('active', w==='acct');
+    $("pane-earn").style.display = w==='earn' ? '' : 'none';
+    $("pane-acct").style.display = w==='acct' ? '' : 'none';
+  }
 
   // ================= SUPABASE =================
   const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
   const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
   const sb=supabase.createClient(SB_URL,SB_KEY);
-  const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
   let acctUid=null, acctToken=null, acctEmail=null, acctProfile=null;
 
   function renderAccount(){
@@ -368,8 +290,6 @@
     el.innerHTML='<div class="avatar-dot">'+esc(initial)+'</div><div class="meta">'+esc(label)+'<br><span class="plan">'+esc(signedIn?(planLabel+' · manage'):'Sign in')+'</span></div>';
     el.onclick=(e)=>{ e.stopPropagation(); if(!signedIn){ location.href="auth.html"; return; } var m=$("acctMenu"); if(m) m.classList.toggle('open'); };
   }
-
-  // ================= ACCOUNT MENU, HELP & FEEDBACK =================
   const acctMenu=$("acctMenu");
   $("acctSettings").onclick=()=>{ location.href="settings.html"; };
   $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
@@ -377,8 +297,6 @@
   const fbModal=$("fbModal");
   $("fbCancel").onclick=()=>fbModal.classList.remove('open');
   $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ try{ const f=JSON.parse(localStorage.getItem("psyche:feedback")||"[]"); f.push({text:t,at:new Date().toISOString()}); localStorage.setItem("psyche:feedback",JSON.stringify(f)); }catch(e){} } $("fbText").value=""; fbModal.classList.remove('open'); alert("Thank you — your feedback was recorded."); };
-
-  renderSidebar();
 
   // ================= TOP-RIGHT SIGN IN / OUT =================
   function renderTopRight(){
@@ -390,56 +308,50 @@
       el.textContent="Log in"; el.href="auth.html"; el.onclick=null;
     }
   }
+  $("signOutLink").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
 
-  // ================= IDENTITY / PLAN / PROVIDER =================
-  function planIsLifetime(){ return acctProfile && acctProfile.plan==="lifetime"; }
+  // ================= IDENTITY / MEMBERSHIP / PROVIDER =================
+  function isMember(){ return acctProfile && acctProfile.plan && acctProfile.plan!=="free"; }
 
   function renderIdentity(){
     const name=(acctProfile&&acctProfile.display_name)||"";
     const label=name||acctEmail||"Guest";
     $("whoName").textContent=label;
     $("whoEmail").textContent=acctUid ? (acctEmail||"") : "Not signed in";
-    $("avatar").textContent=((label.trim()[0])||"·").toUpperCase();
   }
 
-  function renderUpsell(){
-    $("upsellHero").style.display = planIsLifetime() ? "none" : "";
+  function renderMembership(){
+    const member=isMember();
+    $("planStatus").textContent = !acctUid ? "Not signed in" : (member ? "Active" : "Free");
+    $("planLabel").textContent = !acctUid ? "—" : cap((acctProfile&&acctProfile.plan)||"free");
+    const billing=$("billingAction");
+    billing.innerHTML="";
+    if(!acctUid){
+      const a=document.createElement('span'); a.className="inline-link"; a.textContent="Sign in";
+      a.onclick=()=>location.href="auth.html"; billing.appendChild(a);
+    } else if(member){
+      const a=document.createElement('span'); a.className="inline-link"; a.textContent="Manage →";
+      a.onclick=openBillingPortal; billing.appendChild(a);
+    } else {
+      const a=document.createElement('span'); a.className="inline-link"; a.textContent="Become a member →";
+      a.onclick=()=>location.href="pricing.html"; billing.appendChild(a);
+    }
   }
 
   function renderProvider(){
     const provider = acctUid ? (window.__provider || "email") : null;
-    const name = provider ? cap(provider) : "&hellip;";
     $("providerVal").textContent = acctUid ? cap(provider) : "Not signed in";
-    $("providerEmail").textContent = acctUid ? (acctEmail||"") : "";
-    const manage=$("providerManage");
-    if(provider==="google"){
-      manage.style.display=""; manage.textContent="Manage";
-      manage.onclick=(e)=>{ e.stopPropagation(); window.open("https://myaccount.google.com","_blank"); };
-      $("providerNote").textContent="Changing your Google account is done on Google's side and won't affect your API key or earnings.";
-    } else if(acctUid){
-      manage.style.display="none";
-      $("providerNote").textContent="You sign in with a one-time code sent to this email address — there's no separate account to manage.";
-    } else {
-      manage.style.display="none";
-      $("providerNote").textContent="Sign in to see how you access your account.";
-    }
   }
 
-  function renderPlan(){
-    const plan=(acctProfile&&acctProfile.plan)||"free";
-    const lifetime=planIsLifetime();
-    $("planVal").textContent=cap(plan);
-    $("planVal").style.color = lifetime ? "var(--bone)" : "var(--bone-dim)";
-    $("planUpBtn").style.display = lifetime ? "none" : "";
-    const body=$("planBody");
-    if(lifetime){
-      body.innerHTML = '<div class="muted" style="margin-top:0;margin-bottom:14px;">You have lifetime access &mdash; voice, unlimited pearls and the full practice, for good.</div>'
-        + '<button class="btn-ig" id="manageBillingBtn">&#10022; Manage billing &rarr;</button>';
-      const b=$("manageBillingBtn"); if(b) b.onclick=(e)=>{ e.stopPropagation(); openBillingPortal(); };
-    } else {
-      body.innerHTML = '<div class="muted" style="margin-top:0;margin-bottom:14px;">You&rsquo;re on the free plan &mdash; a taste of Psyche. Lifetime unlocks voice, unlimited pearls and the full practice, for one payment.</div>'
-        + '<button class="upsell-btn" style="margin:0;" id="planUpsellBtn">&#10022; Upgrade to Lifetime</button>';
-      const b=$("planUpsellBtn"); if(b) b.onclick=(e)=>{ e.stopPropagation(); openUpgrade(); };
+  async function openBillingPortal(){
+    if(window.PSYCHE_PREVIEW){ alert("Preview mode — billing portal is not opened."); return; }
+    try{
+      const res=await fetch("/api/portal",{method:"POST",headers:{Authorization:"Bearer "+(acctToken||"")}});
+      const data=await res.json();
+      if(!res.ok || !data.url) throw new Error(data.error||"no url");
+      location.href=data.url;
+    }catch(err){
+      alert("Couldn't open billing just now — please try again in a moment.");
     }
   }
 
@@ -469,191 +381,89 @@
     btn.textContent="Saved ✓"; setTimeout(()=>btn.textContent=label,1800);
   };
 
-  // ================= API KEY =================
-  function maskKey(k){
-    if(!k) return "";
-    const tail=k.slice(-4);
-    return "sk"+"•".repeat(10)+tail;
-  }
-  function renderApiKey(){
-    const key=(acctProfile&&acctProfile.api_key)||"";
-    $("apiKeyVal").textContent = key ? ("•••• "+key.slice(-4)) : "Not set";
-    $("apiKeySave").textContent = key ? "Replace" : "Add";
-    $("apiKeyRemove").style.display = key ? "" : "none";
-    $("apiKeyInput").value="";
-    $("apiKeyInput").placeholder = key ? maskKey(key) : "sk-…";
-  }
-  async function saveApiKey(newKey){
-    if(!acctUid){ location.href="auth.html"; return; }
-    if(window.PSYCHE_PREVIEW){
-      acctProfile=acctProfile||{}; acctProfile.api_key=newKey||null;
-      renderApiKey();
-      return;
-    }
-    const {data:rows,error}=await sb.from("profiles").update({api_key:newKey||null}).eq("id",acctUid).select();
-    if(error||!rows||!rows.length){
-      console.error("api_key save failed (check the profiles.api_key column + RLS UPDATE policy):", error);
-      alert("Couldn't save that just now — please try again.");
-      return;
-    }
-    acctProfile=rows[0];
-    renderApiKey();
-  }
-  $("apiKeySave").onclick=()=>{
-    const val=$("apiKeyInput").value.trim();
-    if(!val){ alert("Paste your new key first."); return; }
-    saveApiKey(val);
-  };
-  $("apiKeyRemove").onclick=()=>{
-    if(confirm("Remove your API key? Chats will pause until a new one is added.")) saveApiKey(null);
-  };
+  // ================= CLOSE ACCOUNT =================
+  // The real, API-backed deletion flow (pending-earnings warning + typed
+  // confirmation) lives on delete-account.html — this just routes there.
+  $("closeBtn").onclick=()=>{ if(!acctUid){ location.href="auth.html"; return; } location.href="delete-account.html"; };
 
-  // ================= DAILY PEARLS =================
-  const REMINDER_KEY="psyche:account:dailyReminder";
-  function loadReminder(){
-    try{ const v=localStorage.getItem(REMINDER_KEY); return v===null ? true : JSON.parse(v); }catch(e){ return true; }
+  // ================= REFERRAL LINK (UI only — no /j/ redirect route exists yet) =================
+  function slugify(s){ return (s||"").toLowerCase().replace(/[^a-z0-9]+/g,"").slice(0,20)||"you"; }
+  function renderRefLink(){
+    const base=(acctProfile&&acctProfile.display_name)||(acctEmail?acctEmail.split("@")[0]:"");
+    const slug=slugify(base);
+    $("refLink").textContent = acctUid ? (location.host+"/j/"+slug) : "Sign in to get your link";
   }
-  function renderPearls(){
-    const count=(acctProfile&&acctProfile.daily_pace)||3;
-    const time=(acctProfile&&acctProfile.pearl_time)||"8:00 AM";
-    const reminder = loadReminder();
-    $("pearlsVal").textContent=count+" · "+time;
-    $("pearlCountAct").textContent=count+" ›";
-    $("pearlTimeAct").textContent=time+" ›";
-    $("pearlReminderAct").textContent=(reminder?"On":"Off")+" ›";
-  }
-  async function savePearlField(patch){
+  $("copyLinkBtn").onclick=async()=>{
     if(!acctUid){ location.href="auth.html"; return; }
-    if(window.PSYCHE_PREVIEW){ acctProfile=Object.assign({},acctProfile,patch); renderPearls(); return; }
-    const {data:rows,error}=await sb.from("profiles").update(patch).eq("id",acctUid).select();
-    if(error||!rows||!rows.length){
-      console.error("daily pearls save failed (check profiles.daily_pace / profiles.pearl_time columns + RLS UPDATE policy):", error);
-      alert("Couldn't save that just now — please try again.");
-      return;
-    }
-    acctProfile=rows[0];
-    renderPearls();
-  }
-  function editPearlCount(){
-    const cur=(acctProfile&&acctProfile.daily_pace)||3;
-    const raw=prompt("Pearls per day (1–10):", cur);
-    if(raw==null) return;
-    const n=Math.max(1,Math.min(10,parseInt(raw,10)||cur));
-    savePearlField({daily_pace:n});
-  }
-  function editPearlTime(){
-    const cur=(acctProfile&&acctProfile.pearl_time)||"8:00 AM";
-    const raw=prompt("Delivery time (e.g. 8:00 AM):", cur);
-    if(raw==null || !raw.trim()) return;
-    savePearlField({pearl_time:raw.trim()});
-  }
-  function toggleReminder(){
-    const next=!loadReminder();
-    try{ localStorage.setItem(REMINDER_KEY, JSON.stringify(next)); }catch(e){}
-    renderPearls();
-  }
+    const text=location.origin+"/j/"+slugify((acctProfile&&acctProfile.display_name)||(acctEmail?acctEmail.split("@")[0]:""));
+    try{ await navigator.clipboard.writeText(text); }catch(e){}
+    const btn=$("copyLinkBtn"), label=btn.textContent;
+    btn.textContent="Copied"; setTimeout(()=>btn.textContent=label,1400);
+  };
+  document.querySelectorAll('.sharebtn').forEach(btn=>{
+    btn.onclick=async()=>{
+      if(!acctUid){ location.href="auth.html"; return; }
+      const kind=btn.getAttribute('data-kind');
+      const link=location.origin+"/j/"+slugify((acctProfile&&acctProfile.display_name)||(acctEmail?acctEmail.split("@")[0]:""));
+      const text="A little of what's helped me lately — "+link;
+      if(navigator.share){
+        try{ await navigator.share({title:"Psyche",text:text}); return; }catch(e){ /* cancelled or unsupported, fall through */ }
+      }
+      try{ await navigator.clipboard.writeText(text); const label=btn.textContent; btn.textContent="Link copied"; setTimeout(()=>btn.textContent=label,1400); }catch(e){}
+    };
+  });
 
   // ================= EARNINGS (placeholder data) =================
   async function loadEarnings(){
     let data=null;
     try{ const res=await fetch("account-earnings-data.json"); data=await res.json(); }catch(e){}
-    data = data || {arrived:0,joined:0,paidToDate:0,nextPayout:{amount:0,note:""},payoutMethod:null,ledger:[]};
+    data = data || {arrived:0,joined:0,retained:0,paidToDate:0,pending:{amount:0,note:""},nextPayout:{amount:0,note:""},payoutMethod:null,ledger:[]};
 
     $("earnArrived").textContent=(data.arrived||0).toLocaleString("en-US");
     $("earnJoined").textContent=(data.joined||0).toLocaleString("en-US");
+    $("earnRetained").textContent=(data.retained||0).toLocaleString("en-US");
     $("earnPaid").textContent="$"+(data.paidToDate||0).toLocaleString("en-US");
 
+    const pend=data.pending||{amount:0,note:""};
+    $("earnPending").textContent="$"+(pend.amount||0).toLocaleString("en-US");
+    $("pendingNote").textContent=pend.note||"";
+
     const np=data.nextPayout||{amount:0,note:""};
-    $("payoutAmt").textContent="$"+(np.amount||0).toLocaleString("en-US");
-    $("payoutNote").textContent=np.note||"";
+    $("earnReady").textContent="$"+(np.amount||0).toLocaleString("en-US");
+    $("readyNote").textContent=np.note||"";
 
     $("payoutMethodVal").textContent = data.payoutMethod ? data.payoutMethod : "Not set";
 
     const ledger=Array.isArray(data.ledger)?data.ledger:[];
-    $("ledgerCount").textContent = ledger.length+(ledger.length===1?" entry":" entries");
     const box=$("ledgerRows");
     box.innerHTML = ledger.map(row=>{
       const neg = (row.amount||0) < 0;
       const amtTxt = (neg?"−":"")+"$"+Math.abs(row.amount||0);
-      const statusClass = row.status==="paid" ? "paid" : (row.status==="clawback" ? "claw" : "");
       const statusLabel = row.status==="paid" ? "Paid" : (row.status==="clawback" ? "Clawback" : "Pending");
-      return '<div class="lrow"><div class="left"><div class="t">'+esc(row.title)+'</div><div class="d">'+esc(row.detail)+'</div></div>'
-        + '<div class="rt"><span class="amt'+(neg?' neg':'')+'">'+amtTxt+'</span><span class="status'+(statusClass?' '+statusClass:'')+'">'+statusLabel+'</span></div></div>';
-    }).join("") || '<div class="muted" style="margin-top:0;">No payouts yet.</div>';
+      return '<div class="yr-row"><span>'+esc(row.title)+' · '+esc(row.detail)+'</span><span class="amt'+(neg?' neg':'')+'">'+amtTxt+' · '+statusLabel+'</span></div>';
+    }).join("") || '<div class="yr-empty">No payouts yet.</div>';
   }
   $("addPayoutBtn").onclick=()=>{
     if(!acctUid){ location.href="auth.html"; return; }
     alert("Payout methods aren't wired up yet — this is UI only for now.");
   };
 
-  // ================= PADDLE — Upgrade to Lifetime =================
-  // NOTE: no real Paddle "Lifetime" one-time price exists yet, so PRICE_LIFETIME is a
-  // placeholder. Once a real one-time price is created in Paddle, swap it in here.
-  // The webhook (api/paddle-webhook.js) also only handles subscription.* events today —
-  // a one-time purchase fires transaction.* events, so it won't yet flip profiles.plan
-  // to "lifetime" on its own. Both are backend/product work outside this task's scope.
-  const PADDLE_TOKEN="test_195b872d4d5350c5482779ad955";
-  const PRICE_LIFETIME="pri_TODO_LIFETIME";
-  try{
-    Paddle.Environment.set("sandbox");
-    Paddle.Initialize({
-      token: PADDLE_TOKEN,
-      eventCallback: function(ev){
-        if(ev && ev.name==="checkout.completed"){
-          alert("Thank you — your payment was received. Your plan will update shortly.");
-          location.reload();
-        }
-      }
-    });
-  }catch(e){}
-  function openUpgrade(){
-    if(window.PSYCHE_PREVIEW){ alert("Preview mode — checkout is not opened."); return; }
-    if(!acctUid){ location.href="auth.html"; return; }
-    if(!PRICE_LIFETIME || PRICE_LIFETIME.indexOf("TODO")>-1){
-      alert("Lifetime checkout isn't fully set up yet — check back shortly.");
-      return;
-    }
-    Paddle.Checkout.open({
-      items: [{ priceId: PRICE_LIFETIME, quantity: 1 }],
-      customer: { email: acctEmail },
-      customData: { user_id: acctUid, plan: "lifetime" }
-    });
-  }
-  $("upsellBtn").onclick=openUpgrade;
-
-  async function openBillingPortal(){
-    if(window.PSYCHE_PREVIEW){ alert("Preview mode — billing portal is not opened."); return; }
-    try{
-      const res=await fetch("/api/portal",{method:"POST",headers:{Authorization:"Bearer "+(acctToken||"")}});
-      const data=await res.json();
-      if(!res.ok || !data.url) throw new Error(data.error||"no url");
-      location.href=data.url;
-    }catch(err){
-      alert("Couldn't open billing just now — please try again in a moment.");
-    }
-  }
-
-  // ================= DELETE ACCOUNT =================
-  $("deleteBtn").onclick=()=>{ location.href="delete-account.html"; };
-
   // ================= BOOT =================
   function renderAll(){
     renderIdentity();
-    renderUpsell();
+    renderMembership();
     renderProvider();
-    renderPlan();
     renderContact();
-    renderApiKey();
-    renderPearls();
     renderAccount();
     renderTopRight();
+    renderRefLink();
   }
 
   if(window.PSYCHE_PREVIEW){
     const p=window.PSYCHE_PREVIEW_PROFILE;
     acctUid=p.id; acctToken=null; acctEmail=p.email;
     window.__provider="email";
-    acctProfile={display_name:p.display_name,plan:p.plan,contact_email:p.email,api_key:"",daily_pace:3,pearl_time:"8:00 AM"};
+    acctProfile={display_name:p.display_name,plan:p.plan,contact_email:p.email};
     renderAll();
     loadEarnings();
   } else {
