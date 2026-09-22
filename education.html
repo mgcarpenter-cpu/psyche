@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Education · Psyche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="site.css">
+<style>
+  :root{
+    /* nav tokens (shared with practice.html) */
+    --cream:#faf8f3; --night:#06090f; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
+    /* page tokens (education mock) */
+    --bg:#000;--fg:#f4f1ea;--mute:rgba(244,241,234,.55);--faint:rgba(244,241,234,.32);--line:rgba(244,241,234,.28);--spine:rgba(244,241,234,.75);--indigo:#5c7fe0;--ig:linear-gradient(180deg,#3a5fce,#1d3891 55%,#132a6b)
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    background:var(--night);color:var(--fg);font-family:Jost,Helvetica,Arial,sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;
+    display:flex;height:100dvh;overflow:hidden;
+  }
+  a{color:inherit;}
+
+  /* ================= SIDEBAR NAV (universal — identical on every page) ================= */
+  nav{
+    width: 258px; background: var(--panel);
+    border-right: 1px solid var(--navline);
+    display: flex; flex-direction: column;
+    flex-shrink: 0; overflow-y: auto; scrollbar-width: none;
+    transition: margin-left 0.25s ease;
+    z-index: 5;
+    color: var(--cream); font-family:var(--font-sans);
+  }
+
+  .fbmodal{ position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal.open{ display: flex; }
+  .fbcard{ background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family:var(--font-sans); }
+  .fbcard h3{ font-weight: 400; font-size: 22px; margin-bottom: 8px; }
+  .fbcard p{ opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
+  .fbcard textarea{ width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family:var(--font-sans); font-size: 16px; outline: none; resize: none; }
+  .fbcard .row{ display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+  .fbcard .row button{ font-family:var(--font-sans); font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
+  .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
+
+  /* ================= MAIN (education mock, verbatim) ================= */
+  main{ flex:1; min-width:0; overflow-y:auto; background:var(--bg); }
+
+  .bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;padding:12px 22px;min-height:58px;background:rgba(0,0,0,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(244,241,234,.12)}
+  .bar .join{margin-left:auto;background:var(--ig);color:#fff;font-weight:500;font-size:13px;letter-spacing:.16em;text-transform:uppercase;padding:14px 30px;text-decoration:none}
+  @media(max-width:1023px){ .bar{top:44px} } /* sit below the shared mobile topbar */
+  .head{max-width:760px;margin:0 auto;padding:30px 22px 6px;text-align:center}
+  .head .lede{max-width:644px}
+  h1{font-family:"Poiret One";font-weight:400;font-size:36px;letter-spacing:.03em;margin-bottom:6px}
+  .lede{color:var(--mute);max-width:56ch;margin:0 auto 4px}
+  .tot{margin:18px auto 12px;max-width:644px;font-family:"Poiret One";font-size:20px;color:#fff;letter-spacing:.03em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 12px;text-align:center}
+  .tot span{width:100%}
+  .tot b{font-weight:400}
+  .tot span{display:block;font-family:Jost,sans-serif;color:var(--mute);font-size:14px;margin-top:2px;letter-spacing:.02em}
+  @media(max-width:600px){.tot{font-size:17px}}
+  .hint{color:var(--faint);font-size:13px}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--indigo);margin-left:6px;vertical-align:middle}
+  .map{position:relative;max-width:980px;margin:20px auto 0;padding:10px 16px 60px}
+  .spine{position:absolute;left:50%;top:0;width:2px;background:var(--spine);transform:translateX(-1px)}
+  .station{position:relative;z-index:2;display:flex;justify-content:center;margin:26px 0 8px}
+  .station.start{margin-top:8px}
+  .station.course{margin:64px 0 0}
+  .station.start + .station.course{margin-top:44px}
+  .gain{position:relative;z-index:2;text-align:center;color:var(--fg);font-size:15px;line-height:1.45;max-width:644px;margin:10px auto 14px;padding:0 16px;background:#000;white-space:nowrap}
+  @media(max-width:700px){.gain{white-space:normal}}
+  .station .box{background:#0b0b0d;border:1px solid rgba(244,241,234,.45);padding:11px 20px;font-size:15px;color:#fff;font-weight:400;text-align:center;max-width:340px}
+  .station.course .box{background:#f4f1ea;color:#000;border-color:#f4f1ea;width:644px;max-width:calc(100% - 32px);height:46px;display:flex;align-items:center;justify-content:flex-start;gap:12px;padding:0 18px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+  .station.course .box .num{font-family:Jost,sans-serif;color:rgba(0,0,0,.55);margin:0;font-weight:400;letter-spacing:.06em}
+  .station.course .box .rng{margin-left:auto;color:rgba(0,0,0,.6);font-size:12.5px;letter-spacing:.04em;text-transform:none;font-weight:400}
+  .station.course .box small{display:inline;color:rgba(0,0,0,.55);margin:0;text-transform:none;letter-spacing:0;font-size:13px;font-weight:300}
+  .station .box small{display:block;color:var(--mute);font-weight:300;font-size:12px;margin-top:2px}
+  .station .box .num{font-family:"Poiret One";color:var(--mute);margin-right:8px}
+  .start .box{font-family:"Poiret One";font-size:16px;border-color:rgba(244,241,234,.45);color:var(--fg);position:relative;background:#000}
+  .start .box .arrow{position:absolute;left:50%;bottom:-22px;width:11px;height:11px;border-right:2px solid rgba(244,241,234,.8);border-bottom:2px solid rgba(244,241,234,.8);transform:translateX(-50%) rotate(45deg)}
+  .goal .box{padding:22px 30px;border-color:rgba(244,241,234,.5);max-width:520px}
+  .goal .box .gt{display:block;font-family:"Poiret One";font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+  .goal .box .gl{display:block;font-size:16.5px;line-height:1.6;font-weight:300}
+  .goal .box small{margin-top:12px;font-size:12.5px}
+  .band{position:relative;z-index:2;display:flex;justify-content:center;margin:44px 0 10px}
+  .band span{background:#000;padding:4px 14px;color:var(--faint);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+  .weeks{display:grid;grid-template-columns:1fr 1fr;gap:10px 0;position:relative;margin:2px 0 8px}
+  .wk{display:flex;align-items:center}
+  .wk.l{justify-content:flex-end;padding-right:22px}
+  .wk.r{justify-content:flex-start;padding-left:22px}
+  .wk .t{position:relative;background:#0b0b0d;border:1px solid rgba(244,241,234,.22);padding:9px 34px 9px 14px;font-size:13px;line-height:1.3;width:300px;min-height:46px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .15s,background .15s}
+  .wk .t .n{font-family:"Poiret One";color:var(--fg);font-size:14px;flex:none;width:72px;letter-spacing:.02em;white-space:nowrap}
+  .wk .t::before{content:"\203A";position:absolute;right:12px;top:50%;transform:translateY(-52%);color:var(--mute);font-size:18px;line-height:1}
+  .wk .t:hover{border-color:rgba(244,241,234,.6);background:#101014}
+  .wk .t.on{background:#15151a;border-color:rgba(244,241,234,.7)}
+  .wk.l .t::after,.wk.r .t::after{content:'';position:absolute;top:50%;width:22px;border-top:1px solid var(--line)}
+  .wk.l .t::after{left:100%}.wk.r .t::after{right:100%}
+
+  .card{grid-column:1/-1;width:644px;max-width:calc(100% - 32px);margin:4px auto 10px;background:#0f0f12;border:1px solid rgba(244,241,234,.35);padding:18px 20px 16px;position:relative}
+  .card .x{position:absolute;top:10px;right:14px;background:none;border:0;color:var(--mute);font-size:20px;cursor:pointer}
+  .card .where{color:var(--faint);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+  .card h2{font-family:"Poiret One";font-weight:400;font-size:22px;margin-bottom:10px}
+  .card .blurb{font-size:14.5px;line-height:1.55;margin-bottom:16px;max-width:64ch}
+  .card .gainw{font-size:15px;line-height:1.5;margin:0 0 16px;padding:8px 0 10px;border-top:1px solid rgba(244,241,234,.1);color:#fff}
+  .card .pts{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 4px}
+  .card .pl{list-style:none;margin:0 0 18px;max-width:64ch}
+  .card .pl li{padding:7px 0 7px 16px;border-top:1px solid rgba(244,241,234,.1);font-size:14px;line-height:1.45;position:relative}
+  .card .pl li::before{content:"";position:absolute;left:0;top:15px;width:6px;height:1px;background:var(--mute)}
+  .card .row{display:flex;gap:10px;margin-bottom:18px}
+  .card .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--fg);color:var(--fg);font:400 12px Jost,sans-serif;padding:8px 13px 8px 10px;background:none}
+  .card .row.dim .btn{border-color:var(--faint);color:var(--faint)}
+  .card .btn.read b{font-weight:400;font-size:12px;line-height:1;transform:scaleX(.7);display:inline-block}
+  .card .row{flex-wrap:wrap}
+  .card .btn i{width:0;height:0;border-left:7px solid currentColor;border-top:4.5px solid transparent;border-bottom:4.5px solid transparent}
+  .card .ev{padding:12px 14px;border:1px solid rgba(92,127,224,.5);font-size:13px;color:var(--mute)}
+  .card .ev b{color:var(--indigo);font-weight:500}
+  .card .lock{color:var(--faint);font-size:13px;margin-top:16px}
+
+  .join-big{display:block;max-width:644px;margin:60px auto 10px;background:var(--ig);color:#fff;text-align:center;font-weight:500;font-size:14px;letter-spacing:.18em;text-transform:uppercase;padding:18px;text-decoration:none}
+  .note{color:var(--faint);font-size:13px;text-align:center;padding-bottom:60px}
+  @media(max-width:600px){.weeks{grid-template-columns:1fr}.wk.l,.wk.r{justify-content:flex-start;padding:0 0 0 calc(50% + 18px)}.wk.l .t::after,.wk.r .t::after{left:auto;right:100%}.wk .t{width:min(300px,44vw)}.station .box{max-width:78vw}}
+</style>
+</head>
+<body class="site-shell">
+
+<script src="site-header.js"></script>
+
+<main>
+  <div class="bar"><a class="join" href="pricing.html">Become a member</a></div>
+  <div class="head"><h1>Twelve courses. Ninety-six weeks.</h1><p class="lede">One path, top to bottom, in the order it is taught. Week by week it uncovers what was there all along — more calm, more peace, clearer thinking, warmer relationships, and a contentment that lasts. Each week: a lesson to watch, a chapter to read, and one sit to do daily. Tap any week to see what it covers.</p><p class="tot"><b>96 lesson videos</b><b>96 guided meditations</b><b>96 chapters to read</b><span>Written for this path. Available nowhere else.</span></p>
+  <p class="hint"><span class="dot" style="margin:0 4px 0 0"></span> marks a week whose teaching is backed by published science.</p></div>
+  <div class="map" id="map"><div class="spine" id="spine"></div></div>
+  <a class="join-big" href="pricing.html">Become a member</a>
+  <p class="note">One course at a time, in order — starting with Course 1, Week 1.</p>
+</main>
+
+<div class="fbmodal" id="fbModal">
+  <div class="fbcard">
+    <h3>Help &amp; feedback</h3>
+    <p>What's working, what isn't, what would make this worth it? Anything helps.</p>
+    <textarea id="fbText" placeholder="Type your thoughts&hellip;"></textarea>
+    <div class="row">
+      <button class="ghost" id="fbCancel">Cancel</button>
+      <button class="primary" id="fbSend">Send</button>
+    </div>
+  </div>
+</div>
+
+<script id="data" type="application/json">[{"name": "Foundation", "tag": "The mechanism", "blurb": "How experience is built, and where it can change.", "phase": "The doorway", "gain": "Relief. The quiet sense that things can change — and that you're not stuck with how it feels now.", "weeks": [{"t": "The world and the mind", "b": "You have never experienced the world. You experience a render, built by your mind — and it can change.", "sci": true, "pts": ["What arrives through the senses — and why it is always late, and always partial", "The two pictures: the world-picture and the thought-picture, running at once", "Where the join between them hides, and why you have never seen it"], "gain": "The first crack in 'that's just how things are'"}, {"t": "The feeling on everything", "b": "Every moment arrives with a feeling already on it. Pleasant, unpleasant, neutral — before you're consulted.", "sci": true, "pts": ["Pleasant, unpleasant, neutral — the feeling that comes stamped on every moment", "Why the feeling is feedback on a picture, not a verdict on the world", "The heart, the gut, the head — where feelings land in the body"], "gain": "Feelings stop being verdicts — a small, real relief"}, {"t": "The three reactions", "b": "Craving, aversion, confusion — the three moves the mind makes, and how to catch them live.", "sci": true, "pts": ["Craving, aversion, confusion — the three moves, and the body-signature of each", "How a reaction is decided before you are consulted", "Catching one live, in an ordinary afternoon"], "gain": "You catch one reaction before it runs you"}, {"t": "Pain, and what we add to it", "b": "The pain life deals, and the suffering we add on top. Learning to leave the second part out.", "sci": true, "pts": ["The pain life deals, and the suffering we add — two layers, one event", "Where anxiety and rumination live, and why they are the second layer", "The check you can run in five seconds, anywhere"], "gain": "Less added suffering, in the same life"}, {"t": "The position", "b": "Step out first, always. From inside a thought nothing can change; from outside, everything can.", "sci": false, "pts": ["Immersed or stepped out — the two positions, and why one of them is sleep", "Why nothing can be changed from inside a thought", "Visiting the stepped-out position until it becomes where you live"], "gain": "A place to stand that isn't inside the storm"}, {"t": "The state you bring", "b": "Calm the body before touching anything. Whatever state you bring, anchors onto what you bring up.", "sci": true, "pts": ["Whatever state you bring to a memory anchors onto it — the mechanism", "Calming the body first: breath, muscles, the nervous system down", "Borrow calm, shrink the picture — loading the right ink"], "gain": "Calm on tap, when you need it most"}, {"t": "The pivot", "b": "Meeting what arises instead of grabbing or pushing. The first real sits.", "sci": true, "pts": ["Meeting a feeling without grabbing or pushing it away", "Why calm is not made, only uncovered", "The first sits: in and out, the breath as handrail"], "gain": "Your first taste of meeting a feeling without fighting it"}, {"t": "The whole, in one place", "b": "All of it together, at full detail. Where the work of every later course happens.", "sci": false, "pts": ["All four parts at full detail, as one picture", "The levers, in the order they are used", "Where every later course does its work"], "gain": "The whole picture, and the confidence to keep going"}]}, {"name": "Generosity", "tag": "A life that holds", "blurb": "Giving, virtue, and the weight of intention — the ground everything stands on.", "phase": "Living well", "gain": "Steadiness. A life that feels safe under your feet.", "weeks": [{"t": "Why giving loosens the grip", "b": "Generosity as the first loosener of craving — and why the giver gets more than the receiver.", "sci": true, "pts": ["Why the giver gets more than the receiver — the mechanism, not the moral", "Giving as the first loosening of the grip", "What generosity does to the feeling-line over a week"], "gain": "The quiet lift of giving, and why it lasts"}, {"t": "One act a day", "b": "Giving as a daily practice: small, real, and noticed.", "sci": false, "pts": ["Small, real, noticed — the shape of a daily act", "Giving time, attention, and the benefit of the doubt", "Keeping it invisible: why nobody needs to know"], "gain": "One kind act a day, and what it does to a week"}, {"t": "A life that holds", "b": "The handful of lines that keep a life steady — and why they free rather than restrict.", "sci": false, "pts": ["The handful of lines that keep a life steady", "Why a line frees rather than restricts", "Choosing your own, and holding them lightly"], "gain": "Lines that hold you when you're tired"}, {"t": "What to grow, what to leave", "b": "Body, speech and mind: the ten habits that shape a life.", "sci": false, "pts": ["The ten habits of body, speech and mind", "Which ones grow a life and which ones leave it thin", "Seeing your own pattern without judgement"], "gain": "Knowing which habits feed you and which drain you"}, {"t": "The evening review", "b": "Looking back on the day, without judgement, to see what's forming.", "sci": false, "pts": ["Looking back over the day, once, without editing", "Noticing what was forming — not what went wrong", "The five-minute version that actually gets done"], "gain": "Ending the day clear instead of churning"}, {"t": "Intention and its result", "b": "What you intend becomes what you are — not payback, the quiet shaping of habit.", "sci": true, "pts": ["What you intend becomes what you are — intention shaping habit", "Not cosmic payback: the quiet, testable version", "Reading the result of an intention a week later"], "gain": "Seeing your own life shaped by intention, not accident"}, {"t": "The intention check", "b": "Catching the intention before the act.", "sci": false, "pts": ["Catching the intention before the act", "The half-second gap, and how to widen it", "Intention as the only thing you fully control"], "gain": "The half-second that changes an outcome"}, {"t": "A week of it, together", "b": "Giving, the lines, and intention, run as one practice.", "sci": false, "pts": ["Giving, the lines, and intention, run together", "What a week of it feels like from the inside", "Carrying it into course three"], "gain": "A week that holds, and the feel of that"}]}, {"name": "Wanting", "tag": "And letting go", "blurb": "The one move — letting go — at the scale of daily life.", "phase": "Living well", "gain": "Freedom. Room to breathe, and the peace of not needing so much.", "weeks": [{"t": "Three kinds of wanting", "b": "Not all wanting is craving. The healthy kind powers the path; the other kind runs it.", "sci": true, "pts": ["Not all wanting is craving — the healthy kind powers the path", "The wanting that runs you, and how to tell the two apart", "Where each one sits in the body"], "gain": "Knowing which of your wants to trust"}, {"t": "The four ways we hold on", "b": "The grips the mind reaches for when it's challenged — and how to feel each one.", "sci": false, "pts": ["The four grips the mind reaches for when challenged", "Pleasures, opinions, methods, self-image", "Feeling a grip tighten in real time"], "gain": "Feeling a grip loosen, in real time"}, {"t": "The eight winds", "b": "Gain and loss, praise and blame, fame and obscurity, pleasure and pain. And their modern UI.", "sci": false, "pts": ["Gain and loss, praise and blame, fame and obscurity, pleasure and pain", "Why the winds now have a user interface", "Standing in the wind without being moved"], "gain": "Standing steady when praise or blame arrives"}, {"t": "What feeds a life", "b": "The four things a life runs on, and what you're really hungry for.", "sci": false, "pts": ["The four things a life runs on", "What you are really hungry for, under the food and the feed", "Feeding the life rather than the hunger"], "gain": "Hunger that is actually satisfied"}, {"t": "Five daily reminders", "b": "Aging, illness, death, loss, ownership of actions — held without panic.", "sci": false, "pts": ["Aging, illness, death, loss, the ownership of actions", "Why remembering them daily produces urgency without panic", "The two-minute morning version"], "gain": "Urgency without panic — a clearer sense of what matters"}, {"t": "Riding the urge", "b": "Staying with the pull until it passes, because it does.", "sci": true, "pts": ["Staying with the pull until it passes — because it does", "The curve of a craving, minute by minute", "Riding it without white-knuckling it"], "gain": "Cravings that pass without winning"}, {"t": "The numbing habits", "b": "Screens, food, drink as escape from the feeling — seen clearly, without shame.", "sci": true, "pts": ["Screens, food, drink — escape from the feeling, seen clearly", "Why shame keeps the habit alive", "Replacing the escape with the meeting"], "gain": "The end of shame around your escapes"}, {"t": "Small experiments in letting go", "b": "A craving diary, and one thing let go of each week.", "sci": false, "pts": ["A craving diary that takes one line a day", "One thing let go of each week, chosen small", "What loosens when you stop pulling"], "gain": "Lighter. Genuinely lighter."}]}, {"name": "What drives us", "tag": "And the way through", "blurb": "The whole mechanism of suffering in four plain steps — and the way of seeing that follows.", "phase": "Living well", "gain": "Clarity. The calm of understanding why you hurt — and that it can end.", "weeks": [{"t": "There is suffering", "b": "Naming it honestly, without drama. The first step.", "sci": false, "pts": ["Naming suffering honestly, without drama", "The everyday kind, not only the catastrophic", "Why naming it is the first release"], "gain": "Naming the weight, and setting half of it down"}, {"t": "It has a cause", "b": "Craving, seen as the engine, not a flaw.", "sci": false, "pts": ["Craving as the engine, not a flaw in you", "Tracing one bad day back to its wanting", "The relief of a mechanism"], "gain": "Seeing your bad days as mechanism, not fate"}, {"t": "It can end", "b": "Not a belief — something tasted, briefly, in every sit.", "sci": false, "pts": ["Tasting the end of it, briefly, in every sit", "Why it is not a belief to hold but a state to visit", "Making the visits longer"], "gain": "A taste of the end of suffering, in your own sit"}, {"t": "There is a way", "b": "The path as a training, not a doctrine.", "sci": false, "pts": ["The path as training, not doctrine", "What each of the eight trainings asks of you", "Where you already are on it"], "gain": "A path you can trust because you've walked its first steps"}, {"t": "Seeing in harmony", "b": "Holding the mechanism as a way of seeing the world, rather than a belief.", "sci": false, "pts": ["Holding the mechanism as a way of seeing, not a belief", "What changes when you see through it", "Living from the view, in traffic"], "gain": "A new way of seeing that stays on after the sit"}, {"t": "How one thing leads to the next", "b": "The chain from contact to suffering — twelve links, run forward.", "sci": false, "pts": ["Twelve links from contact to suffering", "Where the chain can be cut, and where it cannot", "Watching it run in one afternoon"], "gain": "Spotting the chain before it tightens"}, {"t": "The chain run backward", "b": "The same chain, run the other way, to freedom.", "sci": false, "pts": ["The same chain, run the other way, to freedom", "From suffering to trust to joy to stillness", "Why it turns on one link"], "gain": "Turning a spiral upward"}, {"t": "Tracing a link", "b": "Catching one link of the chain live, in your own day.", "sci": false, "pts": ["Catching one link, live, in your own day", "Writing it down in a single line", "What the practice becomes from here"], "gain": "Doing it yourself, in your own day"}]}, {"name": "The open heart", "tag": "Warmth as practice", "blurb": "Kindness, compassion, gladness, and the balance that holds them.", "phase": "Living well", "gain": "Warmth. Feeling connected, to yourself and to everyone around you.", "weeks": [{"t": "The four qualities", "b": "Kindness, compassion, joy in others' joy, and balance — the open heart, mapped.", "sci": true, "pts": ["Kindness, compassion, joy in others' joy, balance — the four, mapped", "How each one feels in the body", "Which one you are short of"], "gain": "Knowing the four qualities by feel"}, {"t": "Letting go is not not-caring", "b": "Release the hook, keep the warmth.", "sci": false, "pts": ["Release the hook, keep the warmth", "Why letting go is not indifference", "Loving without needing"], "gain": "Loving without the hook"}, {"t": "Kindness without limit", "b": "The practice itself — warmth, fed not forced, widening out.", "sci": true, "pts": ["Kindness without limit — the practice, fed not forced", "Starting with yourself, honestly", "Widening it out, one person at a time"], "gain": "Kindness toward yourself that isn't forced"}, {"t": "Compassion", "b": "Meeting suffering with an open heart, without drowning in it.", "sci": true, "pts": ["Meeting suffering with an open heart, without drowning", "Compassion and its near enemy, pity", "Carrying it into a hard conversation"], "gain": "Meeting pain — yours or theirs — without drowning"}, {"t": "Joy in others' joy", "b": "The quality most people never train — and the antidote to comparison.", "sci": false, "pts": ["Gladness at another's good fortune — the quality nobody trains", "Why it is the antidote to comparison", "Practising it on someone you envy"], "gain": "Envy dissolved into gladness"}, {"t": "Equanimity", "b": "Steadiness that isn't indifference — its near enemy, and how to tell them apart.", "sci": true, "pts": ["Steadiness that is not indifference", "Its near enemy, and how to tell them apart", "Equanimity toward your own progress"], "gain": "Steadiness that isn't cold"}, {"t": "Intention in harmony", "b": "Goodwill, harmlessness, letting go — where every action starts.", "sci": false, "pts": ["Goodwill, harmlessness, letting go — where every action starts", "Setting the intention before the day", "Checking it at noon"], "gain": "Actions that start from goodwill"}, {"t": "Pouring the tea with it", "b": "Infusing ordinary action with warmth. The heart door, opened in daily life.", "sci": false, "pts": ["Pouring the tea with kindness — infusing ordinary action", "The heart door, opened in daily life", "Why this is where most of the path is walked"], "gain": "Warmth in the ordinary — the tea, the commute, the kids"}]}, {"name": "Words, work and money", "tag": "Living well", "blurb": "How the seeing shows up in what you say, do, and do for a living.", "phase": "Living well", "gain": "Ease. The feeling of a life that fits together.", "weeks": [{"t": "The four gates of speech", "b": "True, kind, timely, useful — every word passes through them.", "sci": true, "pts": ["True, kind, timely, useful — the four gates", "Which gate your words usually skip", "The pause before speaking"], "gain": "Words you don't have to take back"}, {"t": "Speech in practice", "b": "A week of watching your words at the gate.", "sci": false, "pts": ["A week of watching your words at the gate", "What you say when tired", "The one sentence you would take back"], "gain": "Speaking well when tired"}, {"t": "Action in harmony", "b": "What you do when it costs you something.", "sci": false, "pts": ["What you do when it costs you something", "The gap between values and actions", "Closing it by one act"], "gain": "Actions that match what you value"}, {"t": "Doing no harm", "b": "What it means in a modern life, in practice.", "sci": false, "pts": ["Doing no harm, in a modern life", "The harms that are invisible because everyone does them", "Choosing one to stop"], "gain": "Fewer harms, chosen consciously"}, {"t": "Livelihood in harmony", "b": "The work that pays you, weighed honestly.", "sci": true, "pts": ["The work that pays you, weighed honestly", "Livelihood as practice, not just income", "Where your work sits on the path"], "gain": "Work that sits right"}, {"t": "The livelihood audit", "b": "Looking at your own work without flinching.", "sci": false, "pts": ["Looking at your own work without flinching", "What it grows in you and what it wears down", "The honest audit, on one page"], "gain": "An honest view of your own work"}, {"t": "Money and the grip", "b": "Wanting, at the scale of a bank balance.", "sci": false, "pts": ["Wanting, at the scale of a bank balance", "Enough, and how to recognise it", "Money and the feeling-line"], "gain": "Enough, and knowing it"}, {"t": "A life in harmony", "b": "Words, work and money, running as one.", "sci": false, "pts": ["Words, work and money, running as one", "What a week in harmony looks like from outside", "Carrying it into the training courses"], "gain": "A life that holds together across all of it"}]}, {"name": "Guarding the doors", "tag": "What comes in", "blurb": "The senses as doors, and the engineered world built to pour through them.", "phase": "Training the mind", "gain": "Quiet. The relief of a mind that isn't flooded.", "weeks": [{"t": "The six doors", "b": "The five senses and the mind — where everything enters.", "sci": false, "pts": ["The five senses and the mind — six doors, one room", "What enters, and what you let in", "Standing at the door for a day"], "gain": "Knowing where things enter"}, {"t": "The contact chain", "b": "What happens in the instant something lands, before you know it has.", "sci": false, "pts": ["What happens in the instant something lands", "The chain from contact to feeling to reaction, at speed", "Slowing it down enough to see"], "gain": "Catching contact before it becomes a reaction"}, {"t": "Clear comprehension", "b": "Knowing what you're doing while you're doing it.", "sci": false, "pts": ["Knowing what you are doing while you are doing it", "Purpose, suitability, domain, clarity", "The walk to the car, done awake"], "gain": "Awake in the ordinary — the walk to the car"}, {"t": "The engineered world", "b": "Industrialised craving — food, feeds, autoplay. Every hook is a rep.", "sci": true, "pts": ["Industrialised craving — food, feeds, autoplay", "Why the hook was built by an expert", "Every hook is a rep"], "gain": "Seeing the hook as engineered, not personal"}, {"t": "Shame into clarity", "b": "It's an environment, not a failing. Seeing it dissolves the shame.", "sci": false, "pts": ["It is an environment, not a failing", "How shame keeps the hook set", "Seeing clearly, and the shame dissolving"], "gain": "Shame dissolved into clarity"}, {"t": "The scrolling mind", "b": "The mind that proliferates — named early, caught early.", "sci": false, "pts": ["The mind that runs away with itself", "Naming the scroll as it starts", "Ending a thought-train at the first carriage"], "gain": "Thought-trains ended at the first carriage"}, {"t": "Sense-door noting", "b": "The practice: noticing the door as something comes through it.", "sci": false, "pts": ["Noticing the door as something comes through it", "Seeing, hearing, feeling — the note", "A week of noting"], "gain": "A day of noticing what comes through the doors"}, {"t": "The phone as a practice bell", "b": "Turning the biggest hook into the most frequent reminder.", "sci": false, "pts": ["Turning the biggest hook into the most frequent reminder", "One breath before the unlock", "What changes in a week"], "gain": "Your phone as a practice bell"}]}, {"name": "Working the mind", "tag": "Weeding and planting", "blurb": "The five methods for what's already running, and the states worth growing.", "phase": "Training the mind", "gain": "Confidence. Knowing you can work your own mind.", "weeks": [{"t": "The four efforts", "b": "Prevent, release, grow, sustain — the four movements of a trained mind.", "sci": true, "pts": ["Prevent, release, grow, sustain — the four movements", "Which one you overuse", "Choosing the right effort for the moment"], "gain": "Knowing which effort the moment needs"}, {"t": "The five weathers", "b": "The five states that cloud every meditator, named so you can see them coming.", "sci": false, "pts": ["The five states that cloud every meditator", "Wanting, ill-will, dullness, restlessness, doubt — how each feels", "Naming the weather before it names you"], "gain": "Naming the weather before it names you"}, {"t": "The antidotes", "b": "Each hindrance has its counter. Learning them by feel.", "sci": false, "pts": ["Each hindrance has its counter", "Learning the antidotes by feel, not by list", "Applying one this week"], "gain": "An antidote in hand for each cloud"}, {"t": "Weeding at the right depth", "b": "Settle, starve, replace, hold, root — five depths, used in order.", "sci": false, "pts": ["Settle, starve, replace, hold, root — five depths, in order", "Why you start shallow", "When to go deeper"], "gain": "Weeding at the right depth"}, {"t": "Planting", "b": "The wheel turned on purpose. 'What am I watering right now?'", "sci": false, "pts": ["The wheel turned on purpose", "What am I watering right now?", "Building a state you chose"], "gain": "Building a state you chose"}, {"t": "The seven qualities that carry you", "b": "The seven states that move a mind forward, and how to feed each one.", "sci": false, "pts": ["The seven qualities that carry a mind forward", "Which ones are energisers and which are settlers", "Feeding the one you are short of"], "gain": "Feeding the qualities that carry you"}, {"t": "Balancing energy and calm", "b": "Reading whether to lift or to settle, by feel.", "sci": false, "pts": ["Reading whether to lift or to settle, by feel", "The two mistakes everyone makes", "Balancing in the sit"], "gain": "Balanced — neither dull nor restless"}, {"t": "The ratio", "b": "Grow the light before working the dark.", "sci": false, "pts": ["Grow the light before working the dark", "Why the ratio matters more than any technique", "Setting your ratio for the month"], "gain": "The ratio that keeps the garden light"}]}, {"name": "The breath", "tag": "Training the mind", "blurb": "The oldest handrail, taken all the way in.", "phase": "Training the mind", "gain": "Calm. Found anywhere, in a single breath.", "weeks": [{"t": "The four places attention rests", "b": "Body, feelings, mind, and what arises.", "sci": true, "pts": ["Body, feelings, mind, and what arises — four places attention rests", "Which one you default to", "Resting attention in each, for a minute"], "gain": "Four places to rest attention"}, {"t": "Breath awareness, part one", "b": "Long and short, known as they are. The first four steps.", "sci": true, "pts": ["Long and short, known as they are — the first four steps", "Not changing the breath, only knowing it", "The handrail, felt"], "gain": "The breath, known as it is"}, {"t": "Breath awareness, part two", "b": "Joy and ease on the breath. The second four.", "sci": false, "pts": ["Joy and ease on the breath — the second four", "Letting a peaceful joy come in with the breath", "The body fading on the out-breath"], "gain": "Peaceful joy on the in-breath"}, {"t": "Breath awareness, part three", "b": "The mind on the breath. The third four.", "sci": false, "pts": ["The mind on the breath — the third four", "Gladdening, steadying, releasing the mind", "Where thoughts go when the breath is full"], "gain": "The mind steadied on the breath"}, {"t": "Breath awareness, part four", "b": "Letting go on the breath. The last four.", "sci": false, "pts": ["Letting go on the breath — the last four", "Impermanence, fading, cessation, release", "Why this is where the breath was always going"], "gain": "Letting go, on the breath"}, {"t": "Whole-body breathing", "b": "The breath felt through the whole body, as one thing.", "sci": false, "pts": ["The breath felt through the whole body, as one thing", "Chest, belly, hands, feet — one breath", "Breathing as a whole"], "gain": "Breathing as a whole"}, {"t": "Calming", "b": "Settling the body and the mind with the breath alone.", "sci": false, "pts": ["Settling body and mind with the breath alone", "Calming the formations, in plain words", "Stillness that arrives by itself"], "gain": "Calm that arrives by itself"}, {"t": "The handrail, all the way", "b": "Sixteen steps, done as one sit.", "sci": false, "pts": ["Sixteen steps, done as one sit", "The full form, forty minutes", "Carrying it into absorption"], "gain": "The full form — forty minutes of it"}]}, {"name": "Stillness that holds", "tag": "Absorption I", "blurb": "The doorway to the deep states, and how to reach it safely.", "phase": "Absorption and insight", "gain": "Rest. Stillness that holds you.", "weeks": [{"t": "Access", "b": "The threshold where stillness becomes self-sustaining.", "sci": false, "pts": ["The threshold where stillness becomes self-sustaining", "How access feels from inside", "Staying without holding"], "gain": "Stillness that sustains itself"}, {"t": "The sign", "b": "The inner light that shows stillness is near.", "sci": false, "pts": ["The inner light that shows stillness is near", "What it looks like, what it is not", "Not chasing it"], "gain": "Recognising the sign when it comes"}, {"t": "The absorption trait", "b": "Why some settle easily and some don't.", "sci": true, "pts": ["Why some settle easily and some do not", "The absorption trait, and what science says about it", "Working with the mind you have"], "gain": "Working with the mind you have"}, {"t": "Induction as an on-ramp", "b": "What hypnosis knows about going down, applied here.", "sci": true, "pts": ["What hypnosis knows about going down", "Induction as an on-ramp, not a shortcut", "In and out, in and out"], "gain": "Going down, assisted"}, {"t": "Screening and pacing", "b": "Going deep without going too fast.", "sci": true, "pts": ["Going deep without going too fast", "Screening: who should slow down, and why", "Pacing the descent"], "gain": "Going deep safely, at your pace"}, {"t": "Holding the sign", "b": "Keeping stillness steady once it's found.", "sci": false, "pts": ["Keeping stillness steady once found", "The small adjustments", "Widening the window"], "gain": "Stillness kept steady"}, {"t": "Settling, assisted", "b": "Induction-assisted stillness, as a sit.", "sci": false, "pts": ["Induction-assisted stillness, as a sit", "The full sit, guided", "What to do when it holds"], "gain": "A guided sit at the threshold"}, {"t": "At the threshold", "b": "A week at the door of the deep states.", "sci": false, "pts": ["A week at the door of the deep states", "What is different now", "Preparing for the next course"], "gain": "Ready for what's next"}]}, {"name": "The deep states", "tag": "Absorption II", "blurb": "The deep states themselves — what they are, and what they're for.", "phase": "Absorption and insight", "gain": "Joy. Rest deeper than sleep.", "weeks": [{"t": "The five marks", "b": "How to know a deep state when you're in one.", "sci": false, "pts": ["How to know a deep state when you are in one", "The five marks, plainly", "What it is not"], "gain": "Knowing a deep state when you're in one"}, {"t": "The first depth", "b": "Rapture and ease, held.", "sci": true, "pts": ["Rapture and ease, held", "The first depth from inside", "Staying without grasping"], "gain": "Rapture and ease, held"}, {"t": "The second depth", "b": "Stillness without thought.", "sci": false, "pts": ["Stillness without thought", "The second depth", "What thinking was for"], "gain": "Stillness without thought"}, {"t": "The third depth", "b": "Ease without rapture.", "sci": false, "pts": ["Ease without rapture", "The third depth", "Why less is deeper"], "gain": "Ease without rapture"}, {"t": "The fourth depth", "b": "Equanimity, pure.", "sci": false, "pts": ["Equanimity, pure", "The fourth depth", "Where the breath goes"], "gain": "Equanimity, pure"}, {"t": "Beyond form", "b": "A look further in — overview only.", "sci": false, "pts": ["Beyond form — overview only", "What the traditions describe", "Held as open"], "gain": "A glimpse beyond form"}, {"t": "Entering, factor by factor", "b": "Going in one quality at a time.", "sci": false, "pts": ["Going in one quality at a time", "Factor by factor", "The map of entry"], "gain": "Entering, quality by quality"}, {"t": "Releasing into happiness", "b": "Letting the state be what it is.", "sci": false, "pts": ["Letting the state be what it is", "Releasing into happiness", "Why you cannot make it stay"], "gain": "Letting the state be what it is"}]}, {"name": "Seeing clearly", "tag": "The far shore", "blurb": "Everything arising, seen as it is — the deep end of the path.", "phase": "Absorption and insight", "gain": "Peace. Steady, whatever arises.", "weeks": [{"t": "Everything changes", "b": "The first mark, seen rather than believed.", "sci": false, "pts": ["Everything changes — the first mark, seen rather than believed", "Watching change at the speed it happens", "What it does to the grip"], "gain": "Change, seen rather than believed"}, {"t": "Nothing stands alone", "b": "The second mark — no fixed self to be found.", "sci": false, "pts": ["Nothing stands alone — the second mark", "No fixed self to be found, and why that is not annihilation", "Looking for the owner"], "gain": "The relief of no fixed self"}, {"t": "Everything is unowned", "b": "The third mark, and why it's a relief.", "sci": false, "pts": ["Everything is unowned — the third mark", "Why it is a relief", "Living lightly"], "gain": "Living lightly, unowned"}, {"t": "The five parts", "b": "The five parts we bundle and call a self.", "sci": false, "pts": ["The five parts we bundle and call a self", "Body, feeling, perception, formations, awareness", "Taking the bundle apart"], "gain": "Taking the bundle apart"}, {"t": "The stages of seeing", "b": "The map of insight — the difficult ground, prepared honestly.", "sci": true, "pts": ["The map of insight — the difficult ground, prepared honestly", "What can go wrong and why it passes", "Support, and when to ask for it"], "gain": "Prepared for the difficult ground"}, {"t": "The ten things that bind", "b": "And the four releases that cut them.", "sci": false, "pts": ["The ten things that bind", "The four releases that cut them", "Where you are on the map"], "gain": "Knowing where you are on the map"}, {"t": "Noting practice", "b": "The practice of insight, step by step.", "sci": false, "pts": ["The practice of insight, step by step", "Noting, at speed and at rest", "A week of it"], "gain": "Insight, step by step"}, {"t": "Equanimity toward everything", "b": "Steadiness that holds no matter what arises.", "sci": false, "pts": ["Steadiness that holds no matter what arises", "Equanimity toward everything", "What the path leads to"], "gain": "Steady, whatever arises"}]}]</script>
+<script>
+var C=JSON.parse(document.getElementById('data').textContent),map=document.getElementById('map');
+function el(h){var d=document.createElement('div');d.innerHTML=h;return d.firstElementChild}
+var cur=null,card=null;
+function close(){if(card){card.remove();card=null}if(cur){cur.classList.remove('on');cur=null}}
+function open(ci,co,wi,w,box){
+ var same=(cur===box); close(); if(same)return;
+ cur=box;box.classList.add('on');
+ card=el('<div class="card"><button class="x" aria-label="Close">&times;</button><div class="where">Course '+(ci+1)+' · '+co.name+' · Week '+(ci*8+wi+1)+' of 96</div><h2>'+w.t+(w.sci?'<span class="dot"></span>':'')+'</h2><p class="blurb">'+w.b+'</p><div class="pts">What you gain</div><p class="gainw">'+w.gain+'</p><div class="pts">What\'s inside</div><ul class="pl">'+w.pts.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul><div class="row"><span class="btn"><i></i>Lesson video &middot; 60 min</span><span class="btn"><i></i>Guided meditation &middot; 25 min</span><span class="btn read"><b>&#8214;</b>Read the chapter</span></div>'+(w.sci?'<div class="ev"><b>Backed by science.</b> The evidence for this week\'s teaching sits in the reference document, one line per study with the source.</div>':'')+'<div class="lock">'+((ci===0&&wi===0)?'Open now.':'Opens in order — this week unlocks when you reach it.')+'</div></div>');
+ card.querySelector('.x').onclick=close;
+ // insert after the row (pair) containing this week
+ var row=box.closest('.wk'); var grid=row.parentNode; var kids=[].slice.call(grid.children).filter(function(k){return k.classList.contains('wk')});
+ var idx=kids.indexOf(row); var after=kids[idx%2===0&&kids[idx+1]?idx+1:idx];
+ after.insertAdjacentElement('afterend',card);
+}
+map.appendChild(el('<div class="station start"><div class="box">Start here<small>One course at a time, in order</small><span class="arrow"></span></div></div>'));
+C.forEach(function(co,ci){
+ map.appendChild(el('<div class="station course"><div class="box"><span class="num">Course '+(ci+1)+'</span>'+co.name+'<small>&nbsp;&mdash; '+co.tag+'</small><span class="rng">Weeks '+(ci*8+1)+'&ndash;'+(ci*8+8)+'</span></div></div>'));
+ map.appendChild(el('<div class="gain">'+co.gain+'</div>'));
+ var g=el('<div class="weeks'+(ci?' locked':'')+'"></div>');
+ co.weeks.forEach(function(w,wi){
+   var side=wi%2?'r':'l';
+   var x=el('<div class="wk '+side+'"><div class="t"><span class="n">Week '+(ci*8+wi+1)+'</span><span>'+w.t+(w.sci?'<span class="dot"></span>':'')+'</span></div></div>');
+   x.querySelector('.t').onclick=function(){open(ci,co,wi,w,x.querySelector('.t'))};
+   g.appendChild(x);
+ });
+ map.appendChild(g);
+});
+map.appendChild(el('<div class="station goal"><div class="box"><span class="gt">Where it leads</span><span class="gl">More calm. More peace. Clearer thinking.<br>Warmer relationships. Contentment that lasts.<br>A life that flows.</span><small>Uncovered, not created &mdash; by letting go, one week at a time.</small></div></div>'));
+// spine ends at the goal box
+// (the mock measured goal.offsetTop against .station.goal, its positioned parent,
+// so the height came out negative and the spine never drew — measure via rects)
+var goal=map.querySelector('.station.goal .box'),first=map.querySelector('.station.course');
+function fitSpine(){var sp=document.getElementById('spine'),m=map.getBoundingClientRect(),f=first.getBoundingClientRect(),g=goal.getBoundingClientRect();sp.style.top=(f.top-m.top)+'px';sp.style.height=(g.top-m.top+g.height/2-(f.top-m.top))+'px'}
+fitSpine();window.addEventListener('resize',fitSpine);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const $=id=>document.getElementById(id);
+  const nav=$("nav");
+  function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+  // ================= SIDEBAR TOGGLE =================
+  function toggleNav(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
+  $("menuBtn").addEventListener('click', toggleNav);
+  $("collapseBtn").addEventListener('click', toggleNav);
+
+  // ================= RECENTS =================
+  const CK="psyche:chats", CC="psyche:current";
+  function load(k,d){ try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){ return d; } }
+  let chats=load(CK,[]);
+  function renderSidebar(){
+    const box=$("recents"), label=$("recentsLabel");
+    box.innerHTML="";
+    const list=chats.slice().reverse();
+    if(!list.length){ label.style.display="none"; return; }
+    label.style.display="";
+    list.forEach(c=>{
+      const d=document.createElement('div');
+      d.className="recent";
+      d.textContent=c.title||"New conversation";
+      d.title=c.title||"";
+      d.onclick=()=>{ localStorage.setItem(CC,c.id); location.href="chat.html"; };
+      box.appendChild(d);
+    });
+  }
+  function newConversation(){ localStorage.setItem(CC,""); location.href="chat.html"; }
+  $("newChat").onclick=newConversation;
+  document.querySelectorAll('[data-route]').forEach(el=>{ el.onclick=()=>{ location.href=el.getAttribute('data-route'); }; });
+
+  // ================= AUTH / PROFILE / MEMBER GATE =================
+  // Education is a member page: signed out -> auth, free plan -> membership.
+  // ?preview=1 (preview.js) bypasses the gate for visual QA.
+  const SB_URL="https://hydzekyzbqhcvajnuegh.supabase.co";
+  const SB_KEY="sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb";
+  const sb=supabase.createClient(SB_URL,SB_KEY);
+  let profile=null, currentEmail=null;
+  function planName(p){ return p==='pro'?'Pro plan':(p==='plus'?'Plus plan':'Free plan'); }
+  function isMember(){ return !!(profile && profile.plan && profile.plan!=="free"); }
+  function renderAccount(){
+    const el=$("account"); if(!el) return;
+    const signedIn=!!(profile&&profile.id);
+    const name=(profile&&profile.display_name)||"";
+    const label=name||currentEmail||"Guest";
+    const initial=((label.trim()[0])||"·").toUpperCase();
+    const sub=signedIn ? (planName(profile.plan)+" · Upgrade") : "Sign in";
+    el.innerHTML='<div class="avatar-dot">'+esc(initial)+'</div><div class="meta">'+esc(label)+'<br><span class="plan">'+esc(sub)+'</span></div>';
+    el.onclick=(e)=>{ e.stopPropagation(); if(!signedIn){ location.href="auth.html"; return; } var m=$("acctMenu"); if(m) m.classList.toggle('open'); };
+  }
+  async function loadProfile(session){
+    if(window.PSYCHE_PREVIEW) return;
+    if(!(session&&session.user)){ profile=null; renderAccount(); location.replace("auth.html"); return; }
+    const uid=session.user.id;
+    currentEmail=session.user.email||"";
+    const {data,error}=await sb.from("profiles").select("plan,display_name").eq("id",uid).single();
+    if(error||!data){ console.error("profile fetch failed:",error); renderAccount(); return; }
+    profile={id:uid,plan:data.plan||"free",display_name:data.display_name||""};
+    renderAccount();
+    if(!isMember()){ location.replace("pricing.html"); }
+  }
+  if(window.PSYCHE_PREVIEW){
+    const p=window.PSYCHE_PREVIEW_PROFILE;
+    currentEmail=p.email;
+    profile={id:p.id,plan:p.plan,display_name:p.display_name};
+    renderAccount();
+  } else {
+    sb.auth.getSession().then(({data})=>{ currentEmail=data.session&&data.session.user?data.session.user.email:null; loadProfile(data.session); });
+    sb.auth.onAuthStateChange((_e,session)=>{ currentEmail=session&&session.user?session.user.email:null; setTimeout(()=>loadProfile(session),0); });
+  }
+
+  // ================= ACCOUNT MENU, HELP & FEEDBACK =================
+  const acctMenu=$("acctMenu");
+  $("acctSettings").onclick=()=>{ location.href="settings.html"; };
+  $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
+  document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!$("account").contains(e.target)) acctMenu.classList.remove('open'); });
+  const fbModal=$("fbModal");
+  $("fbCancel").onclick=()=>fbModal.classList.remove('open');
+  $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ try{ const f=JSON.parse(localStorage.getItem("psyche:feedback")||"[]"); f.push({text:t,at:new Date().toISOString()}); localStorage.setItem("psyche:feedback",JSON.stringify(f)); }catch(e){} } $("fbText").value=""; fbModal.classList.remove('open'); alert("Thank you — your feedback was recorded."); };
+
+  renderSidebar();
+</script>
+</body>
+</html>

@@ -49,6 +49,13 @@ is its own chat thread that "remembers" the person.
   drawer + shared mobile topbar. Pages without their own toggle JS mark the script tag
   `data-toggle`. Active item is auto-detected from the URL. Change nav items in ONE place:
   the `items` array in site-header.js.
+- `education.html` — the whole education section (dark 12-courses/96-weeks path map from
+  Mark's mock, shipped 2026-09-22): sticky "Become a member" bar (no wordmark — the sidebar
+  carries it), course data in an inline JSON `<script id="data">`, week cards with inert
+  Lesson video / Guided meditation / Read the chapter buttons (wired week by week later).
+  Week 1 says "Open now"; the rest "opens in order". Both join CTAs → pricing.html.
+  Member-gated: signed out → auth.html, free plan → pricing.html; `?preview=1` bypasses.
+  Nav "Your path → Education" (was a "soon" row) routes here.
 - `api/chat.js`, `api/gemini-token.js` — see above.
 - `images/` — themed reflection images named by tier: `t1_*` (wealth/comfort: yacht,
   ferrari, penthouse), `t2_*` (conflict/hardship), `t3_*` (nature/reflection),

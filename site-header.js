@@ -32,7 +32,7 @@
   var path = [
     { route:'assessment.html', icon:'chart', label:'Know yourself' },
     { soon:true,               icon:'lotus', label:'Meditations' },
-    { soon:true,               icon:'doc',   label:'Education' }
+    { route:'education.html',  icon:'doc',   label:'Education' }
   ];
   var earn = [
     { route:'library.html',            icon:'cards',    label:'Avatar library' },
