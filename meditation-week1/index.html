@@ -1,0 +1,126 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Psyche — Week 1 meditation</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Poiret+One&display=swap" rel="stylesheet">
+<style>
+html,body{height:100%;margin:0;background:#000;overflow:hidden;font-family:Jost,system-ui,sans-serif}
+.stage{position:fixed;inset:0;background:#fff;overflow:hidden}
+video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 1.2s ease;transform-origin:50% 50%}
+body[data-fit=contain] video{object-fit:contain}
+.v2{opacity:0}
+.card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;text-align:center;opacity:0;transition:opacity 1s;pointer-events:none;padding:0 8vw}
+.card.on{opacity:1}
+.card h1{font:400 clamp(34px,6vw,76px)/1.1 'Poiret One',Georgia,serif;color:#111014;margin:0;letter-spacing:.03em}
+.card p{font:300 clamp(14px,1.6vw,19px)/1.4 Jost,system-ui,sans-serif;color:#6b6770;margin:18px 0 0;letter-spacing:.04em}
+.top{position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top,0px) + 16px) 22px 40px;background:linear-gradient(to bottom,rgba(0,0,0,.6),rgba(0,0,0,0));color:#fff;transition:opacity .4s}
+.top .a{font:500 17px/1.3 Jost,system-ui,sans-serif}
+.top .b{font:300 13px/1.4 Jost,system-ui,sans-serif;opacity:.85;margin-top:2px}
+.cap{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 110px);width:min(900px,88vw);text-align:center;transition:bottom .4s}
+.cap span{display:inline-block;animation:capin .5s cubic-bezier(.2,.7,.3,1);color:#111014;font:400 clamp(19px,2.5vw,30px)/1.55 Jost,system-ui,sans-serif;text-shadow:0 0 14px #fff,0 0 26px #fff}
+.capfade{position:absolute;left:0;right:0;bottom:0;height:34vh;background:linear-gradient(to top,rgba(255,255,255,.94) 0%,rgba(255,255,255,.75) 45%,rgba(255,255,255,0) 100%);pointer-events:none;opacity:0;transition:opacity 1s}
+.capfade.on{opacity:1}
+.cap.off{display:none}
+@keyframes capin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.ui{position:absolute;left:0;right:0;bottom:0;padding:48px 20px calc(env(safe-area-inset-bottom,0px) + 10px);background:linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,0));transition:opacity .4s}
+.idle .ui,.idle .top{opacity:0}.idle .cap{bottom:calc(env(safe-area-inset-bottom,0px) + 48px)}.idle{cursor:none}
+.prog{position:relative;height:16px;display:flex;align-items:center;cursor:pointer}
+.rail{position:relative;width:100%;height:4px;background:rgba(255,255,255,.3);transition:height .15s}
+.prog:hover .rail{height:6px}
+.fill{position:absolute;left:0;top:0;bottom:0;width:0;background:#fff}
+.tick{position:absolute;top:0;bottom:0;width:3px;background:rgba(0,0,0,.55)}
+.knob{position:absolute;top:50%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:#fff;left:0;transform:scale(0);transition:transform .15s}
+.prog:hover .knob{transform:scale(1)}
+.tip{position:absolute;bottom:22px;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;font:400 12px Jost,sans-serif;padding:4px 8px;white-space:nowrap;display:none;pointer-events:none}
+.prog:hover .tip{display:block}
+.row{display:flex;align-items:center;gap:6px;height:48px}
+.row button{width:44px;height:44px;border:0;background:none;color:#fff;cursor:pointer;display:grid;place-items:center;padding:0}
+.row svg{width:26px;height:26px;fill:currentColor}
+.t{color:#fff;font-size:14px;margin-left:8px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ch{color:#fff;font-size:14px;opacity:.85;margin-left:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.sp{flex:1}
+.vol{width:0;opacity:0;transition:.2s;accent-color:#fff}
+.vwrap:hover .vol{width:80px;opacity:1}.vwrap{display:flex;align-items:center}
+#cc.on{box-shadow:inset 0 -2px 0 #fff}
+@media (max-width:560px){.ch,.vwrap{display:none}}
+</style></head>
+<body data-fit="cover"><div class="stage" id="stage">
+<video id="v1" muted playsinline preload="auto"></video>
+<video id="v2" class="v2" muted playsinline preload="auto"></video>
+<div class="card" id="card"><h1 id="ch1"></h1><p id="chp"></p></div>
+<div class="capfade" id="capfade"></div>
+<div class="cap" id="cap"></div>
+<div class="top"><div class="a" id="ta"></div><div class="b" id="tb"></div></div>
+<div class="ui">
+ <div class="prog" id="prog"><div class="rail" id="rail"><div class="fill" id="fill"></div><div class="knob" id="knob"></div></div><div class="tip" id="tip"></div></div>
+ <div class="row">
+  <button id="pp" title="Play (k)"><svg viewBox="0 0 24 24" id="ppi"><path d="M8 5v14l11-7z"/></svg></button>
+  <button id="back" title="Back 10s"><svg viewBox="0 0 24 24"><path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="12" y="16" font-size="6.5" text-anchor="middle" font-family="sans-serif">10</text></svg></button>
+  <button id="fwd" title="Forward 10s"><svg viewBox="0 0 24 24"><path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="12" y="16" font-size="6.5" text-anchor="middle" font-family="sans-serif">10</text></svg></button>
+  <div class="vwrap"><button id="mute" title="Mute (m)"><svg viewBox="0 0 24 24" id="vi"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z"/></svg></button><input class="vol" id="vol" type="range" min="0" max="1" step="0.05" value="1"></div>
+  <span class="t" id="t"></span><span class="ch" id="chn"></span>
+  <span class="sp"></span>
+  <button id="cc" title="Captions (c)"><svg viewBox="0 0 24 24"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1z"/></svg></button>
+  <button id="fs" title="Full screen (f)"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+ </div>
+</div>
+<audio id="voice" preload="auto"></audio>
+</div>
+<script>
+const CFG={"mode": "med", "title": "Week 1 \u00b7 Guided meditation", "sub": "Settling \u00b7 25 min", "dur": 1615.8, "captions": false, "cues": [], "audio": "media/w1-meditation.mp3"};const CLIPS={"form": "media/disc-forming.mp4", "loop": "media/disc-breathing.mp4"};
+const $=id=>document.getElementById(id);
+const s=$('stage'),v1=$('v1'),v2=$('v2'),a=$('voice'),cap=$('cap'),card=$('card');
+const url={};for(const k in CLIPS)url[k]=CLIPS[k].slice(0,6)==='media/'?CLIPS[k]:'data:video/mp4;base64,'+CLIPS[k];if(CFG.audio)a.src=CFG.audio.slice(0,6)==='media/'?CFG.audio:'data:audio/mpeg;base64,'+CFG.audio;let k1='',k2='';function setv(v,k){if(v===v1){if(k1===k)return;k1=k}else{if(k2===k)return;k2=k}v.src=url[k];v.load();}
+const CUES=CFG.cues||[],CH=CFG.chap||[],HEAD=CFG.head||4;
+let playing=false,pos=0,last=0,raf,idleT,curCh=-1,cur=0,phase='play',phT=0,rix=-1;const ROTA=(CFG.rota&&CFG.rota.length)?CFG.rota:[];const V=[document.getElementById('v1'),document.getElementById('v2')];
+const PLAY='<path d="M8 5v14l11-7z"/>',PAUSE='<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+const fmt=x=>{x=Math.max(0,x|0);const h=Math.floor(x/3600),m=Math.floor(x%3600/60),sc=String(x%60).padStart(2,'0');return h?h+':'+String(m).padStart(2,'0')+':'+sc:m+':'+sc};
+const dur=()=>a.src&&a.duration?a.duration:CFG.dur;
+const now=()=>a.src?a.currentTime:pos;
+$('ta').textContent=CFG.title;$('tb').textContent=CFG.sub||'';
+if(CFG.captions){$('cc').classList.add('on')}else cap.classList.add('off');
+CH.forEach(c=>{if(c.t>0){const d=document.createElement('div');d.className='tick';d.style.left=(c.t/CFG.dur*100)+'%';$('rail').appendChild(d);}});
+function chAt(t){let i=0;for(let k=0;k<CH.length;k++)if(t>=CH[k].t)i=k;return i}
+function visual(t,seek){
+ if(CFG.mode==='med'){v2.loop=true;const fd=v1.duration||8;
+  if(t<fd-1.5){if(seek||k1!=='form'){setv(v1,'form');v1.currentTime=t;}v1.style.opacity=1;v2.style.opacity=0;v2.pause();playing?v1.play():v1.pause();}
+  else{setv(v2,'loop');v2.style.opacity=1;if(t>=fd)v1.style.opacity=0;playing?v2.play():v2.pause();}
+  return;}
+ const i=chAt(t),c=CH[i],off=t-c.t;
+ if(i!==curCh){curCh=i;
+  $('ch1').textContent=c.title;$('chp').textContent=c.sub;$('tb').textContent=c.title+(c.sub?' — '+c.sub:'');$('chn').textContent='· '+c.title;}
+ card.classList.toggle('on',off<HEAD);
+ const v=V[cur];
+ if(rix<0||seek){ // (re)start rotation
+  rix=Math.max(0,ROTA.length?0:0);
+  if(seek){ // rough-sync rotation to timeline so seeking doesn't always restart at clip 1
+   const CY=(8/0.6)+1.5+2.6; rix=Math.floor(Math.max(0,t)/CY)%ROTA.length;}
+  setv(v,ROTA[rix]);v.playbackRate=0.6;v.currentTime=0;phase='play';
+  v.style.transition='opacity 2.5s ease';v.style.opacity=1;V[1-cur].style.opacity=0;}
+ if(!playing||off<HEAD){v.pause();return;}
+ const T=performance.now();
+ if(phase==='play'){if(v.paused&&!v.ended)v.play();
+  if(v.ended){phase='hold';phT=T;
+   // preload next clip on the spare video, faded out
+   rix=(rix+1)%ROTA.length;const nv=V[1-cur];setv(nv,ROTA[rix]);nv.playbackRate=0.6;nv.currentTime=0;nv.style.transition='opacity 2.5s ease';nv.style.opacity=0;}}
+ else if(phase==='hold'){if(T-phT>2600){phase='x';phT=T;const nv=V[1-cur];nv.play();nv.style.opacity=1;v.style.opacity=0;}}
+ else if(phase==='x'){if(T-phT>2600){v.pause();cur=1-cur;phase='play';}}}
+function draw(){const t=now(),d=dur(),p=Math.min(100,t/d*100);$('fill').style.width=p+'%';$('knob').style.left=p+'%';$('t').textContent=fmt(t)+' / '+fmt(d);
+ let txt='';for(const q of CUES){if(t>=q[0]&&t<q[1]){txt=q[2];break}if(q[0]>t)break;}if(cap.dataset.t!==txt){cap.dataset.t=txt;cap.innerHTML=txt?'<span>'+txt+'</span>':'';}document.getElementById('capfade').classList.toggle('on',!!txt&&!cap.classList.contains('off'));}
+function tick(ts){if(!a.src){pos+=(ts-last)/1000;last=ts;}if(now()>=dur()){pause();return;}visual(now(),false);draw();raf=requestAnimationFrame(tick);}
+function play(){playing=true;$('ppi').innerHTML=PAUSE;if(a.src)a.play();visual(now(),CFG.mode==='med');last=performance.now();raf=requestAnimationFrame(tick);idle();}
+function pause(){playing=false;$('ppi').innerHTML=PLAY;cancelAnimationFrame(raf);a.pause();V[0].pause();V[1].pause();s.classList.remove('idle');draw();}
+function seek(t){t=Math.max(0,Math.min(dur()-0.1,t));if(a.src)a.currentTime=t;else pos=t;visual(t,true);draw();}
+$('pp').onclick=()=>playing?pause():play();
+$('back').onclick=()=>seek(now()-10);$('fwd').onclick=()=>seek(now()+10);
+const P=$('prog');P.onclick=e=>{const r=P.getBoundingClientRect();seek((e.clientX-r.left)/r.width*dur());};
+P.onmousemove=e=>{const r=P.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,t=x*dur();$('tip').style.left=(x*100)+'%';$('tip').textContent=fmt(t)+(CH.length?'  ·  '+CH[chAt(t)].title:'');};
+$('vol').oninput=e=>{a.volume=+e.target.value;a.muted=false;};
+$('mute').onclick=()=>{a.muted=!a.muted;$('vi').style.opacity=a.muted?.4:1;};
+$('cc').onclick=()=>{$('cc').classList.toggle('on');cap.classList.toggle('off');};
+$('fs').onclick=()=>document.fullscreenElement?document.exitFullscreen():s.requestFullscreen&&s.requestFullscreen();
+function idle(){s.classList.remove('idle');clearTimeout(idleT);if(playing)idleT=setTimeout(()=>s.classList.add('idle'),3000);}
+['mousemove','touchstart'].forEach(ev=>s.addEventListener(ev,idle));
+document.querySelector('.ui').addEventListener('click',e=>e.stopPropagation());s.addEventListener('click',()=>{playing?pause():play();});
+document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();idle();
+ if(k===' '||k==='k'){e.preventDefault();playing?pause():play();}else if(k==='arrowleft'||k==='j')seek(now()-10);else if(k==='arrowright'||k==='l')seek(now()+10);
+ else if(k==='f')$('fs').click();else if(k==='m')$('mute').click();else if(k==='c')$('cc').click();});
+v1.addEventListener('loadedmetadata',()=>{if(CFG.mode==='med'||rix<0)visual(now(),true)});visual(0,true);draw();
+</script></body></html>
