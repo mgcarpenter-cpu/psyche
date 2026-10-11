@@ -200,3 +200,6 @@ body.site-shell>.site-main{flex:1 1 auto;min-width:0;}
 @media (min-width:1024px) and (max-height:820px){ .side-mark,body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-size:calc(clamp(14px,3.2vh,22px) * 1.525);} }
 /* collapsed sidebar on desktop: library page titles start below the floating sussuri name instead of under it */
 @media (min-width:1024px){ body:has(nav.site-nav.hidden) .pagetitle{margin-top:calc(var(--nav-pad-y) + var(--nav-mark) * 1.6 + 18px);} }
+
+/* sidebar + top-bar name and menu 10% smaller (11 Oct 2026); the column keeps its width, its contents scale */
+nav.site-nav .side-sticky,aside.side .side-sticky,.site-topbar .menu-btn,.site-topbar .wordmark{zoom:.9;}   /* app pages + the front page */
