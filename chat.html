@@ -104,9 +104,9 @@
 
   .thread{flex:1;overflow-y:auto;padding:34px max(34px,calc(50% - 380px));display:flex;flex-direction:column;gap:26px;scrollbar-width:none;}
   .thread::-webkit-scrollbar{display:none;}
-  .usr{align-self:flex-end;max-width:48ch;word-wrap:break-word;overflow-wrap:anywhere;font-family:var(--font-jost);font-weight:300;font-style:italic;font-size:18px;line-height:1.55;color:rgba(237,230,220,.78);text-align:right;padding:0 18px;border-right:2px solid rgba(237,230,220,.35);position:relative;animation:rise .4s ease both;}
+  .usr{align-self:flex-end;width:fit-content;max-width:60%;word-wrap:break-word;overflow-wrap:anywhere;white-space:pre-wrap;font-family:var(--font-jost);font-weight:400;font-style:normal;font-size:16px;line-height:1.5;color:#111014;background:#d9d4cc;border:none;border-radius:0;text-align:left;padding:8px 14px;position:relative;animation:rise .4s ease both;}
   .psy{max-width:62ch;word-wrap:break-word;overflow-wrap:anywhere;position:relative;animation:rise .4s ease both;}
-  .psy::before{content:'Psyche';display:block;margin-bottom:8px;font-family:var(--font-jost);font-size:11px;font-weight:400;letter-spacing:.28em;text-transform:uppercase;color:rgba(237,230,220,.4);}
+  .psy::before{content:'Sussuri';display:block;margin-bottom:8px;font-family:var(--font-jost);font-size:11px;font-weight:400;letter-spacing:.28em;text-transform:uppercase;color:rgba(237,230,220,.4);}
   .psy .msg{position:relative;font-family:var(--font-jost);font-weight:300;font-size:19px;line-height:1.6;color:#ede6dc;}
   @keyframes rise{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
   @media (prefers-reduced-motion: reduce){ .usr,.psy{animation:none;} }
@@ -136,9 +136,9 @@
   .limitcard.on{display:flex;}
   .limitcard p{flex:1;min-width:0;margin:0;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1.5;color:#ede6dc;}
   .limitcard a{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 22px;background:var(--cta-gradient);color:#fff;font-family:var(--font-jost);font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;text-decoration:none;}
-  .inrow{display:flex;align-items:center;gap:4px;max-width:760px;margin:0 auto;height:56px;background:#000;border:1px solid rgba(237,230,220,.35);padding:0 10px 0 20px;}
-  .inrow input{flex:1;min-width:0;background:none;border:none;padding:0;color:#ede6dc;font-family:var(--font-jost);font-weight:300;font-size:17px;letter-spacing:.01em;outline:none;}
-  .inrow input::placeholder{color:rgba(237,230,220,.45);font-style:normal;}
+  .inrow{display:flex;align-items:flex-end;gap:4px;max-width:760px;margin:0 auto;min-height:56px;background:#000;border:1px solid rgba(237,230,220,.35);padding:5px 10px 5px 20px;}
+  .inrow textarea{flex:1;min-width:0;align-self:center;background:none;border:none;padding:0;margin:0;resize:none;overflow-y:hidden;display:block;color:#ede6dc;font-family:var(--font-jost);font-weight:300;font-size:17px;line-height:1.5;letter-spacing:.01em;outline:none;max-height:calc(17px * 1.5 * 6);}
+  .inrow textarea::placeholder{color:rgba(237,230,220,.45);font-style:normal;}
   .trail{flex:0 0 auto;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;border-radius:0;transition:all .2s;}
   .trail:focus{outline:none;}
   .trail svg{fill:none;stroke-linecap:square;}
@@ -146,6 +146,8 @@
   .trail.voice svg{width:26px;height:18px;stroke:currentColor;stroke-width:2;}
   .trail.live{box-shadow:0 0 0 3px rgba(200,169,110,.35);}
   .trail.sendmode{width:38px;height:38px;background:rgba(237,230,220,.2);box-shadow:none;}
+  .trail.sendmode[hidden]{display:none;}
+  .side-mark,.site-topbar .wordmark{font-family:'Poiret One',var(--font-jost),sans-serif !important;font-weight:400 !important;letter-spacing:.18em !important;text-transform:none;}
   .trail.sendmode svg{width:17px;height:17px;stroke:#ede6dc;stroke-width:1.6;}
   .trail:disabled{opacity:.5;cursor:default;}
 
@@ -176,6 +178,7 @@
 <body class="site-shell">
 
 <script src="site-header.js"></script>
+<script>document.querySelectorAll('.side-mark,.site-topbar .wordmark').forEach(function(e){ e.textContent='sussuri'; });</script>
 
 <a href="pricing.html" id="unlock-cta">Unlock more</a>
 
@@ -210,8 +213,9 @@
         <a href="pricing.html">Keep talking</a>
       </div>
       <div class="inrow" id="inrow">
-        <input class="field" id="field" placeholder="Ask Psyche anything&hellip;" autocomplete="off">
-        <button class="trail voice" id="trail" title="Send / speak">
+        <textarea class="field" id="field" rows="1" placeholder="Ask anything&hellip;" autocomplete="off"></textarea>
+        <button class="trail sendmode" id="sendBtn" type="button" title="Send" aria-label="Send" hidden><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6,12 12,5.5 18,12"/></svg></button>
+        <button class="trail voice" id="trail" title="Speak">
           <svg id="tvoice" viewBox="0 0 34 24"><line x1="4" y1="8" x2="4" y2="16"/><line x1="10.5" y1="4" x2="10.5" y2="20"/><line x1="17" y1="1" x2="17" y2="23"/><line x1="23.5" y1="4" x2="23.5" y2="20"/><line x1="30" y1="8" x2="30" y2="16"/></svg>
           <svg id="tsend" viewBox="0 0 24 24" style="display:none"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6,12 12,5.5 18,12"/></svg>
         </button>
@@ -286,7 +290,7 @@
   const thread=$("thread");
   const orb=$("orb"), orbTap=$("orbTap"), state=$("state"), muteBadge=$("muteBadge");
   const field=$("field");
-  const trail=$("trail"), tvoice=$("tvoice"), tsend=$("tsend");
+  const trail=$("trail"), tvoice=$("tvoice"), tsend=$("tsend"), sendBtn=$("sendBtn");
 
   // ================= SIDEBAR TOGGLE =================
   function toggleNav(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
@@ -515,7 +519,7 @@
     if(voiceActive) stopVoice();
     addUserBubble(text,false);
     field.value=''; swap();
-    sending=true; trail.disabled=true;
+    sending=true; trail.disabled=true; sendBtn.disabled=true;
     setState('Reflecting');
 
     const c=commitUserTurn(text,false);
@@ -531,17 +535,20 @@
       addPsyReply("(connection error — please try again)", text);
       setState('Listening');
     }
-    sending=false; trail.disabled=false;
+    sending=false; trail.disabled=false; sendBtn.disabled=false;
   }
   field.addEventListener('input', swap);
-  field.addEventListener('keydown', e => { if(e.key==='Enter'){ e.preventDefault(); trailTap(); } });
+  field.addEventListener('keydown', e => { if(e.key==='Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); submit(); } });   // Shift+Enter = new line
+  sendBtn.addEventListener('click', submit);
 
+  // send arrow shows (left of the waveform) once there's text; the box grows with the text up to 6 lines, then scrolls
   function swap(){
     const typing=field.value.trim().length>0;
-    trail.classList.toggle('sendmode',typing);
-    trail.classList.toggle('voice',!typing);
-    tvoice.style.display=typing?'none':'block';
-    tsend.style.display=typing?'block':'none';
+    sendBtn.hidden=!typing;
+    field.style.height='auto';
+    const max=parseFloat(getComputedStyle(field).maxHeight);
+    field.style.height=Math.min(field.scrollHeight,max)+'px';
+    field.style.overflowY=field.scrollHeight>max?'auto':'hidden';
   }
   function trailTap(){
     const v=field.value;
