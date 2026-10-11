@@ -61,7 +61,7 @@
   .tot span{display:block;font-family:Jost,sans-serif;color:var(--mute);font-size:14px;margin-top:2px;letter-spacing:.02em}
   @media(max-width:600px){.tot{font-size:17px}}
   .hint{color:var(--faint);font-size:13px}
-  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--indigo);margin-left:6px;vertical-align:middle}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mute);margin-left:6px;vertical-align:middle}
   .map{position:relative;max-width:980px;margin:20px auto 0;padding:10px 16px 60px}
   .spine{position:absolute;left:50%;top:0;width:2px;background:var(--spine);transform:translateX(-1px)}
   .station{position:relative;z-index:2;display:flex;justify-content:center;margin:26px 0 8px}
@@ -114,10 +114,10 @@
   .card .row{flex-wrap:wrap}
   .card .btn i{width:0;height:0;border-left:7px solid currentColor;border-top:4.5px solid transparent;border-bottom:4.5px solid transparent}
   .card .ev{padding:12px 14px;border:1px solid rgba(92,127,224,.5);font-size:13px;color:var(--mute)}
-  .card .ev b{color:var(--indigo);font-weight:500}
+  .card .ev b{color:var(--fg);font-weight:500}
   .card .lock{color:var(--faint);font-size:13px;margin-top:16px}
 
-  .join-big{display:block;max-width:644px;margin:60px auto 10px;background:var(--ig);color:#fff;text-align:center;font-weight:500;font-size:14px;letter-spacing:.18em;text-transform:uppercase;padding:18px;text-decoration:none}
+  .join-big{display:block;max-width:644px;margin:60px auto 10px;background:none;border:1px solid var(--line);color:var(--fg);text-align:center;font-weight:500;font-size:14px;letter-spacing:.18em;text-transform:uppercase;padding:18px;text-decoration:none}
   .note{color:var(--faint);font-size:13px;text-align:center;padding-bottom:60px}
   @media(max-width:600px){.weeks{grid-template-columns:1fr}.wk.l,.wk.r{justify-content:flex-start;padding:0 0 0 calc(50% + 18px)}.wk.l .t::after,.wk.r .t::after{left:auto;right:100%}.wk .t{width:min(300px,44vw)}.station .box{max-width:78vw}}
 </style>

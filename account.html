@@ -57,6 +57,8 @@
   .sect{margin:0 0 14px;font-size:13px;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:rgba(237,230,220,.6);text-align:left;}
   .stats{display:flex;gap:12px;margin-bottom:48px;}
   .stat{flex:1;border:var(--hairline);padding:20px 8px 16px;text-align:center;}
+  .earn-signin{margin:-6px 0 16px;font-family:'Jost',sans-serif;font-weight:400;font-size:14px;color:var(--muted);}
+  .earn-signin a{color:var(--creamtxt);border-bottom:1px solid rgba(237,230,220,.4);text-decoration:none;}
   .stat.accent{border-color:#3a5fce;background:rgba(58,95,206,.08);}
   .stat-num{font-family:'Poiret One';font-size:30px;line-height:1;color:var(--creamtxt);margin-bottom:8px;}
   .stat-label{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(237,230,220,.5);}
@@ -69,7 +71,7 @@
 
   .acct-name{margin:0;font-family:'Poiret One';font-size:26px;color:var(--creamtxt);text-align:left;}
   .acct-email{margin:2px 0 44px;font-weight:300;font-size:14px;color:rgba(237,230,220,.55);text-align:left;}
-  .earn-line{margin:0 0 48px;font-weight:300;font-style:italic;font-size:13.5px;line-height:1.6;color:rgba(237,230,220,.6);text-align:left;}
+  .earn-line{margin:0 0 48px;font-family:'Jost',sans-serif;font-weight:400;font-style:normal;font-size:13.5px;line-height:1.6;color:rgba(237,230,220,.6);text-align:left;}
 
   .linkbox{display:flex;border:1px solid #3a5fce;background:rgba(58,95,206,.08);margin-bottom:14px;}
   .linktext{flex:1;display:flex;align-items:center;padding:0 18px;height:54px;font-weight:300;font-size:16px;letter-spacing:.02em;color:var(--creamtxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
@@ -184,6 +186,7 @@
         <p class="earn-line">Everything you share carries your link. When someone joins through it, you earn 30% of every payment they make — accruing month after month, for as long as they stay.</p>
 
         <p class="sect">Your balance</p>
+        <p class="earn-signin" id="earnSignin" hidden>Sign in to see your earnings. <a href="auth.html">Sign in &rarr;</a></p>
         <div class="stats">
           <div class="stat"><div class="stat-num" id="earnPending">&hellip;</div><div class="stat-label">Pending</div><div class="stat-note" id="pendingNote"></div></div>
           <div class="stat accent"><div class="stat-num" id="earnReady">&hellip;</div><div class="stat-label">Ready</div><div class="stat-note" id="readyNote"></div></div>
@@ -424,7 +427,11 @@
   async function loadEarnings(){
     let data=null;
     try{ const res=await fetch("account-earnings-data.json"); data=await res.json(); }catch(e){}
-    data = data || {arrived:0,joined:0,retained:0,paidToDate:0,pending:{amount:0,note:""},nextPayout:{amount:0,note:""},payoutMethod:null,invoices:[],ledger:[]};
+    const ZERO={arrived:0,joined:0,retained:0,paidToDate:0,pending:{amount:0,note:""},nextPayout:{amount:0,note:""},payoutMethod:null,invoices:[],ledger:[]};
+    data = data || ZERO;
+    // signed out: zeros, never the sample figures
+    if(!acctUid) data = ZERO;
+    $("earnSignin").hidden = !!acctUid;
 
     // invoices (Account tab)
     const inv=Array.isArray(data.invoices)?data.invoices:[];

@@ -1162,6 +1162,24 @@ nav{position:fixed;top:0;left:0;width:258px;height:100dvh;background:rgba(6,10,1
 @media (min-width:1024px){ .screen{ left:var(--nav-w); transition:left .25s ease; } body:has(nav.site-nav.hidden) .screen{ left:0; } }
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:9500;}
 .scrim.on{opacity:1;pointer-events:auto;}
+
+/* ═══ INDIGO RULE (11 Oct 2026): indigo only on the selected option, the ONE primary action of each screen
+   (start: Try it free · questions: Continue · chat: send · results: Join now) and the current item. The rest is neutral. ═══ */
+/* tier cards are light (ink outline); the featured card is dark (cream outline) */
+.tier-btn{background:none !important;border:1px solid rgba(17,16,20,.35) !important;color:#111014 !important;}
+.tier-btn:hover{background:rgba(17,16,20,.05) !important;}
+.tier.featured .tier-btn{background:none !important;border:1px solid rgba(244,242,238,.4) !important;color:#f4f2ee !important;}
+.tier.featured .tier-btn:hover{background:rgba(244,242,238,.06) !important;}
+.tier-badge{background:#06090f !important;border:1px solid rgba(244,242,238,.4) !important;color:#f4f2ee !important;}
+.cta-pill::before{background:rgba(244,242,238,.6) !important;}
+.conv-prog-fill{background:rgba(244,242,238,.7) !important;}
+.chat-msg.user{background:linear-gradient(180deg,#3e3a34,#1f1d1a) !important;border:none !important;color:#fff !important;}
+.thinkg,.smoke-think .dot{background:rgba(244,242,238,.6) !important;}
+.rev-hero{background:rgba(244,242,238,.04) !important;border:1px solid rgba(244,242,238,.12) !important;box-shadow:none !important;}
+#reveal .bar-point.improve{background:rgba(244,242,238,.04) !important;border:1px solid rgba(244,242,238,.14) !important;}
+.rev-arch,.rev-sec-eye,.bar-line-eye,.bar-improve .bar-line-eye,.map-fig-title.clear,.one-thing .rev-sec-eye,.one-thing .rev-sec-title,
+.otb-eye,.prac-eye,.prog-name,.modal-title,.foot a,#personalizingBanner{color:#f4f2ee !important;}
+.tier-list li::before,.modal ul li::before{color:rgba(244,242,238,.6) !important;}
 </style>
 </head>
 <body class="site-shell">
