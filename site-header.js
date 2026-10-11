@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Psyche — shared header partial (the white nav from front-v2.html)
+   Sussuri — shared header partial (the white nav from front-v2.html)
    Include where the page's <nav id="nav"> used to be:
        <script src="site-header.js"></script>
    Renders synchronously in place, so page scripts that bind #menuBtn,

@@ -1,12 +1,12 @@
-// Vercel serverless function — generates the structured "Reveal" (what Psyche sees +
+// Vercel serverless function — generates the structured "Reveal" (what Sussuri sees +
 // the way through) from a real conversation. Keeps the Anthropic API key secret.
 // The browser POSTs { messages, name } to /api/generate.
 
 export const config = { maxDuration: 60 };
 
-const GEN_SYSTEM = `You are Psyche, a contemplative guide grounded in the Buddha's teachings as found in the suttas. Plain modern English — never Pali, never scripture names, never jargon. The wisdom sits quietly underneath.
+const GEN_SYSTEM = `You are Sussuri, a contemplative guide grounded in the Buddha's teachings as found in the suttas. Plain modern English — never Pali, never scripture names, never jargon. The wisdom sits quietly underneath.
 
-You are given a conversation between a person and Psyche. Drawing ONLY from what is in this conversation, produce the understanding underneath it and a concrete way through.
+You are given a conversation between a person and Sussuri. Drawing ONLY from what is in this conversation, produce the understanding underneath it and a concrete way through.
 
 HOW SUFFERING WORKS (your lens — never name it): something touches you (contact) → a feeling-tone arises (pleasant, unpleasant, or neutral) → a reaction follows (grasping at the pleasant, pushing away the unpleasant, or dimming out of the dull) → that reaction is where suffering begins. The way through is to meet the feeling-tone without grabbing, pushing, or dimming — which slowly matures into equanimity.
 
@@ -90,7 +90,7 @@ export default async function handler(req, res) {
     // can't take a conversation that ends on an assistant turn while a tool call is forced.
     const transcript = messages
       .filter(m => m && (m.role === "user" || m.role === "assistant") && m.content)
-      .map(m => (m.role === "user" ? (who || "Me") : "Psyche") + ": " + m.content)
+      .map(m => (m.role === "user" ? (who || "Me") : "Sussuri") + ": " + m.content)
       .join("\n\n");
     const userMessage = "Here is the conversation so far:\n\n" + transcript +
       "\n\nDrawing only from this conversation, record your reading with the record_reveal tool.";

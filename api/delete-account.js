@@ -1,4 +1,4 @@
-// Vercel serverless function — permanently deletes a Psyche account.
+// Vercel serverless function — permanently deletes a Sussuri account.
 //
 // This is a REAL server-side delete, not a client-side flag:
 //   1) deletes the person's `profiles` row (their plan, api_key, contact_email,

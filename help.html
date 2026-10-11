@@ -4,7 +4,7 @@
 <script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Help · Psyche</title>
+<title>Help · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="site.css">
@@ -141,7 +141,7 @@
   <div class="frame">
     <div class="intro">
       <div class="lead">How can we help?</div>
-      <div class="scope">Using Psyche &mdash; navigating, sharing, your account &amp; payments. This isn&rsquo;t the coaching chat, just app help. Pick a question, then ask anything more below.</div>
+      <div class="scope">Using Sussuri &mdash; navigating, sharing, your account &amp; payments. This isn&rsquo;t the coaching chat, just app help. Pick a question, then ask anything more below.</div>
     </div>
 
     <div class="picker" id="picker">
@@ -156,7 +156,7 @@
     </div>
 
     <div class="composer">
-      <input placeholder="Ask about using Psyche&hellip;" id="inp">
+      <input placeholder="Ask about using Sussuri&hellip;" id="inp">
       <button class="send" id="sendBtn">&#8593;</button>
     </div>
   </div>
@@ -283,7 +283,7 @@
   function referralCode(){
     const base=((acctProfile&&acctProfile.display_name)||"friend").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,6)||"friend";
     const suffix=(acctUid||"").replace(/-/g,"").slice(-2)||"00";
-    return "psyche.ai/"+base+suffix;
+    return "sussuri.com/"+base+suffix;
   }
   function accountContext(){
     if(!acctUid) return { signedIn:false };
@@ -321,8 +321,8 @@
     return CONTENT.map(c=>"Q: "+c.question+"\nA: "+c.answer).join("\n\n");
   }
   function buildSystem(){
-    return "You are \"Psyche Help\" — a narrow, scoped support assistant for the Psyche app. "
-      + "You are NOT the Psyche coaching persona: you never coach, never discuss feelings or the practice itself, never give life advice. "
+    return "You are \"Sussuri Help\" — a narrow, scoped support assistant for the Sussuri app. "
+      + "You are NOT the Sussuri coaching persona: you never coach, never discuss feelings or the practice itself, never give life advice. "
       + "Your only job is helping people use the app — navigating, sharing pearls, their account, payments and payouts.\n\n"
       + "RULES — follow exactly, every reply:\n"
       + "1. Answer ONLY using the CONTENT PACK below. Never use outside/general knowledge. Never invent steps, numbers, dates, prices or URLs that aren't in the pack.\n"
@@ -371,7 +371,7 @@
   function addPsyBubble(html, forQuestion){
     const wrap=document.createElement('div');
     wrap.className='psy';
-    wrap.innerHTML='<div class="who">Psyche help</div><div class="msg">'+sanitizeHelpHTML(html)+'</div>';
+    wrap.innerHTML='<div class="who">Sussuri help</div><div class="msg">'+sanitizeHelpHTML(html)+'</div>';
     const actions=buildThumbs(forQuestion);
     wrap.appendChild(actions);
     $("thread").appendChild(wrap);
@@ -382,7 +382,7 @@
   function addEscalateOffer(message, forQuestion, source){
     const wrap=document.createElement('div');
     wrap.className='psy';
-    wrap.innerHTML='<div class="who">Psyche help</div><div class="msg">'+esc(message)+'</div>';
+    wrap.innerHTML='<div class="who">Sussuri help</div><div class="msg">'+esc(message)+'</div>';
     const btn=document.createElement('button');
     btn.className='esc-btn';
     btn.textContent='✦ Send to Mark';

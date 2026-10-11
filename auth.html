@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign in · Psyche</title>
+<title>Sign in · Sussuri</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="site.css">
 <style>
@@ -104,7 +104,7 @@
   <div class="content">
     <div class="page" style="max-width:none;padding:0;">
       <div class="card" id="signinCard">
-        <h1>Welcome to Psyche</h1>
+        <h1>Welcome to Sussuri</h1>
         <p class="lede">Enter your email and we'll send you a link to sign in. No password to remember.</p>
         <input class="field" id="email" type="email" placeholder="you@email.com" autocomplete="email">
         <button class="btn primary" id="emailBtn">Email me a sign-in link</button>
@@ -205,16 +205,16 @@
           var res=await sb2.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin + "/chat.html" } });
           btn.disabled=false; btn.textContent="Email me a sign-in link";
           if(res.error){
-            console.error("Psyche auth: signInWithOtp returned an error —", res.error);
+            console.error("Sussuri auth: signInWithOtp returned an error —", res.error);
             $("authMsg").textContent=res.error.message||"Couldn't send the link — please try again.";
             return;
           }
-          console.log("Psyche auth: sign-in link requested for", email, res);
+          console.log("Sussuri auth: sign-in link requested for", email, res);
           $("sentTo").textContent=email;
           $("signinCard").style.display="none";
           $("sentCard").style.display="block";
         }catch(e){
-          console.error("Psyche auth: signInWithOtp threw —", e);
+          console.error("Sussuri auth: signInWithOtp threw —", e);
           btn.disabled=false; btn.textContent="Email me a sign-in link";
           $("authMsg").textContent="Couldn't reach the sign-in service — please check your connection and try again.";
         }
@@ -223,7 +223,7 @@
       $("email").addEventListener("keydown",function(ev){ if(ev.key==="Enter") sendLink(); });
       $("resend").onclick=function(){ $("sentCard").style.display="none"; $("signinCard").style.display="block"; $("email").focus(); };
     }catch(e){
-      console.error("Psyche auth: setup failed —", e);
+      console.error("Sussuri auth: setup failed —", e);
       var msg=document.getElementById("authMsg");
       if(msg) msg.textContent="Sign-in is temporarily unavailable — please refresh and try again.";
     }

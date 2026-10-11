@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // Personalisation: if the client sent the person's saved name, let Psyche address them by it.
+    // Personalisation: if the client sent the person's saved name, let Sussuri address them by it.
     // Sanitised (single line, trimmed, capped) so a stray value can't reshape the prompt.
     let sys = system || "";
     const who = typeof name === "string" ? name.trim().replace(/\s+/g, " ").slice(0, 60) : "";

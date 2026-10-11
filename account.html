@@ -4,7 +4,7 @@
 <script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Account · Psyche</title>
+<title>Account · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="site.css">
@@ -153,7 +153,7 @@
             <input id="contactInput" type="email" placeholder="New contact email">
             <button id="contactSave">Save</button>
           </div>
-          <div class="listrow"><span>Sign out of Psyche</span><span class="rowval"><span class="inline-link" id="signOutLink">Sign out</span></span></div>
+          <div class="listrow"><span>Sign out of Sussuri</span><span class="rowval"><span class="inline-link" id="signOutLink">Sign out</span></span></div>
         </div>
 
         <details class="danger-zone">
@@ -414,7 +414,7 @@
       if(!acctUid){ location.href="auth.html"; return; }
       const text="A little of what's helped me lately — "+location.origin+"/j/"+refSlug();
       if(navigator.share){
-        try{ await navigator.share({title:"Psyche",text:text}); return; }catch(e){ /* cancelled or unsupported, fall through */ }
+        try{ await navigator.share({title:"Sussuri",text:text}); return; }catch(e){ /* cancelled or unsupported, fall through */ }
       }
       try{ await navigator.clipboard.writeText(text); const label=btn.textContent; btn.textContent="Link copied"; setTimeout(()=>btn.textContent=label,1400); }catch(e){}
     };

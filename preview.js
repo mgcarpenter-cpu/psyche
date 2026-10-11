@@ -1,4 +1,4 @@
-// Psyche dev preview mode — bypasses auth guards across every page for visual QA.
+// Sussuri dev preview mode — bypasses auth guards across every page for visual QA.
 // Activated by ?preview=1, persists via sessionStorage, NEVER touches Supabase or real user data.
 (function () {
   try {
@@ -13,7 +13,7 @@
   window.PSYCHE_PREVIEW_LIMIT = 20;
   window.PSYCHE_PREVIEW_PROFILE = {
     id: "preview-user",
-    email: "preview@psyche.app",
+    email: "preview@sussuri.com",
     display_name: "Preview",
     plan: "free",
     message_count: 3,
