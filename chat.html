@@ -149,11 +149,12 @@
   .trail.sendmode{width:38px;height:38px;background:rgba(237,230,220,.2);box-shadow:none;}
   .trail.sendmode[hidden]{display:none;}
   .side-mark,.site-topbar .wordmark{font-family:'Poiret One',var(--font-jost),sans-serif !important;font-weight:400 !important;letter-spacing:.18em !important;text-transform:none;}
-  /* sussuri wordmark: lowercase letters fill the menu icon's 3 lines (x-height = top line → bottom line); drawer + top bar same size */
-  .site-topbar .wordmark{position:relative;top:-.07em;}
-  @media (max-width:1023px){ .side-mark,.site-topbar .wordmark{font-size:20.5px !important;} }
-  @media (min-width:1024px){ .side-mark,body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-size:calc(var(--nav-mark) * 1.14) !important;} }
-  @media (min-width:1024px) and (max-height:820px){ .side-mark,body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-size:calc(clamp(14px,3.2vh,22px) * 1.14) !important;} }
+  /* sussuri wordmark: the lowercase letters (x-height .462em in Poiret One) span the menu icon's 3 lines, outer edge to outer edge
+     (16.8 of the icon's 22 units), and sit on the bottom line. Size = icon × 16.8/22/.462 = icon × 1.653; drawer + top bar match. */
+  .site-topbar .wordmark{position:relative;top:-.148em;}
+  @media (max-width:1023px){ .side-mark,.site-topbar .wordmark{font-size:29.75px !important;} }
+  @media (min-width:1024px){ .side-mark,body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-size:calc(var(--nav-mark) * 1.653) !important;} }
+  @media (min-width:1024px) and (max-height:820px){ .side-mark,body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-size:calc(clamp(14px,3.2vh,22px) * 1.653) !important;} }
   .trail.sendmode svg{width:17px;height:17px;stroke:#ede6dc;stroke-width:1.6;}
   .trail:disabled{opacity:.5;cursor:default;}
 
