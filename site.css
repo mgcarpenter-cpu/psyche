@@ -203,3 +203,6 @@ body.site-shell>.site-main{flex:1 1 auto;min-width:0;}
 
 /* sidebar + top-bar name and menu 10% smaller (11 Oct 2026); the column keeps its width, its contents scale */
 nav.site-nav .side-sticky,aside.side .side-sticky,.site-topbar .menu-btn,.site-topbar .wordmark{zoom:.9;}   /* app pages + the front page */
+/* the sussuri name a further 10% smaller (11 Oct): .9 inside the .9 column = .81; the top-bar name on its own = .81 */
+.side-mark{zoom:.9;}
+.site-topbar .wordmark{zoom:.81;}
