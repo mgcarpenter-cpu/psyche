@@ -189,3 +189,14 @@ body.site-shell>.site-main{flex:1 1 auto;min-width:0;}
   body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-size:clamp(14px,3.2vh,22px);}
   body:has(nav.site-nav.hidden) .site-topbar .menu-btn svg{width:clamp(14px,3.2vh,22px);height:clamp(14px,3.2vh,22px);}
 }
+
+/* ---------- sussuri wordmark (11 Oct 2026) ----------
+   Lowercase letters (x-height .462em in Poiret One) run from the menu icon's top line to its bottom line (line centres,
+   15.5 of the icon's 22 units) and sit on the bottom line: size = icon x 1.525. Drawer and top bar always match. */
+.side-mark,.site-topbar .wordmark,body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-family:'Poiret One','Jost',sans-serif;font-weight:400;letter-spacing:.18em;text-transform:none;}
+.site-topbar .wordmark{position:relative;top:-.1475em;}
+@media (max-width:1023px){ .side-mark,.site-topbar .wordmark{font-size:27.45px;} }
+@media (min-width:1024px){ .side-mark,body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-size:calc(var(--nav-mark) * 1.525);} }
+@media (min-width:1024px) and (max-height:820px){ .side-mark,body:has(nav.site-nav.hidden) .site-topbar .wordmark{font-size:calc(clamp(14px,3.2vh,22px) * 1.525);} }
+/* collapsed sidebar on desktop: library page titles start below the floating sussuri name instead of under it */
+@media (min-width:1024px){ body:has(nav.site-nav.hidden) .pagetitle{margin-top:calc(var(--nav-pad-y) + var(--nav-mark) * 1.6 + 18px);} }

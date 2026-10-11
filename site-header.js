@@ -68,7 +68,7 @@
   var html =
     '<nav id="nav" class="side site-nav ' + initial + '">' +
       '<div class="side-sticky">' +
-        '<div class="nav-top"><span class="side-mark wordmark-side">PSYCHE</span>' +
+        '<div class="nav-top"><span class="side-mark wordmark-side">sussuri</span>' +
           '<button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button></div>' +
         '<p class="side-group-title first">Chats &amp; practice</p>' +
         '<button class="newchat row" id="newChat">' +
@@ -102,7 +102,7 @@
   s.insertAdjacentHTML('beforebegin', html +
     '<div class="site-topbar"><button class="menu-btn" id="menuBtn" aria-label="Menu">' +
       '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><line x1="3" y1="3.5" x2="19" y2="3.5"></line><line x1="3" y1="11" x2="19" y2="11"></line><line x1="3" y1="18.5" x2="19" y2="18.5"></line></svg>' +
-      '</button><span class="wordmark">PSYCHE</span></div>');
+      '</button><span class="wordmark">sussuri</span></div>');
   document.body.classList.add('has-side');
 
   // remember the desktop collapse state across pages (observes the class the page JS toggles)
