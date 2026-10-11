@@ -130,6 +130,8 @@
   @media (max-width:640px){ .plans{flex-direction:column;gap:18px;} }
 /* every page title starts 60px from the top (site.css .page-title) */
 @media (min-width:1024px){ .scroll{padding-top:11px !important;} }
+/* phones + tablets: every page title starts 76px from the top (44px top bar + 32) */
+@media (max-width:1023px){ main > .topbar{position:absolute !important;top:52px;right:14px;z-index:5;} main{position:relative;} .scroll{padding-top:32px !important;} }
 </style>
 </head>
 <body class="site-shell">

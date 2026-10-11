@@ -122,6 +122,9 @@
   @media(max-width:600px){.weeks{grid-template-columns:1fr}.wk.l,.wk.r{justify-content:flex-start;padding:0 0 0 calc(50% + 18px)}.wk.l .t::after,.wk.r .t::after{left:auto;right:100%}.wk .t{width:min(300px,44vw)}.station .box{max-width:78vw}}
 /* every page title starts 60px from the top (site.css .page-title) */
 @media (min-width:1024px){ main > .bar{position:absolute !important;top:0;right:0;left:auto;z-index:30;background:none !important;border:0 !important;} main{position:relative;} .head{padding-top:60px !important;} }
+/* phones + tablets: every page title starts 76px from the top (44px top bar + 32) */
+@media (max-width:1023px){ main > .bar{position:fixed !important;top:auto !important;bottom:0;left:0;right:0;z-index:40;justify-content:center;} .head{padding-top:32px !important;} main{padding-bottom:80px;} }
+@media (max-width:1023px){ main > .bar .join{margin:0 auto !important;} }
 </style>
 </head>
 <body class="site-shell">

@@ -1191,7 +1191,8 @@ nav{position:fixed;top:0;left:0;width:258px;height:100dvh;background:rgba(6,10,1
 .assess-sub{margin:14px auto 0;max-width:640px;font-family:'Jost',sans-serif;font-weight:300;font-size:14.5px;line-height:1.55;color:rgba(237,230,220,.62);}
 @media (min-width:641px){ .grid{min-height:calc(100vh - 150px) !important;} }   /* pictures keep their size; the black intro scrolls away above them */
 .assess-intro + .assess-prompt{background:#000 !important;border-bottom:0 !important;padding-top:14px !important;}
-@media (max-width:640px){ .assess-intro{padding:16px 16px 0;} .assess-sub{font-size:13.5px;} .assess-gets{flex-direction:column;gap:4px;} .assess-gets li+li::before{content:none;} }
+@media (min-width:641px) and (max-width:1023px){ .assess-intro{padding-top:24px !important;} }   /* tablet: 76px like every page */
+@media (max-width:640px){ .assess-intro{padding:24px 16px 0;} .assess-sub{font-size:13.5px;} .assess-gets{flex-direction:column;gap:4px;} .assess-gets li+li::before{content:none;} }
 
 /* ═══ PICTURE QUESTIONS ON BRAND (11 Oct 2026): Jost, square boxes with hairlines, space between the pictures;
    indigo gradient only on the picked answer and its tick ═══ */

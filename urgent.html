@@ -45,6 +45,17 @@
   @media(max-width:560px){ h1{font-size:1.7rem;} .screen{padding:40px 22px;} }
 /* every page title starts 60px from the top (site.css .page-title) */
 @media (min-width:1024px){ .screen{justify-content:flex-start !important;align-items:center !important;padding-top:60px !important;} .screen > .wrap{margin-top:0 !important;} }
+/* simplified (11 Oct 2026): title fixed at the top; the two sections share the rest of the screen evenly */
+.wrap{display:flex;flex-direction:column;align-items:center;min-height:calc(100dvh - 120px);}
+.lede{font-style:normal !important;margin:22px 0 0 !important;}
+.choices{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;width:100%;padding:clamp(24px,5vh,72px) 0;}
+.choice{display:flex;flex-direction:column;align-items:center;width:min(340px,100%);}
+.choice-label{margin:0 0 20px;font-weight:400;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-dim);}
+.choices .primary{width:100%;}
+.divider{width:min(340px,100%);height:1px;background:rgba(237,230,220,.14);}
+@media (max-width:1023px){ .wrap{min-height:calc(100dvh - 44px - 80px);} }
+/* phones + tablets: title 76px from the top like every page; Close hidden (it sat on the title) */
+@media (max-width:1023px){ .screen{justify-content:flex-start !important;padding-top:32px !important;min-height:calc(100dvh - 44px) !important;} .close{display:none !important;} }
 </style>
 </head>
 <body class="site-shell">
@@ -56,21 +67,18 @@
     <div class="wrap">
 
       <h1 class="page-title">You don’t have to<br>carry this alone.</h1>
-      <p class="lede sans">If things feel overwhelming right now, please reach out to someone who can help — a real person, trained to listen.</p>
-      <p class="sub sans">Sussuri is a space to reflect, but it isn’t emergency support.</p>
-
-      <a class="primary sans" href="https://findahelpline.com" target="_blank" rel="noopener">Find support near you</a>
-      <p class="primary-note sans">Free, confidential support in your country.</p>
-
-      <div class="danger">
-        <p class="t">In immediate danger?</p>
-        <p class="d sans">If you or someone else is at risk of harm right now, contact your local emergency services.</p>
-        <a class="emerg sans" href="https://en.wikipedia.org/wiki/List_of_emergency_telephone_numbers" target="_blank" rel="noopener">Emergency numbers</a>
+      <p class="lede sans">Sussuri isn't emergency support. Please talk to a real person.</p>
+      <div class="choices">
+        <section class="choice">
+          <p class="choice-label sans">Talk to someone</p>
+          <a class="primary sans" href="https://findahelpline.com" target="_blank" rel="noopener">Find support near you</a>
+        </section>
+        <div class="divider" aria-hidden="true"></div>
+        <section class="choice">
+          <p class="choice-label sans">In immediate danger</p>
+          <a class="primary sans" href="https://en.wikipedia.org/wiki/List_of_emergency_telephone_numbers" target="_blank" rel="noopener">Emergency numbers</a>
+        </section>
       </div>
-
-      <p class="closing sans">Whatever you’re facing, it can be met — and it’s easier met with someone beside you. Reaching out is not weakness. It’s the bravest, wisest first step.</p>
-
-      <a class="back sans" href="index.html" onclick="if(history.length>1){history.back();return false;}">← Back to Sussuri</a>
     </div>
   </div>
 </main>
