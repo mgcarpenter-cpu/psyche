@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Sussuri</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=20261011t">
 <style>
 /* ═══════════════════════════════════════════════════════════
    SUSSURI — DESIGN SYSTEM
@@ -1181,6 +1181,18 @@ nav{position:fixed;top:0;left:0;width:258px;height:100dvh;background:rgba(6,10,1
 .otb-eye,.prac-eye,.prog-name,.modal-title,.foot a,#personalizingBanner{color:#f4f2ee !important;}
 .tier-list li::before,.modal ul li::before{color:rgba(244,242,238,.6) !important;}
 
+/* Know yourself: title + what it is, above the pictures */
+.assess-intro{flex-shrink:0;text-align:center;background:#000;padding:8px 24px 4px;}   /* 52px screen top + 8px = title at 60px, as on every page */
+.assess-title{margin:0;font-family:'Poiret One','Jost',sans-serif;font-weight:400;font-size:clamp(26px,3vw,38px);letter-spacing:.03em;color:#ede6dc;line-height:1.1;}
+.assess-lead{margin:8px 0 0;font-family:'Poiret One','Jost',sans-serif;font-size:clamp(17px,1.6vw,21px);color:#ede6dc;}
+.assess-gets{list-style:none;margin:12px auto 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 12px;max-width:820px;}
+.assess-gets li{font-family:'Jost',sans-serif;font-weight:300;font-size:14.5px;color:#ede6dc;padding:0 2px;}
+.assess-gets li+li::before{content:'·';margin-right:12px;color:rgba(237,230,220,.45);}   /* plain text, not boxes: they aren't buttons */
+.assess-sub{margin:14px auto 0;max-width:640px;font-family:'Jost',sans-serif;font-weight:300;font-size:14.5px;line-height:1.55;color:rgba(237,230,220,.62);}
+@media (min-width:641px){ .grid{min-height:calc(100vh - 150px) !important;} }   /* pictures keep their size; the black intro scrolls away above them */
+.assess-intro + .assess-prompt{background:#000 !important;border-bottom:0 !important;padding-top:14px !important;}
+@media (max-width:640px){ .assess-intro{padding:16px 16px 0;} .assess-sub{font-size:13.5px;} .assess-gets{flex-direction:column;gap:4px;} .assess-gets li+li::before{content:none;} }
+
 /* ═══ PICTURE QUESTIONS ON BRAND (11 Oct 2026): Jost, square boxes with hairlines, space between the pictures;
    indigo gradient only on the picked answer and its tick ═══ */
 .grid{gap:24px !important;background:#000 !important;padding:24px !important;}
@@ -1205,7 +1217,7 @@ nav{position:fixed;top:0;left:0;width:258px;height:100dvh;background:rgba(6,10,1
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js"></script>
+<script src="site-header.js?v=20261011t"></script>
 <div class="scrim" id="scrim"></div>
 
 <!-- ═════════════════════════════════════════
@@ -1433,6 +1445,10 @@ nav{position:fixed;top:0;left:0;width:258px;height:100dvh;background:rgba(6,10,1
     <span class="assess-logo">Sussuri</span>
     <span class="assess-info" id="pageInfo"></span>
     <span class="assess-pager" id="pager">1 of 8</span>
+  </div>
+  <div class="assess-intro">
+    <h1 class="assess-title page-title">Know yourself</h1>
+    <p class="assess-lead">See where you are, and which way to grow.</p>
   </div>
   <div class="assess-prompt" id="assessPrompt">Go deep inside yourself and notice how each picture makes you feel.</div>
   <div class="grid" id="grid">

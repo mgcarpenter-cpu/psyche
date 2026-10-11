@@ -7,7 +7,7 @@
 <title>Education · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=20261011t">
 <style>
   :root{
     /* nav tokens (shared with practice.html) */
@@ -120,15 +120,17 @@
   .join-big{display:block;max-width:644px;margin:60px auto 10px;background:none;border:1px solid var(--line);color:var(--fg);text-align:center;font-weight:500;font-size:14px;letter-spacing:.18em;text-transform:uppercase;padding:18px;text-decoration:none}
   .note{color:var(--faint);font-size:13px;text-align:center;padding-bottom:60px}
   @media(max-width:600px){.weeks{grid-template-columns:1fr}.wk.l,.wk.r{justify-content:flex-start;padding:0 0 0 calc(50% + 18px)}.wk.l .t::after,.wk.r .t::after{left:auto;right:100%}.wk .t{width:min(300px,44vw)}.station .box{max-width:78vw}}
+/* every page title starts 60px from the top (site.css .page-title) */
+@media (min-width:1024px){ main > .bar{position:absolute !important;top:0;right:0;left:auto;z-index:30;background:none !important;border:0 !important;} main{position:relative;} .head{padding-top:60px !important;} }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js"></script>
+<script src="site-header.js?v=20261011t"></script>
 
 <main>
   <div class="bar"><a class="join" href="pricing.html">Become a member</a></div>
-  <div class="head"><h1>Twelve courses. Ninety-six weeks.</h1><p class="lede">One path, top to bottom, in the order it is taught. Week by week it uncovers what was there all along — more calm, more peace, clearer thinking, warmer relationships, and a contentment that lasts. Each week: a lesson to watch, a chapter to read, and one sit to do daily. Tap any week to see what it covers.</p><p class="tot"><b>96 lesson videos</b><b>96 guided meditations</b><b>96 chapters to read</b><span>Written for this path. Available nowhere else.</span></p>
+  <div class="head"><h1 class="page-title">Twelve courses. Ninety-six weeks.</h1><p class="lede">One path, top to bottom, in the order it is taught. Week by week it uncovers what was there all along — more calm, more peace, clearer thinking, warmer relationships, and a contentment that lasts. Each week: a lesson to watch, a chapter to read, and one sit to do daily. Tap any week to see what it covers.</p><p class="tot"><b>96 lesson videos</b><b>96 guided meditations</b><b>96 chapters to read</b><span>Written for this path. Available nowhere else.</span></p>
   <p class="hint"><span class="dot" style="margin:0 4px 0 0"></span> marks a week whose teaching is backed by published science.</p></div>
   <div class="map" id="map"><div class="spine" id="spine"></div></div>
   <a class="join-big" href="pricing.html">Become a member</a>

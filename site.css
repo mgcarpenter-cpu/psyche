@@ -206,3 +206,11 @@ nav.site-nav .side-sticky,aside.side .side-sticky,.site-topbar .menu-btn,.site-t
 /* the sussuri name a further 10% smaller (11 Oct): .9 inside the .9 column = .81; the top-bar name on its own = .81 */
 .side-mark{zoom:.9;}
 .site-topbar .wordmark{zoom:.81;}
+
+/* ---------- one page-title style on every page (11 Oct 2026): Poiret One, same size, centred ----------
+   Each page sets only its margin-top so every title starts the same distance from the top (see .page-title rules in each page). */
+.page-title{display:block;font-family:'Poiret One','Jost',sans-serif !important;font-weight:400 !important;font-style:normal !important;
+  font-size:clamp(32px,3.4vw,48px) !important;letter-spacing:.01em !important;line-height:1.15 !important;text-align:center !important;
+  margin-left:auto !important;margin-right:auto !important;}
+.page-title + p,.page-title + .lede,.page-title + .subhead,.page-title + .pagesub,.page-title + .updated,.page-title + .soonlede,
+.page-title ~ .acct-name,.page-title ~ .acct-email{text-align:center !important;}

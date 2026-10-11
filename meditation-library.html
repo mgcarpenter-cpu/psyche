@@ -7,7 +7,7 @@
 <title>Meditation library · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=20261011t">
 <style>
   :root{
     --gold:rgba(213,185,134,.9);--indigo:#1d3891;--bone-dim:#9aa0ab;--bone-faint:#5f6572;
@@ -167,17 +167,19 @@
 
   .done-note{text-align:center;font-size:12.5px;color:var(--bone-faint);margin-top:22px;line-height:1.5;font-style:italic;}
   .done-note b{color:var(--bone-dim);font-weight:400;font-style:normal;}
+/* every page title starts 60px from the top (site.css .page-title) */
+@media (min-width:1024px){ .pagetitle.page-title{margin-top:60px !important;} }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js"></script>
+<script src="site-header.js?v=20261011t"></script>
 
 <a href="pricing.html" id="boost-cta">Boost my earnings</a>
 
 <main>
   <div class="page">
-    <h1 class="pagetitle">Meditation Library</h1>
+    <h1 class="pagetitle page-title">Meditation Library</h1>
     <p class="pagesub">Watch and share on your socials &mdash; every share carries your link.</p>
     <div class="statsrow">
       <span class="statitem"><span class="statnum" id="totalArrived">0</span><span class="statlabel">Arrived</span></span>

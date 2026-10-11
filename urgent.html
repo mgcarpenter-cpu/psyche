@@ -7,7 +7,7 @@
 <title>Urgent help · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=20261011t">
 <style>
   :root{
     --cream:#faf8f3; --night:#06090f; --indigo:#1d3891;
@@ -43,18 +43,19 @@
   .back:hover{color:var(--bone);}
 
   @media(max-width:560px){ h1{font-size:1.7rem;} .screen{padding:40px 22px;} }
+/* every page title starts 60px from the top (site.css .page-title) */
+@media (min-width:1024px){ .screen{justify-content:flex-start !important;align-items:center !important;padding-top:60px !important;} .screen > .wrap{margin-top:0 !important;} }
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js" data-toggle></script>
+<script src="site-header.js?v=20261011t" data-toggle></script>
 <main class="site-main">
   <div class="screen">
     <a class="close sans" href="index.html" id="closeBtn" onclick="if(history.length>1){history.back();return false;}">✕ Close</a>
 
     <div class="wrap">
-      <p class="wm">sussuri</p>
 
-      <h1>You don’t have to<br>carry this alone.</h1>
+      <h1 class="page-title">You don’t have to<br>carry this alone.</h1>
       <p class="lede sans">If things feel overwhelming right now, please reach out to someone who can help — a real person, trained to listen.</p>
       <p class="sub sans">Sussuri is a space to reflect, but it isn’t emergency support.</p>
 

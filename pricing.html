@@ -7,7 +7,7 @@
 <title>Membership · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=20261011t">
 <style>
   :root{
     --indigo:#1d3891;--bone:#e8e4dc;--bone-dim:#9aa0ab;--bone-faint:#5f6572;
@@ -128,11 +128,13 @@
   .sticky-cta .cta{max-width:560px;}
 
   @media (max-width:640px){ .plans{flex-direction:column;gap:18px;} }
+/* every page title starts 60px from the top (site.css .page-title) */
+@media (min-width:1024px){ .scroll{padding-top:11px !important;} }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js"></script>
+<script src="site-header.js?v=20261011t"></script>
 
 <main>
   <div class="topbar">
@@ -142,8 +144,7 @@
   <div class="scroll">
     <div class="shell">
 
-      <p class="eyebrow">Membership</p>
-      <h1>Start your journey</h1>
+      <h1 class="page-title">Start your journey</h1>
       <p class="subhead">For everything you keep carrying — a way through, at your own pace.</p>
 
       <div class="country-row">

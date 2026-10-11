@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sussuri — Settings</title>
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=20261011t">
 <style>
   :root{ --cream:#faf8f3; --night:#06090f; --indigo:#1d3891; --panel:rgba(6,10,18,0.96); --line:rgba(250,248,243,0.1); }
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -89,16 +89,18 @@
   .danger{background:transparent;border:1px solid rgba(224,120,86,.5);color:#e07856;}
   .danger:hover{background:rgba(224,120,86,.1);}
   .note{opacity:.45;font-style:italic;font-size:14px;margin-top:8px;line-height:1.5;}
+/* every page title starts 60px from the top (site.css .page-title) */
+@media (min-width:1024px){ .page{padding-top:60px !important;} }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js"></script>
+<script src="site-header.js?v=20261011t"></script>
 
 <main>
   <div class="page">
     <div class="wrap">
-      <h1>Settings</h1>
+      <h1 class="page-title">Settings</h1>
       <div class="row">
         <div class="lbl">Signed in as</div>
         <div class="val" id="email">—</div>

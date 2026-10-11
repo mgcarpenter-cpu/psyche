@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sussuri — Terms of Service</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=20261011t">
 <style>
   :root{
     --cream:#faf8f3; --night:#06090f; --indigo:#1d3891;
@@ -76,17 +76,19 @@
   .footlinks{margin-top:14px;font-style:normal;}
   .footlinks a{color:var(--cream);text-decoration:underline;text-underline-offset:3px;}
 
+/* every page title starts 60px from the top (site.css .page-title) */
+@media (min-width:1024px){ .page{padding-top:60px !important;} }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js"></script>
+<script src="site-header.js?v=20261011t"></script>
 <div class="scrim" id="scrim"></div>
 
 <main>
   <div class="content">
     <div class="page">
-<h1>Terms of Service</h1>
+<h1 class="page-title">Terms of Service</h1>
       <div class="updated">Last updated: 14 August 2026</div>
       <h2>What Sussuri is — and isn't</h2>
       <p>Sussuri is an AI-powered reflection and coaching tool grounded in contemplative psychology. It is <strong>not</strong> therapy, medical care, or crisis support, and it is not a substitute for any of them. AI can be wrong; treat Sussuri's words as a mirror to think with, not instructions to follow. If you are in crisis, use the support options in the app or contact local emergency services.</p>
