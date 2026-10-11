@@ -1158,6 +1158,8 @@ nav{position:fixed;top:0;left:0;width:258px;height:100dvh;background:rgba(6,10,1
 
 
 
+/* desktop: the full-window screens start beside the sidebar column, and slide back when it collapses */
+@media (min-width:1024px){ .screen{ left:var(--nav-w); transition:left .25s ease; } body:has(nav.site-nav.hidden) .screen{ left:0; } }
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:9500;}
 .scrim.on{opacity:1;pointer-events:auto;}
 </style>
@@ -2641,9 +2643,11 @@ document.addEventListener("keydown", e => {
 <script>
 (function(){
   var nav=document.getElementById('nav'), scrim=document.getElementById('scrim');
-  function openNav(){ nav.classList.add('open'); scrim.classList.add('on'); }
-  function closeNav(){ nav.classList.remove('open'); scrim.classList.remove('on'); }
-  function toggleNav(){ if(nav.classList.contains('open')) closeNav(); else openNav(); }
+  // desktop: the sidebar is a column that collapses (.hidden); below 1024px it's a drawer with a scrim (.open)
+  var wide=function(){ return window.matchMedia('(min-width:1024px)').matches; };
+  function openNav(){ if(wide()){ nav.classList.remove('hidden'); nav.classList.add('open'); return; } nav.classList.add('open'); scrim.classList.add('on'); }
+  function closeNav(){ if(wide()){ nav.classList.add('hidden'); nav.classList.remove('open'); return; } nav.classList.remove('open'); scrim.classList.remove('on'); }
+  function toggleNav(){ if(wide() ? nav.classList.contains('hidden') : !nav.classList.contains('open')) openNav(); else closeNav(); }
   var menuBtn=document.getElementById("menuBtn");
   if(menuBtn) menuBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleNav(); });
   document.getElementById('collapseBtn').addEventListener('click', closeNav);
