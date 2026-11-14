@@ -32,7 +32,7 @@
   // canonical app nav (psyche-chat-sidebar 1.html)
   var path = [
     { route:'assessment.html', icon:'chart', label:'Know yourself' },
-    { soon:true,               icon:'lotus', label:'Meditations' },
+    { route:'meditations.html', icon:'lotus', label:'Meditations' },
     { route:'education.html',  icon:'doc',   label:'Education' }
   ];
   var earn = [
@@ -72,7 +72,7 @@
 
   // top bar: tabs on Chat / Practice, otherwise the section name (or the page's own name)
   var section = {
-    assessment:'Your path', education:'Your path',
+    assessment:'Your path', meditations:'Your path', education:'Your path',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
     pricing:'Membership', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
   };
