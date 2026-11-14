@@ -7,7 +7,7 @@
 <title>Your practice · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115f">
+<link rel="stylesheet" href="site.css?v=20261115g">
 <style>
   :root{
     --gold:#fff;--indigo:#fff;--bone-dim:#d6d6d6;--bone-faint:#a8a8a8;
@@ -176,11 +176,62 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 .backbtn{height:46px;padding:0 22px;border-radius:8px;font-family:var(--font-jost);font-weight:500;font-size:12.5px;line-height:1;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;display:flex;align-items:center;justify-content:center;white-space:nowrap;height:52px;background:none;border:1px solid #fff;color:#fff;} .backbtn:hover{background:#1c1c1c;}
 .saved{text-align:left;font-size:14px;color:var(--s-label);} .saved b{color:var(--s-text2);}
 @media (max-width:1023px){ .page{padding:36px 20px 40px;} .arch .name,.sectitle,.prquote{font-size:32px;} .secsub{font-size:16px;} }
+
+/* ════════ PRACTICE & SCHEDULE (15 Nov 2026) ════════ */
+.frame{max-width:1040px;}
+.pl-label{margin:0 0 14px;font-family:var(--font-mono);font-weight:400;font-size:12px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+.goal{padding-bottom:40px;}
+.goal-text{margin:0 0 16px;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:48px;line-height:1.15;letter-spacing:.04em;color:#fff;}
+.goal-all{display:inline-flex;align-items:center;min-height:44px;font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fff;text-decoration:underline;text-underline-offset:4px;}
+.pl-group{padding-top:28px;margin-top:8px;border-top:1px solid var(--s-rule);}
+.pl-group .pl-label{margin-bottom:6px;}
+.pl{display:grid;grid-template-columns:minmax(0,1fr) 150px 210px auto;align-items:center;gap:14px;padding:16px 0;border-top:1px solid var(--s-rule);}
+.pl-group .pl:first-of-type{border-top:0;}
+.pl-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;}
+.pl-title{font-family:var(--font-jost);font-weight:400;font-size:19px;line-height:1.35;color:#fff;text-decoration:none;}
+.pl-title:hover{text-decoration:underline;text-underline-offset:4px;}
+.pl-done{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);border:1px solid var(--s-border);border-radius:4px;padding:2px 6px;white-space:nowrap;}
+.pl-desc{margin:3px 0 0;font-family:var(--font-jost);font-weight:300;font-size:16px;line-height:1.5;color:var(--s-text2);}
+/* drop-downs: a light outline with light text until "Remind me" is ticked, then solid */
+.dd{box-sizing:border-box;height:44px;display:flex;align-items:stretch;border:1px solid #6a6a6a;border-radius:8px;background:transparent;color:#d6d6d6;overflow:hidden;}
+.dd select{flex:1 1 auto;min-width:0;height:100%;margin:0;padding:0 30px 0 14px;border:0;border-radius:0;outline:none;background:transparent no-repeat right 12px center/10px 6px;color:inherit;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1;cursor:pointer;-webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23d6d6d6' stroke-width='1.2'/%3E%3C/svg%3E");}
+.dd select+select{border-left:1px solid #6a6a6a;}
+.dd select:focus-visible{outline:2px solid #808080;outline-offset:-3px;}
+.dd option{color:#000;background:#fff;}
+.pl.on .dd{background:#fff;border-color:#fff;color:#000;}
+.pl.on .dd select{font-weight:400;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E");}
+.pl.on .dd select+select{border-left-color:#bdbdbd;}
+.dd.when .day{flex:0 0 86px;}
+.remind{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-height:44px;padding-left:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);white-space:nowrap;cursor:pointer;}
+.remind input{-webkit-appearance:none;appearance:none;flex:0 0 auto;width:24px;height:24px;margin:0;border:1px solid #fff;border-radius:4px;background:transparent no-repeat center/14px 12px;cursor:pointer;}
+.remind input:checked{background-color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 17'%3E%3Cpath d='M1.5 9l5 5.5L16.5 2' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");}
+.remind input:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+.pl.on .remind{color:#fff;}
+.pl-foot{margin-top:8px;padding-top:32px;border-top:1px solid var(--s-rule);}
+.pl-note{margin:0 0 20px;font-family:var(--font-jost);font-weight:300;font-size:18px;line-height:1.5;color:var(--s-text2);}
+.dd.tz{max-width:560px;height:50px;border-color:#fff;color:#fff;}
+.dd.tz select{font-size:16px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.2'/%3E%3C/svg%3E");}
+/* narrower screens and phones: the drop-downs and the tick box drop below the line's text */
+@media (max-width:1279px){
+  .pl{grid-template-columns:150px 210px minmax(0,1fr);}
+  .pl-text{grid-column:1 / -1;}
+}
+@media (max-width:1023px){
+  .goal-text{font-size:32px;}
+  .pl-desc{font-size:15px;}
+}
+@media (max-width:480px){
+  .pl{grid-template-columns:minmax(0,2fr) minmax(0,3fr);}
+  .remind{grid-column:1 / -1;justify-content:flex-start;padding-left:0;}
+  .dd select{padding:0 24px 0 10px;background-position:right 8px center;}
+  .dd.when .day{flex-basis:70px;}
+}
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115f"></script>
+<script src="site-header.js?v=20261115g"></script>
 
 <main>
 
@@ -188,22 +239,16 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     <div class="frame">
 
       <div id="listView">
-        <div class="portrait" id="portraitBlock">
-          <p class="grouplabel">Your archetype</p>
-          <div class="arch">
-            <div class="name" id="archName">&mdash;</div>
-            <div class="say" id="archSay">Take the assessment to see your archetype and the twelve dimensions.</div>
-          </div>
-
-          <p class="grouplabel" id="dimsHead">The twelve dimensions</p>
-          <div class="bar-grid" id="barGrid"></div>
-          <a href="assessment.html" class="retake" id="retakeLink">Take the assessment &rarr;</a>
-        </div>
-
-        <h2 class="sectitle">Your practice</h2>
-        <p class="secsub">Every practice Sussuri has written for you, with the conversation it came from.</p>
-        <p class="revcount" id="revealsCount"></p>
-        <div id="revealsList"></div>
+        <section class="goal" id="goalBox">
+          <p class="pl-label">Your goal right now</p>
+          <div id="goalBody"></div>
+        </section>
+        <div id="schedule"></div>
+        <section class="pl-foot">
+          <p class="pl-note">Reminders arrive as a Sussuri notification and by email, at the time you set.</p>
+          <p class="pl-label"><label for="tzSel">Time zone</label></p>
+          <div class="dd tz"><select id="tzSel" aria-label="Time zone"></select></div>
+        </section>
       </div>
 
       <div id="detailView" style="display:none">
@@ -351,75 +396,128 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 
   renderSidebar();
 
-  // ================= DATE FORMATTING =================
-  const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  function fmtDate(iso){
-    try{ const d=new Date(iso); if(isNaN(d.getTime())) return ""; return d.getDate()+" "+MONTHS[d.getMonth()]; }
-    catch(e){ return ""; }
+  // ================= PRACTICE & SCHEDULE =================
+  // The lines, in order. freq / day / dom / time are the starting defaults. "used" is the page that counts as
+  // "done today" once it has been opened today (site-header.js notes it).
+  const GROUPS=[
+    { label:"Chats", lines:[
+      { id:"chat",       title:"Chat",                 desc:"Check in on today's step.",                                             href:"chat.html",                 freq:"daily",   time:"08:00" }
+    ]},
+    { label:"Your path", lines:[
+      { id:"know",       title:"Know yourself",        desc:"See how you have changed.",                                             href:"assessment.html",           freq:"monthly", dom:1,  time:"09:00" },
+      { id:"goals",      title:"Your goals",           desc:"Read your goals again and adjust them.",                                href:"your-goals.html",           freq:"weekly",  day:0,  time:"10:00" },
+      { id:"personal",   title:"Personal meditations", desc:"Listen to yours, or create one for something you are stuck on.",        href:"personal-meditations.html", freq:"daily",   time:"21:00" },
+      { id:"meditations",title:"Meditations",          desc:"Listen to one matched to your goal.",                                   href:"meditations.html",          freq:"daily",   time:"07:00" },
+      { id:"education",  title:"Education",            desc:"The next lesson.",                                                      href:"education.html",            freq:"weekly",  day:3,  time:"19:00" }
+    ]},
+    { label:"Affiliate program", lines:[
+      { id:"give",       title:"Give a free month",    desc:"Send your link to one person it would help.",                           href:"account.html",              freq:"weekly",  day:5,  time:"12:00" },
+      { id:"plan",       title:"Your plan",            desc:"Your next step.",                                                       href:"your-plan.html",            freq:"weekly",  day:5,  time:"12:00" },
+      { id:"cards",      title:"Share cards",          desc:"Make and share one card.",                                              href:"share-cards.html",          freq:"weekly",  day:5,  time:"12:00" },
+      { id:"medlib",     title:"Meditation library",   desc:"Share one meditation with someone it would help.",                      href:"meditation-library.html",   freq:"weekly",  day:6,  time:"10:00" }
+    ]}
+  ];
+  const FREQS=[["daily","Every day"],["three","3 a week"],["weekly","Weekly"],["monthly","Monthly"]];
+  const DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  function ord(n){ const s=["th","st","nd","rd"], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+  function timeLabel(t){ const h=+t.slice(0,2), m=t.slice(3); return ((h%12)||12)+":"+m+" "+(h<12?"am":"pm"); }
+  const TIMES=[]; for(let h=0;h<24;h++) for(const m of ["00","30"]) TIMES.push((h<10?"0":"")+h+":"+m);
+  function opts(list, sel){ return list.map(([v,l])=>'<option value="'+v+'"'+(String(v)===String(sel)?' selected':'')+'>'+l+'</option>').join(""); }
+
+  // ---- what is saved: { tz, lines:{ id:{freq,day,dom,time,remind} } } ----
+  // Kept in this browser straight away, and on the member's account (their sign-in record) when signed in.
+  const SK="sussuri:schedule";
+  let sched=load(SK,null)||{lines:{}}; if(!sched.lines) sched.lines={};
+  let goal=""; try{ goal=localStorage.getItem("sussuri:goal")||""; }catch(e){}
+  function lineState(L){
+    const s=sched.lines[L.id]||{};
+    return { freq:s.freq||L.freq, day:(s.day!=null?s.day:(L.day!=null?L.day:1)), dom:s.dom||L.dom||1, time:s.time||L.time, remind:!!s.remind };
+  }
+  let saveTimer=null, signedInUser=null;
+  function save(){
+    try{ localStorage.setItem(SK,JSON.stringify(sched)); }catch(e){}
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{ if(signedInUser && !window.PSYCHE_PREVIEW) sb.auth.updateUser({data:{schedule:sched}}).then(({error})=>{ if(error) console.error("schedule save failed:",error); }); },600);
   }
 
-  // ================= ASSESSMENT PORTRAIT =================
-  (function(){
-    let a=null;
-    try{ a=JSON.parse(localStorage.getItem("psyche:assessment")||"null"); }catch(e){}
-    const dimsHead=$("dimsHead"), grid=$("barGrid"), retake=$("retakeLink");
-    if(!a || !Array.isArray(a.dims) || !a.dims.length){
-      $("archName").textContent="Not yet assessed";
-      $("archSay").textContent="Take the assessment to see your archetype and the twelve dimensions.";
-      dimsHead.style.display="none";
-      grid.style.display="none";
-      retake.textContent="Take the assessment →";
-      retake.href="assessment.html";
-      return;
-    }
-    $("archName").textContent=a.archName||"Your archetype";
-    $("archSay").textContent=a.archLine||"";
-    grid.innerHTML="";
-    a.dims.forEach(d=>{
-      const val=Math.max(0,Math.min(100,Number(d.val)||0));
-      const block=document.createElement("div");
-      block.className="bar-block";
-      block.innerHTML=
-        "<div class='bar-head'>"+
-          "<span class='bar-label'>"+esc(d.label)+"</span>"+
-          "<span class='bar-val'>"+val+"</span>"+
-        "</div>"+
-        "<div class='bar-track'><div class='bar-fill' style='width:"+val+"%'></div><div class='bar-ceiling'></div></div>"+
-        "<div class='bar-poles'><span>"+esc(d.lo)+"</span><span>"+esc(d.hi)+"</span></div>";
-      grid.appendChild(block);
+  function usedToday(page){
+    try{ const u=JSON.parse(localStorage.getItem("sussuri:used")||"{}"), d=new Date(); return u[page]===d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }catch(e){ return false; }
+  }
+  function drawGoal(){
+    $("goalBody").innerHTML = goal
+      ? '<p class="goal-text">'+esc(goal)+'</p><a class="goal-all" href="your-goals.html">All goals</a>'
+      : '<a class="s-btn" href="your-goals.html">Set your goals</a>';
+  }
+  function whenHTML(L, st){
+    const day = st.freq==="weekly" ? '<select class="day" data-k="day" aria-label="Day of the week">'+opts(DAYS.map((d,i)=>[i,d]), st.day)+'</select>'
+              : st.freq==="monthly" ? '<select class="day" data-k="dom" aria-label="Day of the month">'+opts(Array.from({length:28},(_,i)=>[i+1,ord(i+1)]), st.dom)+'</select>' : '';
+    return day+'<select data-k="time" aria-label="Time of day">'+opts(TIMES.map(t=>[t,timeLabel(t)]), st.time)+'</select>';
+  }
+  function drawSchedule(){
+    const box=$("schedule"); box.innerHTML="";
+    GROUPS.forEach(g=>{
+      const sec=document.createElement("section"); sec.className="pl-group";
+      sec.innerHTML='<p class="pl-label">'+g.label+'</p>';
+      g.lines.forEach(L=>{
+        const st=lineState(L), row=document.createElement("div");
+        row.className="pl"+(st.remind?" on":"");
+        row.innerHTML=
+          '<div class="pl-text"><div class="pl-head"><a class="pl-title" href="'+L.href+'">'+esc(L.title)+'</a>'+
+            (usedToday(L.href.replace(/\.html$/,""))?'<span class="pl-done">Done today</span>':'')+'</div>'+
+            '<p class="pl-desc">'+esc(L.desc)+'</p></div>'+
+          '<div class="dd freq"><select data-k="freq" aria-label="How often">'+opts(FREQS, st.freq)+'</select></div>'+
+          '<div class="dd when">'+whenHTML(L, st)+'</div>'+
+          '<label class="remind"><span>Remind me</span><input type="checkbox" data-k="remind"'+(st.remind?' checked':'')+'></label>';
+        row.addEventListener("change", e=>{
+          const k=e.target.getAttribute("data-k"); if(!k) return;
+          const cur=lineState(L);
+          cur[k] = k==="remind" ? e.target.checked : (k==="day"||k==="dom") ? Number(e.target.value) : e.target.value;
+          sched.lines[L.id]=cur; save();
+          row.classList.toggle("on", cur.remind);
+          if(k==="freq") row.querySelector(".when").innerHTML=whenHTML(L, cur);   // weekly adds a day of the week, monthly a day of the month
+        });
+        sec.appendChild(row);
+      });
+      box.appendChild(sec);
     });
-    retake.textContent="Retake assessment →";
-    retake.href="assessment.html";
-  })();
+  }
 
-  // ================= REVEAL STACK =================
-  (function(){
-    let list=[];
-    try{ list=JSON.parse(localStorage.getItem("psyche:reveals")||"[]"); }catch(e){ list=[]; }
-    list=(Array.isArray(list)?list:[]).filter(r=>r&&r.wisdom);
-    list.sort((a,b)=> new Date(b.at||0) - new Date(a.at||0));
-    const meta=$("revealsCount"), box=$("revealsList");
-    if(!list.length){
-      meta.textContent="";
-      box.innerHTML='<div class="rev-empty">No reveals yet — <a href="chat.html">start a conversation</a> and reveal the pattern to begin your practice.</div>';
-      return;
-    }
-    const since=list[list.length-1].at;
-    meta.textContent=list.length+(list.length===1?" reveal":" reveals")+(since?" · since "+fmtDate(since):"");
-    box.innerHTML="";
-    list.forEach(r=>{
-      const div=document.createElement("div");
-      div.className="rev";
-      div.innerHTML=
-        "<div class='body'>"+
-          "<div class='wline'>"+esc(r.wisdom)+"</div>"+
-          "<div class='from'>From <b>&ldquo;"+esc(r.title||"Untitled conversation")+"&rdquo;</b> &middot; "+fmtDate(r.at)+"</div>"+
-        "</div>"+
-        "<span class='chev'>&rsaquo;</span>";
-      div.onclick=()=>{ location.href="practice.html?id="+encodeURIComponent(r.chatId||""); };
-      box.appendChild(div);
+  // ---- time zone: starts on the device's own; Eastern Time (New York) if that cannot be read ----
+  function tzName(id){
+    const city=id.split("/").pop().replace(/_/g," ");
+    let g=""; try{ g=new Intl.DateTimeFormat("en-US",{timeZone:id,timeZoneName:"longGeneric"}).formatToParts(new Date()).find(p=>p.type==="timeZoneName").value; }catch(e){}
+    if(!g || /^GMT|^UTC/.test(g) || g.toLowerCase().indexOf(city.toLowerCase())===0) g = g && !/^GMT|^UTC/.test(g) ? g : city;
+    return g===city ? city : g+" ("+city+")";
+  }
+  function tzOffset(id){
+    try{ const v=new Intl.DateTimeFormat("en-US",{timeZone:id,timeZoneName:"shortOffset"}).formatToParts(new Date()).find(p=>p.type==="timeZoneName").value;
+      const m=/GMT([+-])(\d+)(?::(\d+))?/.exec(v); return m ? (m[1]==="-"?-1:1)*(Number(m[2])*60+Number(m[3]||0)) : 0; }catch(e){ return 0; }
+  }
+  function drawTimeZones(){
+    let device=""; try{ device=Intl.DateTimeFormat().resolvedOptions().timeZone||""; }catch(e){}
+    const start=sched.tz||device||"America/New_York";
+    const sel=$("tzSel");
+    sel.innerHTML='<option value="'+esc(start)+'">'+esc(tzName(start))+'</option>';   // shown at once; the full list fills in just after
+    setTimeout(()=>{
+      let ids=[]; try{ ids=Intl.supportedValuesOf("timeZone"); }catch(e){}
+      if(!ids.length) ids=["Pacific/Honolulu","America/Anchorage","America/Los_Angeles","America/Denver","America/Chicago","America/New_York","America/Sao_Paulo","Europe/London","Europe/Paris","Europe/Athens","Asia/Dubai","Asia/Kolkata","Asia/Singapore","Asia/Tokyo","Australia/Sydney","Pacific/Auckland"];
+      if(ids.indexOf(start)<0) ids.push(start);
+      const list=ids.map(id=>({id:id,off:tzOffset(id),name:tzName(id)})).sort((a,b)=>a.off-b.off||a.name.localeCompare(b.name));
+      sel.innerHTML=list.map(z=>'<option value="'+esc(z.id)+'"'+(z.id===start?' selected':'')+'>'+esc(z.name)+'</option>').join("");
+    },0);
+    sel.addEventListener("change", ()=>{ sched.tz=sel.value; save(); });
+  }
+
+  drawGoal(); drawSchedule(); drawTimeZones();
+  // signed in: the choices saved on the account win over what this browser remembers
+  if(!window.PSYCHE_PREVIEW){
+    sb.auth.getSession().then(({data})=>{
+      signedInUser=data.session&&data.session.user||null;
+      const m=signedInUser&&signedInUser.user_metadata||{};
+      if(m.goal){ goal=String(m.goal); drawGoal(); }
+      if(m.schedule&&m.schedule.lines){ sched=m.schedule; try{ localStorage.setItem(SK,JSON.stringify(sched)); }catch(e){} drawSchedule(); if(sched.tz){ const o=[...$("tzSel").options].find(o=>o.value===sched.tz); if(o) $("tzSel").value=sched.tz; } }
     });
-  })();
+  }
 
   // ================= SINGLE-PRACTICE DETAIL (only when ?id= is present) =================
   (function(){

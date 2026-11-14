@@ -30,6 +30,7 @@
     info:'<circle cx="11" cy="11" r="8.4"></circle><path d="M11 10.2v5.2"></path><circle cx="11" cy="7.2" r=".5"></circle>',
     list:'<path d="M4.2 6.4l1.4 1.4 2.4-2.8M4.2 12.4l1.4 1.4 2.4-2.8"></path><path d="M11 6.6h6.8M11 12.6h6.8M4.6 17.8h3M11 17.8h6.8"></path>',
     share:'<circle cx="6" cy="11" r="2.2"></circle><circle cx="16" cy="5.6" r="2.2"></circle><circle cx="16" cy="16.4" r="2.2"></circle><path d="M8 10l6-3.3M8 12l6 3.3"></path>',
+    calendar:'<rect x="3.6" y="5" width="14.8" height="13.4" rx="1.6"></rect><path d="M3.6 9.2h14.8M7.4 3.2v3.4M14.6 3.2v3.4"></path>',
     question:'<circle cx="11" cy="11" r="8.4"></circle><path d="M8.5 8.8a2.5 2.5 0 1 1 3.7 2.2c-.8.5-1.2 1-1.2 1.9"></path><circle cx="11" cy="15.6" r=".5"></circle>'
   };
   function svg(k){ return '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round">' + I[k] + '</svg>'; }
@@ -40,14 +41,15 @@
   // (Hiding an item only takes the link away. Its page still exists.)
   var MENU = [
     { title:'Chats &amp; practice', items:[
-      { show:true,  id:'newChat', route:'chat.html',       icon:'chat',     label:'New conversation' }
+      { show:true,  id:'newChat', route:'chat.html',       icon:'chat',     label:'New conversation' },
+      { show:true,  route:'practice.html',                 icon:'calendar', label:'Practice &amp; schedule' }
     ]},
     { title:'Your path', items:[
       { show:true,  route:'assessment.html',               icon:'chart',    label:'Know yourself' },
+      { show:true,  route:'your-goals.html',               icon:'flag',     label:'Your goals' },
       { show:true,  route:'personal-meditations.html',     icon:'person',   label:'Personal meditations' },
       { show:true,  route:'meditations.html',              icon:'lotus',    label:'Meditations' },
-      { show:true,  route:'education.html',                icon:'doc',      label:'Education' },
-      { show:true,  route:'stay-on-track.html',            icon:'flag',     label:'Stay on track' }
+      { show:true,  route:'education.html',                icon:'doc',      label:'Education' }
     ]},
     { title:'Affiliate program', items:[
       { show:true,  route:'how-it-works.html',             icon:'info',     label:'How it works' },
@@ -73,7 +75,7 @@
   var here = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
   // Pages with no menu item of their own belong to one that has: the black band sits on that item,
   // and the top bar names both ("Your account / Settings"), so people always know where they are.
-  var parentOf = { settings:'account', 'delete-account':'account', creator:'account', 'payment-terms':'terms', support:'urgent', practice:'chat' };
+  var parentOf = { settings:'account', 'delete-account':'account', creator:'account', 'payment-terms':'terms', support:'urgent' };
   var home = parentOf[here] || here;
   function isActive(route){ return route && route.split('?')[0].replace(/\.html$/, '') === home; }
 
@@ -96,7 +98,7 @@
 
   // top bar: tabs on Chat / Practice, otherwise the section name (or the page's own name)
   var section = {
-    assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path', 'stay-on-track':'Your path',
+    assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path', 'your-goals':'Your path',
     'how-it-works':'Affiliate program', 'your-plan':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
     pricing:'Membership', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
@@ -106,7 +108,7 @@
   }
   var barLeft = (here === 'chat' || here === 'practice')
     ? '<a class="tab' + (here === 'chat' ? ' on' : '') + '" href="chat.html">Chat</a>' +
-      '<a class="tab' + (here === 'practice' ? ' on' : '') + '" href="practice.html">Practice</a>'
+      '<a class="tab' + (here === 'practice' ? ' on' : '') + '" href="practice.html">Practice &amp; schedule</a>'
     : '<span class="sb-name">' + (section[here] || pageName()) + '</span>' +
       ((section[here] && parentOf[here]) ? '<span class="sb-sep" aria-hidden="true">/</span><span class="sb-here">' + pageName() + '</span>' : '');
   // WHO IS LOOKING. Three kinds of person, worked out once here for every page:
@@ -213,6 +215,12 @@
       '</header>');
     document.body.classList.add('has-side');
   }
+
+  // Note which part of the site was opened today (the Practice page shows "Done today" beside it). Kept in this browser.
+  try {
+    var used = stored('sussuri:used') || {}, d = new Date(), today = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    if (!drawerOnly) { used[here] = today; localStorage.setItem('sussuri:used', JSON.stringify(used)); }
+  } catch (e) {}
 
   // Keep the slot and the account block right. Pages still draw the account block their own way when they
   // learn who is signed in; whenever they do, it is redrawn here so every page says the same thing.

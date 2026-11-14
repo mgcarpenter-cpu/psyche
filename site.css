@@ -129,7 +129,7 @@ body.has-side>.site-bar{grid-column:2;grid-row:1;}
 .site-bar .sb-left:has(.sb-here){gap:12px;}
 .site-bar .sb-sep{color:#6a6a6a;}
 .site-bar .sb-here{color:#fff;}   /* the page you are on, after its section */
-.site-bar .sb-left .tab{color:var(--s-label);text-decoration:none;padding:16px 0;border-bottom:1px solid transparent;}
+.site-bar .sb-left .tab{white-space:nowrap;color:var(--s-label);text-decoration:none;padding:16px 0;border-bottom:1px solid transparent;}
 .site-bar .sb-left .tab.on{color:#fff;border-bottom-color:#fff;}
 
 /* the top-right slot: one item that depends on the person (site-header.js) */
