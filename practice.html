@@ -197,7 +197,8 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 .dd select{flex:1 1 auto;min-width:0;height:100%;margin:0;padding:0 30px 0 14px;border:0;border-radius:0;outline:none;background:transparent no-repeat right 12px center/10px 6px;color:inherit;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1;cursor:pointer;-webkit-appearance:none;appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23d6d6d6' stroke-width='1.2'/%3E%3C/svg%3E");}
 .dd select+select{border-left:1px solid #6a6a6a;}
-.dd select:focus-visible{outline:2px solid #808080;outline-offset:-3px;}
+.dd select:focus{outline:none;}
+body.kb .dd select:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an outline only when moving by keyboard, never after a click or tap */
 .dd option{color:#000;background:#fff;}
 .pl.on .dd{background:#fff;border-color:#fff;color:#000;}
 .pl.on .dd select{font-weight:400;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E");}
@@ -417,7 +418,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
       { id:"medlib",     title:"Meditation library",   desc:"Share one meditation with someone it would help.",                      href:"meditation-library.html",   freq:"weekly",  day:6,  time:"10:00" }
     ]}
   ];
-  const FREQS=[["daily","Every day"],["three","3 a week"],["weekly","Weekly"],["monthly","Monthly"]];
+  const FREQS=[["daily","Every day"],["weekly","Weekly"],["monthly","Monthly"]];
   const DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   function ord(n){ const s=["th","st","nd","rd"], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
   function timeLabel(t){ const h=+t.slice(0,2), m=t.slice(3); return ((h%12)||12)+":"+m+" "+(h<12?"am":"pm"); }
@@ -431,7 +432,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
   let goal=""; try{ goal=localStorage.getItem("sussuri:goal")||""; }catch(e){}
   function lineState(L){
     const s=sched.lines[L.id]||{};
-    return { freq:s.freq||L.freq, day:(s.day!=null?s.day:(L.day!=null?L.day:1)), dom:s.dom||L.dom||1, time:s.time||L.time, remind:!!s.remind };
+    return { freq:(FREQS.some(f=>f[0]===s.freq)?s.freq:L.freq), day:(s.day!=null?s.day:(L.day!=null?L.day:1)), dom:s.dom||L.dom||1, time:s.time||L.time, remind:!!s.remind };
   }
   let saveTimer=null, signedInUser=null;
   function save(){
@@ -508,6 +509,8 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     sel.addEventListener("change", ()=>{ sched.tz=sel.value; save(); });
   }
 
+  document.addEventListener("keydown", e=>{ if(e.key==="Tab") document.body.classList.add("kb"); });
+  document.addEventListener("pointerdown", ()=>document.body.classList.remove("kb"));
   drawGoal(); drawSchedule(); drawTimeZones();
   // signed in: the choices saved on the account win over what this browser remembers
   if(!window.PSYCHE_PREVIEW){
