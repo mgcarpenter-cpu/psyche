@@ -25,31 +25,50 @@
     lock:'<rect x="4.6" y="9.6" width="12.8" height="10" rx="1.6"></rect><path d="M7.8 9.6V6.8a3.2 3.2 0 0 1 6.4 0v2.8"></path><circle cx="11" cy="14.4" r="1.1"></circle>',
     cross:'<circle cx="11" cy="11" r="8.4"></circle><path d="M11 7.4v7.2M7.4 11h7.2"></path>',
     target:'<circle cx="11" cy="11" r="8.4"></circle><circle cx="11" cy="11" r="3"></circle>',
+    person:'<circle cx="11" cy="7.4" r="3.2"></circle><path d="M4.6 18.6c0-3.4 2.8-5.8 6.4-5.8s6.4 2.4 6.4 5.8"></path>',
+    flag:'<path d="M5.6 18.8V3.6"></path><path d="M5.6 4.6h11l-2.6 3.6 2.6 3.6h-11"></path>',
+    info:'<circle cx="11" cy="11" r="8.4"></circle><path d="M11 10.2v5.2"></path><circle cx="11" cy="7.2" r=".5"></circle>',
+    list:'<path d="M4.2 6.4l1.4 1.4 2.4-2.8M4.2 12.4l1.4 1.4 2.4-2.8"></path><path d="M11 6.6h6.8M11 12.6h6.8M4.6 17.8h3M11 17.8h6.8"></path>',
+    share:'<circle cx="6" cy="11" r="2.2"></circle><circle cx="16" cy="5.6" r="2.2"></circle><circle cx="16" cy="16.4" r="2.2"></circle><path d="M8 10l6-3.3M8 12l6 3.3"></path>',
     question:'<circle cx="11" cy="11" r="8.4"></circle><path d="M8.5 8.8a2.5 2.5 0 1 1 3.7 2.2c-.8.5-1.2 1-1.2 1.9"></path><circle cx="11" cy="15.6" r=".5"></circle>'
   };
   function svg(k){ return '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round">' + I[k] + '</svg>'; }
 
-  // canonical app nav (psyche-chat-sidebar 1.html)
-  var path = [
-    { route:'assessment.html', icon:'chart', label:'Know yourself' },
-    { route:'meditations.html', icon:'lotus', label:'Meditations' },
-    { route:'education.html',  icon:'doc',   label:'Education' }
+  // THE MENU. One list, in the order it is drawn. Every item has its own switch:
+  // show:true draws it, show:false hides it. Nothing else needs touching; the
+  // layout closes up by itself, and a group with nothing showing loses its title.
+  // (Hiding an item only takes the link away. Its page still exists.)
+  var MENU = [
+    { title:'Chats &amp; practice', items:[
+      { show:true,  id:'newChat', route:'chat.html',       icon:'chat',     label:'New conversation' }
+    ]},
+    { title:'Your path', items:[
+      { show:true,  route:'assessment.html',               icon:'chart',    label:'Know yourself' },
+      { show:true,  route:'personal-meditations.html',     icon:'person',   label:'Personal meditations' },
+      { show:true,  route:'meditations.html',              icon:'lotus',    label:'Meditations' },
+      { show:true,  route:'education.html',                icon:'doc',      label:'Education' },
+      { show:true,  route:'stay-on-track.html',            icon:'flag',     label:'Stay on track' }
+    ]},
+    { title:'Affiliate program', items:[
+      { show:true,  route:'how-it-works.html',             icon:'info',     label:'How it works' },
+      { show:true,  route:'your-plan.html',                icon:'list',     label:'Your plan' },
+      { show:true,  route:'share-cards.html',              icon:'share',    label:'Share cards' },
+      { show:false, route:'library.html',                  icon:'cards',    label:'Avatar library' },
+      { show:false, route:'teaching-library.html',         icon:'openbook', label:'Teaching library' },
+      { show:true,  route:'meditation-library.html',       icon:'lotus',    label:'Meditation library' }
+    ]},
+    { title:'Your account', items:[
+      { show:true,  route:'pricing.html',                  icon:'target',   label:'Membership' },
+      { show:true,  route:'account.html',                  icon:'coin',     label:'Account &amp; earnings' }
+    ]},
+    { foot:true, items:[
+      { show:true,  route:'help.html',                     icon:'question', label:'Help' },
+      { show:true,  route:'privacy.html',                  icon:'lock',     label:'Private &amp; secure' },
+      { show:true,  route:'terms.html',                    icon:'doc',      label:'Terms &amp; conditions' },
+      { show:true,  route:'urgent.html',                   icon:'cross',    label:'Need urgent help' }
+    ]}
   ];
-  var earn = [
-    { route:'library.html',            icon:'cards',    label:'Avatar library' },
-    { route:'teaching-library.html',   icon:'openbook', label:'Teaching library' },
-    { route:'meditation-library.html', icon:'lotus',    label:'Meditation library' }
-  ];
-  var account = [
-    { route:'pricing.html', icon:'target', label:'Membership' },
-    { route:'account.html', icon:'coin',   label:'Account &amp; earnings' }
-  ];
-  var foot = [
-    { route:'help.html',    icon:'question', label:'Help' },
-    { route:'privacy.html', icon:'lock',  label:'Private &amp; secure' },
-    { route:'terms.html',   icon:'doc',   label:'Terms &amp; conditions' },
-    { route:'urgent.html',  icon:'cross', label:'Need urgent help' }
-  ];
+  function shown(g){ return g.items.filter(function (it) { return it.show !== false; }); }
 
   var here = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
   // Pages with no menu item of their own belong to one that has: the black band sits on that item,
@@ -59,6 +78,8 @@
   function isActive(route){ return route && route.split('?')[0].replace(/\.html$/, '') === home; }
 
   function row(it){
+    if (it.id === 'newChat') return '<button class="newchat row' + (home === 'chat' ? ' active' : '') + '" id="newChat"' + (it.show === false ? ' style="display:none"' : '') + '>' +
+      '<span class="side-icon">' + svg(it.icon) + '</span><span class="row-label">' + it.label + '</span></button>';
     var cls = 'navitem row' + (it.soon ? ' soon' : '') + (it.cls ? ' ' + it.cls : '') + (isActive(it.route) ? ' active' : '');
     return '<div class="' + cls + '"' + (it.route ? ' data-route="' + it.route + '"' : '') + '>' +
       '<span class="side-icon">' + svg(it.icon) + '</span>' +
@@ -75,7 +96,8 @@
 
   // top bar: tabs on Chat / Practice, otherwise the section name (or the page's own name)
   var section = {
-    assessment:'Your path', meditations:'Your path', education:'Your path',
+    assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path', 'stay-on-track':'Your path',
+    'how-it-works':'Affiliate program', 'your-plan':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
     pricing:'Membership', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
   };
@@ -95,20 +117,16 @@
       '<div class="nav-scroll">' +
         '<div class="nav-top"><a class="side-mark wordmark-side" href="/" aria-label="sussuri, front page">sussuri</a>' +   // the name leads back to the front page
           '<button class="collapse" id="collapseBtn" title="Close menu" aria-label="Close menu">&#10094;</button></div>' +
-        '<div class="nav-grp">' +
-          '<p class="side-group-title first">Chats &amp; practice</p>' +
-          '<button class="newchat row' + (home === 'chat' ? ' active' : '') + '" id="newChat">' +
-            '<span class="side-icon">' + svg('chat') + '</span><span class="row-label">New conversation</span></button>' +
-          '<div class="row recents-head" id="recentsLabel">' +
-            '<span class="side-icon">' + svg('clock') + '</span><span class="row-label">Recents</span></div>' +
-          '<div id="recents" class="clamped"></div>' +
-          '<div class="recents-more" id="recentsMore" style="display:none"></div>' +
-        '</div>' +
-        '<div class="nav-grp"><p class="side-group-title">Your path</p>' + path.map(row).join('') + '</div>' +
-        '<div class="nav-grp"><p class="side-group-title">Affiliate program</p>' + earn.map(row).join('') + '</div>' +
-        '<div class="nav-grp"><p class="side-group-title">Your account</p>' + account.map(row).join('') + '</div>' +
+        MENU.map(function (g, gi) {
+          if (g.foot) return '';
+          var its = gi === 0 ? g.items : shown(g);   // the first group always draws: it also holds Recents
+          if (!its.length) return '';
+          return '<div class="nav-grp"><p class="side-group-title' + (gi === 0 ? ' first' : '') + '">' + g.title + '</p>' + its.map(row).join('') +
+            (gi === 0 ? '<div class="row recents-head" id="recentsLabel"><span class="side-icon">' + svg('clock') + '</span><span class="row-label">Recents</span></div>' +
+              '<div id="recents" class="clamped"></div><div class="recents-more" id="recentsMore" style="display:none"></div>' : '') + '</div>';
+        }).join('') +
         '<div class="side-foot">' +
-          foot.map(row).join('') +
+          MENU.filter(function (g) { return g.foot; }).map(function (g) { return shown(g).map(row).join(''); }).join('') +
           '<div class="acctwrap">' +
             '<div class="acctmenu" id="acctMenu">' +
               '<button id="acctSettings">Settings</button>' +
@@ -130,9 +148,9 @@
     s.insertAdjacentHTML('beforebegin', html + '<div class="site-scrim" id="siteScrim"></div>');
     (function () {
       var nav = document.getElementById('nav'), scrim = document.getElementById('siteScrim'), listeners = [];
-      function set(open) {
+      function set(open, byKey) {
         nav.classList.toggle('open', open); nav.classList.toggle('hidden', !open); scrim.classList.toggle('on', open);
-        listeners.forEach(function (f) { f(open); });
+        listeners.forEach(function (f) { f(open, !!byKey); });
       }
       window.sussuriMenu = {
         open: function () { set(true); }, close: function () { set(false); },
@@ -142,7 +160,7 @@
       };
       scrim.addEventListener('click', function () { set(false); });
       document.getElementById('collapseBtn').addEventListener('click', function () { set(false); });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('open')) set(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('open')) set(false, true); });
       // this page has no app scripts, so the two rows they would normally wire up get plain links here
       document.getElementById('newChat').addEventListener('click', function () { location.href = 'chat.html'; });
       document.getElementById('account').addEventListener('click', function () { location.href = 'auth.html'; });

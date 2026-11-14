@@ -6,7 +6,7 @@
 <title>Sussuri wheel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Jost:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap">
-<link rel="stylesheet" href="site.css?v=20261115b">
+<link rel="stylesheet" href="site.css?v=20261115c">
 <style>
 /* One fixed composition, 1440 x 820, scaled as a single piece to fit the window.
    The join between black and white sits at 410. Nothing reflows, so it always sits the same. */
@@ -37,7 +37,9 @@ body{background:#000;overflow:hidden;color-scheme:light}
 h1{position:absolute;left:40px;top:calc(24.6px + var(--ny,0px));margin:0;font:400 328px/1 'Poiret One',Georgia,serif;letter-spacing:16.4px;color:#f4f4f4;white-space:nowrap;z-index:2;pointer-events:none}
 .menu{position:absolute;left:39.5px;top:38px;z-index:4}
 .menubtn{width:48px;height:48px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:12px;background:transparent;cursor:pointer}
-.menubtn:hover{border-color:#6b6b6b}
+.menubtn{-webkit-tap-highlight-color:transparent}
+.menubtn:focus{outline:none}
+.menubtn:focus-visible{outline:2px solid #808080;outline-offset:3px}
 .bars{width:24px;height:14px;border-top:1.5px solid #f4f4f4;border-bottom:1.5px solid #f4f4f4;position:relative}
 .bars::after{content:"";position:absolute;left:0;right:0;top:50%;margin-top:-.75px;border-top:1.5px solid #f4f4f4}
 .panel{position:absolute;left:0;top:56px;min-width:220px;padding:8px;border:1px solid #6b6b6b;border-radius:12px;background:#000;display:flex;flex-direction:column}
@@ -115,7 +117,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #808080;outline-offset:3p
 <a class="cta" href="#download">Download free</a>
 </section>
 </div>
-<script src="site-header.js?v=20261115b" data-drawer></script>
+<script src="site-header.js?v=20261115c" data-drawer></script>
 <script>
 (function(){
   var W=1440,H=820,N=8,STEP=45,REST=135,EVERY=7300,isTall=false;
@@ -231,7 +233,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #808080;outline-offset:3p
   // the three lines open the app's own menu (site-header.js, drawer mode)
   var menuBtn=document.getElementById('menubtn');
   menuBtn.addEventListener('click',function(e){e.stopPropagation();if(window.sussuriMenu){window.sussuriMenu.toggle();}});
-  if(window.sussuriMenu){window.sussuriMenu.onChange(function(o){menuBtn.setAttribute('aria-expanded',String(o));if(!o){menuBtn.focus();}});}
+  if(window.sussuriMenu){window.sussuriMenu.onChange(function(o,byKey){menuBtn.setAttribute('aria-expanded',String(o));if(!o&&byKey){menuBtn.focus();}});}
 })();
 </script>
 </body>

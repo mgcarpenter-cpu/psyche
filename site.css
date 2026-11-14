@@ -143,6 +143,9 @@ body.has-side>.site-bar{grid-column:2;grid-row:1;}
   .site-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;height:auto;padding:0;gap:0;}
   .site-bar .sb-strip1{grid-column:1;grid-row:1;display:flex;align-items:center;gap:6px;min-height:61px;padding:0 0 0 16px;}
   .site-bar .menu-btn{flex:0 0 auto;width:44px;height:44px;margin-left:-10px;padding:0;border:0;background:transparent;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .site-bar .menu-btn{-webkit-tap-highlight-color:transparent;}
+  .site-bar .menu-btn:focus{outline:none;}
+  .site-bar .menu-btn:focus-visible{outline:2px solid #808080;outline-offset:-4px;}
   .site-bar .wordmark{text-decoration:none;display:inline-flex;align-items:center;min-height:44px;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:24px;line-height:1;letter-spacing:.12em;color:#fff;}
   .site-bar .site-cta{grid-column:2;grid-row:1;align-self:center;height:44px;padding:0 16px;margin-right:16px;font-size:11.5px;}
   .site-bar .sb-left{grid-column:1 / -1;grid-row:2;min-height:49px;padding:0 20px;border-top:1px solid var(--s-rule);}
