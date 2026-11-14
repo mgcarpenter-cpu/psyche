@@ -1243,6 +1243,10 @@ html,body{ background:#000; color:#fff; }
 .qw{ display:flex; flex-direction:column; min-width:0; border:1px solid var(--s-border); border-radius:8px; overflow:hidden; }
 .q{ display:flex; flex-direction:column; }
 .q img{ display:block; width:100%; height:auto; aspect-ratio:1400/790; background:#1c1c1c; }   /* the whole photograph, never cropped, in full colour */
+/* The pictures carry a maker's mark in the bottom right corner. The frame keeps its size and shape; inside it the
+   picture is enlarged 8% from the top left, so the bottom right corner (the mark) falls outside the frame.
+   The cut happens first (7.41% off the right and the bottom = 1 - 1/1.08), then the enlargement fills the frame again. */
+.q img{ transform-origin:0 0; transform:scale(1.08); clip-path:inset(0 7.41% 7.41% 0); }
 /* the four answers and the four follow-up choices look the same: rounded boxes, four across, same size */
 .opts,.chips{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
 .opts{ padding:12px; }
