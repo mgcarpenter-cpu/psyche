@@ -74,7 +74,7 @@ nav#nav.site-nav::-webkit-scrollbar{width:0;height:0;}
 .site-nav .nav-scroll{min-height:100%;display:flex;flex-direction:column;gap:16px;padding:28px 0 24px;box-sizing:border-box;}
 .site-nav .nav-top{display:flex;align-items:center;justify-content:space-between;padding:0 24px;}
 .site-nav .side-mark{text-decoration:none;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:30px;line-height:1;letter-spacing:.12em;color:var(--s-menu-text);}
-.site-nav .collapse{display:none;background:none;border:0;color:var(--s-menu-text2);cursor:pointer;font-size:14px;width:44px;height:44px;margin:-8px -14px -8px 0;padding:0;}
+.site-nav .collapse{display:block;background:none;border:0;color:var(--s-menu-text2);cursor:pointer;font-size:14px;width:44px;height:44px;margin:-8px -14px -8px 0;padding:0;}
 .site-nav .nav-grp{display:flex;flex-direction:column;gap:2px;}
 .site-nav .side-group-title{margin:0 24px 6px;padding:18px 0 0;border-top:1px solid var(--s-menu-rule);font-family:var(--font-mono);font-weight:400;font-size:11px;line-height:1.4;letter-spacing:.18em;text-transform:uppercase;color:#000;}
 .site-nav .side-group-title.first{border-top:0;padding-top:0;}
@@ -123,7 +123,7 @@ nav#nav.site-nav::-webkit-scrollbar{width:0;height:0;}
 
 /* ---------- top bar ---------- */
 body.has-side>.site-bar{grid-column:2;grid-row:1;}
-.site-bar{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:16px;height:var(--bar-h);padding:0 72px;background:#000;color:#fff;border-bottom:1px solid var(--s-rule);z-index:15;}
+.site-bar{box-sizing:border-box;display:flex;align-items:center;justify-content:flex-start;gap:16px;height:var(--bar-h);padding:0 72px;background:#000;color:#fff;border-bottom:1px solid var(--s-rule);z-index:15;}
 .site-bar .sb-strip1{display:none;}
 .site-bar .sb-left{display:flex;align-items:center;gap:32px;min-width:0;font-family:var(--font-mono);font-weight:400;font-size:12px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
 .site-bar .sb-left:has(.sb-here){gap:12px;}
@@ -131,6 +131,21 @@ body.has-side>.site-bar{grid-column:2;grid-row:1;}
 .site-bar .sb-here{color:#fff;}   /* the page you are on, after its section */
 .site-bar .sb-left .tab{color:var(--s-label);text-decoration:none;padding:16px 0;border-bottom:1px solid transparent;}
 .site-bar .sb-left .tab.on{color:#fff;border-bottom-color:#fff;}
+
+/* the top-right slot: one item that depends on the person (site-header.js) */
+.site-bar .sb-slot{margin-left:auto;display:flex;align-items:center;gap:18px;flex:0 0 auto;}
+.site-bar .sb-days{font-family:var(--font-mono);font-weight:400;font-size:12px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);white-space:nowrap;}
+/* the three lines (phone always; computer only while the menu is hidden) */
+.site-bar .menu-btn{flex:0 0 auto;width:44px;height:44px;margin-left:-10px;padding:0;border:0;background:transparent;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
+.site-bar .menu-btn:focus{outline:none;}
+.site-bar .menu-btn:focus-visible{outline:2px solid #808080;outline-offset:-4px;}
+/* computer: the arrow beside the name hides the menu; the three lines appear in the strip to bring it back */
+@media (min-width:1024px){
+  body.has-side.menu-off{grid-template-columns:0 minmax(0,1fr);}
+  body.menu-off nav#nav.site-nav{display:none;}
+  body.menu-off .site-bar .sb-strip1{display:flex;align-items:center;}
+  body.menu-off .site-bar .sb-strip1 .wordmark{display:none;}
+}
 
 /* ---------- buttons ---------- */
 /* the sales button, and the shared primary / secondary button shape */
@@ -148,14 +163,12 @@ body.has-side>.site-bar{grid-column:2;grid-row:1;}
   nav#nav.site-nav.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.35);}   /* shadow only while open: when closed it used to leak a grey edge onto the page */
   .site-nav .collapse{display:block;}
   .site-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;height:auto;padding:0;gap:0;}
-  .site-bar .sb-strip1{grid-column:1;grid-row:1;display:flex;align-items:center;gap:6px;min-height:61px;padding:0 0 0 16px;}
-  .site-bar .menu-btn{flex:0 0 auto;width:44px;height:44px;margin-left:-10px;padding:0;border:0;background:transparent;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .site-bar .menu-btn{-webkit-tap-highlight-color:transparent;}
-  .site-bar .menu-btn:focus{outline:none;}
-  .site-bar .menu-btn:focus-visible{outline:2px solid #808080;outline-offset:-4px;}
+  .site-bar .sb-strip1{grid-column:1 / -1;grid-row:1;display:flex;align-items:center;gap:6px;min-height:61px;padding:0 0 0 16px;}
   .site-bar .wordmark{text-decoration:none;display:inline-flex;align-items:center;min-height:44px;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:24px;line-height:1;letter-spacing:.12em;color:#fff;}
-  .site-bar .site-cta{grid-column:2;grid-row:1;align-self:center;height:44px;padding:0 16px;margin-right:16px;font-size:11.5px;}
   .site-bar .sb-left{grid-column:1 / -1;grid-row:2;min-height:49px;padding:0 20px;border-top:1px solid var(--s-rule);}
+  /* the slot drops to its own row, directly below the tabs */
+  .site-bar .sb-slot{grid-column:1 / -1;grid-row:3;margin:0;gap:14px;padding:8px 20px;border-top:1px solid var(--s-rule);}
+  .site-bar .sb-slot .site-cta{flex:1 1 auto;height:44px;padding:0 16px;font-size:11.5px;}
 }
 
 /* ---------- front page: the same menu as a panel that slides in over the page (site-header.js data-drawer) ---------- */

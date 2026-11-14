@@ -7,7 +7,7 @@
 <title>Sussuri — Sanctuary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115d">
+<link rel="stylesheet" href="site.css?v=20261115e">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept so the scripts' inline styles still resolve */
@@ -38,7 +38,7 @@
 
   /* ================= MAIN — conversation column + typing box (design rules, 14 Nov 2026) =================
      One centred column, at most 860px wide. The conversation fills the space above; the typing box sits low,
-     ending 110px above the bottom of the window, with Generate a practice directly under it. */
+     ending 110px above the bottom of the window, with Create a practice directly under it. */
   main{ flex: 1; min-width: 0; overflow: hidden; background: #000; display: flex; justify-content: center; }
   .frame{ width: 100%; max-width: 860px; display: flex; flex-direction: column; overflow: hidden; padding: 0 36px 110px; }
 
@@ -87,9 +87,17 @@
   .trail.voice{border-radius:8px;}
   .trail.live{box-shadow:0 0 0 2px #fff;}
   .trail.clear{border:1px solid #6a6a6a;}
-  .trail.sendmode,.trail.sendmode[hidden]{display:flex;background:#fff;color:#000;}   /* always shown, as drawn; an empty box simply does not send */
+  .trail.sendmode{background:#fff;color:#000;}   /* the send arrow, and the tick while recording */
+  .trail[hidden],.rec[hidden]{display:none;}
+  /* while recording voice: the word, then a cross (discard) and a tick (accept) */
+  .rec{margin-right:auto;font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fff;}
+  .inrow.off{opacity:.45;}
+  .inrow.off textarea,.inrow.off .trail{cursor:default;}
+  /* the visitor's third reply carries on into the invitation, then a button */
+  .psy .msg.more{margin-top:.7em;}
+  .psy .vbtn{align-self:flex-start;margin-top:22px;}
   .trail:disabled{opacity:.5;cursor:default;}
-  /* Generate a practice: a bar the full width of the typing box, directly under it */
+  /* Create a practice: a bar the full width of the typing box, directly under it */
   .genrow{display:flex;}
   .genbtn{width:100%;height:50px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:transparent;border:1px solid #fff;border-radius:8px;color:#fff;font-family:var(--font-jost);font-size:12.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;}
   .genbtn:disabled{opacity:.5;cursor:default;}
@@ -129,7 +137,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115d"></script>
+<script src="site-header.js?v=20261115e"></script>
 
 <main>
   <div class="frame">
@@ -158,15 +166,16 @@
       <div class="inrow" id="inrow">
         <textarea class="field" id="field" rows="1" placeholder="Ask anything&hellip;" autocomplete="off"></textarea>
         <div class="tools">
+          <span class="rec" id="recLabel" hidden>Recording</span>
+          <button class="trail clear" id="recCancel" type="button" title="Discard the recording" aria-label="Discard the recording" hidden><svg aria-hidden="true" width="16" height="16" viewBox="0 0 18 18" stroke-width="1.4"><path d="M2 2l14 14M16 2L2 16"/></svg></button>
+          <button class="trail sendmode" id="recOk" type="button" title="Accept the recording" aria-label="Accept the recording" hidden><svg aria-hidden="true" width="18" height="16" viewBox="0 0 18 17" stroke-width="1.6"><path d="M1.5 9l5 5.5L16.5 2"/></svg></button>
           <button class="trail voice" id="trail" type="button" title="Speak" aria-label="Speak">
             <svg id="tvoice" aria-hidden="true" width="26" height="22" viewBox="0 0 26 22" stroke-width="1.4"><path d="M3 8v6M8 4v14M13 1v20M18 4v14M23 8v6"/></svg>
-            <svg id="tsend" viewBox="0 0 24 24" style="display:none"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6,12 12,5.5 18,12"/></svg>
           </button>
-          <button class="trail clear" id="clearBtn" type="button" title="Clear" aria-label="Clear"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 18 18" stroke-width="1.4"><path d="M2 2l14 14M16 2L2 16"/></svg></button>
-          <button class="trail sendmode" id="sendBtn" type="button" title="Send" aria-label="Send" hidden><svg aria-hidden="true" width="18" height="16" viewBox="0 0 18 17" stroke-width="1.6"><path d="M1.5 9l5 5.5L16.5 2"/></svg></button>
+          <button class="trail sendmode" id="sendBtn" type="button" title="Send" aria-label="Send"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.6"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6,12 12,5.5 18,12"/></svg></button>
         </div>
       </div>
-      <div class="genrow"><button class="genbtn" id="genBtn" type="button"><span>Generate a practice</span><span aria-hidden="true">&rarr;</span></button></div>
+      <div class="genrow"><button class="genbtn" id="genBtn" type="button"><span>Create a practice</span><span aria-hidden="true">&rarr;</span></button></div>
     </div>
   </div>
 </main>
@@ -237,7 +246,7 @@
   const thread=$("thread");
   const orb=$("orb"), orbTap=$("orbTap"), state=$("state"), muteBadge=$("muteBadge");
   const field=$("field");
-  const trail=$("trail"), tvoice=$("tvoice"), tsend=$("tsend"), sendBtn=$("sendBtn");
+  const trail=$("trail"), sendBtn=$("sendBtn");
 
   // ================= SIDEBAR TOGGLE =================
   function toggleNav(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
@@ -353,7 +362,7 @@
     addGreeting(greetingText());
     offered=false; userCount=0;
     const c=current();
-    if(c){ c.messages.forEach(m=>{ if(m.role==='user') { addUserBubble(m.content, !!m.spoken); userCount++; } else { addPsyReply(m.content, m.forQuestion||""); } }); }
+    if(c){ c.messages.forEach(m=>{ if(m.role==='user') { addUserBubble(m.content, !!m.spoken); userCount++; } else { const d=addPsyReply(m.content, m.forQuestion||""); if(m.invite && isVisitor()) addInvite(d); if(m.urgent && isVisitor()) addUrgentLink(d); } }); }
     scrollThread();
   }
 
@@ -364,13 +373,16 @@
     "What does it feel like in the body, right now, as you say that?"
   ];
   let previewReplyIdx=0;
-  async function fetchReply(msgs){
+  // oneLine: the visitor's third reply is a single short real line (the invitation follows it)
+  const ONE_LINE="\n\nFor this reply only: answer in ONE short sentence — a real, warm response to what they just said. No question, nothing more.";
+  async function fetchReply(msgs, oneLine){
     if(window.PSYCHE_PREVIEW){
       await new Promise(r=>setTimeout(r,350));
+      if(looksLikeCrisis(msgs[msgs.length-1].content)) return { text:"I'm really glad you told me — that took courage. What you're carrying matters, and you don't have to face it alone right now. Please reach out to one of the helplines on the support screen; they're there for exactly this, any time of day. I'm here with you too.", crisis:true };
       const text=PREVIEW_REPLIES[previewReplyIdx%PREVIEW_REPLIES.length]; previewReplyIdx++;
       return { text:text, crisis:false };
     }
-    const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:SYSTEM,max_tokens:1024,name:(profile&&profile.display_name)||"",messages:msgs.map(m=>({role:m.role,content:m.content}))})});
+    const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system:SYSTEM+(oneLine?ONE_LINE:""),max_tokens:oneLine?160:1024,name:(profile&&profile.display_name)||"",messages:msgs.map(m=>({role:m.role,content:m.content}))})});
     const data=await res.json();
     const text=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:(data.error?("("+(data.error.message||data.error)+")"):"(no reply)");
     return { text:text, crisis:!!data.crisis };
@@ -451,11 +463,43 @@
     }
     return c;
   }
-  function commitPsyTurn(c, text){
-    c.messages.push({role:"assistant",content:text}); saveChats();
+  function commitPsyTurn(c, text, extra){
+    c.messages.push(Object.assign({role:"assistant",content:text}, extra||{})); saveChats();
     if(c.messages.length===2) titleConversation(c);
   }
   function overLimit(){ return !!(profile && !window.PSYCHE_PREVIEW && profile.message_count>=planLimit()); }
+
+  // ================= VISITORS (not signed in): three messages, then the invitation =================
+  // The count lives in this browser (it survives a refresh and a new conversation). The conversation itself is
+  // already kept in this browser, so it is still here, and open, when they come back from signing up.
+  const VISITOR_MAX=3, VK="sussuri:visitor";
+  let visitor=load(VK,{n:0});
+  function isVisitor(){ return !profile && !!window.sussuriAccount && window.sussuriAccount.get().state==='visitor'; }
+  function visitorLocked(){ return isVisitor() && visitor.n>=VISITOR_MAX; }
+  function countVisitorReply(){ visitor.n=(Number(visitor.n)||0)+1; try{ localStorage.setItem(VK,JSON.stringify(visitor)); }catch(e){} }
+  const INVITE=[
+    "From here, Sussuri goes further with you. The full chat finds what sits underneath this and gives you clear steps. It can make a meditation for exactly this, and it keeps you on track with short messages.",
+    "You also get the full meditation library and the course on how your mind works. Members can earn by sharing Sussuri.",
+    "Start your free month to carry on. This conversation will be waiting."
+  ];
+  function addInvite(bubble){
+    const before=bubble.querySelector('.actions');
+    INVITE.forEach(t=>{ const p=document.createElement('div'); p.className='msg more'; p.textContent=t; bubble.insertBefore(p,before); });
+    const a=document.createElement('a'); a.className='s-btn vbtn'; a.href='pricing.html'; a.textContent='Start free month';
+    bubble.insertBefore(a,before);
+    scrollThread();
+  }
+  function addUrgentLink(bubble){
+    const a=document.createElement('a'); a.className='s-btn o vbtn'; a.href='urgent.html'; a.textContent='Need urgent help';
+    bubble.insertBefore(a,bubble.querySelector('.actions'));
+    scrollThread();
+  }
+  // after reply three the typing box is switched off for a visitor; signing in switches it back on
+  function syncVisitorLock(){
+    const off=visitorLocked();
+    $("inrow").classList.toggle('off',off);
+    field.disabled=off; trail.disabled=off; sendBtn.disabled=off;
+  }
 
   // ================= TYPED SUBMIT =================
   let sending=false;
@@ -463,6 +507,7 @@
     const text=field.value.trim();
     if(!text || sending) return;
     if(overLimit()){ showLimit(); return; }
+    if(visitorLocked()){ syncVisitorLock(); return; }
     if(voiceActive) stopVoice();
     addUserBubble(text,false);
     field.value=''; swap();
@@ -470,39 +515,49 @@
     setState('Reflecting');
 
     const c=commitUserTurn(text,false);
+    // a visitor's third message gets one short line and then the invitation, unless it sounds like a crisis:
+    // those are always answered with care, never counted, and never followed by the invitation
+    const v=isVisitor(), third=v && !looksLikeCrisis(text) && visitor.n===VISITOR_MAX-1;
     try{
-      const {text:reply, crisis}=await fetchReply(c.messages);
+      const {text:reply, crisis}=await fetchReply(c.messages, third);
       if(crisis) showCrisisModal();
       setState('Speaking');
-      addPsyReply(reply, text);
-      commitPsyTurn(c, reply);
+      const bubble=addPsyReply(reply, text);
+      if(v && crisis){ addUrgentLink(bubble); commitPsyTurn(c, reply, {urgent:true}); }
+      else if(v){
+        countVisitorReply();
+        if(third){ addInvite(bubble); commitPsyTurn(c, reply, {invite:true}); }
+        else commitPsyTurn(c, reply);
+      }
+      else commitPsyTurn(c, reply);
       setTimeout(()=>setState('Listening'),1400);
-      if(!crisis) setTimeout(maybeOffer,600);
+      if(!crisis && !v) setTimeout(maybeOffer,600);
     }catch(e){
       addPsyReply("(connection error — please try again)", text);
       setState('Listening');
     }
     sending=false; trail.disabled=false; sendBtn.disabled=false;
+    syncVisitorLock();
   }
   field.addEventListener('input', swap);
   field.addEventListener('keydown', e => { if(e.key==='Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); submit(); } });   // Shift+Enter = new line
   sendBtn.addEventListener('click', submit);
-  $("clearBtn").addEventListener('click', () => { field.value=''; swap(); field.focus(); });   // cross = clear what is typed
 
-  // send arrow shows (left of the waveform) once there's text; the box grows with the text up to 6 lines, then scrolls
+  // the box grows with the text up to 6 lines, then scrolls
   function swap(){
-    const typing=field.value.trim().length>0;
-    sendBtn.hidden=!typing;
     field.style.height='auto';
     const max=parseFloat(getComputedStyle(field).maxHeight);
     field.style.height=Math.min(field.scrollHeight,max)+'px';
     field.style.overflowY=field.scrollHeight>max?'auto':'hidden';
   }
-  function trailTap(){
-    const v=field.value;
-    if(v.trim()){ submit(); } else { toggleVoice(); }
+  trail.addEventListener('click', ()=>toggleVoice());   // the waveform starts voice; the arrow sends what is typed
+  // While voice is on the box shows "Recording", a cross and a tick instead of the waveform and the arrow.
+  function setRec(on){
+    $("recLabel").hidden=!on; $("recCancel").hidden=!on; $("recOk").hidden=!on;
+    trail.hidden=on; sendBtn.hidden=on;
   }
-  trail.addEventListener('click', trailTap);
+  $("recOk").addEventListener('click', ()=>stopVoice());                                   // tick: stop, keep what was said
+  $("recCancel").addEventListener('click', ()=>{ curUserText=""; stopVoice(); });          // cross: stop, drop what has not gone yet
 
   function showLimit(){
     $("limitCard").classList.add('on');
@@ -570,7 +625,11 @@
     if(curPsyBubble && curPsyText.trim() && c){
       curPsyBubble.appendChild(buildThumbs(""));
       commitPsyTurn(c, curPsyText.trim());
-      if(!looksLikeCrisis(curPsyText)) setTimeout(maybeOffer,300);
+      if(isVisitor()){   // spoken turns count toward a visitor's three as well
+        countVisitorReply();
+        if(visitorLocked()){ const b=curPsyBubble; curPsyText=""; curPsyBubble=null; c.messages[c.messages.length-1].invite=true; saveChats(); addInvite(b); stopVoice(); syncVisitorLock(); return; }
+      }
+      else if(!looksLikeCrisis(curPsyText)) setTimeout(maybeOffer,300);
     }
     curPsyText=""; curPsyBubble=null;
     setState('Listening');
@@ -613,8 +672,9 @@
   async function toggleVoice(){
     if(voiceActive){ stopVoice(); return; }
     if(overLimit()){ showLimit(); return; }
+    if(visitorLocked()){ syncVisitorLock(); return; }
     if(window.PSYCHE_PREVIEW){ addPsyReply("Voice needs a real session — sign in outside preview mode to try it.", ""); return; }
-    voiceActive=true; trail.classList.add('live');
+    voiceActive=true; trail.classList.add('live'); setRec(true);
     setState('Listening'); curUserText=""; curPsyText=""; curPsyBubble=null;
     try{
       const r=await fetch("/api/gemini-token",{method:"POST"});
@@ -657,7 +717,7 @@
     }
   }
   function stopVoice(){
-    voiceActive=false; trail.classList.remove('live');
+    voiceActive=false; trail.classList.remove('live'); setRec(false);
     clearTimeout(idleTimer);
     if(curUserText.trim()) commitVoiceUserTurn();
     if(curPsyBubble && curPsyText.trim()) finalizeVoiceTurn();
@@ -704,6 +764,7 @@
   function updateCount(){
     if(overLimit()) showLimit();
     else { $("limitCard").classList.remove('on'); $("inrow").style.display=''; }
+    syncVisitorLock();
   }
   function renderAccount(){
     const el=$("account"); if(!el) return;
@@ -726,6 +787,7 @@
     const {data,error}=await sb.from("profiles").select("plan,message_count,count_reset_at,display_name").eq("id",uid).single();
     if(error||!data){ console.error("profile fetch failed:",error); renderAccount(); return; }
     profile={id:uid,plan:data.plan||"free",message_count:Number(data.message_count)||0,display_name:data.display_name||""};
+    if(window.sussuriAccount) window.sussuriAccount.update({id:uid,plan:profile.plan,name:profile.display_name});
     renderAccount(); updateCount();
     if(!current() || !current().messages.length) renderThread();
     const THIRTY_DAYS=30*24*60*60*1000;
@@ -738,6 +800,7 @@
     const p=window.PSYCHE_PREVIEW_PROFILE;
     currentEmail=p.email;
     profile={id:p.id,plan:p.plan,message_count:p.message_count,display_name:p.display_name};
+    if(window.sussuriAccount && window.sussuriAccount.get().state==='visitor') profile=null;   // ?preview=1&as=visitor
     renderAccount(); updateCount(); renderThread();
   } else {
     sb.auth.getSession().then(({data})=>{ currentEmail=data.session&&data.session.user?data.session.user.email:null; loadProfile(data.session); });

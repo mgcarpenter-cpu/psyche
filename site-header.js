@@ -109,8 +109,48 @@
       '<a class="tab' + (here === 'practice' ? ' on' : '') + '" href="practice.html">Practice</a>'
     : '<span class="sb-name">' + (section[here] || pageName()) + '</span>' +
       ((section[here] && parentOf[here]) ? '<span class="sb-sep" aria-hidden="true">/</span><span class="sb-here">' + pageName() + '</span>' : '');
-  // the sales button sits in the top bar on every page except the joining page
-  var cta = here === 'pricing' ? '' : '<a class="site-cta" id="siteCta" href="pricing.html">Become a member</a>';
+  // WHO IS LOOKING. Three kinds of person, worked out once here for every page:
+  //   visitor = not signed in
+  //   trial   = signed in, in the free month (30 days from the day they signed up), not paying
+  //   member  = signed in with a paid plan
+  // Payments are connected later; until then the paid plan comes from the profile's "plan" field.
+  var FREE_DAYS = 30;
+  var SB_REF = 'hydzekyzbqhcvajnuegh', SB_URL = 'https://' + SB_REF + '.supabase.co', SB_KEY = 'sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb';
+  var pushed = null;   // what a page has told us about the signed-in person (plan, name)
+  function stored(k){ try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+  function who(){
+    if (window.PSYCHE_PREVIEW) {   // preview mode: ?as=visitor | trial | member picks the person to look at
+      var as = 'trial';
+      try { var q = new URLSearchParams(location.search).get('as'); if (q) sessionStorage.setItem('psycheAs', q); as = sessionStorage.getItem('psycheAs') || as; } catch (e) {}
+      if (as === 'visitor') return { state:'visitor', name:'', days:0 };
+      return { state: as === 'member' ? 'member' : 'trial', name:'Preview', days:23 };
+    }
+    var sess = stored('sb-' + SB_REF + '-auth-token'), u = sess && sess.user;
+    if (!u) return { state:'visitor', name:'', days:0 };
+    var c = stored('sussuri:acct'); if (!c || c.id !== u.id) c = {};
+    if (pushed && pushed.id === u.id) { c.plan = pushed.plan || c.plan; c.name = pushed.name || c.name; }
+    var age = Math.floor((Date.now() - Date.parse(u.created_at || '')) / 864e5);
+    var days = isNaN(age) ? FREE_DAYS : Math.max(0, FREE_DAYS - age);
+    return { state: (c.plan && c.plan !== 'free') ? 'member' : 'trial', name: c.name || u.email || '', days: days, id: u.id, token: sess.access_token };
+  }
+  function daysText(n){ return n + (n === 1 ? ' day left' : ' days left'); }
+  function escH(t){ return String(t || '').replace(/[&<>"]/g, function (c) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
+
+  // the top-right slot: one item, depending on the person (none on the Membership page for people who are not members yet)
+  function slotHTML(w){
+    if (w.state === 'member') return '<a class="site-cta" id="siteCta" href="account.html">Give a free month</a>';   // until the share-link page exists
+    if (here === 'pricing') return '';
+    if (w.state === 'trial') return (w.days > 0 ? '<span class="sb-days">' + daysText(w.days) + '</span>' : '') + '<a class="site-cta" id="siteCta" href="pricing.html">Become a member</a>';
+    return '<a class="site-cta" id="siteCta" href="pricing.html">Start free month</a>';
+  }
+  // the account block at the bottom of the menu
+  function acctHTML(w){
+    var label = w.state === 'visitor' ? 'Guest' : (w.name || 'Account');
+    var sub = w.state === 'visitor' ? 'Sign in' : w.state === 'member' ? 'Member' : (w.days > 0 ? 'Free month \u00b7 ' + daysText(w.days) : 'Free month ended');
+    return '<div class="avatar-dot">' + escH(((label.trim()[0]) || '\u00b7').toUpperCase()) + '</div>' +
+      '<div class="meta">' + escH(label) + '<br><span class="plan">' + escH(sub) + '</span></div>';
+  }
+  var cta = '<div class="sb-slot" id="siteSlot">' + slotHTML(who()) + '</div>';
 
   var html =
     '<nav id="nav" class="site-nav ' + (drawerOnly ? 'site-drawer ' : '') + initial + '" aria-label="Main menu">' +
@@ -132,10 +172,7 @@
               '<button id="acctSettings">Settings</button>' +
               '<button id="acctSignout">Sign out</button>' +
             '</div>' +
-            '<div class="account row" id="account">' +
-              '<div class="avatar-dot">&middot;</div>' +
-              '<div class="meta">Guest<br><span class="plan">Sign in</span></div>' +
-            '</div>' +
+            '<div class="account row" id="account">' + acctHTML(who()) + '</div>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -163,7 +200,7 @@
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('open')) set(false, true); });
       // this page has no app scripts, so the two rows they would normally wire up get plain links here
       document.getElementById('newChat').addEventListener('click', function () { location.href = 'chat.html'; });
-      document.getElementById('account').addEventListener('click', function () { location.href = 'auth.html'; });
+      document.getElementById('account').addEventListener('click', function () { location.href = who().state === 'visitor' ? 'auth.html' : 'account.html'; });
       document.getElementById('recentsLabel').style.display = 'none';
     })();
   } else {
@@ -175,6 +212,42 @@
         '<div class="sb-left">' + barLeft + '</div>' + cta +
       '</header>');
     document.body.classList.add('has-side');
+  }
+
+  // Keep the slot and the account block right. Pages still draw the account block their own way when they
+  // learn who is signed in; whenever they do, it is redrawn here so every page says the same thing.
+  (function () {
+    var box = document.getElementById('account'), slot = document.getElementById('siteSlot'), listeners = [];
+    var tmp = document.createElement('div');
+    function norm(h) { tmp.innerHTML = h; return tmp.innerHTML; }   // as the browser writes it back, so the comparison below is exact
+    function paint() {
+      var w = who(), a = norm(acctHTML(w));
+      if (box.innerHTML !== a) box.innerHTML = a;
+      if (slot) { var h = norm(slotHTML(w)); if (slot.innerHTML !== h) slot.innerHTML = h; slot.style.display = h ? '' : 'none'; }
+      listeners.forEach(function (f) { f(w); });
+    }
+    new MutationObserver(paint).observe(box, { childList: true, subtree: true, characterData: true });
+    window.sussuriAccount = {
+      get: who,
+      update: function (p) { pushed = p; try { localStorage.setItem('sussuri:acct', JSON.stringify({ id: p.id, plan: p.plan, name: p.name })); } catch (e) {} paint(); },
+      onChange: function (f) { listeners.push(f); }
+    };
+    paint();
+    // ask the account for the plan and name (pages without their own sign-in code get it from here)
+    var w = who();
+    if (w.id && w.token && window.fetch) {
+      fetch(SB_URL + '/rest/v1/profiles?id=eq.' + encodeURIComponent(w.id) + '&select=plan,display_name', { headers: { apikey: SB_KEY, Authorization: 'Bearer ' + w.token } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (rows) { if (rows && rows[0]) window.sussuriAccount.update({ id: w.id, plan: rows[0].plan || 'free', name: rows[0].display_name || '' }); })
+        .catch(function () {});
+    }
+  })();
+
+  // The arrow beside the name hides the menu on a computer too; the three lines in the top strip bring it back.
+  if (!drawerOnly) {
+    var wide = window.matchMedia('(min-width:1024px)');
+    document.getElementById('collapseBtn').addEventListener('click', function () { if (wide.matches) document.body.classList.add('menu-off'); });
+    document.getElementById('menuBtn').addEventListener('click', function () { if (wide.matches) document.body.classList.remove('menu-off'); });
   }
 
   // Recents clamp: pages render into #recents however they like; only the first
