@@ -90,7 +90,7 @@
   var html =
     '<nav id="nav" class="site-nav ' + initial + '" aria-label="Main menu">' +
       '<div class="nav-scroll">' +
-        '<div class="nav-top"><span class="side-mark wordmark-side">sussuri</span>' +
+        '<div class="nav-top"><a class="side-mark wordmark-side" href="/" aria-label="sussuri, front page">sussuri</a>' +   // the name leads back to the front page
           '<button class="collapse" id="collapseBtn" title="Close menu" aria-label="Close menu">&#10094;</button></div>' +
         '<div class="nav-grp">' +
           '<p class="side-group-title first">Chats &amp; practice</p>' +
@@ -127,7 +127,7 @@
     '<header class="site-bar" id="siteBar">' +
       '<div class="sb-strip1"><button class="menu-btn" id="menuBtn" aria-label="Menu">' +
         '<svg aria-hidden="true" width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor"><path d="M0 1h22M0 7h22M0 13h22"/></svg>' +
-        '</button><span class="wordmark">sussuri</span></div>' +
+        '</button><a class="wordmark" href="/" aria-label="sussuri, front page">sussuri</a></div>' +
       '<div class="sb-left">' + barLeft + '</div>' + cta +
     '</header>');
   document.body.classList.add('has-side');
