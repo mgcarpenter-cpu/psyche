@@ -37,17 +37,35 @@
      The finished guided meditations, three to a row. Tap one and it plays in the bar along the bottom. */
   main{ flex:1; min-width:0; overflow-y:auto; background:#000; padding:56px 72px 0; scrollbar-width:thin; scrollbar-color:#666 #000; display:flex; flex-direction:column; }
   .head{display:flex;flex-direction:column;gap:14px;padding:0 0 36px;border-bottom:1px solid var(--s-rule);text-align:left;flex:0 0 auto;}
-  .lede{margin:0;max-width:820px;font-size:21px;line-height:1.55;color:var(--s-text2);}
+  /* category row: between two thin lines */
+  .cats{display:flex;gap:10px;padding:18px 0;border-bottom:1px solid var(--s-rule);flex:0 0 auto;overflow-x:auto;scrollbar-width:none;}
+  .cats::-webkit-scrollbar{display:none;}
+  .cat{flex:0 0 auto;height:40px;padding:0 18px;border:1px solid var(--s-border);border-radius:8px;background:transparent;color:#fff;font-family:var(--font-mono);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;cursor:pointer;}
+  .cat.on{background:#fff;border-color:#fff;color:#000;}
+  .cat:focus{outline:none;} .cat:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+
+  /* ONE COVER for every session, built from its title: black, "sussuri presents" at the top, the title in the
+     middle, the mandala rising from the bottom edge. Every measure is a share of the cover's own width (cqw),
+     so a cover looks the same at any size. The title sits in a band that ends above the mandala, so they can never meet. */
+  .cover{position:relative;display:block;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;container-type:inline-size;}
+  .cover .c-top{position:absolute;left:0;right:0;top:6.4cqw;display:flex;align-items:baseline;justify-content:center;gap:1.2cqw;white-space:nowrap;line-height:1;}
+  .cover .c-mark{font-family:'Poiret One',var(--font-jost);font-size:3.3cqw;letter-spacing:.12em;color:#d6d6d6;}
+  .cover .c-pres{font-family:var(--font-mono);font-size:1.45cqw;letter-spacing:.14em;text-transform:uppercase;color:#a8a8a8;}
+  .cover .c-title{position:absolute;left:6cqw;right:6cqw;top:11.5cqw;bottom:24.6cqw;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
+    font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:8cqw;line-height:1.1;letter-spacing:.02em;color:#fff;text-wrap:balance;}
+  .cover .c-mandala{position:absolute;left:50%;bottom:0;width:45cqw;height:auto;transform:translateX(-50%);display:block;aspect-ratio:920/462;}
+  .lede{margin:0;max-width:820px;font-size:15px;line-height:1.5;color:var(--s-label);}
+  .lede b{font-weight:400;color:#fff;}
 
   .tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:48px 0 80px;flex:0 0 auto;}
   .tile{display:flex;flex-direction:column;padding:0;border:1px solid var(--s-border);border-radius:8px;overflow:hidden;background:#000;color:#fff;text-align:left;cursor:pointer;font-family:var(--font-jost);font-weight:300;transition:border-color .15s;}
   .tile:hover,.tile.on{border-color:#fff;}
-  .tile img{display:block;width:100%;height:auto;aspect-ratio:1920/1080;background:#1c1c1c;}
+  .tile[hidden]{display:none;}
+  .tile .cover{border-bottom:1px solid var(--s-rule);}
   .tile .cap{display:flex;align-items:flex-start;gap:16px;padding:18px 20px 20px;flex:1;}
   .tile .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
-  .tile .ttl{font-weight:400;font-size:19px;line-height:1.3;color:#fff;}
   .tile .tag,.player .tag,.player .time{font-family:var(--font-mono);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .tile .about{font-size:15px;line-height:1.5;color:var(--s-text2);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+  .tile .about{font-size:15px;line-height:1.5;color:var(--s-text2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .round{flex:0 0 auto;width:44px;height:44px;border:1px solid #fff;border-radius:50%;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center;}
   .round svg{width:14px;height:14px;fill:currentColor;}
   .tile.on .round{background:#fff;color:#000;}
@@ -55,7 +73,7 @@
   /* the player: stays along the bottom of the black area while you scroll */
   .player{position:sticky;bottom:0;margin:auto -72px 0;padding:14px 72px 16px;background:#000;border-top:1px solid var(--s-rule);display:flex;align-items:center;gap:20px;flex:0 0 auto;}
   .player[hidden]{display:none;}
-  .player .cv{flex:0 0 auto;width:96px;aspect-ratio:1920/1080;border-radius:8px;object-fit:cover;background:#1c1c1c;}
+  .player .cv{flex:0 0 auto;width:120px;border-radius:8px;border:1px solid var(--s-rule);overflow:hidden;}   /* a quarter larger than before (was 96px); shows the cover of what is playing */
   .player .pp{width:52px;height:52px;cursor:pointer;}
   .player .pp svg{width:16px;height:16px;}
   .player .mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
@@ -69,18 +87,21 @@
   .player .credit b{font-weight:400;color:var(--s-text2);}
   .player .time{flex:0 0 auto;white-space:nowrap;}
 
-  /* phone and tablet: one tile per row; the player keeps to two lines */
+  /* tablet and phone: the player keeps to two lines */
   @media (max-width:1023px){
     main{padding:36px 20px 0;}
     .head{gap:10px;padding-bottom:24px;}
     .lede{font-size:16px;}
-    .tiles{grid-template-columns:1fr;gap:20px;margin:30px 0 40px;}
+    .tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:30px 0 40px;}   /* tablet: two to a row */
+    .cats{padding:14px 0;margin:0 -20px;padding-left:20px;padding-right:20px;}
+    .cat{height:44px;}
     .player{margin:auto -20px 0;padding:12px 20px 14px;gap:14px;}
     .player .cv{display:none;}
     .player .credit{display:none;}
     .player .ttl{font-size:16px;}
     .player .tag{display:none;}   /* the tile already shows it; keeps the time clear of the name */
   }
+  @media (max-width:640px){ .tiles{grid-template-columns:1fr;} }   /* phone: one to a row */
 </style>
 </head>
 <body class="site-shell">
@@ -88,10 +109,11 @@
 <script src="site-header.js?v=20261115g"></script>
 
 <main>
-  <header class="head"><h1 class="page-title">Meditations</h1><p class="lede">Guided meditations. Tap to play.</p></header>
+  <header class="head"><h1 class="page-title">Meditations</h1><p class="lede">Guided meditations. Written and narrated by <b>Mark Carpenter</b></p></header>
+  <div class="cats" id="cats" role="group" aria-label="Category"></div>
   <div class="tiles" id="tiles"></div>
   <div class="player" id="player" hidden>
-    <img class="cv" id="plCover" alt="">
+    <span class="cv" id="plCover" aria-hidden="true"></span>
     <button type="button" class="round pp" id="plBtn" aria-label="Play"><svg id="plIcon" aria-hidden="true" viewBox="0 0 20 20"><path d="M4 2l14 8-14 8z"/></svg></button>
     <div class="mid">
       <div class="now"><span class="ttl" id="plTitle"></span><span class="tag" id="plTag"></span></div>
@@ -115,8 +137,9 @@
   </div>
 </div>
 
-<!-- The finished sessions. The audio and covers live on sussuri.com (the files are large), so the app plays them from there. -->
-<script id="data" type="application/json">[{"slug": "calm-anxiety-now", "title": "Calm Anxiety Now", "label": "Guided meditation", "length": "20 mins", "about": "A gentle twenty-minute guided hypnosis to settle anxious feeling and rest in calm. You'll be guided down into a warm meadow at the edge of an old wood, where calm and peace wash through every part of you.", "cover": "https://www.sussuri.com/media/cover-calm-anxiety-now.jpg", "audio": "https://www.sussuri.com/media/calm-anxiety-now-20.mp3", "extra_credit": ""}, {"slug": "fall-asleep", "title": "Fall Asleep", "label": "Guided meditation", "length": "20 mins", "about": "A gentle twenty-minute guided sleep hypnosis. Let your mind drift into a quiet meadow at night, beside a softly bubbling stream under the moon and stars, and fall asleep within the dream.", "cover": "https://www.sussuri.com/media/cover-fall-asleep.jpg", "audio": "https://www.sussuri.com/media/fall-asleep-20.mp3", "extra_credit": ""}, {"slug": "let-go-of-the-day", "title": "Let Go of the Day", "label": "Guided meditation", "length": "30 mins", "about": "A gentle thirty-minute guided meditation for the end of the day. Walk a quiet river path at dusk, letting each thing you've been carrying drift away on a golden leaf, then rest beneath the evening sky.", "cover": "https://www.sussuri.com/media/cover-let-go-of-the-day.jpg", "audio": "https://www.sussuri.com/media/let-go-of-the-day-30.mp3", "extra_credit": ""}, {"slug": "quiet-an-overthinking-mind", "title": "Quiet an Overthinking Mind", "label": "Guided meditation", "length": "35 mins", "about": "A gentle thirty-five-minute guided meditation for a busy, overthinking mind. Walk a slow path through an old wood, letting your steps and your thoughts slow together, hear the single clear note of a bellbird, then rest beside a small, quiet pool.", "cover": "https://www.sussuri.com/media/cover-quiet-an-overthinking-mind.jpg", "audio": "https://www.sussuri.com/media/quiet-an-overthinking-mind-35.mp3", "extra_credit": "Bird song: Department of Conservation (NZ)"}, {"slug": "settle-the-nervous-system", "title": "Settle the Nervous System", "label": "Guided meditation", "length": "35 mins", "about": "A gentle thirty-five-minute guided meditation to settle your whole body. Walk slowly down a warm green hillside into a sheltered hollow, let warm sunlight move through you from head to feet, and rest on the steady earth until calm feels like home.", "cover": "https://www.sussuri.com/media/cover-settle-the-nervous-system.jpg", "audio": "https://www.sussuri.com/media/settle-the-nervous-system-35.mp3", "extra_credit": ""}, {"slug": "grief", "title": "Grief", "label": "Guided meditation", "length": "38 mins", "about": "A gentle thirty-eight-minute guided meditation for when you are missing someone you love. Walk a quiet garden path to a great old tree, let warm morning light soften your body, and allow the love you share to rest around your heart, as steady as the tree itself.", "cover": "https://www.sussuri.com/media/cover-grief.jpg", "audio": "https://www.sussuri.com/media/grief-38.mp3", "extra_credit": ""}, {"slug": "confidence-now", "title": "Confidence Now", "label": "Guided meditation", "length": "42 mins", "about": "A gentle forty-two-minute guided meditation for steady, quiet confidence. Walk a warm mountain path to a wide flat rock, let the morning sun soften your body, and allow yourself to become as solid and settled as the mountain itself, carrying that steadiness into every part of your day.", "cover": "https://www.sussuri.com/media/cover-confidence-now.jpg", "audio": "https://www.sussuri.com/media/confidence-now-42.mp3", "extra_credit": ""}, {"slug": "stop-beating-yourself-up", "title": "Stop Beating Yourself Up", "label": "Guided meditation", "length": "41 mins", "about": "A gentle forty-one-minute guided meditation for being kinder to yourself. Walk a warm sandy path down to a quiet bay, let the afternoon sun soften your body, and allow your inner voice to slow and speak to you the way you would speak to a small puppy, with patience, warmth and kindness.", "cover": "https://www.sussuri.com/media/cover-stop-beating-yourself-up.jpg", "audio": "https://www.sussuri.com/media/stop-beating-yourself-up-41.mp3", "extra_credit": ""}, {"slug": "focus-before-work", "title": "Focus Before Work", "label": "Guided meditation", "length": "20 mins", "about": "A twenty-minute guided meditation to gather your mind before work. Settle your body, rest your attention on the simple coming and going of the breath, and let each return grow steadier, so you begin your day clear, calm and focused.", "cover": "https://www.sussuri.com/media/cover-focus-before-work.jpg", "audio": "https://www.sussuri.com/media/focus-before-work-20.mp3", "extra_credit": ""}]</script>
+<!-- The finished sessions. Each has a category (the row of buttons) and gets its cover from its title, built in code.
+     To add a session: add it here with its title, category, length, about and audio. The audio lives on sussuri.com (the files are large). -->
+<script id="data" type="application/json">[{"slug": "calm-anxiety-now", "title": "Calm Anxiety Now", "label": "Guided meditation", "length": "20 mins", "about": "A gentle twenty-minute guided hypnosis to settle anxious feeling and rest in calm. You'll be guided down into a warm meadow at the edge of an old wood, where calm and peace wash through every part of you.", "audio": "https://www.sussuri.com/media/calm-anxiety-now-20.mp3", "extra_credit": "", "category": "Calm"}, {"slug": "fall-asleep", "title": "Fall Asleep", "label": "Guided meditation", "length": "20 mins", "about": "A gentle twenty-minute guided sleep hypnosis. Let your mind drift into a quiet meadow at night, beside a softly bubbling stream under the moon and stars, and fall asleep within the dream.", "audio": "https://www.sussuri.com/media/fall-asleep-20.mp3", "extra_credit": "", "category": "Sleep"}, {"slug": "let-go-of-the-day", "title": "Let Go of the Day", "label": "Guided meditation", "length": "30 mins", "about": "A gentle thirty-minute guided meditation for the end of the day. Walk a quiet river path at dusk, letting each thing you've been carrying drift away on a golden leaf, then rest beneath the evening sky.", "audio": "https://www.sussuri.com/media/let-go-of-the-day-30.mp3", "extra_credit": "", "category": "Sleep"}, {"slug": "quiet-an-overthinking-mind", "title": "Quiet an Overthinking Mind", "label": "Guided meditation", "length": "35 mins", "about": "A gentle thirty-five-minute guided meditation for a busy, overthinking mind. Walk a slow path through an old wood, letting your steps and your thoughts slow together, hear the single clear note of a bellbird, then rest beside a small, quiet pool.", "audio": "https://www.sussuri.com/media/quiet-an-overthinking-mind-35.mp3", "extra_credit": "Bird song: Department of Conservation (NZ)", "category": "Calm"}, {"slug": "settle-the-nervous-system", "title": "Settle the Nervous System", "label": "Guided meditation", "length": "35 mins", "about": "A gentle thirty-five-minute guided meditation to settle your whole body. Walk slowly down a warm green hillside into a sheltered hollow, let warm sunlight move through you from head to feet, and rest on the steady earth until calm feels like home.", "audio": "https://www.sussuri.com/media/settle-the-nervous-system-35.mp3", "extra_credit": "", "category": "Calm"}, {"slug": "grief", "title": "Grief", "label": "Guided meditation", "length": "38 mins", "about": "A gentle thirty-eight-minute guided meditation for when you are missing someone you love. Walk a quiet garden path to a great old tree, let warm morning light soften your body, and allow the love you share to rest around your heart, as steady as the tree itself.", "audio": "https://www.sussuri.com/media/grief-38.mp3", "extra_credit": "", "category": "Grief"}, {"slug": "confidence-now", "title": "Confidence Now", "label": "Guided meditation", "length": "42 mins", "about": "A gentle forty-two-minute guided meditation for steady, quiet confidence. Walk a warm mountain path to a wide flat rock, let the morning sun soften your body, and allow yourself to become as solid and settled as the mountain itself, carrying that steadiness into every part of your day.", "audio": "https://www.sussuri.com/media/confidence-now-42.mp3", "extra_credit": "", "category": "Confidence"}, {"slug": "stop-beating-yourself-up", "title": "Stop Beating Yourself Up", "label": "Guided meditation", "length": "41 mins", "about": "A gentle forty-one-minute guided meditation for being kinder to yourself. Walk a warm sandy path down to a quiet bay, let the afternoon sun soften your body, and allow your inner voice to slow and speak to you the way you would speak to a small puppy, with patience, warmth and kindness.", "audio": "https://www.sussuri.com/media/stop-beating-yourself-up-41.mp3", "extra_credit": "", "category": "Confidence"}, {"slug": "focus-before-work", "title": "Focus Before Work", "label": "Guided meditation", "length": "20 mins", "about": "A twenty-minute guided meditation to gather your mind before work. Settle your body, rest your attention on the simple coming and going of the breath, and let each return grow steadier, so you begin your day clear, calm and focused.", "audio": "https://www.sussuri.com/media/focus-before-work-20.mp3", "extra_credit": "", "category": "Focus"}]</script>
 <script>
 (function(){
   var S=JSON.parse(document.getElementById('data').textContent);
@@ -127,13 +150,31 @@
   var now=-1;
   function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
   function fmt(t){ t=Math.max(0,t|0); return Math.floor(t/60)+':'+('0'+(t%60)).slice(-2); }
-  function tag(it){ return [it.label,it.length].filter(Boolean).join(' \u00b7 '); }
+  function tag(it){ return [it.label,it.length].filter(Boolean).join(' \u00b7 '); }            // player bar: GUIDED MEDITATION · NN MINS
+  function cardTag(it){ return [it.category,it.length].filter(Boolean).join(' \u00b7 '); }   // card: CATEGORY · NN MINS
+  function short(t){ var m=/^(.*?[.!?])(\s|$)/.exec(String(t||'')); return m?m[1]:String(t||''); }   // the card shows the first sentence of the description
+  // the cover, from the title alone
+  function cover(it){
+    return '<span class="cover"><span class="c-top"><span class="c-mark">sussuri</span><span class="c-pres">presents</span></span>'+
+      '<span class="c-title">'+esc(it.title)+'</span><img class="c-mandala" alt="" src="images/meditation-mandala.png"></span>';
+  }
+  // category row: All first, then each category in the order it first appears below
+  var ORDER=['Sleep','Calm','Confidence','Focus','Grief'], cats=document.getElementById('cats'), showing='All';
+  S.forEach(function(it){ if(it.category && ORDER.indexOf(it.category)<0) ORDER.push(it.category); });
+  ['All'].concat(ORDER).forEach(function(c){
+    var b=document.createElement('button'); b.type='button'; b.className='cat'+(c==='All'?' on':''); b.textContent=c; b.setAttribute('aria-pressed',String(c==='All'));
+    b.onclick=function(){ showing=c;
+      [].forEach.call(cats.children,function(x){ var on=x===b; x.classList.toggle('on',on); x.setAttribute('aria-pressed',String(on)); });
+      [].forEach.call(tiles.children,function(t,i){ t.hidden=!(c==='All'||S[i].category===c); });
+    };
+    cats.appendChild(b);
+  });
 
   S.forEach(function(it,i){
     var t=document.createElement('button');
     t.type='button'; t.className='tile'; t.setAttribute('aria-label','Play '+it.title);
-    t.innerHTML='<img alt="" loading="lazy" src="'+esc(it.cover)+'">'+
-      '<span class="cap"><span class="txt"><span class="ttl">'+esc(it.title)+'</span><span class="tag">'+esc(tag(it))+'</span><span class="about">'+esc(it.about)+'</span></span>'+
+    t.innerHTML=cover(it)+
+      '<span class="cap"><span class="txt"><span class="tag">'+esc(cardTag(it))+'</span><span class="about">'+esc(short(it.about))+'</span></span>'+
       '<span class="round" aria-hidden="true"><svg viewBox="0 0 20 20">'+PLAY+'</svg></span></span>';
     t.onclick=function(){ pick(i); };
     tiles.appendChild(t);
@@ -152,7 +193,7 @@
   function pick(i){
     if(i===now){ if(a.paused) a.play(); else a.pause(); return; }
     now=i; var it=S[i];
-    document.getElementById('plCover').src=it.cover;
+    document.getElementById('plCover').innerHTML=cover(it);
     document.getElementById('plTitle').textContent=it.title;
     document.getElementById('plTag').textContent=tag(it);
     document.getElementById('plExtra').textContent=it.extra_credit?' \u00b7 '+it.extra_credit:'';
