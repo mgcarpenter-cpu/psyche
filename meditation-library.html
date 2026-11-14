@@ -7,7 +7,8 @@
 <title>Meditation library · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115g">
+<link rel="stylesheet" href="site.css?v=20261115h">
+<link rel="stylesheet" href="meditation-cover.css?v=20261115h">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept */
@@ -113,6 +114,42 @@
   .done-note{text-align:center;font-size:14px;color:var(--s-label);margin-top:22px;line-height:1.5;font-style:normal;}
   .done-note b{color:#fff;font-weight:400;}
 
+  /* ===== the nine guided meditations: the same cover and card as the Meditations page, with the Share bar under each ===== */
+  .band[hidden]{display:none;}
+  .card .tile{display:flex;flex-direction:column;flex:1 1 auto;padding:0;border:0;background:#000;color:#fff;text-align:left;cursor:pointer;font-family:var(--font-jost);font-weight:300;}
+  .card.on{border-color:#fff;}
+  .tile .cover{border-bottom:1px solid var(--s-rule);}
+  .tile .cap{display:flex;align-items:flex-start;gap:16px;padding:18px 20px 20px;flex:1;}
+  .tile .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
+  .tile .tag,.player .tag,.player .time{font-family:var(--font-mono);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+  .tile .about{font-size:15px;line-height:1.5;color:var(--s-text2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .round{flex:0 0 auto;width:44px;height:44px;border:1px solid #fff;border-radius:50%;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center;}
+  .round svg{width:14px;height:14px;fill:currentColor;}
+  .card.on .round{background:#fff;color:#000;}
+  /* the player: the same bar as the Meditations page, along the bottom while you scroll */
+  .player{position:sticky;bottom:0;padding:14px 72px 16px;background:#000;border-top:1px solid var(--s-rule);display:flex;align-items:center;gap:20px;z-index:3;}
+  .player[hidden]{display:none;}
+  .player .cv{flex:0 0 auto;width:120px;border-radius:8px;border:1px solid var(--s-rule);overflow:hidden;}
+  .player .pp{width:52px;height:52px;cursor:pointer;}
+  .player .pp svg{width:16px;height:16px;}
+  .player .mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;height:auto;align-items:stretch;justify-content:flex-start;cursor:default;}
+  .player .now{display:flex;align-items:baseline;gap:14px;min-width:0;}
+  .player .ttl{font-weight:400;font-size:18px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .player .tag{white-space:nowrap;}
+  .player .scrub{position:relative;height:24px;cursor:pointer;display:flex;align-items:center;}
+  .player .scrub::before{content:"";position:absolute;left:0;right:0;height:2px;background:#4a4a4a;}
+  .player .scrub i{position:relative;display:block;height:2px;width:0;background:#fff;}
+  .player .credit{font-size:13px;color:var(--s-label);}
+  .player .credit b{font-weight:400;color:var(--s-text2);}
+  .player .time{flex:0 0 auto;white-space:nowrap;}
+  .payload .thumb.cov{width:128px;height:auto;border:1px solid var(--s-border);overflow:hidden;display:block;}
+  @media (max-width:1023px){
+    .grid.sessions{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;}   /* tablet: two to a row */
+    .player{padding:12px 20px 14px;gap:14px;}
+    .player .cv,.player .credit,.player .tag{display:none;}
+    .player .ttl{font-size:16px;}
+  }
+  @media (max-width:640px){ .grid.sessions{grid-template-columns:1fr;} }   /* phone: one to a row */
   /* phone and tablet: one column of cards; the three numbers stay in a row of three */
   @media (max-width:1023px){
     .page{ gap:30px; padding:36px 20px 40px; }
@@ -128,7 +165,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115g"></script>
+<script src="site-header.js?v=20261115h"></script>
 
 <main>
   <div class="page">
@@ -142,26 +179,37 @@
       </div>
     </header>
 
-    <section class="band">
+    <section class="band" id="newBand">
       <div class="libshell">
         <h2 class="bandhead">New today</h2>
         <div class="grid" id="newGrid"></div>
       </div>
     </section>
 
-    <section class="band">
+    <section class="band" id="hotBand">
       <div class="libshell">
         <h2 class="bandhead">Hot</h2>
         <div class="grid" id="hotGrid"></div>
       </div>
     </section>
 
-    <section class="band">
+    <section class="band" id="libBand">
       <div class="libshell">
         <h2 class="bandhead">Library</h2>
-        <div class="grid" id="libGrid"></div>
+        <div class="grid sessions" id="libGrid"></div>
       </div>
     </section>
+  </div>
+  <div class="player" id="player" hidden>
+    <span class="cv" id="plCover" aria-hidden="true"></span>
+    <button type="button" class="round pp" id="plBtn" aria-label="Play"><svg id="plIcon" aria-hidden="true" viewBox="0 0 20 20"><path d="M4 2l14 8-14 8z"/></svg></button>
+    <div class="mid">
+      <div class="now"><span class="ttl" id="plTitle"></span><span class="tag" id="plTag"></span></div>
+      <div class="scrub" id="plScrub" role="slider" aria-label="Position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="plBar"></i></div>
+      <div class="credit">Written and narrated by <b>Mark Carpenter</b><span id="plExtra"></span></div>
+    </div>
+    <span class="time"><span id="plCur">0:00</span> / <span id="plDur">0:00</span></span>
+    <audio id="plAudio" preload="none"></audio>
   </div>
 </main>
 
@@ -205,6 +253,7 @@
   </div>
 </div>
 
+<script src="meditation-sessions.js?v=20261115h"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const $=id=>document.getElementById(id);
@@ -292,11 +341,10 @@
   // ================================================================
   let ITEMS=[];
 
+  // The library is the nine finished guided meditations (meditation-sessions.js, shared with the Meditations page).
+  // Arrived / Joined are nought: nothing counts them yet.
   async function loadData(){
-    try{
-      const res=await fetch("meditation-library-data.json");
-      ITEMS=await res.json();
-    }catch(e){ ITEMS=[]; }
+    ITEMS=(window.SUSSURI_SESSIONS||[]).map(it=>Object.assign({ id:it.slug, section:"library", type:"session", pearlText:it.title, arrived:0, joined:0 }, it));
   }
   function findItem(id){ return ITEMS.find(i=>i.id===id); }
 
@@ -338,11 +386,15 @@
 
   // ---- rendering ----
   const SHARE_ICON='<svg viewBox="0 0 22 22" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="16.5" cy="5.5" r="2.3"></circle><circle cx="5.5" cy="11" r="2.3"></circle><circle cx="16.5" cy="16.5" r="2.3"></circle><line x1="7.5" y1="9.8" x2="14.5" y2="6.6"></line><line x1="7.5" y1="12.2" x2="14.5" y2="15.4"></line></svg>';
+  const PLAY='<path d="M4 2l14 8-14 8z"/>', PAUSE='<path d="M4 2h4v16H4zM12 2h4v16h-4z"/>';
   function cardHTML(item){
     const shared=isCardSharedToday(item.id);
     return '<article class="card'+(shared?' shared':'')+'" data-id="'+item.id+'">'
-      + '<div class="mid" onclick="openEx(\''+item.id+'\')"><span class="ring"><span class="tri"></span></span></div>'
-      + '<p class="quote" onclick="openEx(\''+item.id+'\')">'+esc(item.pearlText)+'</p>'
+      + '<button type="button" class="tile" aria-label="Play '+esc(item.title)+'" onclick="playSession(\''+item.id+'\')">'
+      +   sussuriCover(item)
+      +   '<span class="cap"><span class="txt"><span class="tag">'+esc(sussuriCardTag(item))+'</span><span class="about">'+esc(sussuriShort(item.about))+'</span></span>'
+      +   '<span class="round" aria-hidden="true"><svg viewBox="0 0 20 20">'+PLAY+'</svg></span></span>'
+      + '</button>'
       + '<a href="#" class="share'+(shared?' done':'')+'" onclick="event.preventDefault();event.stopPropagation();openShare(\''+item.id+'\')">'
       + SHARE_ICON+(shared?'Shared':'Share')
       + '</a>'
@@ -350,7 +402,9 @@
   }
   function renderSection(sectionKey, elId){
     const el=$(elId);
-    el.innerHTML = ITEMS.filter(i=>i.section===sectionKey).map(cardHTML).join("");
+    const list=ITEMS.filter(i=>i.section===sectionKey);
+    el.innerHTML = list.map(cardHTML).join("");
+    el.closest(".band").hidden = !list.length;   // a section with nothing in it does not show
   }
   const EARN_PER_JOIN=6; // placeholder rate — no billing wired up yet, same convention as pricing.html's "$12/mo"
   function renderTotals(){
@@ -367,6 +421,38 @@
     const bar=card.querySelector(".share");
     if(bar){ bar.classList.add("done"); bar.innerHTML=SHARE_ICON+"Shared"; }
   }
+
+  // ---- playing: the same bar and behaviour as the Meditations page ----
+  const pa=$("plAudio"); let nowId=null;
+  function fmt(t){ t=Math.max(0,t|0); return Math.floor(t/60)+':'+('0'+(t%60)).slice(-2); }
+  function markPlaying(){
+    document.querySelectorAll('.card[data-id]').forEach(c=>{
+      const mine=c.getAttribute('data-id')===nowId, on=mine && !pa.paused, it=findItem(c.getAttribute('data-id'));
+      c.classList.toggle('on',mine);
+      c.querySelector('.round svg').innerHTML = on?PAUSE:PLAY;
+      c.querySelector('.tile').setAttribute('aria-label',(on?'Pause ':'Play ')+it.title);
+    });
+    $("plIcon").innerHTML=pa.paused?PLAY:PAUSE; $("plBtn").setAttribute('aria-label',pa.paused?'Play':'Pause');
+  }
+  function playSession(id){   // tapping a card plays it; tapping the one that is playing pauses it
+    if(id===nowId){ if(pa.paused) pa.play(); else pa.pause(); return; }
+    const it=findItem(id); if(!it) return; nowId=id;
+    $("plCover").innerHTML=sussuriCover(it);
+    $("plTitle").textContent=it.title;
+    $("plTag").textContent=[it.label,it.length].filter(Boolean).join(' \u00b7 ');
+    $("plExtra").textContent=it.extra_credit?' \u00b7 '+it.extra_credit:'';
+    $("plBar").style.width='0'; $("plCur").textContent='0:00'; $("plDur").textContent='0:00';
+    $("player").hidden=false;
+    pa.src=it.audio; pa.play().catch(()=>{});
+    markPlaying();
+  }
+  $("plBtn").onclick=()=>{ if(!nowId) return; if(pa.paused) pa.play(); else pa.pause(); };
+  pa.onplay=pa.onpause=markPlaying;
+  pa.onended=()=>{ $("plBar").style.width='0'; markPlaying(); };
+  pa.onloadedmetadata=()=>{ $("plDur").textContent=fmt(pa.duration); };
+  pa.ontimeupdate=()=>{ $("plCur").textContent=fmt(pa.currentTime); if(pa.duration){ const p=pa.currentTime/pa.duration*100; $("plBar").style.width=p+'%'; $("plScrub").setAttribute('aria-valuenow',Math.round(p)); } };
+  $("plScrub").onclick=e=>{ const r=$("plScrub").getBoundingClientRect(); if(pa.duration) pa.currentTime=(e.clientX-r.left)/r.width*pa.duration; };
+  $("plScrub").onkeydown=e=>{ if(!pa.duration) return; if(e.key==='ArrowRight') pa.currentTime=Math.min(pa.duration,pa.currentTime+15); if(e.key==='ArrowLeft') pa.currentTime=Math.max(0,pa.currentTime-15); };
 
   // ---- lightbox ----
   let currentId=null;
@@ -423,7 +509,8 @@
     const item=findItem(id);
     if(!item) return;
     const thumb=$("shThumb");
-    thumb.innerHTML = item.type==="video" ? '<span class="pl">&#9654;</span>' : "";
+    thumb.classList.toggle("cov", item.type==="session");
+    thumb.innerHTML = item.type==="session" ? sussuriCover(item) : item.type==="video" ? '<span class="pl">&#9654;</span>' : "";
     $("shKind").textContent = item.type==="video" ? "Video" : "Meditation";
     $("shQ").textContent = item.pearlText;
     renderShareGrid(item);
@@ -486,6 +573,9 @@
       const res=await fetch(item.videoUrl);
       const blob=await res.blob();
       file=new File([blob], item.id+".mp4", {type:"video/mp4"});
+    } else if(item.type==="session"){   // a guided meditation is shared as its cover, as a picture
+      const blob=await sussuriCoverImage(item);
+      file=new File([blob], item.id+".png", {type:"image/png"});
     } else {
       const blob=await renderPearlCardBlob(item.pearlText);
       file=new File([blob], item.id+".png", {type:"image/png"});
