@@ -552,7 +552,7 @@ body.kb .dd .ddb:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an o
     });
   }
 
-  // ---- time zone: starts on the device's own; Eastern Time (New York) if that cannot be read ----
+  // ---- time zone: starts on Eastern Time (New York) ----
   function tzName(id){
     const city=id.split("/").pop().replace(/_/g," ");
     let g=""; try{ g=new Intl.DateTimeFormat("en-US",{timeZone:id,timeZoneName:"longGeneric"}).formatToParts(new Date()).find(p=>p.type==="timeZoneName").value; }catch(e){}
@@ -564,8 +564,7 @@ body.kb .dd .ddb:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an o
       const m=/GMT([+-])(\d+)(?::(\d+))?/.exec(v); return m ? (m[1]==="-"?-1:1)*(Number(m[2])*60+Number(m[3]||0)) : 0; }catch(e){ return 0; }
   }
   function drawTimeZones(){
-    let device=""; try{ device=Intl.DateTimeFormat().resolvedOptions().timeZone||""; }catch(e){}
-    const start=sched.tz||device||"America/New_York";
+    const start=sched.tz||"America/New_York";   // everyone starts on Eastern Time (New York), the most used in the USA, until they choose their own
     const sel=$("tzSel");
     sel.innerHTML='<option value="'+esc(start)+'">'+esc(tzName(start))+'</option>';   // shown at once; the full list fills in just after
     ddMake(sel);
