@@ -106,12 +106,19 @@ nav#nav.site-nav::-webkit-scrollbar{width:0;height:0;}
 .site-nav .acctmenu.open{display:flex;}
 .site-nav .acctmenu button{background:none;border:0;min-height:44px;padding:0 16px;font-family:var(--font-jost);font-weight:300;font-size:15px;color:var(--s-menu-text);text-align:left;cursor:pointer;}
 .site-nav .acctmenu button:hover{background:#f1f1f1;}
-/* short windows: rows tighten a little; if it still does not fit, the menu scrolls inside itself */
-@media (max-height:860px){
+/* the menu only has room for its full spacing on tall screens (1080px and up). Below that the rows tighten,
+   and tighten once more on laptop-height desktop windows; if it still does not fit, the menu scrolls inside itself */
+@media (max-height:1079px){
   .site-nav .nav-scroll{gap:10px;padding:20px 0 16px;}
   .site-nav .navitem,.site-nav .newchat,.site-nav .recents-head{padding-top:6px;padding-bottom:6px;}
   .site-nav .side-group-title{padding-top:12px;margin-bottom:4px;}
   .site-nav .recent,.site-nav .recents-more{padding-top:4px;padding-bottom:4px;}
+}
+@media (max-height:900px) and (min-width:1024px){
+  .site-nav .nav-scroll{gap:8px;padding:16px 0 12px;}
+  .site-nav .navitem,.site-nav .newchat,.site-nav .recents-head{padding-top:4px;padding-bottom:4px;}
+  .site-nav .side-group-title{padding-top:10px;}
+  .site-nav .recent,.site-nav .recents-more{padding-top:3px;padding-bottom:3px;}
 }
 
 /* ---------- top bar ---------- */
