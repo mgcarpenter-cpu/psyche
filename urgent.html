@@ -7,12 +7,12 @@
 <title>Urgent help · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261011t">
+<link rel="stylesheet" href="site.css?v=20261114c">
 <style>
   :root{
-    --cream:#faf8f3; --night:#06090f; --indigo:#1d3891;
-    --bone:#e8e4dc; --bone-dim:#9aa0ab; --bone-faint:#5f6572;
-    --hair:rgba(237,230,220,.14); --hairline:1px solid rgba(237,230,220,.14);
+    --cream:#fff; --night:#000; --indigo:#fff;
+    --bone:#fff; --bone-dim:#d6d6d6; --bone-faint:#a8a8a8;
+    --hair:#333; --hairline:1px solid #333;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   body{-webkit-font-smoothing:antialiased;font-family:'Jost',sans-serif;font-weight:300;background:var(--night);}
@@ -25,7 +25,7 @@
   .wrap{max-width:560px;width:100%;text-align:center;}
   .wm{font-size:13px;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:var(--bone-faint);margin-bottom:44px;}
   h1{font-family:'Poiret One';font-weight:400;font-size:clamp(34px,4.6vw,48px);line-height:1.15;color:var(--cream);margin-bottom:18px;}
-  .lede{font-weight:300;font-style:italic;font-size:16px;line-height:1.6;color:var(--bone-dim);margin-bottom:10px;}
+  .lede{font-weight:300;font-style:normal;font-size:16px;line-height:1.6;color:var(--bone-dim);margin-bottom:10px;}
   .sub{font-weight:300;font-size:14px;color:var(--bone-faint);margin-bottom:36px;}
 
   .primary{display:inline-flex;align-items:center;justify-content:center;height:54px;padding:0 42px;background:var(--cream);color:#000;font-size:14px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:opacity .18s;}
@@ -36,7 +36,7 @@
   .danger .t{font-family:'Poiret One';font-weight:400;font-size:20px;color:var(--cream);margin-bottom:7px;}
   .danger .d{font-weight:300;font-size:14px;color:var(--bone-dim);line-height:1.55;}
   .emerg{display:inline-block;margin-top:15px;border:var(--hairline);padding:13px 24px;font-weight:300;font-size:13.5px;letter-spacing:.06em;color:var(--bone);cursor:pointer;text-decoration:none;transition:border-color .18s;}
-  .emerg:hover{border-color:rgba(237,230,220,.4);}
+  .emerg:hover{border-color:#a8a8a8;}
 
   .closing{font-weight:300;font-size:14.5px;line-height:1.65;color:var(--bone-dim);max-width:460px;margin:0 auto 34px;}
   .back{color:var(--bone-dim);font-weight:300;font-size:14px;text-decoration:underline;cursor:pointer;}
@@ -52,14 +52,31 @@
 .choice{display:flex;flex-direction:column;align-items:center;width:min(340px,100%);}
 .choice-label{margin:0 0 20px;font-weight:400;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone-dim);}
 .choices .primary{width:100%;}
-.divider{width:min(340px,100%);height:1px;background:rgba(237,230,220,.14);}
+.divider{width:min(340px,100%);height:1px;background:transparent;}
 @media (max-width:1023px){ .wrap{min-height:calc(100dvh - 44px - 80px);} }
 /* phones + tablets: title 76px from the top like every page; Close hidden (it sat on the title) */
 @media (max-width:1023px){ .screen{justify-content:flex-start !important;padding-top:32px !important;min-height:calc(100dvh - 44px) !important;} .close{display:none !important;} }
+
+/* ════════ NEW LOOK (design rules, 14 Nov 2026) — appended last so it wins. Look only: no wording or behaviour changes. ════════ */
+body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;}
+main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
+/* title at the top left; the two choices share the rest of the screen, left-aligned */
+main.site-main{overflow-y:auto;}
+.screen{min-height:100% !important;align-items:flex-start !important;justify-content:flex-start !important;padding:56px 72px 80px !important;background:#000;}
+.wrap{max-width:none;text-align:left;align-items:flex-start;min-height:calc(100dvh - 83px - 136px);}
+.wrap .page-title{margin:0;}
+.lede{font-family:var(--font-jost);font-weight:300;font-size:21px;line-height:1.55;color:var(--s-text2);opacity:1;max-width:820px;margin:14px 0 0 !important;padding-bottom:36px;border-bottom:1px solid var(--s-rule);width:100%;max-width:none;}
+.choices{align-items:flex-start;justify-content:space-evenly;padding:36px 0 0;}
+.choice{align-items:flex-start;width:min(420px,100%);}
+.choice-label{margin:0 0 14px;font-family:var(--font-mono);font-weight:400;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+.primary,.choices .primary{height:46px;padding:0 22px;border-radius:8px;font-family:var(--font-jost);font-weight:500;font-size:12.5px;line-height:1;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;display:flex;align-items:center;justify-content:center;white-space:nowrap;height:52px;width:100%;background:#fff;border:1px solid #fff;color:#000;}
+.divider{display:none;}
+.close{top:20px;right:72px;display:inline-flex;align-items:center;min-height:44px;font-size:15px;color:var(--s-label);}
+@media (max-width:1023px){ .screen{padding:36px 20px 40px !important;} .wrap{min-height:calc(100dvh - 111px - 76px);} .lede{font-size:16px;padding-bottom:24px;} .choice{width:100%;} }
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js?v=20261011t" data-toggle></script>
+<script src="site-header.js?v=20261114c" data-toggle></script>
 <main class="site-main">
   <div class="screen">
     <a class="close sans" href="index.html" id="closeBtn" onclick="if(history.length>1){history.back();return false;}">✕ Close</a>

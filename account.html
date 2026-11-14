@@ -7,15 +7,15 @@
 <title>Account · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261011t">
+<link rel="stylesheet" href="site.css?v=20261114c">
 <style>
   /* ===== psyche-account-earnings-v12 (verbatim values; --creamtxt = mock's --cream,
      renamed so the shared nav tokens keep their own cream) ===== */
   :root{
-    --creamtxt:#ede6dc;
-    --muted:rgba(237,230,220,.62);
-    --hairline:1px solid rgba(237,230,220,.14);
-    --indigo-grad:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);
+    --creamtxt:#fff;
+    --muted:#d6d6d6;
+    --hairline:1px solid #333;
+    --indigo-grad:#fff;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
@@ -25,16 +25,16 @@
   }
   a{color:inherit;}
 
-  .fbmodal{ position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal{ position: fixed; inset: 0; background:rgba(0,0,0,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
   .fbmodal.open{ display: flex; }
-  .fbcard{ background: rgba(6,10,18,0.96); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: #faf8f3; font-family:'Jost',sans-serif; }
+  .fbcard{ background:rgba(0,0,0,0.96); border:1px solid #333; border-radius:8px; padding: 22px; max-width: 420px; width: 100%; color: #fff; font-family:'Jost',sans-serif; }
   .fbcard h3{ font-weight: 400; font-size: 22px; margin-bottom: 8px; }
   .fbcard p{ opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
-  .fbcard textarea{ width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: #faf8f3; font-family:'Jost',sans-serif; font-size: 16px; outline: none; resize: none; }
+  .fbcard textarea{ width: 100%; min-height: 100px; background:rgba(0,0,0,0.4); border:1px solid #333; border-radius:8px; padding: 12px; color: #fff; font-family:'Jost',sans-serif; font-size: 16px; outline: none; resize: none; }
   .fbcard .row{ display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-  .fbcard .row button{ font-family:'Jost',sans-serif; font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
-  .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: #faf8f3; }
-  .fbcard .primary{ background: #faf8f3; border: none; color: #06090f; }
+  .fbcard .row button{ font-family:'Jost',sans-serif; font-size: 15px; border-radius:8px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost{ background: transparent; border:1px solid #4a4a4a; color: #fff; }
+  .fbcard .primary{ background: #fff; border: none; color: #000; }
 
   /* ---------- Main (mock verbatim) ---------- */
   main{
@@ -44,7 +44,7 @@
     height:100dvh;
     display:flex;
     flex-direction:column;
-    background:linear-gradient(0deg,#3e3a34 0%,#2a2723 28%,#151413 58%,#000 100%) bottom / 100% 150px no-repeat, #000;
+    background:#000;
   }
   .topbar-right{position:absolute;top:18px;right:26px;z-index:2;font-family:'Jost';font-weight:300;font-size:14px;color:var(--muted);cursor:pointer;text-decoration:none;}
   .topbar-right:hover{color:var(--creamtxt);}
@@ -54,49 +54,49 @@
 
   h1{font-family:'Poiret One';font-weight:400;font-size:clamp(34px,4.6vw,48px);line-height:1.08;color:var(--creamtxt);margin:0 0 16px;text-align:left;}
 
-  .sect{margin:0 0 14px;font-size:13px;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:rgba(237,230,220,.6);text-align:left;}
+  .sect{margin:0 0 14px;font-size:13px;font-weight:400;letter-spacing:.3em;text-transform:uppercase;color:#d6d6d6;text-align:left;}
   .stats{display:flex;gap:12px;margin-bottom:48px;}
   .stat{flex:1;border:var(--hairline);padding:20px 8px 16px;text-align:center;}
   .earn-signin{margin:-6px 0 16px;font-family:'Jost',sans-serif;font-weight:400;font-size:14px;color:var(--muted);}
-  .earn-signin a{color:var(--creamtxt);border-bottom:1px solid rgba(237,230,220,.4);text-decoration:none;}
-  .stat.accent{border-color:#3a5fce;background:rgba(58,95,206,.08);}
+  .earn-signin a{color:var(--creamtxt);border-bottom:1px solid #a8a8a8;text-decoration:none;}
+  .stat.accent{border-color:#fff;background:transparent;}
   .stat-num{font-family:'Poiret One';font-size:30px;line-height:1;color:var(--creamtxt);margin-bottom:8px;}
-  .stat-label{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(237,230,220,.5);}
-  .stat-note{margin-top:7px;font-weight:300;font-style:italic;font-size:11.5px;color:rgba(237,230,220,.4);}
+  .stat-label{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#a8a8a8;}
+  .stat-note{margin-top:7px;font-weight:300;font-style:normal;font-size:11.5px;color:#a8a8a8;}
   .listrows{border:var(--hairline);margin-bottom:48px;text-align:left;}
   .listrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 18px;border-top:var(--hairline);font-weight:300;font-size:14.5px;color:var(--creamtxt);cursor:pointer;}
   .listrow:first-child{border-top:none;}
-  .listrow:hover{background:rgba(237,230,220,.03);}
-  .rowval{color:rgba(237,230,220,.55);font-size:13.5px;white-space:nowrap;}
+  .listrow:hover{background:transparent;}
+  .rowval{color:#d6d6d6;font-size:13.5px;white-space:nowrap;}
 
   .acct-name{margin:0;font-family:'Poiret One';font-size:26px;color:var(--creamtxt);text-align:left;}
-  .acct-email{margin:2px 0 44px;font-weight:300;font-size:14px;color:rgba(237,230,220,.55);text-align:left;}
-  .earn-line{margin:0 0 48px;font-family:'Jost',sans-serif;font-weight:400;font-style:normal;font-size:13.5px;line-height:1.6;color:rgba(237,230,220,.6);text-align:left;}
+  .acct-email{margin:2px 0 44px;font-weight:300;font-size:14px;color:#d6d6d6;text-align:left;}
+  .earn-line{margin:0 0 48px;font-family:'Jost',sans-serif;font-weight:400;font-style:normal;font-size:13.5px;line-height:1.6;color:#d6d6d6;text-align:left;}
 
-  .linkbox{display:flex;border:1px solid #3a5fce;background:rgba(58,95,206,.08);margin-bottom:14px;}
+  .linkbox{display:flex;border:1px solid #fff;background:transparent;margin-bottom:14px;}
   .linktext{flex:1;display:flex;align-items:center;padding:0 18px;height:54px;font-weight:300;font-size:16px;letter-spacing:.02em;color:var(--creamtxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
   .copybtn{flex:0 0 auto;border:none;cursor:pointer;padding:0 26px;background:var(--indigo-grad);color:#fff;font-family:'Jost';font-size:12.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;}
   .copybtn:hover{opacity:.9;}
   .sharerow{display:flex;gap:12px;margin-bottom:14px;}
   .sharebtn{flex:1;border:var(--hairline);padding:14px 8px;font-weight:300;font-size:13.5px;color:var(--creamtxt);cursor:pointer;text-align:center;transition:border-color .18s;background:none;font-family:'Jost',sans-serif;}
-  .sharebtn:hover{border-color:rgba(237,230,220,.35);}
+  .sharebtn:hover{border-color:#a8a8a8;}
 
   .tabs{display:flex;border:var(--hairline);margin-bottom:44px;}
-  .tab{flex:1;background:none;border:none;cursor:pointer;padding:13px 0;font-family:'Jost';font-size:12.5px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:rgba(237,230,220,.5);}
+  .tab{flex:1;background:none;border:none;cursor:pointer;padding:13px 0;font-family:'Jost';font-size:12.5px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:#a8a8a8;}
   .tab+.tab{border-left:var(--hairline);}
-  .tab.active{background:rgba(58,95,206,.10);color:var(--creamtxt);}
+  .tab.active{background:transparent;color:var(--creamtxt);}
 
   .danger-zone{text-align:left;margin:44px 0 20px;}
-  .danger-zone summary{list-style:none;cursor:pointer;display:inline;font-weight:300;font-size:12px;color:rgba(237,230,220,.28);text-decoration:underline;text-underline-offset:3px;}
+  .danger-zone summary{list-style:none;cursor:pointer;display:inline;font-weight:300;font-size:12px;color:#4a4a4a;text-decoration:underline;text-underline-offset:3px;}
   .danger-zone summary::-webkit-details-marker{display:none;}
-  .danger-zone summary:hover{color:rgba(237,230,220,.55);}
+  .danger-zone summary:hover{color:#d6d6d6;}
   .danger-body{margin-top:14px;border:var(--hairline);padding:16px 18px 18px;}
-  .danger-body p{margin:0 0 12px;font-weight:300;font-size:13.5px;line-height:1.6;color:rgba(237,230,220,.6);}
-  .inline-link{font-size:13px;color:rgba(237,230,220,.75);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+  .danger-body p{margin:0 0 12px;font-weight:300;font-size:13.5px;line-height:1.6;color:#d6d6d6;}
+  .inline-link{font-size:13px;color:#d6d6d6;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
 
   .inline-form{display:flex;gap:10px;padding:14px 18px;border-top:var(--hairline);}
   .inline-form input{flex:1;min-width:0;background:transparent;border:var(--hairline);color:var(--creamtxt);font-family:'Jost';font-weight:300;font-size:14px;padding:11px 13px;outline:none;}
-  .inline-form input::placeholder{color:rgba(237,230,220,.35);}
+  .inline-form input::placeholder{color:#a8a8a8;}
   .inline-form button{background:var(--indigo-grad);border:none;color:#fff;font-family:'Jost';font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;padding:0 20px;cursor:pointer;}
   .inline-form button:disabled{opacity:.35;cursor:default;}
   .danger-btn{background:none !important;border:1px solid #c96a5e !important;color:#c96a5e !important;}
@@ -107,8 +107,8 @@
   .yr summary::-webkit-details-marker{display:none;}
   .yr[open] summary{border-bottom:var(--hairline);}
   .yr-rows{padding:4px 0;}
-  .yr-row{display:flex;justify-content:space-between;gap:12px;padding:9px 18px;font-weight:300;font-size:13.5px;color:rgba(237,230,220,.6);}
-  .yr-empty{padding:14px 18px;font-weight:300;font-style:italic;font-size:13px;color:rgba(237,230,220,.4);}
+  .yr-row{display:flex;justify-content:space-between;gap:12px;padding:9px 18px;font-weight:300;font-size:13.5px;color:#d6d6d6;}
+  .yr-empty{padding:14px 18px;font-weight:300;font-style:normal;font-size:13px;color:#a8a8a8;}
 
   @media (max-width:640px){
     .stats{flex-wrap:wrap;}
@@ -117,11 +117,47 @@
   }
 /* phones + tablets: every page title starts 76px from the top (44px top bar + 32) */
 @media (max-width:1023px){ .scroll{padding-top:32px !important;} }
+
+/* ════════ NEW LOOK (design rules, 14 Nov 2026) — appended last so it wins. Look only: no wording or behaviour changes. ════════ */
+body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;}
+main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
+.fbmodal{background:rgba(0,0,0,.72);} .fbcard{background:#000;border:1px solid var(--s-border);border-radius:8px;padding:24px;color:#fff;font-family:var(--font-jost);font-weight:300;}
+.fbcard p{color:var(--s-text2);opacity:1;} .fbcard textarea{background:transparent;border:1px solid var(--s-border);border-radius:8px;color:#fff;font-family:var(--font-jost);}
+.fbcard .row button{height:46px;padding:0 22px;border-radius:8px;font-family:var(--font-jost);font-weight:500;font-size:12.5px;line-height:1;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;display:flex;align-items:center;justify-content:center;white-space:nowrap;height:44px;} .fbcard .ghost{background:transparent;border:1px solid #fff;color:#fff;} .fbcard .primary{background:#fff;border:1px solid #fff;color:#000;}
+:root{--creamtxt:#fff;--muted:#d6d6d6;--hairline:1px solid #4a4a4a;--indigo-grad:#fff;}
+.scroll{padding:56px 72px 80px !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
+.shell{max-width:860px;margin:0;text-align:left;}
+.topbar-right{top:24px;right:72px;display:inline-flex;align-items:center;min-height:44px;font-family:var(--font-mono);font-weight:400;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+.shell .page-title{margin:0 0 14px !important;}
+.acct-name{margin:0;font-family:var(--font-jost);font-weight:300;font-size:21px;line-height:1.55;color:var(--s-text2);}
+.acct-email{margin:0 0 36px;padding-bottom:36px;border-bottom:1px solid var(--s-rule);font-size:15px;color:var(--s-label);}
+.sect{margin:0 0 14px;font-family:var(--font-mono);font-weight:400;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+.tabs{border:1px solid var(--s-border);border-radius:8px;overflow:hidden;margin-bottom:48px;}
+.tab{min-height:46px;padding:0;font-family:var(--font-jost);font-weight:500;font-size:12.5px;letter-spacing:.2em;color:#fff;}
+.tab+.tab{border-left:1px solid var(--s-border);}
+.tab.active{background:#fff;color:#000;}
+.stats{gap:16px;} .stat{border:1px solid var(--s-border);border-radius:8px;padding:22px 10px 18px;} .stat.accent{border-color:#fff;background:none;}
+.stat-num{font-family:'Poiret One',var(--font-jost);font-size:40px;color:#fff;} .stat-label{font-family:var(--font-mono);font-weight:400;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);font-size:11px;} .stat-note{font-size:13px;color:var(--s-label);}
+.listrows{border:1px solid var(--s-border);border-radius:8px;overflow:hidden;}
+.listrow{min-height:52px;padding:12px 18px;border-top:1px solid var(--s-rule);font-size:16px;color:#fff;} .listrow:first-child{border-top:none;} .listrow:hover{background:#1c1c1c;}
+.rowval{font-size:15px;color:var(--s-label);}
+.earn-line,.earn-signin{font-size:15px;color:var(--s-text2);} .earn-signin a{border-bottom:0;text-decoration:underline;text-underline-offset:3px;color:#fff;}
+.linkbox{border:1px solid #fff;border-radius:8px;overflow:hidden;background:none;}
+.linktext{height:52px;font-size:17px;color:#fff;} .copybtn{background:#fff;color:#000;font-weight:500;}
+.sharerow{gap:12px;} .sharebtn{min-height:46px;border:1px solid var(--s-border);border-radius:8px;font-size:15px;color:#fff;} .sharebtn:hover{border-color:#fff;}
+.danger-zone summary{font-size:14px;color:var(--s-label);} .danger-body{border:1px solid var(--s-border);border-radius:8px;} .danger-body p{font-size:15px;color:var(--s-text2);}
+.inline-link{font-size:15px;color:var(--s-text2);}
+.inline-form{border-top:1px solid var(--s-rule);} .inline-form input{height:44px;border:1px solid var(--s-border);border-radius:8px;font-size:15px;padding:0 13px;color:#fff;}
+.inline-form button{height:44px;border-radius:8px;background:#fff;border:1px solid #fff;color:#000;font-size:12.5px;letter-spacing:.2em;}
+.danger-btn{background:none !important;border:1px solid #fff !important;color:#fff !important;}   /* red is kept for the Delete account page only */
+.yr{border:1px solid var(--s-border);border-bottom:none;} .yr:first-of-type{border-radius:8px 8px 0 0;} .yr:last-of-type{border-bottom:1px solid var(--s-border);border-radius:0 0 8px 8px;} .yr:only-of-type{border-radius:8px;}
+.yr summary{min-height:52px;font-size:16px;color:#fff;} .yr[open] summary{border-bottom:1px solid var(--s-rule);} .yr-row{font-size:15px;color:var(--s-text2);} .yr-empty{font-size:15px;color:var(--s-label);}
+@media (max-width:1023px){ .scroll{padding:36px 20px 40px !important;} .topbar-right{top:8px;right:20px;} .acct-name{font-size:16px;} .acct-email{margin-bottom:24px;padding-bottom:24px;} .stat-num{font-size:28px;} .stats{gap:10px;} }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261011t"></script>
+<script src="site-header.js?v=20261114c"></script>
 
 <main>
   <a class="topbar-right" id="topRight" href="auth.html">Log in</a>
@@ -439,7 +475,7 @@
     const inv=Array.isArray(data.invoices)?data.invoices:[];
     $("invoiceRows").innerHTML = inv.map(row=>
       '<div class="listrow"><span>'+esc(row.date)+' — '+esc(row.label)+'</span><span class="rowval">$'+(row.amount||0)+' · <span class="inline-link" onclick="alert(\'Invoice downloads aren\\\'t wired up yet.\')">Download</span></span></div>'
-    ).join("") || '<div class="listrow" style="cursor:default"><span style="font-style:italic;color:rgba(237,230,220,.4)">No invoices yet.</span><span></span></div>';
+    ).join("") || '<div class="listrow" style="cursor:default"><span style="font-style:normal;color:#a8a8a8">No invoices yet.</span><span></span></div>';
 
     // balance + referrals (Earnings tab)
     $("earnArrived").textContent=(data.arrived||0).toLocaleString("en-US");

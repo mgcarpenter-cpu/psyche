@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Sussuri</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="site.css?v=20261011t">
+<link rel="stylesheet" href="site.css?v=20261114c">
 <style>
 /* ═══════════════════════════════════════════════════════════
    SUSSURI — DESIGN SYSTEM
@@ -1215,10 +1215,105 @@ nav{position:fixed;top:0;left:0;width:258px;height:100dvh;background:rgba(6,10,1
   .pri-btn{font-size:15px !important;line-height:1.35 !important;padding:12px 8px !important;}   /* Poiret One, as the sidebar */
   .sec-btn{font-size:13.5px !important;line-height:1.35 !important;padding:9px 6px !important;}
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   NEW LOOK (design rules, 14 Nov 2026) — appended last so it wins the cascade.
+   Black and white only; Poiret One for headings and big numbers, Jost for reading
+   text, JetBrains Mono for small labels; 8px corners. Photographs stay in colour.
+   ════════════════════════════════════════════════════════════════════════════ */
+:root{ --psy-ig:#fff; --indigo:#fff; --indigo-light:#fff; --indigo-deep:#fff; --taupe:#000; --taupe-light:#000; }
+html,body{ background:#000; color:#fff; }
+
+/* the screens sit in the frame's black area, under the top bar; each one scrolls on its own */
+.screen{ position:relative !important; inset:auto !important; left:auto !important; overflow-y:auto; background:#000 !important; scrollbar-width:thin; scrollbar-color:#666 #000; }
+/* phone: the open menu sits above the dimmed page (it used to sit under it and look washed-out grey) */
+@media (max-width:1023px){ body nav#nav.site-nav{ z-index:9600; } }
+
+/* ── Know yourself: the picture test ── */
+#assess.active{ display:flex; flex-direction:column; gap:48px; padding:56px 72px 110px; }
+#assess > *{ flex-shrink:0; }
+.ky-hd{ display:flex; flex-direction:column; gap:14px; padding-bottom:36px; border-bottom:1px solid var(--s-rule); }
+#assess .assess-title{ margin:0; color:#fff; }
+.ky-lead{ margin:0; max-width:820px; font-family:var(--font-jost); font-weight:300; font-size:21px; line-height:1.55; color:var(--s-text2); }
+#assess .ky-lead .assess-lead{ margin:0; font:inherit; color:inherit; }
+.kyw{ display:flex; flex-direction:column; gap:30px; }
+/* two picture cards per row, eight per page */
+.ky{ display:grid; grid-template-columns:1fr 1fr; gap:44px 28px; align-items:start; }
+/* one box per picture: the photograph, its four answers, and the follow-up choices that open under them */
+.qw{ display:flex; flex-direction:column; min-width:0; border:1px solid var(--s-border); border-radius:8px; overflow:hidden; }
+.q{ display:flex; flex-direction:column; }
+.q img{ display:block; width:100%; height:auto; aspect-ratio:1400/790; background:#1c1c1c; }   /* the whole photograph, never cropped, in full colour */
+/* the four answers and the four follow-up choices look the same: rounded boxes, four across, same size */
+.opts,.chips{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+.opts{ padding:12px; }
+.opts button,.chip{ min-height:56px; padding:6px 8px; border:1px solid #6a6a6a; border-radius:8px; background:transparent; color:#fff; font-family:var(--font-jost); font-weight:300; font-size:14px; line-height:1.25; text-align:center; cursor:pointer; }
+.opts button[aria-pressed="true"],.chip[aria-pressed="true"]{ background:#fff; color:#000; border-color:#fff; }
+/* follow-up choices: under the answers, never over the photograph */
+.sub{ display:none; flex-direction:column; gap:10px; padding:6px 12px 12px; border-top:1px solid var(--s-rule); margin:0; }
+.sub .sl{ padding-top:8px; }
+.sub.on{ display:flex; }
+.sl,.ky-count{ font-family:var(--font-mono); font-weight:400; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--s-label); }
+@media (min-width:1024px) and (max-width:1279px){ .opts,.chips{ grid-template-columns:repeat(2,minmax(0,1fr)); } }   /* narrow desktop windows: two by two */
+/* end of the page: counter at the left, tick and arrow at the right */
+.kn{ display:flex; justify-content:space-between; align-items:center; gap:16px; padding-top:18px; border-top:1px solid var(--s-rule); }
+.ky-icons{ display:flex; align-items:center; gap:10px; }
+.ky-ic{ width:44px; height:44px; padding:0; border:0; border-radius:8px; background:transparent; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.ky-ic.bd{ border:1px solid #6a6a6a; }
+.ky-ic.fill{ background:#fff; color:#000; }
+#cont:not(.show) .ky-ic{ opacity:.35; cursor:default; }   /* waits until every picture on the page has its answer */
+.opts button:focus-visible,.chip:focus-visible,.ky-ic:focus-visible{ outline:2px solid #808080; outline-offset:2px; }
+
+@media (max-width:1023px){
+  #assess.active{ gap:30px; padding:36px 20px 40px; }
+  .ky-hd{ gap:10px; padding-bottom:24px; }
+  .ky-lead{ font-size:16px; }
+  .kyw{ gap:24px; }
+  .ky{ grid-template-columns:1fr; gap:32px; }
+  .opts,.chips{ grid-template-columns:repeat(2,minmax(0,1fr)); }   /* answers and follow-ups both sit two by two */
+  .opts button,.chip{ min-height:52px; font-size:15px; }
+  .ky-count{ font-size:11px; letter-spacing:.08em; }
+}
+
+/* ── the screens after the pictures (questions, talk, results): same words and behaviour, new look ── */
+#conv,#chat,#reveal,#conv .closing{ background:#000 !important; font-family:var(--font-jost); }
+#conv *,#chat *,#reveal *{ font-style:normal !important; }
+/* questions */
+#conv .conv-q{ font-family:var(--font-jost) !important; font-weight:300 !important; font-size:26px; line-height:1.45; color:#fff !important; }
+#conv .conv-refl{ font-family:var(--font-jost) !important; color:var(--s-text2) !important; }
+#conv .conv-opt{ min-height:52px; background:transparent !important; border:1px solid var(--s-border) !important; border-radius:8px !important; box-shadow:none !important; font-family:var(--font-jost) !important; font-weight:300 !important; font-size:17px; color:#fff !important; }
+#conv .conv-opt:hover{ border-color:#fff !important; }
+#conv .conv-opt.picked,#conv .conv-opt.picked *{ background:#fff !important; border-color:#fff !important; color:#000 !important; }
+#conv .conv-prog-fill{ background:#fff !important; }
+#conv .closing-text{ font-family:var(--font-jost) !important; font-weight:300 !important; font-size:26px; line-height:1.45; color:#fff !important; }
+#conv .closing button{ height:46px; padding:0 22px !important; background:#fff !important; border:1px solid #fff !important; border-radius:8px !important; box-shadow:none !important; transform:none !important;
+  color:#000 !important; font-family:var(--font-jost) !important; font-weight:500 !important; font-size:12.5px !important; letter-spacing:.2em !important; text-transform:uppercase; cursor:pointer; }
+/* talk */
+#chat .chat-msg,#chat .chat-msg.user{ background:transparent !important; border:1px solid var(--s-border) !important; border-radius:8px !important; box-shadow:none !important; font-family:var(--font-jost) !important; font-weight:300 !important; color:#fff !important; }
+#chat .composer{ background:#000 !important; border:1px solid var(--s-border) !important; border-radius:8px !important; box-shadow:none !important; }
+#chat .composer .field{ font-family:var(--font-jost) !important; font-weight:300 !important; color:#fff !important; }
+#chat .composer .field::placeholder{ font-style:normal !important; color:var(--s-label) !important; }
+#chat .iconbtn{ min-width:44px; min-height:44px; border-radius:8px !important; }
+#chat .sendbtn{ width:44px !important; height:44px !important; border-radius:8px !important; background:#fff !important; border:1px solid #fff !important; box-shadow:none !important; }
+#chat .sendbtn,#chat .sendbtn *,#chat .sendbtn::before,#chat .sendbtn::after{ color:#000 !important; }
+#chat .underbar,#chat .underbar *{ color:var(--s-label) !important; font-family:var(--font-jost) !important; }
+#chat .smoke-think .dot,#conv .thinkg{ background:#a8a8a8 !important; }
+/* results */
+#reveal{ --line:#333; --indigo:#fff; }
+#reveal .rev-sec,#reveal .rev-hero,.rev-hero,#reveal .dims-header{ background:#000 !important; border:1px solid var(--s-border) !important; border-radius:8px !important; box-shadow:none !important; }
+#reveal .bar-point.improve,#reveal .bar-point.plan{ background:transparent !important; border:1px solid var(--s-border) !important; border-radius:8px !important; }
+#reveal .rev-eye,#reveal .rev-sec-eye,#reveal .bar-line-eye,#reveal .bar-poles,#reveal .bar-poles *,#reveal .otb-eye{ font-family:var(--font-mono) !important; font-weight:400 !important; font-size:11px !important; letter-spacing:.14em !important; text-transform:uppercase; color:var(--s-label) !important; }
+#reveal #spiritGrid .bar-point .bar-line-eye{ color:var(--s-label) !important; font-weight:400 !important; }   /* no lilac tint on 'Your practise' */
+#reveal .rev-arch{ font-family:var(--font-jost) !important; font-weight:300 !important; color:var(--s-text2) !important; }
+#reveal .bar-point,#reveal .bar-point *{ font-family:var(--font-jost); }
+#reveal .join-now-btn{ height:46px; padding:0 22px !important; background:#fff !important; border:1px solid #fff !important; border-radius:8px !important; box-shadow:none !important; transform:none !important;
+  color:#000 !important; font-family:var(--font-jost) !important; font-weight:500 !important; font-size:12.5px !important; letter-spacing:.2em !important; text-transform:uppercase; cursor:pointer; }
+#reveal #regenBtn{ min-height:44px; padding:0 18px !important; background:transparent !important; border:1px solid #fff !important; border-radius:8px !important; color:#fff !important;
+  font-family:var(--font-jost) !important; font-weight:500 !important; font-size:12.5px !important; letter-spacing:.2em !important; }
+#reveal #personalizingBanner{ background:transparent !important; border:1px solid var(--s-border) !important; border-radius:8px !important; color:var(--s-text2) !important; font-family:var(--font-jost) !important; }
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js?v=20261011t"></script>
+<script src="site-header.js?v=20261114c"></script>
 <div class="scrim" id="scrim"></div>
 
 <!-- ═════════════════════════════════════════
@@ -1445,20 +1540,23 @@ nav{position:fixed;top:0;left:0;width:258px;height:100dvh;background:rgba(6,10,1
   <div class="assess-topbar">
     <span class="assess-logo">Sussuri</span>
     <span class="assess-info" id="pageInfo"></span>
-    <span class="assess-pager" id="pager">1 of 8</span>
+    <span class="assess-pager" id="pager">1 of 4</span>
   </div>
-  <div class="assess-intro">
+  <header class="ky-hd">
     <h1 class="assess-title page-title">Know yourself</h1>
-    <p class="assess-lead">See where you are, and what to let go of.</p>
+    <p class="ky-lead"><span class="assess-lead">See where you are, and what to let go of.</span> <span id="assessPrompt">Go deep inside yourself and notice how each picture makes you feel.</span></p>
+  </header>
+  <div class="kyw">
+    <!-- picture cards are drawn here by loadPage(): 8 per page, two per row -->
+    <div class="ky" id="grid"></div>
+    <div class="kn">
+      <span class="ky-count" id="kyCount"></span>
+      <div class="ky-icons" id="cont">
+        <button type="button" class="ky-ic fill" id="kyConfirm" aria-label="Confirm answers"><svg aria-hidden="true" width="18" height="16" viewBox="0 0 18 17" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1.5 9l5 5.5L16.5 2"/></svg></button>
+        <button type="button" class="ky-ic bd" id="contBtn" aria-label="Next page"><svg aria-hidden="true" width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M0 7h16M10 1l6 6-6 6"/></svg></button>
+      </div>
+    </div>
   </div>
-  <div class="assess-prompt" id="assessPrompt">Go deep inside yourself and notice how each picture makes you feel.</div>
-  <div class="grid" id="grid">
-    <div class="quad" id="q0"><div class="qbg" id="bg0"></div><div class="qoverlay"></div><div class="qtick" id="tick0">&#10003;</div><div class="spacer"></div><div class="sec-bar" id="sec0"><div class="sec-label" id="secLabel0"></div><div class="sec-row" id="secRow0"></div></div><div class="pri-bar"><div class="pri-row" id="priRow0"></div></div></div>
-    <div class="quad" id="q1"><div class="qbg" id="bg1"></div><div class="qoverlay"></div><div class="qtick" id="tick1">&#10003;</div><div class="spacer"></div><div class="sec-bar" id="sec1"><div class="sec-label" id="secLabel1"></div><div class="sec-row" id="secRow1"></div></div><div class="pri-bar"><div class="pri-row" id="priRow1"></div></div></div>
-    <div class="quad" id="q2"><div class="qbg" id="bg2"></div><div class="qoverlay"></div><div class="qtick" id="tick2">&#10003;</div><div class="spacer"></div><div class="sec-bar" id="sec2"><div class="sec-label" id="secLabel2"></div><div class="sec-row" id="secRow2"></div></div><div class="pri-bar"><div class="pri-row" id="priRow2"></div></div></div>
-    <div class="quad" id="q3"><div class="qbg" id="bg3"></div><div class="qoverlay"></div><div class="qtick" id="tick3">&#10003;</div><div class="spacer"></div><div class="sec-bar" id="sec3"><div class="sec-label" id="secLabel3"></div><div class="sec-row" id="secRow3"></div></div><div class="pri-bar"><div class="pri-row" id="priRow3"></div></div></div>
-  </div>
-  <div class="cont" id="cont"><button id="contBtn">Continue &rarr;</button></div>
 </div>
 
 <!-- ═════════════════════════════════════════
@@ -1846,7 +1944,7 @@ const SPIRIT_DIMS = [
    STATE
    ═══════════════════════════════════════════════════════════ */
 let scores = {};
-let done = [false, false, false, false];
+let done = [];   // one flag per picture on the current page
 let page = 0;
 let convAnswers = [];
 let userPicks = []; // For chat probing: tracks what they picked across images
@@ -1949,31 +2047,52 @@ function sc(obj) {
   Object.entries(obj).forEach(([k, v]) => { scores[k] = (scores[k] || 0) + v; });
 }
 
+// The 32 pictures are stored four to a group; the page shows two groups at a time: 8 pictures, 4 pages.
+const VIEW_PAGES = [];
+for (let i = 0; i < PAGES.length; i += 2) VIEW_PAGES.push(PAGES[i].concat(PAGES[i + 1] || []));
+const PER_PAGE = VIEW_PAGES[0].length;
+const TOTAL_PICS = VIEW_PAGES.reduce((n, p) => n + p.length, 0);
+function two(n) { return ("0" + n).slice(-2); }
+
 function loadPage(pi) {
   page = pi;
-  done = [false, false, false, false];
+  const items = VIEW_PAGES[pi];
+  done = items.map(() => false);
   document.getElementById("cont").classList.remove("show");
-  document.getElementById("pager").textContent = (pi + 1) + " of " + PAGES.length;
+  document.getElementById("pager").textContent = (pi + 1) + " of " + VIEW_PAGES.length;
+  const first = pi * PER_PAGE + 1;
+  document.getElementById("kyCount").textContent =
+    "Page " + two(pi + 1) + " / " + two(VIEW_PAGES.length) + " \u00a0\u00b7\u00a0 Pictures " + first + "\u2013" + (first + items.length - 1) + " of " + TOTAL_PICS;
 
-  PAGES[pi].forEach((img, qi) => {
-    document.getElementById("bg" + qi).style.backgroundImage = "url(" + IMGS[img.k] + ")";
-    document.getElementById("tick" + qi).classList.remove("show");
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
 
-    const secBar = document.getElementById("sec" + qi);
-    secBar.classList.remove("show");
-    document.getElementById("secRow" + qi).innerHTML = "";
+  items.forEach((img, qi) => {
+    // one picture: the card (photograph on top, shown whole; four answers in a row beneath it),
+    // then the follow-up choices, which open BELOW the card so nothing ever covers the photograph
+    const wrap = document.createElement("div"); wrap.className = "qw";
+    const card = document.createElement("article"); card.className = "q";
+    const pic = document.createElement("img");
+    pic.src = IMGS[img.k]; pic.alt = "Picture " + (first + qi); pic.loading = qi < 2 ? "eager" : "lazy";
+    pic.width = 1400; pic.height = 790;
+    const priRow = document.createElement("div"); priRow.className = "opts";
+    card.appendChild(pic); card.appendChild(priRow);
 
-    const priRow = document.getElementById("priRow" + qi);
-    priRow.innerHTML = "";
+    const sub = document.createElement("div"); sub.className = "sub";
+    const secLabel = document.createElement("span"); secLabel.className = "sl";
+    const secRow = document.createElement("div"); secRow.className = "chips";
+    sub.appendChild(secLabel); sub.appendChild(secRow);
+    wrap.appendChild(card); wrap.appendChild(sub);
+    grid.appendChild(wrap);
+
     img.pri.forEach((opt, oi) => {
       const btn = document.createElement("button");
-      btn.className = "pri-btn";
+      btn.type = "button";
+      btn.setAttribute("aria-pressed", "false");
       btn.textContent = opt.l;
       btn.onclick = function() {
-        // Visual: this one picked, the rest dimmed but still clickable
-        priRow.querySelectorAll(".pri-btn").forEach(b => { b.classList.remove("picked"); b.classList.add("dim"); });
-        btn.classList.remove("dim");
-        btn.classList.add("picked");
+        // Visual: the tapped answer turns white; the others stay tappable
+        priRow.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
 
         // Apply this primary's score, reversing any previous primary for this image
         applyScore(img.k, "pri", effective(opt));
@@ -1984,32 +2103,30 @@ function loadPage(pi) {
         setPick(img.k, { image: img.k, theme: img.t, choice: opt.l });
 
         const secOpts = img.sec ? img.sec[oi] : null;
-        const secRow = document.getElementById("secRow" + qi);
         secRow.innerHTML = "";
         if (secOpts && secOpts.length > 0) {
-          document.getElementById("secLabel" + qi).textContent = opt.l + " — what specifically?";
+          secLabel.textContent = opt.l + " \u2014 what specifically?";
           secOpts.forEach(sopt => {
             const sb = document.createElement("button");
-            sb.className = "sec-btn";
+            sb.type = "button";
+            sb.className = "chip";
+            sb.setAttribute("aria-pressed", "false");
             sb.textContent = sopt.l;
             sb.onclick = function() {
-              secRow.querySelectorAll(".sec-btn").forEach(b => { b.classList.remove("picked"); b.classList.add("dim"); });
-              sb.classList.remove("dim");
-              sb.classList.add("picked");
+              secRow.querySelectorAll(".chip").forEach(b => b.setAttribute("aria-pressed", String(b === sb)));
               applyScore(img.k, "sec", effective(sopt));
               updatePickDetail(img.k, sopt.l);
               setDone(qi, true);
             };
             secRow.appendChild(sb);
           });
-          secBar.classList.add("show");
+          sub.classList.add("on");
           // A specific is now required again → not complete until they pick one
           setDone(qi, false);
         } else {
-          secBar.classList.remove("show");
+          sub.classList.remove("on");
           setDone(qi, true);
         }
-        document.getElementById("tick" + qi).classList.add("show");
       };
       priRow.appendChild(btn);
     });
@@ -2024,13 +2141,16 @@ function markDone(qi) {
 }
 
 document.getElementById("contBtn").onclick = function() {
+  if (!done.every(Boolean)) return;   // every picture on the page needs its answer first
   page++;
-  if (page >= PAGES.length) {
+  if (page >= VIEW_PAGES.length) {
     startConv();
   } else {
     loadPage(page);
   }
 };
+// the tick confirms the page's answers and moves on, the same as the arrow
+document.getElementById("kyConfirm").onclick = function() { document.getElementById("contBtn").click(); };
 
 /* ═══════════════════════════════════════════════════════════
    SUSSURI SYSTEM PROMPT — Pali wisdom, plain English

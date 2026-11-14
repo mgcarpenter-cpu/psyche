@@ -24,7 +24,8 @@
     doc:'<rect x="5" y="3.6" width="12" height="14.8"></rect><path d="M8.2 8h5.6M8.2 11.2h5.6M8.2 14.4h3.6"></path>',
     lock:'<rect x="4.6" y="9.6" width="12.8" height="10" rx="1.6"></rect><path d="M7.8 9.6V6.8a3.2 3.2 0 0 1 6.4 0v2.8"></path><circle cx="11" cy="14.4" r="1.1"></circle>',
     cross:'<circle cx="11" cy="11" r="8.4"></circle><path d="M11 7.4v7.2M7.4 11h7.2"></path>',
-    target:'<circle cx="11" cy="11" r="8.4"></circle><circle cx="11" cy="11" r="3"></circle>'
+    target:'<circle cx="11" cy="11" r="8.4"></circle><circle cx="11" cy="11" r="3"></circle>',
+    question:'<circle cx="11" cy="11" r="8.4"></circle><path d="M8.5 8.8a2.5 2.5 0 1 1 3.7 2.2c-.8.5-1.2 1-1.2 1.9"></path><circle cx="11" cy="15.6" r=".5"></circle>'
   };
   function svg(k){ return '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round">' + I[k] + '</svg>'; }
 
@@ -37,20 +38,25 @@
   var earn = [
     { route:'library.html',            icon:'cards',    label:'Avatar library' },
     { route:'teaching-library.html',   icon:'openbook', label:'Teaching library' },
-    { route:'meditation-library.html', icon:'lotus',    label:'Meditation library' },
-    { route:'account.html',            icon:'coin',     label:'Account &amp; earnings' }
+    { route:'meditation-library.html', icon:'lotus',    label:'Meditation library' }
   ];
-  var membership = [
-    { route:'pricing.html', icon:'target', label:'Membership' }
+  var account = [
+    { route:'pricing.html', icon:'target', label:'Membership' },
+    { route:'account.html', icon:'coin',   label:'Account &amp; earnings' }
   ];
   var foot = [
+    { route:'help.html',    icon:'question', label:'Help' },
     { route:'privacy.html', icon:'lock',  label:'Private &amp; secure' },
     { route:'terms.html',   icon:'doc',   label:'Terms &amp; conditions' },
     { route:'urgent.html',  icon:'cross', label:'Need urgent help' }
   ];
 
   var here = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
-  function isActive(route){ return route && route.split('?')[0].replace(/\.html$/, '') === here; }
+  // Pages with no menu item of their own belong to one that has: the black band sits on that item,
+  // and the top bar names both ("Your account / Settings"), so people always know where they are.
+  var parentOf = { settings:'account', 'delete-account':'account', creator:'account', 'payment-terms':'terms', support:'urgent', practice:'chat' };
+  var home = parentOf[here] || here;
+  function isActive(route){ return route && route.split('?')[0].replace(/\.html$/, '') === home; }
 
   function row(it){
     var cls = 'navitem row' + (it.soon ? ' soon' : '') + (it.cls ? ' ' + it.cls : '') + (isActive(it.route) ? ' active' : '');
@@ -60,29 +66,45 @@
       (it.soon ? '<span class="pill">soon</span>' : '') + '</div>';
   }
 
-  // Desktop opens expanded unless the visitor collapsed it last time; mobile starts as a closed drawer.
+  // Desktop: the menu is fixed and always open. Phone: it starts as a closed drawer.
   var desktop = window.matchMedia('(min-width:1024px)').matches;
-  var remembered = null; try { remembered = localStorage.getItem('psyche:nav'); } catch (e) {}
-  var initial = (desktop && remembered !== 'collapsed') ? 'open' : 'hidden';
+  var initial = desktop ? 'open' : 'hidden';
+
+  // top bar: tabs on Chat / Practice, otherwise the section name (or the page's own name)
+  var section = {
+    assessment:'Your path', education:'Your path',
+    library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
+    pricing:'Membership', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
+  };
+  function pageName(){
+    return (document.title || '').replace(/sussuri/i, '').replace(/[\u00b7\u2014\u2013|-]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  var barLeft = (here === 'chat' || here === 'practice')
+    ? '<a class="tab' + (here === 'chat' ? ' on' : '') + '" href="chat.html">Chat</a>' +
+      '<a class="tab' + (here === 'practice' ? ' on' : '') + '" href="practice.html">Practice</a>'
+    : '<span class="sb-name">' + (section[here] || pageName()) + '</span>' +
+      ((section[here] && parentOf[here]) ? '<span class="sb-sep" aria-hidden="true">/</span><span class="sb-here">' + pageName() + '</span>' : '');
+  // the sales button sits in the top bar on every page except the joining page
+  var cta = here === 'pricing' ? '' : '<a class="site-cta" id="siteCta" href="pricing.html">Become a member</a>';
 
   var html =
-    '<nav id="nav" class="side site-nav ' + initial + '">' +
-      '<div class="side-sticky">' +
+    '<nav id="nav" class="site-nav ' + initial + '" aria-label="Main menu">' +
+      '<div class="nav-scroll">' +
         '<div class="nav-top"><span class="side-mark wordmark-side">sussuri</span>' +
-          '<button class="collapse" id="collapseBtn" title="Hide sidebar">&#10094;</button></div>' +
-        '<p class="side-group-title first">Chats &amp; practice</p>' +
-        '<button class="newchat row" id="newChat">' +
-          '<span class="side-icon">' + svg('chat') + '</span><span class="row-label">New conversation</span></button>' +
-        '<div class="row recents-head" id="recentsLabel">' +
-          '<span class="side-icon">' + svg('clock') + '</span><span class="row-label">Recents</span></div>' +
-        '<div id="recents" class="clamped"></div>' +
-        '<div class="recents-more" id="recentsMore" style="display:none"></div>' +
-        '<p class="side-group-title">Your path</p>' +
-        '<div class="side-list">' + path.map(row).join('') + '</div>' +
-        '<p class="side-group-title">Share &amp; earn</p>' +
-        '<div class="side-list">' + earn.map(row).join('') + '</div>' +
-        '<div class="side-list" style="margin-top:clamp(10px,1.6vh,18px)">' + membership.map(row).join('') + '</div>' +
-        '<nav class="side-foot">' +
+          '<button class="collapse" id="collapseBtn" title="Close menu" aria-label="Close menu">&#10094;</button></div>' +
+        '<div class="nav-grp">' +
+          '<p class="side-group-title first">Chats &amp; practice</p>' +
+          '<button class="newchat row' + (home === 'chat' ? ' active' : '') + '" id="newChat">' +
+            '<span class="side-icon">' + svg('chat') + '</span><span class="row-label">New conversation</span></button>' +
+          '<div class="row recents-head" id="recentsLabel">' +
+            '<span class="side-icon">' + svg('clock') + '</span><span class="row-label">Recents</span></div>' +
+          '<div id="recents" class="clamped"></div>' +
+          '<div class="recents-more" id="recentsMore" style="display:none"></div>' +
+        '</div>' +
+        '<div class="nav-grp"><p class="side-group-title">Your path</p>' + path.map(row).join('') + '</div>' +
+        '<div class="nav-grp"><p class="side-group-title">Affiliate program</p>' + earn.map(row).join('') + '</div>' +
+        '<div class="nav-grp"><p class="side-group-title">Your account</p>' + account.map(row).join('') + '</div>' +
+        '<div class="side-foot">' +
           foot.map(row).join('') +
           '<div class="acctwrap">' +
             '<div class="acctmenu" id="acctMenu">' +
@@ -94,25 +116,21 @@
               '<div class="meta">Guest<br><span class="plan">Sign in</span></div>' +
             '</div>' +
           '</div>' +
-        '</nav>' +
+        '</div>' +
       '</div>' +
     '</nav>';
 
+  // Top bar. Desktop: one strip (section name or tabs at the left, sales button at the right).
+  // Phone: two fixed strips (menu lines + name + sales button, then the section name or tabs).
   var s = document.currentScript;
   s.insertAdjacentHTML('beforebegin', html +
-    '<div class="site-topbar"><button class="menu-btn" id="menuBtn" aria-label="Menu">' +
-      '<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><line x1="3" y1="3.5" x2="19" y2="3.5"></line><line x1="3" y1="11" x2="19" y2="11"></line><line x1="3" y1="18.5" x2="19" y2="18.5"></line></svg>' +
-      '</button><span class="wordmark">sussuri</span></div>');
+    '<header class="site-bar" id="siteBar">' +
+      '<div class="sb-strip1"><button class="menu-btn" id="menuBtn" aria-label="Menu">' +
+        '<svg aria-hidden="true" width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor"><path d="M0 1h22M0 7h22M0 13h22"/></svg>' +
+        '</button><span class="wordmark">sussuri</span></div>' +
+      '<div class="sb-left">' + barLeft + '</div>' + cta +
+    '</header>');
   document.body.classList.add('has-side');
-
-  // remember the desktop collapse state across pages (observes the class the page JS toggles)
-  (function () {
-    var nav = document.getElementById('nav');
-    new MutationObserver(function () {
-      if (!window.matchMedia('(min-width:1024px)').matches) return;
-      try { localStorage.setItem('psyche:nav', nav.classList.contains('hidden') ? 'collapsed' : 'open'); } catch (e) {}
-    }).observe(nav, { attributes: true, attributeFilter: ['class'] });
-  })();
 
   // Recents clamp: pages render into #recents however they like; only the first
   // three show until "Show more" is toggled. Re-syncs whenever #recents changes.

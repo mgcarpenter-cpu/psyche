@@ -5,9 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sussuri — Settings</title>
-<link rel="stylesheet" href="site.css?v=20261011t">
+<link rel="stylesheet" href="site.css?v=20261114c">
 <style>
-  :root{ --cream:#faf8f3; --night:#06090f; --indigo:#1d3891; --panel:rgba(6,10,18,0.96); --line:rgba(250,248,243,0.1); }
+  :root{ --cream:#fff; --night:#000; --indigo:#fff; --panel:rgba(0,0,0,0.96); --line:#333; }
   *{margin:0;padding:0;box-sizing:border-box;}
   html,body{height:100%;}
   body{
@@ -58,15 +58,15 @@
 
 
 
-  .fbmodal{ position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal{ position: fixed; inset: 0; background:rgba(0,0,0,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
   .fbmodal.open{ display: flex; }
-  .fbcard{ background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; }
+  .fbcard{ background: var(--panel); border:1px solid #333; border-radius:8px; padding: 22px; max-width: 420px; width: 100%; }
   .fbcard h3{ font-weight: 400; font-size: 22px; margin-bottom: 8px; }
   .fbcard p{ opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
-  .fbcard textarea{ width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family:var(--font-sans); font-size: 16px; outline: none; resize: none; }
+  .fbcard textarea{ width: 100%; min-height: 100px; background:rgba(0,0,0,0.4); border:1px solid #333; border-radius:8px; padding: 12px; color: var(--cream); font-family:var(--font-sans); font-size: 16px; outline: none; resize: none; }
   .fbcard .row{ display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-  .fbcard .row button{ font-family:var(--font-sans); font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
-  .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
+  .fbcard .row button{ font-family:var(--font-sans); font-size: 15px; border-radius:8px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost{ background: transparent; border:1px solid #4a4a4a; color: var(--cream); }
   .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
   /* ================= MAIN ================= */
@@ -79,25 +79,38 @@
   .page{padding:12px 24px 60px;}
   .wrap{max-width:520px;margin:0 auto;}
   h1{font-weight:400;font-size:2rem;margin-bottom:26px;}
-  .row{border-top:1px solid rgba(250,248,243,.1);padding:18px 2px;}
-  .row .lbl{font-style:italic;opacity:.5;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+  .row{border-top:1px solid #333;padding:18px 2px;}
+  .row .lbl{font-style:normal;opacity:.5;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
   .row .val{font-size:18px;}
   .actions{margin-top:30px;display:flex;flex-direction:column;gap:12px;}
-  button, .linkbtn{font-family:var(--font-sans);font-size:16px;border-radius:24px;padding:12px 22px;cursor:pointer;text-align:center;text-decoration:none;}
-  .signout{background:rgba(250,248,243,.06);border:1px solid rgba(250,248,243,.2);color:#faf8f3;}
-  .signout:hover{background:rgba(250,248,243,.12);}
+  button, .linkbtn{font-family:var(--font-sans);font-size:16px;border-radius:8px;padding:12px 22px;cursor:pointer;text-align:center;text-decoration:none;}
+  .signout{background:transparent;border:1px solid #4a4a4a;color:#fff;}
+  .signout:hover{background:transparent;}
   .danger{background:transparent;border:1px solid rgba(224,120,86,.5);color:#e07856;}
   .danger:hover{background:rgba(224,120,86,.1);}
-  .note{opacity:.45;font-style:italic;font-size:14px;margin-top:8px;line-height:1.5;}
+  .note{opacity:.45;font-style:normal;font-size:14px;margin-top:8px;line-height:1.5;}
 /* every page title starts 60px from the top (site.css .page-title) */
 @media (min-width:1024px){ .page{padding-top:60px !important;} }
 /* phones + tablets: every page title starts 76px from the top (44px top bar + 32) */
 @media (max-width:1023px){ .page{padding-top:32px !important;} }
+
+/* ════════ NEW LOOK (design rules, 14 Nov 2026) — appended last so it wins. Look only: no wording or behaviour changes. ════════ */
+body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;}
+main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
+.page{padding:56px 72px 80px !important;} .wrap{max-width:640px;margin:0;}
+.wrap .page-title{margin:0 0 36px;}
+.row{border-top:1px solid var(--s-rule);padding:18px 0;} .row .lbl{font-family:var(--font-mono);font-weight:400;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);font-size:11px;opacity:1;margin-bottom:6px;} .row .val{font-size:18px;color:#fff;}
+.actions{margin-top:30px;gap:12px;}
+.actions button,.actions .linkbtn{height:46px;padding:0 22px;border-radius:8px;font-family:var(--font-jost);font-weight:500;font-size:12.5px;line-height:1;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;display:flex;align-items:center;justify-content:center;white-space:nowrap;}
+.signout{background:#fff;border:1px solid #fff;color:#000;} .signout:hover{background:#e6e6e6;}
+.danger{background:transparent;border:1px solid #fff;color:#fff;} .danger:hover{background:#1c1c1c;}   /* red is kept for the Delete account page only */
+.note{font-size:15px;color:var(--s-label);opacity:1;}
+@media (max-width:1023px){ .page{padding:36px 20px 40px !important;} .wrap .page-title{margin-bottom:24px;} }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261011t"></script>
+<script src="site-header.js?v=20261114c"></script>
 
 <main>
   <div class="page">
@@ -114,7 +127,7 @@
       <div class="actions">
         <button class="signout" id="signout">Sign out</button>
         <button class="danger" id="del">Delete account</button>
-        <div class="note" id="delNote" style="display:none;">Account deletion isn't self-serve yet — email <a href="mailto:hello@sussuri.com" style="color:#e07856;">hello@sussuri.com</a> and we'll remove your data promptly.</div>
+        <div class="note" id="delNote" style="display:none;">Account deletion isn't self-serve yet — email <a href="mailto:hello@sussuri.com" style="color:#fff;">hello@sussuri.com</a> and we'll remove your data promptly.</div>
       </div>
     </div>
   </div>

@@ -7,13 +7,13 @@
 <title>Help · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261011t">
+<link rel="stylesheet" href="site.css?v=20261114c">
 <style>
   :root{
-    --bg:#06090f;--surround:#04060a;--bone:#e8e4dc;--bone-dim:#9aa0ab;--bone-faint:#5f6572;--gold:#c8a96e;--indigo:#1d3891;
-    --psy-ig:linear-gradient(180deg,#3a5fce 0%,#1d3891 55%,#132a6b 100%);--hair:rgba(232,228,220,.10);--elev:rgba(244,242,238,.05);
+    --bg:#000;--surround:#000;--bone:#fff;--bone-dim:#d6d6d6;--bone-faint:#a8a8a8;--gold:#fff;--indigo:#fff;
+    --psy-ig:#fff;--hair:#333;--elev:#333;
     /* nav tokens (shared with practice.html / library.html / account.html) */
-    --cream:#faf8f3; --night:#06090f; --panel:rgba(6,10,18,0.96); --navline:rgba(250,248,243,0.1);
+    --cream:#fff; --night:#000; --panel:rgba(0,0,0,0.96); --navline:#333;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
@@ -68,20 +68,20 @@
 
 
 
-  .fbmodal{ position: fixed; inset: 0; background: rgba(4,7,14,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
+  .fbmodal{ position: fixed; inset: 0; background:rgba(0,0,0,0.62); display: none; align-items: center; justify-content: center; z-index: 30; padding: 20px; }
   .fbmodal.open{ display: flex; }
-  .fbcard{ background: var(--panel); border: 1px solid rgba(250,248,243,0.14); border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family:var(--font-sans); }
+  .fbcard{ background: var(--panel); border:1px solid #333; border-radius:8px; padding: 22px; max-width: 420px; width: 100%; color: var(--cream); font-family:var(--font-sans); }
   .fbcard h3{ font-weight: 400; font-size: 22px; margin-bottom: 8px; }
   .fbcard p{ opacity: 0.6; font-size: 15px; margin-bottom: 14px; line-height: 1.4; }
-  .fbcard textarea{ width: 100%; min-height: 100px; background: rgba(4,7,14,0.4); border: 1px solid rgba(250,248,243,0.16); border-radius: 12px; padding: 12px; color: var(--cream); font-family:var(--font-sans); font-size: 16px; outline: none; resize: none; }
+  .fbcard textarea{ width: 100%; min-height: 100px; background:rgba(0,0,0,0.4); border:1px solid #333; border-radius:8px; padding: 12px; color: var(--cream); font-family:var(--font-sans); font-size: 16px; outline: none; resize: none; }
   .fbcard .row{ display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-  .fbcard .row button{ font-family:var(--font-sans); font-size: 15px; border-radius: 20px; padding: 8px 18px; cursor: pointer; }
-  .fbcard .ghost{ background: transparent; border: 1px solid rgba(250,248,243,0.3); color: var(--cream); }
+  .fbcard .row button{ font-family:var(--font-sans); font-size: 15px; border-radius:8px; padding: 8px 18px; cursor: pointer; }
+  .fbcard .ghost{ background: transparent; border:1px solid #4a4a4a; color: var(--cream); }
   .fbcard .primary{ background: var(--cream); border: none; color: var(--night); }
 
   /* ================= MAIN — this page is its own fixed-header/fixed-composer
      chat app, so only .thread scrolls (unlike the document-style shell pages) ================= */
-  main{ flex: 1; min-width: 0; overflow: hidden; background: #06090f; display: flex; justify-content: center; }
+  main{ flex: 1; min-width: 0; overflow: hidden; background: #000; display: flex; justify-content: center; }
   .frame{ width: 100%; max-width: 460px; display: flex; flex-direction: column; overflow: hidden; }
 
 
@@ -89,53 +89,81 @@
 
   /* ===== page content (help-design-v1, verbatim) ===== */
   .intro{padding:4px 22px 16px;flex:0 0 auto;}
-  .lead{font-style:italic;font-size:20px;line-height:1.4;color:var(--gold);text-shadow:0 0 20px rgba(200,169,110,.18);margin-bottom:6px;}
-  .scope{font-size:14px;color:var(--bone-faint);font-style:italic;line-height:1.5;}
+  .lead{font-style:normal;font-size:20px;line-height:1.4;color:var(--gold);text-shadow:0 0 20px transparent;margin-bottom:6px;}
+  .scope{font-size:14px;color:var(--bone-faint);font-style:normal;line-height:1.5;}
 
   /* the single dropdown */
   .picker{padding:0 22px 14px;flex:0 0 auto;position:relative;}
-  .sel{width:100%;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(200,169,110,.3);border-radius:12px;background:var(--elev);padding:15px 18px;cursor:pointer;}
+  .sel{width:100%;display:flex;align-items:center;justify-content:space-between;border:1px solid #4a4a4a;border-radius:8px;background:var(--elev);padding:15px 18px;cursor:pointer;}
   .sel .t{font-size:16px;color:var(--bone);}
   .sel .car{color:var(--bone-faint);font-size:12px;transition:transform .25s;}
   .picker.open .car{transform:rotate(180deg);}
-  .menu{position:absolute;left:22px;right:22px;top:100%;z-index:9;background:#0a0e15;border:1px solid var(--hair);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;max-height:0;transition:max-height .28s ease;}
+  .menu{position:absolute;left:22px;right:22px;top:100%;z-index:9;background:#000;border:1px solid var(--hair);border-radius:8px;box-shadow:0 20px 50px rgba(0,0,0,.6);overflow:hidden;max-height:0;transition:max-height .28s ease;}
   .picker.open .menu{max-height:460px;overflow-y:auto;}
-  .grp-l{font-family:var(--font-display);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-faint);padding:14px 18px 6px;}
-  .opt{padding:12px 18px;font-size:16px;color:var(--bone-dim);cursor:pointer;border-top:1px solid rgba(232,228,220,.05);}
-  .opt:hover{background:rgba(200,169,110,.06);color:var(--gold);}
+  .grp-l{font-family:var(--font-mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-faint);padding:14px 18px 6px;}
+  .opt{padding:12px 18px;font-size:16px;color:var(--bone-dim);cursor:pointer;border-top:1px solid #333;}
+  .opt:hover{background:transparent;color:var(--gold);}
 
   /* chat space */
   .thread{flex:1;overflow-y:auto;padding:10px 22px 20px;display:flex;flex-direction:column;gap:18px;}
-  .empty{color:var(--bone-faint);font-style:italic;font-size:15px;text-align:center;margin-top:30px;line-height:1.6;}
-  .usr{align-self:flex-end;max-width:82%;background:var(--elev);border:1px solid var(--hair);border-radius:16px 16px 4px 16px;padding:11px 15px;font-size:15.5px;color:var(--bone);}
+  .empty{color:var(--bone-faint);font-style:normal;font-size:15px;text-align:center;margin-top:30px;line-height:1.6;}
+  .usr{align-self:flex-end;max-width:82%;background:var(--elev);border:1px solid var(--hair);border-radius:8px;padding:11px 15px;font-size:15.5px;color:var(--bone);}
   .psy{max-width:90%;position:relative;}
-  .psy .who{font-family:var(--font-display);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-faint);margin-bottom:7px;}
+  .psy .who{font-family:var(--font-mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--bone-faint);margin-bottom:7px;}
   .psy .msg{font-size:16px;line-height:1.6;color:var(--bone-dim);}
   .psy .msg b{color:var(--bone);font-weight:500;}
-  .yours{display:block;margin-top:12px;border:1px solid rgba(200,169,110,.28);border-radius:10px;background:linear-gradient(180deg,rgba(200,169,110,.05),transparent);padding:11px 14px;font-style:italic;color:var(--gold);font-size:15px;line-height:1.5;}
-  .yours .lbl{display:block;font-family:var(--font-display);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);font-style:normal;margin-bottom:5px;}
+  .yours{display:block;margin-top:12px;border:1px solid #4a4a4a;border-radius:8px;background:none;padding:11px 14px;font-style:normal;color:var(--gold);font-size:15px;line-height:1.5;}
+  .yours .lbl{display:block;font-family:var(--font-mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-faint);font-style:normal;margin-bottom:5px;}
 
   .actions{display:flex;align-items:center;gap:12px;margin-top:8px;opacity:0;transition:opacity .18s;}
   .psy:hover .actions{opacity:1;}
-  .actions .time{font-family:var(--font-display);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-faint);}
+  .actions .time{font-family:var(--font-mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-faint);}
   .actions .tb{width:15px;height:15px;color:var(--bone-faint);cursor:pointer;transition:color .15s;display:inline-flex;}
   .actions .tb:hover{color:var(--bone);}
   .actions .tb.on{color:var(--gold);}
   .actions .tb svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;}
-  .esc-btn{margin-top:12px;font-family:var(--font-sans);font-size:15px;font-weight:500;color:#e8e4dc;background:none;border:1px solid rgba(232,228,220,.4);border-radius:22px;padding:8px 19px;cursor:pointer;}
-  .esc-note{margin-top:10px;font-size:13.5px;color:var(--bone-faint);font-style:italic;}
-  .mini{margin-top:10px;} .mini .s{display:flex;gap:10px;padding:5px 0;font-size:15px;} .mini .n{font-style:italic;font-weight:600;color:var(--gold);flex:0 0 auto;}
+  .esc-btn{margin-top:12px;font-family:var(--font-sans);font-size:15px;font-weight:500;color:#fff;background:none;border:1px solid #a8a8a8;border-radius:8px;padding:8px 19px;cursor:pointer;}
+  .esc-note{margin-top:10px;font-size:13.5px;color:var(--bone-faint);font-style:normal;}
+  .mini{margin-top:10px;} .mini .s{display:flex;gap:10px;padding:5px 0;font-size:15px;} .mini .n{font-style:normal;font-weight:600;color:var(--gold);flex:0 0 auto;}
 
   .composer{flex:0 0 auto;border-top:1px solid var(--hair);padding:13px 18px;display:flex;align-items:center;gap:11px;background:var(--bg);}
-  .composer input{flex:1;background:var(--elev);border:1px solid var(--hair);border-radius:24px;padding:12px 17px;color:var(--bone);font-family:var(--font-sans);font-size:15px;outline:none;}
-  .composer input::placeholder{color:var(--bone-faint);font-style:italic;}
-  .composer .send{width:40px;height:40px;border-radius:50%;background:var(--psy-ig);border:none;color:#fff;font-size:15px;cursor:pointer;flex:0 0 auto;box-shadow:0 4px 14px rgba(29,56,145,.4);}
+  .composer input{flex:1;background:var(--elev);border:1px solid var(--hair);border-radius:8px;padding:12px 17px;color:var(--bone);font-family:var(--font-sans);font-size:15px;outline:none;}
+  .composer input::placeholder{color:var(--bone-faint);font-style:normal;}
+  .composer .send{width:40px;height:40px;border-radius:50%;background:var(--psy-ig);border:none;color:#fff;font-size:15px;cursor:pointer;flex:0 0 auto;box-shadow:0 4px 14px transparent;}
   .composer .send:disabled{opacity:.5;cursor:default;}
+
+/* ════════ NEW LOOK (design rules, 14 Nov 2026) — appended last so it wins. Look only: no wording or behaviour changes. ════════ */
+body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;}
+main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
+.fbmodal{background:rgba(0,0,0,.72);} .fbcard{background:#000;border:1px solid var(--s-border);border-radius:8px;padding:24px;color:#fff;font-family:var(--font-jost);font-weight:300;}
+.fbcard p{color:var(--s-text2);opacity:1;} .fbcard textarea{background:transparent;border:1px solid var(--s-border);border-radius:8px;color:#fff;font-family:var(--font-jost);}
+.fbcard .row button{height:46px;padding:0 22px;border-radius:8px;font-family:var(--font-jost);font-weight:500;font-size:12.5px;line-height:1;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;display:flex;align-items:center;justify-content:center;white-space:nowrap;height:44px;} .fbcard .ghost{background:transparent;border:1px solid #fff;color:#fff;} .fbcard .primary{background:#fff;border:1px solid #fff;color:#000;}
+:root{--bone:#fff;--bone-dim:#d6d6d6;--bone-faint:#a8a8a8;--gold:#fff;--hair:#4a4a4a;--elev:transparent;--bg:#000;--psy-ig:#fff;}
+/* its own little chat: the question picker at the top, answers in the middle, the ask box at the bottom */
+.frame{max-width:860px;padding:56px 36px 40px;}
+.intro{padding:0 0 18px;} .lead{font-family:var(--font-jost);font-weight:300;font-size:26px;line-height:1.45;color:#fff;text-shadow:none;margin-bottom:8px;}
+.scope{font-size:16px;line-height:1.55;color:var(--s-text2);}
+.picker{padding:0 0 14px;} .sel{min-height:52px;padding:0 18px;border:1px solid var(--s-border);border-radius:8px;background:none;} .sel .t{font-size:17px;color:#fff;}
+.menu{left:0;right:0;background:#000;border:1px solid var(--s-border);border-radius:8px;box-shadow:none;}
+.grp-l{font-family:var(--font-mono);font-weight:400;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);font-size:11px;padding:14px 18px 6px;} .opt{display:flex;align-items:center;min-height:44px;padding:8px 18px;font-size:16px;color:var(--s-text2);border-top:1px solid var(--s-rule);}
+.opt:hover{background:#1c1c1c;color:#fff;}
+.thread{padding:10px 0 20px;scrollbar-width:none;} .empty{text-align:left;margin-top:16px;font-size:16px;color:var(--s-label);}
+.usr{background:none;border:1px solid var(--s-border);border-radius:8px;padding:10px 16px;font-size:17px;color:#fff;}
+.psy{max-width:100%;} .psy .who,.actions .time,.yours .lbl{font-family:var(--font-mono);font-weight:400;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);font-size:11px;} .psy .msg{font-size:18px;line-height:1.6;color:var(--s-text2);} .psy .msg b{color:#fff;}
+.yours{border:1px solid var(--s-border);border-radius:8px;background:none;color:#fff;font-size:16px;}
+.actions .tb{color:var(--s-label);} .actions .tb:hover,.actions .tb.on{color:#fff;}
+.esc-btn{height:46px;padding:0 22px;border-radius:8px;font-family:var(--font-jost);font-weight:500;font-size:12.5px;line-height:1;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;display:flex;align-items:center;justify-content:center;white-space:nowrap;display:inline-flex;height:44px;background:none;border:1px solid #fff;color:#fff;} .esc-note{font-size:14px;color:var(--s-label);}
+.mini .n{color:#fff;font-weight:500;}
+.composer{border-top:1px solid var(--s-rule);padding:14px 0 0;background:#000;gap:10px;}
+.composer input{height:46px;padding:0 16px;background:transparent;border:1px solid var(--s-border);border-radius:8px;color:#fff;font-family:var(--font-jost);font-weight:300;font-size:17px;}
+.composer input::placeholder{color:var(--s-label);}
+.composer .send{width:46px;height:46px;border-radius:8px;background:#fff;border:1px solid #fff;color:#000;box-shadow:none;font-size:17px;}
+@media (max-width:1023px){ .frame{padding:32px 20px 24px;} .lead{font-size:20px;} .psy .msg{font-size:16px;} }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261011t"></script>
+<script src="site-header.js?v=20261114c"></script>
 
 <main>
   <div class="frame">

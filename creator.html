@@ -7,19 +7,19 @@
 <title>Creator setup · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261011t">
+<link rel="stylesheet" href="site.css?v=20261114c">
 <style>
   :root{
-    --page:#efece4; --card:#faf8f3; --ink:#2a261f; --soft:#615c52; --muted:#9a948a;
-    --line:#ece7da; --fieldline:#e6e0d4; --indigo:#1d3891; --indigo-deep:#16296b;
-    --grad:linear-gradient(180deg,#3550A8 0%,#1D3891 52%,#16275F 100%);
+    --page:#efece4; --card:#fff; --ink:#2a261f; --soft:#615c52; --muted:#9a948a;
+    --line:#ece7da; --fieldline:#e6e0d4; --indigo:#fff; --indigo-deep:#16296b;
+    --grad:linear-gradient(180deg,#3550A8 0%,#fff 52%,#16275F 100%);
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   body{background:var(--page);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;}
   .sans{font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;}
   a{color:inherit;}
 
-  .frame{max-width:520px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 12px 36px rgba(42,38,31,.07);}
+  .frame{max-width:520px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 12px 36px rgba(42,38,31,.07);}
   .barhead{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line);}
   .barhead .back{font-size:1.1rem;color:var(--soft);text-decoration:none;line-height:1;}
   .barhead .wm{letter-spacing:.32em;color:var(--indigo);font-size:1rem;}
@@ -33,31 +33,51 @@
   .eyebrow{font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;display:flex;align-items:center;gap:8px;margin:6px 0 10px;}
   .eyebrow .opt{text-transform:none;letter-spacing:.02em;color:#bdb7aa;font-size:.7rem;}
 
-  .rec{background:rgba(29,56,145,.05);border:1px solid rgba(29,56,145,.14);border-radius:14px;padding:13px 16px;margin-bottom:14px;}
+  .rec{background:transparent;border:1px solid transparent;border-radius:8px;padding:13px 16px;margin-bottom:14px;}
   .rec p{font-size:.84rem;color:var(--soft);line-height:1.55;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
   .rec b{color:var(--indigo);font-weight:600;}
   .channel{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);}
   .channel:last-of-type{border-bottom:none;}
   .channel .pn{width:92px;flex-shrink:0;font-size:.92rem;color:var(--ink);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
-  .channel input{flex:1;border:1px solid var(--fieldline);border-radius:12px;padding:10px 14px;font-size:.86rem;background:#fff;color:var(--ink);outline:none;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:border-color .15s,box-shadow .15s;}
+  .channel input{flex:1;border:1px solid var(--fieldline);border-radius:8px;padding:10px 14px;font-size:.86rem;background:#fff;color:var(--ink);outline:none;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:border-color .15s,box-shadow .15s;}
   .channel input::placeholder{color:#bdb7aa;}
-  .channel input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(29,56,145,.08);}
+  .channel input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px transparent;}
 
   .sectiondiv{height:1px;background:var(--line);margin:28px 0;}
 
   .payline{font-size:.95rem;color:var(--soft);line-height:1.55;margin-bottom:16px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
-  .paybtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;color:#FAF8F3;font-size:.9rem;font-weight:600;padding:14px 0;border:none;border-radius:26px;cursor:pointer;background:var(--grad);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 20px rgba(29,56,145,.26);font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:transform .18s,box-shadow .18s;}
-  .paybtn:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 14px 30px rgba(29,56,145,.34);}
+  .paybtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;color:#fff;font-size:.9rem;font-weight:600;padding:14px 0;border:none;border-radius:8px;cursor:pointer;background:var(--grad);box-shadow:inset 0 1px 0 transparent,0 8px 20px transparent;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;transition:transform .18s,box-shadow .18s;}
+  .paybtn:hover{transform:translateY(-2px);box-shadow:inset 0 1px 0 transparent,0 14px 30px transparent;}
 
-  .note{background:rgba(29,56,145,.045);border:1px solid rgba(29,56,145,.12);border-radius:14px;padding:14px 16px;margin-top:26px;}
+  .note{background:transparent;border:1px solid transparent;border-radius:8px;padding:14px 16px;margin-top:26px;}
   .note p{font-size:.82rem;color:var(--soft);line-height:1.6;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
   .note b{color:var(--indigo);font-weight:600;}
 
   .foot{text-align:center;font-size:.74rem;color:var(--muted);margin-top:22px;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;}
+
+/* ════════ NEW LOOK (design rules, 14 Nov 2026) — appended last so it wins. Look only: no wording or behaviour changes. ════════ */
+body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;}
+main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
+:root{--page:#000;--card:#000;--ink:#fff;--soft:#d6d6d6;--muted:#a8a8a8;--line:#333;--fieldline:#4a4a4a;--indigo:#fff;--indigo-deep:#fff;--grad:#fff;}
+main.site-main{overflow-y:auto;padding:56px 72px 80px !important;}
+.sans,.lead p,.eyebrow,.rec p,.channel .pn,.channel input,.payline,.note p,.foot{font-family:var(--font-jost) !important;}
+.frame{max-width:640px;margin:0;background:#000;border:1px solid var(--s-border);border-radius:8px;box-shadow:none;}
+.barhead{border-bottom:1px solid var(--s-rule);} .barhead .back{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;margin:-12px 0 -12px -14px;color:#fff;}
+.barhead .wm{font-family:'Poiret One',var(--font-jost);letter-spacing:.12em;font-size:20px;color:#fff;}
+.lead{text-align:left;} .lead h1{font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:40px;line-height:1.1;letter-spacing:.04em;color:#fff;}
+.lead p{font-size:18px;color:var(--s-text2);}
+.eyebrow{font-family:var(--font-mono);font-weight:400;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);} .eyebrow .opt{color:var(--s-label);font-size:12px;}
+.rec,.note{border:1px solid var(--s-border);border-radius:8px;background:none;} .rec p,.note p{font-size:15px;color:var(--s-text2);} .rec b,.note b{color:#fff;font-weight:500;}
+.channel{border-bottom:1px solid var(--s-rule);} .channel .pn{font-size:16px;color:#fff;}
+.channel input{height:44px;padding:0 14px;background:transparent;border:1px solid var(--s-border);border-radius:8px;color:#fff;font-size:16px;} .channel input::placeholder{color:var(--s-label);} .channel input:focus{border-color:#fff;box-shadow:none;}
+.sectiondiv{background:var(--s-rule);} .payline{font-size:17px;color:var(--s-text2);}
+.paybtn{height:46px;padding:0 22px;border-radius:8px;font-family:var(--font-jost);font-weight:500;font-size:12.5px;line-height:1;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;display:flex;align-items:center;justify-content:center;white-space:nowrap;width:100%;height:52px;background:#fff;border:1px solid #fff;color:#000;box-shadow:none;} .paybtn:hover{transform:none;box-shadow:none;background:#e6e6e6;}
+.foot{font-size:14px;color:var(--s-label);}
+@media (max-width:1023px){ main.site-main{padding:36px 20px 40px !important;} .lead h1{font-size:30px;} }
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js?v=20261011t" data-toggle></script>
+<script src="site-header.js?v=20261114c" data-toggle></script>
 <main class="site-main" style="padding:40px 20px 70px">
   <div class="frame">
     <div class="barhead">
