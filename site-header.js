@@ -247,6 +247,8 @@
     new MutationObserver(paint).observe(box, { childList: true, subtree: true, characterData: true });
     window.sussuriAccount = {
       get: who,
+      // the one sales button's wording and where it goes, for a page that shows the same button elsewhere (Education's bottom button)
+      cta: function () { var w = who(); return w.state === 'member' ? { label:'Give a free month', href:'account.html' } : w.state === 'trial' ? { label:'Become a member', href:'pricing.html' } : { label:'Start free month', href:'pricing.html' }; },
       update: function (p) { pushed = p; try { localStorage.setItem('sussuri:acct', JSON.stringify({ id: p.id, plan: p.plan, name: p.name })); } catch (e) {} paint(); },
       onChange: function (f) { listeners.push(f); }
     };
