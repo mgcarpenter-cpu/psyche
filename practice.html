@@ -193,16 +193,22 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 .pl-done{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);border:1px solid var(--s-border);border-radius:4px;padding:2px 6px;white-space:nowrap;}
 .pl-desc{margin:3px 0 0;font-family:var(--font-jost);font-weight:300;font-size:16px;line-height:1.5;color:var(--s-text2);}
 /* drop-downs: a light outline with light text until "Remind me" is ticked, then solid */
-.dd{box-sizing:border-box;height:44px;display:flex;align-items:stretch;border:1px solid #6a6a6a;border-radius:8px;background:transparent;color:#d6d6d6;overflow:hidden;}
-.dd select{flex:1 1 auto;min-width:0;height:100%;margin:0;padding:0 30px 0 14px;border:0;border-radius:0;outline:none;background:transparent no-repeat right 12px center/10px 6px;color:inherit;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1;cursor:pointer;-webkit-appearance:none;appearance:none;
+.dd{position:relative;box-sizing:border-box;height:44px;display:flex;align-items:stretch;border:1px solid #6a6a6a;border-radius:8px;background:transparent;color:#d6d6d6;overflow:hidden;}
+.dd select{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;}   /* kept only to hold the value */
+.dd .ddb{flex:1 1 auto;min-width:0;height:100%;margin:0;padding:0 30px 0 14px;border:0;border-radius:0;outline:none;background:transparent no-repeat right 12px center/10px 6px;color:inherit;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;-webkit-appearance:none;appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23d6d6d6' stroke-width='1.2'/%3E%3C/svg%3E");}
-.dd select+select{border-left:1px solid #6a6a6a;}
-.dd select:focus{outline:none;}
-body.kb .dd select:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an outline only when moving by keyboard, never after a click or tap */
-.dd option{color:#000;background:#fff;}
+.dd .ddb~.ddb{border-left:1px solid #6a6a6a;}
+.dd .ddb:focus{outline:none;}
+body.kb .dd .ddb:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an outline only when moving by keyboard, never after a click or tap */
 .pl.on .dd{background:#fff;border-color:#fff;color:#000;}
-.pl.on .dd select{font-weight:400;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E");}
-.pl.on .dd select+select{border-left-color:#bdbdbd;}
+.pl.on .dd .ddb{font-weight:400;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E");}
+.pl.on .dd .ddb~.ddb{border-left-color:#bdbdbd;}
+/* the list that opens: black, thin light outline, the site's own lettering; the current choice is a white band */
+.ddlist{position:fixed;z-index:200;box-sizing:border-box;max-height:300px;overflow-y:auto;padding:6px 0;background:#000;border:1px solid #d6d6d6;border-radius:8px;box-shadow:0 14px 40px rgba(0,0,0,.7);scrollbar-width:thin;scrollbar-color:#666 #000;}
+.ddlist .ddo{display:flex;align-items:center;min-height:40px;padding:0 16px;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1.3;color:#d6d6d6;white-space:nowrap;cursor:pointer;}
+.ddlist .ddo.at{background:#1c1c1c;color:#fff;}
+.ddlist .ddo.sel{background:#fff;color:#000;font-weight:400;}
+@media (max-width:1023px){ .ddlist .ddo{min-height:44px;font-size:16px;} }
 .dd.when .day{flex:0 0 86px;}
 .remind{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-height:44px;padding-left:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);white-space:nowrap;cursor:pointer;}
 .remind input{-webkit-appearance:none;appearance:none;flex:0 0 auto;width:24px;height:24px;margin:0;border:1px solid #fff;border-radius:4px;background:transparent no-repeat center/14px 12px;cursor:pointer;}
@@ -212,7 +218,7 @@ body.kb .dd select:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an
 .pl-foot{margin-top:8px;padding-top:32px;border-top:1px solid var(--s-rule);}
 .pl-note{margin:0 0 20px;font-family:var(--font-jost);font-weight:300;font-size:18px;line-height:1.5;color:var(--s-text2);}
 .dd.tz{max-width:560px;height:50px;border-color:#fff;color:#fff;}
-.dd.tz select{font-size:16px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.2'/%3E%3C/svg%3E");}
+.dd.tz .ddb{font-size:16px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.2'/%3E%3C/svg%3E");}
 /* narrower screens and phones: the drop-downs and the tick box drop below the line's text */
 @media (max-width:1279px){
   .pl{grid-template-columns:150px 210px minmax(0,1fr);}
@@ -225,7 +231,7 @@ body.kb .dd select:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an
 @media (max-width:480px){
   .pl{grid-template-columns:minmax(0,2fr) minmax(0,3fr);}
   .remind{grid-column:1 / -1;justify-content:flex-start;padding-left:0;}
-  .dd select{padding:0 24px 0 10px;background-position:right 8px center;}
+  .dd .ddb{padding:0 24px 0 10px;background-position:right 8px center;}
   .dd.when .day{flex-basis:70px;}
 }
 </style>
@@ -444,6 +450,66 @@ body.kb .dd select:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an
   function usedToday(page){
     try{ const u=JSON.parse(localStorage.getItem("sussuri:used")||"{}"), d=new Date(); return u[page]===d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }catch(e){ return false; }
   }
+  // ---- drop-downs in the site's own style. Each real <select> stays as the value holder; a button shows the
+  // choice and opens one shared list. Choosing sets the <select> and fires its "change", so nothing else differs.
+  let ddOpen=null;
+  function ddLabel(sel){ const o=sel.options[sel.selectedIndex]; return o?o.text:""; }
+  function ddClose(focusBack){ if(!ddOpen) return; const b=ddOpen.btn; ddOpen.list.remove(); b.setAttribute("aria-expanded","false"); ddOpen=null; if(focusBack) b.focus(); }
+  function ddShow(sel, btn){
+    ddClose();
+    const list=document.createElement("div"); list.className="ddlist"; list.setAttribute("role","listbox");
+    [...sel.options].forEach((o,i)=>{ const d=document.createElement("div"); d.className="ddo"+(i===sel.selectedIndex?" sel at":""); d.setAttribute("role","option"); d.textContent=o.text; d.dataset.i=i; list.appendChild(d); });
+    document.body.appendChild(list);
+    const box=btn.closest(".dd").getBoundingClientRect(), r=btn.getBoundingClientRect(), wide=btn.closest(".dd").querySelectorAll(".ddb").length===1;
+    const left=wide?box.left:r.left, minW=wide?box.width:Math.max(r.width,120);
+    list.style.minWidth=minW+"px"; list.style.maxWidth=Math.max(minW,Math.min(420,innerWidth-24))+"px";
+    list.style.left=Math.max(12,Math.min(left,innerWidth-list.offsetWidth-12))+"px";
+    const below=innerHeight-box.bottom-12, above=box.top-12, h=list.offsetHeight;
+    if(h<=below || below>=above){ list.style.top=(box.bottom+6)+"px"; list.style.maxHeight=Math.max(120,Math.min(300,below-6))+"px"; }
+    else { list.style.maxHeight=Math.max(120,Math.min(300,above-6))+"px"; list.style.top=(box.top-6-list.offsetHeight)+"px"; }
+    const cur=list.querySelector(".sel"); if(cur) list.scrollTop=cur.offsetTop-list.clientHeight/2+20;
+    list.addEventListener("pointermove", e=>{ const d=e.target.closest(".ddo"); if(d) ddAt(+d.dataset.i,false); });
+    list.addEventListener("click", e=>{ const d=e.target.closest(".ddo"); if(d) ddPick(+d.dataset.i); });
+    btn.setAttribute("aria-expanded","true");
+    ddOpen={sel:sel,btn:btn,list:list,at:sel.selectedIndex,typed:"",typedAt:0};
+  }
+  function ddAt(i, scroll){
+    if(!ddOpen) return; const n=ddOpen.list.children.length; i=Math.max(0,Math.min(n-1,i)); ddOpen.at=i;
+    [...ddOpen.list.children].forEach((d,k)=>d.classList.toggle("at",k===i));
+    if(scroll){ const d=ddOpen.list.children[i]; if(d.offsetTop<ddOpen.list.scrollTop) ddOpen.list.scrollTop=d.offsetTop-6; else if(d.offsetTop+d.offsetHeight>ddOpen.list.scrollTop+ddOpen.list.clientHeight) ddOpen.list.scrollTop=d.offsetTop+d.offsetHeight-ddOpen.list.clientHeight+6; }
+  }
+  function ddPick(i){
+    const o=ddOpen; if(!o) return;
+    if(o.sel.selectedIndex!==i){ o.sel.selectedIndex=i; o.btn.textContent=ddLabel(o.sel); ddClose(true); o.sel.dispatchEvent(new Event("change",{bubbles:true})); }
+    else ddClose(true);
+  }
+  function ddMake(sel){
+    if(sel.nextElementSibling && sel.nextElementSibling.classList.contains("ddb")){ sel.nextElementSibling.textContent=ddLabel(sel); return; }
+    const btn=document.createElement("button"); btn.type="button"; btn.className="ddb "+sel.className;
+    btn.setAttribute("aria-haspopup","listbox"); btn.setAttribute("aria-expanded","false"); btn.setAttribute("aria-label",sel.getAttribute("aria-label")||"");
+    btn.textContent=ddLabel(sel); sel.tabIndex=-1; sel.setAttribute("aria-hidden","true");
+    btn.addEventListener("click", ()=>{ (ddOpen&&ddOpen.btn===btn) ? ddClose() : ddShow(sel,btn); });
+    btn.addEventListener("keydown", e=>{
+      if(!ddOpen || ddOpen.btn!==btn){ if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); ddShow(sel,btn); } return; }
+      if(e.key==="Escape"){ e.preventDefault(); ddClose(true); }
+      else if(e.key==="ArrowDown"){ e.preventDefault(); ddAt(ddOpen.at+1,true); }
+      else if(e.key==="ArrowUp"){ e.preventDefault(); ddAt(ddOpen.at-1,true); }
+      else if(e.key==="Home"){ e.preventDefault(); ddAt(0,true); }
+      else if(e.key==="End"){ e.preventDefault(); ddAt(1e9,true); }
+      else if(e.key==="Enter"||e.key===" "){ e.preventDefault(); ddPick(ddOpen.at); }
+      else if(e.key==="Tab"){ ddClose(); }
+      else if(e.key.length===1){   // typing jumps to the first choice that starts with those letters
+        const now=Date.now(); ddOpen.typed=(now-ddOpen.typedAt<700?ddOpen.typed:"")+e.key.toLowerCase(); ddOpen.typedAt=now;
+        const k=[...sel.options].findIndex(o=>o.text.toLowerCase().indexOf(ddOpen.typed)===0); if(k>=0) ddAt(k,true);
+      }
+    });
+    sel.insertAdjacentElement("afterend",btn);
+  }
+  function ddAll(root){ root.querySelectorAll("select").forEach(ddMake); }
+  document.addEventListener("pointerdown", e=>{ if(ddOpen && !ddOpen.list.contains(e.target) && e.target!==ddOpen.btn) ddClose(); });
+  window.addEventListener("resize", ()=>ddClose());
+  document.querySelector("main").addEventListener("scroll", ()=>ddClose());
+
   function drawGoal(){
     $("goalBody").innerHTML = goal
       ? '<p class="goal-text">'+esc(goal)+'</p><a class="goal-all" href="your-goals.html">All goals</a>'
@@ -451,7 +517,7 @@ body.kb .dd select:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an
   }
   function whenHTML(L, st){
     const day = st.freq==="weekly" ? '<select class="day" data-k="day" aria-label="Day of the week">'+opts(DAYS.map((d,i)=>[i,d]), st.day)+'</select>'
-              : st.freq==="monthly" ? '<select class="day" data-k="dom" aria-label="Day of the month">'+opts(Array.from({length:28},(_,i)=>[i+1,ord(i+1)]), st.dom)+'</select>' : '';
+              : st.freq==="monthly" ? '<select class="day" data-k="dom" aria-label="Day of the month">'+opts(Array.from({length:31},(_,i)=>[i+1,ord(i+1)]), st.dom)+'</select>' : '';
     return day+'<select data-k="time" aria-label="Time of day">'+opts(TIMES.map(t=>[t,timeLabel(t)]), st.time)+'</select>';
   }
   function drawSchedule(){
@@ -475,8 +541,9 @@ body.kb .dd select:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an
           cur[k] = k==="remind" ? e.target.checked : (k==="day"||k==="dom") ? Number(e.target.value) : e.target.value;
           sched.lines[L.id]=cur; save();
           row.classList.toggle("on", cur.remind);
-          if(k==="freq") row.querySelector(".when").innerHTML=whenHTML(L, cur);   // weekly adds a day of the week, monthly a day of the month
+          if(k==="freq"){ row.querySelector(".when").innerHTML=whenHTML(L, cur); ddAll(row.querySelector(".when")); }   // weekly adds a day of the week, monthly a day of the month
         });
+        ddAll(row);
         sec.appendChild(row);
       });
       box.appendChild(sec);
@@ -499,12 +566,14 @@ body.kb .dd select:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an
     const start=sched.tz||device||"America/New_York";
     const sel=$("tzSel");
     sel.innerHTML='<option value="'+esc(start)+'">'+esc(tzName(start))+'</option>';   // shown at once; the full list fills in just after
+    ddMake(sel);
     setTimeout(()=>{
       let ids=[]; try{ ids=Intl.supportedValuesOf("timeZone"); }catch(e){}
       if(!ids.length) ids=["Pacific/Honolulu","America/Anchorage","America/Los_Angeles","America/Denver","America/Chicago","America/New_York","America/Sao_Paulo","Europe/London","Europe/Paris","Europe/Athens","Asia/Dubai","Asia/Kolkata","Asia/Singapore","Asia/Tokyo","Australia/Sydney","Pacific/Auckland"];
       if(ids.indexOf(start)<0) ids.push(start);
       const list=ids.map(id=>({id:id,off:tzOffset(id),name:tzName(id)})).sort((a,b)=>a.off-b.off||a.name.localeCompare(b.name));
       sel.innerHTML=list.map(z=>'<option value="'+esc(z.id)+'"'+(z.id===start?' selected':'')+'>'+esc(z.name)+'</option>').join("");
+      ddMake(sel);
     },0);
     sel.addEventListener("change", ()=>{ sched.tz=sel.value; save(); });
   }
@@ -518,7 +587,7 @@ body.kb .dd select:focus{outline:2px solid #808080;outline-offset:-3px;}   /* an
       signedInUser=data.session&&data.session.user||null;
       const m=signedInUser&&signedInUser.user_metadata||{};
       if(m.goal){ goal=String(m.goal); drawGoal(); }
-      if(m.schedule&&m.schedule.lines){ sched=m.schedule; try{ localStorage.setItem(SK,JSON.stringify(sched)); }catch(e){} drawSchedule(); if(sched.tz){ const o=[...$("tzSel").options].find(o=>o.value===sched.tz); if(o) $("tzSel").value=sched.tz; } }
+      if(m.schedule&&m.schedule.lines){ sched=m.schedule; try{ localStorage.setItem(SK,JSON.stringify(sched)); }catch(e){} drawSchedule(); if(sched.tz){ const o=[...$("tzSel").options].find(o=>o.value===sched.tz); if(o){ $("tzSel").value=sched.tz; ddMake($("tzSel")); } } }
     });
   }
 
