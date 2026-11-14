@@ -7,7 +7,7 @@
 <title>Sussuri — Sanctuary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115e">
+<link rel="stylesheet" href="site.css?v=20261115f">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept so the scripts' inline styles still resolve */
@@ -89,7 +89,8 @@
   .trail.clear{border:1px solid #6a6a6a;}
   .trail.sendmode{background:#fff;color:#000;}   /* the send arrow, and the tick while recording */
   .trail[hidden],.rec[hidden]{display:none;}
-  /* while recording voice: the word, then a cross (discard) and a tick (accept) */
+  /* the word at the left of the buttons: "Recording" while the microphone is on; Listening / Speaking during a spoken conversation */
+  .trail.mic.live{background:#fff;color:#000;}
   .rec{margin-right:auto;font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fff;}
   .inrow.off{opacity:.45;}
   .inrow.off textarea,.inrow.off .trail{cursor:default;}
@@ -137,7 +138,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115e"></script>
+<script src="site-header.js?v=20261115f"></script>
 
 <main>
   <div class="frame">
@@ -167,9 +168,9 @@
         <textarea class="field" id="field" rows="1" placeholder="Ask anything&hellip;" autocomplete="off"></textarea>
         <div class="tools">
           <span class="rec" id="recLabel" hidden>Recording</span>
-          <button class="trail clear" id="recCancel" type="button" title="Discard the recording" aria-label="Discard the recording" hidden><svg aria-hidden="true" width="16" height="16" viewBox="0 0 18 18" stroke-width="1.4"><path d="M2 2l14 14M16 2L2 16"/></svg></button>
-          <button class="trail sendmode" id="recOk" type="button" title="Accept the recording" aria-label="Accept the recording" hidden><svg aria-hidden="true" width="18" height="16" viewBox="0 0 18 17" stroke-width="1.6"><path d="M1.5 9l5 5.5L16.5 2"/></svg></button>
-          <button class="trail voice" id="trail" type="button" title="Speak" aria-label="Speak">
+          <button class="trail clear" id="liveEnd" type="button" title="End the spoken conversation" aria-label="End the spoken conversation" hidden><svg aria-hidden="true" width="16" height="16" viewBox="0 0 18 18" stroke-width="1.4"><path d="M2 2l14 14M16 2L2 16"/></svg></button>
+          <button class="trail mic" id="micBtn" type="button" title="Speak, and your words become text" aria-label="Speak, and your words become text" aria-pressed="false" hidden><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21.5"/></svg></button>
+          <button class="trail voice" id="trail" type="button" title="Talk with Sussuri out loud" aria-label="Talk with Sussuri out loud">
             <svg id="tvoice" aria-hidden="true" width="26" height="22" viewBox="0 0 26 22" stroke-width="1.4"><path d="M3 8v6M8 4v14M13 1v20M18 4v14M23 8v6"/></svg>
           </button>
           <button class="trail sendmode" id="sendBtn" type="button" title="Send" aria-label="Send"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.6"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6,12 12,5.5 18,12"/></svg></button>
@@ -257,6 +258,7 @@
   // ================= ORB — state label + glow, muted-by-default audio =================
   function setState(name){
     state.textContent=name;
+    if(voiceActive) $("recLabel").textContent=name;
     const glow = name==='Speaking' ? '0 0 46px rgba(200,169,110,.6)'
                : name==='Listening' && voiceActive ? '0 0 38px rgba(200,169,110,.42)'
                : '0 0 30px rgba(200,169,110,.3)';
@@ -498,7 +500,9 @@
   function syncVisitorLock(){
     const off=visitorLocked();
     $("inrow").classList.toggle('off',off);
-    field.disabled=off; trail.disabled=off; sendBtn.disabled=off;
+    field.disabled=off; trail.disabled=off; sendBtn.disabled=off; micBtn.disabled=off;
+    if(off) stopDictation();
+    syncTools();
   }
 
   // ================= TYPED SUBMIT =================
@@ -509,6 +513,7 @@
     if(overLimit()){ showLimit(); return; }
     if(visitorLocked()){ syncVisitorLock(); return; }
     if(voiceActive) stopVoice();
+    stopDictation();
     addUserBubble(text,false);
     field.value=''; swap();
     sending=true; trail.disabled=true; sendBtn.disabled=true;
@@ -550,14 +555,69 @@
     field.style.height=Math.min(field.scrollHeight,max)+'px';
     field.style.overflowY=field.scrollHeight>max?'auto':'hidden';
   }
-  trail.addEventListener('click', ()=>toggleVoice());   // the waveform starts voice; the arrow sends what is typed
-  // While voice is on the box shows "Recording", a cross and a tick instead of the waveform and the arrow.
-  function setRec(on){
-    $("recLabel").hidden=!on; $("recCancel").hidden=!on; $("recOk").hidden=!on;
-    trail.hidden=on; sendBtn.hidden=on;
+  // ================= THREE WAYS TO TALK =================
+  //  1. type            -> send arrow                          -> text back
+  //  2. microphone      -> your words appear in the box, send  -> text back   (the browser does the speech-to-text: no cost)
+  //  3. waveform        -> a spoken conversation, out loud     -> Sussuri speaks back   (the paid voice, capped below)
+  //
+  // WHO GETS WHAT. Typed and microphone messages share the message allowance (PLAN_LIMITS further down; visitors
+  // get VISITOR_MAX). Spoken conversation is capped in minutes a month, per kind of person. PLACEHOLDER NUMBERS.
+  const VOICE_MINUTES={ visitor:0, trial:10, member:60 };
+  const VUK="sussuri:voice";   // { month:"2026-11", sec:123 }, kept in this browser
+  function person(){ return window.sussuriAccount ? window.sussuriAccount.get().state : 'visitor'; }
+  function voiceUse(){ const m=new Date().toISOString().slice(0,7); let u=load(VUK,null); if(!u||u.month!==m) u={month:m,sec:0}; return u; }
+  function voiceLeft(){ return (VOICE_MINUTES[person()]||0)*60 - voiceUse().sec; }
+  let voiceTick=null;
+  function startVoiceClock(){
+    clearInterval(voiceTick);
+    voiceTick=setInterval(()=>{
+      const u=voiceUse(); u.sec++; try{ localStorage.setItem(VUK,JSON.stringify(u)); }catch(e){}
+      if(voiceLeft()<=0){ stopVoice(); addPsyReply("You've reached your plan's limit for speaking for now. You can keep going by typing.", ""); }
+    },1000);
   }
-  $("recOk").addEventListener('click', ()=>stopVoice());                                   // tick: stop, keep what was said
-  $("recCancel").addEventListener('click', ()=>{ curUserText=""; stopVoice(); });          // cross: stop, drop what has not gone yet
+
+  // ---- 2. microphone: speech becomes text in the box ----
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const micBtn=$("micBtn");
+  let rec=null, dictating=false;
+  function setDict(on){
+    dictating=on; micBtn.classList.toggle('live',on); micBtn.setAttribute('aria-pressed',String(on));
+    $("recLabel").textContent='Recording'; $("recLabel").hidden=!on;
+    syncTools();
+  }
+  function startDictation(){
+    if(!SR || dictating || visitorLocked()) return;
+    if(voiceActive) stopVoice();
+    const base=field.value ? field.value.replace(/\s*$/,' ') : '';
+    let done='';
+    rec=new SR(); rec.continuous=true; rec.interimResults=true; rec.lang=navigator.language||'en-US';
+    rec.onresult=e=>{
+      let live='';
+      for(let i=e.resultIndex;i<e.results.length;i++){ const t=e.results[i][0].transcript; if(e.results[i].isFinal) done+=t; else live+=t; }
+      field.value=base+done+live; swap(); field.scrollTop=field.scrollHeight;
+    };
+    rec.onerror=e=>{ if(e.error==='not-allowed'||e.error==='service-not-allowed') addPsyReply("Couldn't start the microphone — check your microphone permission and try again.", ""); };
+    rec.onend=()=>{ rec=null; setDict(false); };
+    try{ rec.start(); setDict(true); }catch(e){ rec=null; }
+  }
+  function stopDictation(){ if(rec){ try{ rec.stop(); }catch(e){} } }
+  micBtn.addEventListener('click', ()=>{ dictating ? stopDictation() : startDictation(); });
+
+  // ---- 3. waveform: the spoken conversation ----
+  trail.addEventListener('click', ()=>{ stopDictation(); toggleVoice(); });
+  $("liveEnd").addEventListener('click', ()=>stopVoice());
+  // During a spoken conversation the box shows what Sussuri is doing (Listening / Speaking) and one button to end it.
+  function setRec(on){
+    $("recLabel").textContent=on?'Listening':'Recording'; $("recLabel").hidden=!on;
+    syncTools();
+  }
+  // which buttons show: microphone only where the browser can do it; waveform only for people who get spoken conversation
+  function syncTools(){
+    $("liveEnd").hidden=!voiceActive;
+    micBtn.hidden=voiceActive || !SR;
+    trail.hidden=voiceActive || dictating || !(VOICE_MINUTES[person()]>0);
+    sendBtn.hidden=voiceActive;
+  }
 
   function showLimit(){
     $("limitCard").classList.add('on');
@@ -673,6 +733,7 @@
     if(voiceActive){ stopVoice(); return; }
     if(overLimit()){ showLimit(); return; }
     if(visitorLocked()){ syncVisitorLock(); return; }
+    if(voiceLeft()<=0){ addPsyReply("You've reached your plan's limit for speaking for now. You can keep going by typing.", ""); return; }
     if(window.PSYCHE_PREVIEW){ addPsyReply("Voice needs a real session — sign in outside preview mode to try it.", ""); return; }
     voiceActive=true; trail.classList.add('live'); setRec(true);
     setState('Listening'); curUserText=""; curPsyText=""; curPsyBubble=null;
@@ -694,7 +755,7 @@
           outputAudioTranscription: {}
         },
         callbacks: {
-          onopen: ()=>{ setState('Listening'); },
+          onopen: ()=>{ setState('Listening'); startVoiceClock(); },
           onmessage: onLiveMessage,
           onerror: (e)=>{ console.error("live error:",e); stopVoice(); },
           onclose: ()=>{ if(voiceActive) stopVoice(); }
@@ -718,7 +779,7 @@
   }
   function stopVoice(){
     voiceActive=false; trail.classList.remove('live'); setRec(false);
-    clearTimeout(idleTimer);
+    clearTimeout(idleTimer); clearInterval(voiceTick);
     if(curUserText.trim()) commitVoiceUserTurn();
     if(curPsyBubble && curPsyText.trim()) finalizeVoiceTurn();
     try{ processor && processor.disconnect(); }catch(e){}
