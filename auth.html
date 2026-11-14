@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign in · Sussuri</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="site.css?v=20261115h">
+<link rel="stylesheet" href="site.css?v=20261115i">
 <style>
   :root{
     --cream:#fff; --night:#000; --indigo:#fff;
@@ -128,11 +128,17 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 .card .fine a,.card .crisis a{color:var(--s-text2);}
 @media (max-width:1023px){ .card h1{font-size:38px;letter-spacing:.04em;} .card .lede{font-size:16px;margin-bottom:24px;padding-bottom:24px;} }
 @media (max-width:1023px){ .page{padding:36px 20px 40px !important;} }
+/* Keep me signed in: the same tick box as elsewhere on the site */
+.keep{display:flex;align-items:center;gap:12px;min-height:44px;margin-top:14px;font-family:var(--font-jost);font-weight:300;font-size:16px;line-height:1.4;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.keep input{-webkit-appearance:none;appearance:none;flex:0 0 auto;width:24px;height:24px;margin:0;border:1px solid #fff;border-radius:4px;background:transparent no-repeat center/14px 12px;cursor:pointer;}
+.keep input:checked{background-color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 17'%3E%3Cpath d='M1.5 9l5 5.5L16.5 2' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");}
+.keep input:focus{outline:none;} .keep input:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+#authMsg:empty{display:none;}   /* only shows when there is something to say (a mistyped email, a failed send) */
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115h"></script>
+<script src="site-header.js?v=20261115i"></script>
 <div class="scrim" id="scrim"></div>
 
 <main>
@@ -148,8 +154,9 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
           <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.06l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38Z"/></svg>
           Continue with Google
         </button>
+        <label class="keep"><input type="checkbox" id="keepIn" checked><span>Keep me signed in</span></label>
         <div class="fine">By continuing you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</div>
-        <div class="note" id="authMsg">We'll email you a secure link — no password needed.</div>
+        <div class="note" id="authMsg" role="status"></div>
         <p class="crisis">A space to reflect, not a substitute for professional care. <a href="support.html">Need urgent help?</a></p>
       </div>
       <div class="card" id="sentCard" style="display:none;">
@@ -231,10 +238,14 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
       var sb2=window.__sb||(window.__sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb"));
       sb2.auth.getSession().then(function(r){ if(r.data && r.data.session) location.replace("chat.html"); });
       var $=function(id){return document.getElementById(id);};
-      $("google").onclick=function(){ alert("Continue with Google — coming soon. Use email for now."); };
+      function keepChoice(){ try{ localStorage.setItem("sussuri:keep", $("keepIn").checked ? "1" : "0"); }catch(e){} }
+      try{ if(localStorage.getItem("sussuri:keep")==="0") $("keepIn").checked=false; }catch(e){}
+      $("keepIn").addEventListener("change", keepChoice);
+      $("google").onclick=function(){ keepChoice(); alert("Continue with Google — coming soon. Use email for now."); };
       async function sendLink(){
         var email=$("email").value.trim();
         if(!email || email.indexOf("@")<0){ $("authMsg").textContent="Please enter a valid email address."; return; }
+        keepChoice();
         var btn=$("emailBtn"); btn.disabled=true; btn.textContent="Sending…";
         try{
           var res=await sb2.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin + "/chat.html" } });

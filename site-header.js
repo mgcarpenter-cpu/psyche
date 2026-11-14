@@ -120,6 +120,15 @@
   var SB_REF = 'hydzekyzbqhcvajnuegh', SB_URL = 'https://' + SB_REF + '.supabase.co', SB_KEY = 'sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb';
   var pushed = null;   // what a page has told us about the signed-in person (plan, name)
   function stored(k){ try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+  // "Keep me signed in" (the tick box on the sign-in page). Unticked there means: signed out when the browser closes.
+  // A cookie with no end date lasts only until the browser closes. If it is missing, the browser has been reopened,
+  // so a person who chose not to stay signed in is signed out on this device here, before the page reads who they are.
+  try {
+    if (!/(?:^|; )sussuri_live=1/.test(document.cookie)) {
+      if (localStorage.getItem('sussuri:keep') === '0') localStorage.removeItem('sb-' + SB_REF + '-auth-token');
+      document.cookie = 'sussuri_live=1; path=/; SameSite=Lax';
+    }
+  } catch (e) {}
   function who(){
     if (window.PSYCHE_PREVIEW) {   // preview mode: ?as=visitor | trial | member picks the person to look at
       var as = 'trial';
@@ -140,6 +149,7 @@
 
   // the top-right slot: one item, depending on the person (none on the Membership page for people who are not members yet)
   function slotHTML(w){
+    if (here === 'auth') return '';   // the sign-in page keeps the slot empty
     if (w.state === 'member') return '<a class="site-cta" id="siteCta" href="account.html">Give a free month</a>';   // until the share-link page exists
     if (here === 'pricing') return '';
     if (w.state === 'trial') return (w.days > 0 ? '<span class="sb-days">' + daysText(w.days) + '</span>' : '') + '<a class="site-cta" id="siteCta" href="pricing.html">Become a member</a>';
