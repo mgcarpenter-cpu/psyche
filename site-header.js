@@ -68,7 +68,10 @@
 
   // Desktop: the menu is fixed and always open. Phone: it starts as a closed drawer.
   var desktop = window.matchMedia('(min-width:1024px)').matches;
-  var initial = desktop ? 'open' : 'hidden';
+  // <script src="site-header.js" data-drawer>: the front page. The same menu, but only as a panel that slides
+  // in over the page when its own three lines are tapped (window.sussuriMenu.toggle()). No top bar, no frame.
+  var drawerOnly = document.currentScript.hasAttribute('data-drawer');
+  var initial = (desktop && !drawerOnly) ? 'open' : 'hidden';
 
   // top bar: tabs on Chat / Practice, otherwise the section name (or the page's own name)
   var section = {
@@ -88,7 +91,7 @@
   var cta = here === 'pricing' ? '' : '<a class="site-cta" id="siteCta" href="pricing.html">Become a member</a>';
 
   var html =
-    '<nav id="nav" class="site-nav ' + initial + '" aria-label="Main menu">' +
+    '<nav id="nav" class="site-nav ' + (drawerOnly ? 'site-drawer ' : '') + initial + '" aria-label="Main menu">' +
       '<div class="nav-scroll">' +
         '<div class="nav-top"><a class="side-mark wordmark-side" href="/" aria-label="sussuri, front page">sussuri</a>' +   // the name leads back to the front page
           '<button class="collapse" id="collapseBtn" title="Close menu" aria-label="Close menu">&#10094;</button></div>' +
@@ -123,14 +126,38 @@
   // Top bar. Desktop: one strip (section name or tabs at the left, sales button at the right).
   // Phone: two fixed strips (menu lines + name + sales button, then the section name or tabs).
   var s = document.currentScript;
-  s.insertAdjacentHTML('beforebegin', html +
-    '<header class="site-bar" id="siteBar">' +
-      '<div class="sb-strip1"><button class="menu-btn" id="menuBtn" aria-label="Menu">' +
-        '<svg aria-hidden="true" width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor"><path d="M0 1h22M0 7h22M0 13h22"/></svg>' +
-        '</button><a class="wordmark" href="/" aria-label="sussuri, front page">sussuri</a></div>' +
-      '<div class="sb-left">' + barLeft + '</div>' + cta +
-    '</header>');
-  document.body.classList.add('has-side');
+  if (drawerOnly) {
+    s.insertAdjacentHTML('beforebegin', html + '<div class="site-scrim" id="siteScrim"></div>');
+    (function () {
+      var nav = document.getElementById('nav'), scrim = document.getElementById('siteScrim'), listeners = [];
+      function set(open) {
+        nav.classList.toggle('open', open); nav.classList.toggle('hidden', !open); scrim.classList.toggle('on', open);
+        listeners.forEach(function (f) { f(open); });
+      }
+      window.sussuriMenu = {
+        open: function () { set(true); }, close: function () { set(false); },
+        toggle: function () { set(!nav.classList.contains('open')); },
+        isOpen: function () { return nav.classList.contains('open'); },
+        onChange: function (f) { listeners.push(f); }
+      };
+      scrim.addEventListener('click', function () { set(false); });
+      document.getElementById('collapseBtn').addEventListener('click', function () { set(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('open')) set(false); });
+      // this page has no app scripts, so the two rows they would normally wire up get plain links here
+      document.getElementById('newChat').addEventListener('click', function () { location.href = 'chat.html'; });
+      document.getElementById('account').addEventListener('click', function () { location.href = 'auth.html'; });
+      document.getElementById('recentsLabel').style.display = 'none';
+    })();
+  } else {
+    s.insertAdjacentHTML('beforebegin', html +
+      '<header class="site-bar" id="siteBar">' +
+        '<div class="sb-strip1"><button class="menu-btn" id="menuBtn" aria-label="Menu">' +
+          '<svg aria-hidden="true" width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor"><path d="M0 1h22M0 7h22M0 13h22"/></svg>' +
+          '</button><a class="wordmark" href="/" aria-label="sussuri, front page">sussuri</a></div>' +
+        '<div class="sb-left">' + barLeft + '</div>' + cta +
+      '</header>');
+    document.body.classList.add('has-side');
+  }
 
   // Recents clamp: pages render into #recents however they like; only the first
   // three show until "Show more" is toggled. Re-syncs whenever #recents changes.
@@ -158,7 +185,7 @@
 
   // Pages that never had their own drawer toggling (data-toggle on the script
   // tag) get a minimal one here; app pages keep binding #menuBtn themselves.
-  if (s.hasAttribute('data-toggle')) {
+  if (!drawerOnly && s.hasAttribute('data-toggle')) {
     var nav = document.getElementById('nav');
     function toggle(){ nav.classList.toggle('hidden'); nav.classList.toggle('open'); }
     document.getElementById('menuBtn').addEventListener('click', toggle);

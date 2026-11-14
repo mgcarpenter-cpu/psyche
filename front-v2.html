@@ -6,6 +6,7 @@
 <title>Sussuri wheel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Jost:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="site.css?v=20261115b">
 <style>
 /* One fixed composition, 1440 x 820, scaled as a single piece to fit the window.
    The join between black and white sits at 410. Nothing reflows, so it always sits the same. */
@@ -101,10 +102,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #808080;outline-offset:3p
 </svg>
 <h1>sussuri</h1>
 <div class="menu">
-<button class="menubtn" type="button" id="menubtn" aria-expanded="false" aria-controls="panel" aria-label="Menu"><span class="bars" aria-hidden="true"></span></button>
-<nav class="panel" id="panel" aria-label="Main" hidden>
-<a href="#talk">Talk</a><a href="#meditations">Meditations</a><a href="#learn">Learn</a><a href="#earn">Earn</a><a href="#how">How it works</a><a href="#login">Log in</a>
-</nav>
+<button class="menubtn" type="button" id="menubtn" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span class="bars" aria-hidden="true"></span></button>
 </div>
 <div id="line" aria-hidden="true"></div>
 <section id="box" class="out" aria-label="About Sussuri">
@@ -117,6 +115,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #808080;outline-offset:3p
 <a class="cta" href="#download">Download free</a>
 </section>
 </div>
+<script src="site-header.js?v=20261115b" data-drawer></script>
 <script>
 (function(){
   var W=1440,H=820,N=8,STEP=45,REST=135,EVERY=7300,isTall=false;
@@ -229,11 +228,10 @@ button:focus-visible,a:focus-visible{outline:2px solid #808080;outline-offset:3p
   var opened=false;function once(){if(!opened){opened=true;open();}}
   if(document.fonts&&document.fonts.ready){document.fonts.ready.then(once);setTimeout(once,1800);}else{once();}
 
-  var menuBtn=document.getElementById('menubtn'),panel=document.getElementById('panel');
-  function menu(o){panel.hidden=!o;menuBtn.setAttribute('aria-expanded',String(o));}
-  menuBtn.addEventListener('click',function(e){e.stopPropagation();menu(panel.hidden);});
-  document.addEventListener('click',function(e){if(!panel.hidden&&!panel.contains(e.target)){menu(false);}});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!panel.hidden){menu(false);menuBtn.focus();}});
+  // the three lines open the app's own menu (site-header.js, drawer mode)
+  var menuBtn=document.getElementById('menubtn');
+  menuBtn.addEventListener('click',function(e){e.stopPropagation();if(window.sussuriMenu){window.sussuriMenu.toggle();}});
+  if(window.sussuriMenu){window.sussuriMenu.onChange(function(o){menuBtn.setAttribute('aria-expanded',String(o));if(!o){menuBtn.focus();}});}
 })();
 </script>
 </body>
