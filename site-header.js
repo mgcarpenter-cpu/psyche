@@ -177,6 +177,7 @@
   // the top-right slot: one item, depending on the person
   function slotHTML(w){
     if (here === 'auth' || here === 'pricing' || here === 'youre-in') return '';   // the sign-in page, the Join page and the "You're in" screen keep the slot empty
+    if (here === 'urgent') return '<a class="sb-link" id="closeBtn" href="index.html" onclick="if(history.length>1){history.back();return false;}">Close</a>';   // urgent help: no button, no days left, only Close
     if (here === 'signup') return '<span class="sb-days">Already a member?</span><a class="sb-link" href="auth.html">Sign in</a>';
     var c = ctaFor(w);
     return (w.state === 'trial' ? '<span class="sb-days">' + daysText(w.days) + '</span>' : '') + '<a class="site-cta" id="siteCta" href="' + c.href + '">' + c.label + '</a>';
