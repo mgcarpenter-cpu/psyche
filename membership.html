@@ -27,6 +27,8 @@
   .lnk{display:inline-flex;align-items:center;min-height:32px;padding:0;border:0;background:none;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1.4;color:#fff;text-decoration:underline;text-underline-offset:4px;cursor:pointer;white-space:nowrap;}
   .lnk:focus{outline:none;} .lnk:focus-visible{outline:2px solid #808080;outline-offset:3px;}
   .cancel{margin:8px 0 0;font-size:14px;line-height:1.6;color:var(--s-label);}
+  .billq{margin:-8px 0 0;font-size:14px;line-height:1.6;color:var(--s-label);}
+  .billq a{color:#fff;text-decoration:underline;text-underline-offset:4px;}
   .cancel .lnk{display:inline;min-height:0;font-size:14px;color:var(--s-text2);white-space:normal;}
   /* the one question before cancelling */
   .ask{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.78);}
@@ -71,6 +73,7 @@
     </div>
 
     <p class="cancel" id="cancelLine"><button type="button" class="lnk" id="cancelLink">Cancel membership</button>.<span id="cancelTail"> You keep everything until your next payment date, and you can come back any time.</span></p>
+    <p class="billq">Billing question? <a href="mailto:hello@sussuri.com">hello@sussuri.com</a></p>
   </div>
 </main>
 
