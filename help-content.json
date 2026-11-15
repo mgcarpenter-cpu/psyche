@@ -1,72 +1,45 @@
 [
-  {
-    "id": "paid",
-    "group": "Your money",
-    "question": "Where's my money? When do I get paid?",
-    "answer": "Commission is held <b>30 days</b> while the payment clears, then paid on the <b>1st of each month</b> once your balance is over <b>$50</b>.",
-    "source": "account.html — How payouts work"
-  },
-  {
-    "id": "pending",
-    "group": "Your money",
-    "question": "Why is my payout \"pending\"?",
-    "answer": "Pending means the member has paid, but you're inside the 30-day window where a refund could still reverse it. Once it clears, it becomes payable.",
-    "source": "account.html — How payouts work"
-  },
-  {
-    "id": "clawback",
-    "group": "Your money",
-    "question": "Why did my earnings go down?",
-    "answer": "If a member you referred is refunded <b>after</b> you were paid, that commission is clawed back from your next balance.",
-    "source": "account.html — How payouts work"
-  },
-  {
-    "id": "payoutset",
-    "group": "Your money",
-    "question": "How do I set where I get paid?",
-    "answer": "Go to <b>Account → Payout method</b> and add your details. It's required before your first payout can be released.",
-    "source": "account.html — Payout method"
-  },
-  {
-    "id": "apikey",
-    "group": "Getting started",
-    "question": "Getting your API key",
-    "answer": "You bring your own key so usage is billed to you directly — it keeps Sussuri's price low. 1. Go to <b>console.anthropic.com</b> and sign in. 2. Open <b>API Keys → Create key</b>. 3. Copy it (starts <b>sk-</b>) — it's shown once. 4. Add billing credit, then paste it into <b>Account → API key</b>.",
-    "source": "account.html — API key"
-  },
-  {
-    "id": "keybroken",
-    "group": "Getting started",
-    "question": "My key isn't working",
-    "answer": "Usually it's missing billing credit, or was pasted incompletely. Check it starts with <b>sk-</b> and that your Anthropic console has credit.",
-    "source": "account.html — API key"
-  },
-  {
-    "id": "share",
-    "group": "Using Sussuri",
-    "question": "How do I share pearls?",
-    "answer": "Open the <b>Library</b>, tap a pearl, then tap a platform to post it. The video carries your code inside it.",
-    "source": "library.html"
-  },
-  {
-    "id": "ig",
-    "group": "Using Sussuri",
-    "question": "Why didn't it post to Instagram / TikTok?",
-    "answer": "Those apps don't allow posting from a link — <b>save the video first</b> (tap Save to Photos), then open Instagram or TikTok and upload it from there.",
-    "source": "library.html — share panel"
-  },
-  {
-    "id": "reflink",
-    "group": "Using Sussuri",
-    "question": "Where's my referral link?",
-    "answer": "It's baked into every video you share, and shown on your <b>Account</b> page.",
-    "source": "account.html"
-  },
-  {
-    "id": "lifetime",
-    "group": "Using Sussuri",
-    "question": "What's lifetime? How does voice work?",
-    "answer": "Lifetime is one payment for permanent access — voice, unlimited pearls, the full practice, no recurring fee. For voice, open a chat and tap the microphone.",
-    "source": "account.html — Plan"
-  }
+  { "id": "freemonth", "group": "Getting started", "question": "How does the free month work?",
+    "answer": "Your first month is free. You add a card to start it, and nothing is charged for a month. Cancel any time in that month and you pay nothing. In your free month you get text chat, one personal meditation, and everything else in full." },
+  { "id": "phone", "group": "Getting started", "question": "How do I put Sussuri on my phone?",
+    "answer": "Open Sussuri in your phone's browser, tap Share, then Add to Home Screen. Open it from the new icon and switch on reminders when asked.",
+    "answerAndroid": "Open Sussuri in your phone's browser, tap the menu button (three dots), then Add to Home screen. Open it from the new icon and switch on reminders when asked." },
+  { "id": "reminders", "group": "Getting started", "question": "How do I switch reminders on or off?",
+    "answer": "Go to <a href=\"practice.html\">Practice &amp; schedule</a>. Tick the things you want reminding about and choose the times. Untick to stop them." },
+
+  { "id": "charged", "group": "Your membership", "question": "When will I be charged?",
+    "answer": "On the day your free month ends. We email you three days before. The date is on your <a href=\"membership.html\">Membership</a> page." },
+  { "id": "cancel", "group": "Your membership", "question": "How do I cancel?",
+    "answer": "Go to <a href=\"membership.html\">Membership</a> and press Cancel membership. It is one click. You keep everything until your next payment date." },
+  { "id": "changeplan", "group": "Your membership", "question": "How do I change between monthly and annual?",
+    "answer": "Go to <a href=\"membership.html\">Membership</a> and press Change to monthly, or Change to annual." },
+  { "id": "receipts", "group": "Your membership", "question": "Where are my receipts?",
+    "answer": "A receipt is emailed after each payment. You can also find them from <a href=\"membership.html\">Membership</a>, under Card." },
+
+  { "id": "textvoice", "group": "Using Sussuri", "question": "What is the difference between text and voice chat?",
+    "answer": "Text chat is for everyone. Voice chat, where you speak and Sussuri speaks back, is for members." },
+  { "id": "personal", "group": "Using Sussuri", "question": "How many personal meditations do I get?",
+    "answer": "One in your free month. Four a month as a member." },
+  { "id": "nextweek", "group": "Using Sussuri", "question": "When does the next course week open?",
+    "answer": "A new week opens every week. <a href=\"education.html\">Education</a> shows which weeks are open." },
+  { "id": "goals", "group": "Using Sussuri", "question": "How do I set my goals?",
+    "answer": "Go to <a href=\"your-goals.html\">Your goals</a> and press Set my goals. A short chat walks you through it." },
+
+  { "id": "earn", "group": "Earning", "question": "How do I earn $10 a month?",
+    "answer": "Share your link. When someone joins through it and starts paying, you earn $10 a month for a monthly member, or $100 a year for an annual member, for as long as they stay. Nothing is earned during their free month. Earning is for members." },
+  { "id": "link", "group": "Earning", "question": "Where is my link?",
+    "answer": "<a href=\"account.html\">Account &amp; earnings</a>, on the Earnings tab." },
+  { "id": "paid", "group": "Earning", "question": "When do I get paid?", "box": "payout",
+    "answer": "Earnings are held for 30 days while the payment clears. Then they are paid on the 1st of each month once your balance is over $50. You need somewhere to be paid on file first." },
+  { "id": "pending", "group": "Earning", "question": "Why is my payout pending?",
+    "answer": "New earnings are held for 30 days in case a payment is refunded or reversed. After that they show as ready." },
+  { "id": "down", "group": "Earning", "question": "Why did my earnings go down?",
+    "answer": "A member you brought has cancelled, or a payment was refunded or reversed. Earnings from that payment are removed." },
+  { "id": "payoutset", "group": "Earning", "question": "How do I set where I get paid?", "box": "payout",
+    "answer": "<a href=\"account.html\">Account &amp; earnings</a>, Earnings tab, under Paid into." },
+
+  { "id": "whosees", "group": "Privacy", "question": "Who can see my conversations?",
+    "answer": "Your conversations are never sold, never shared with advertisers, and never read by a human at Sussuri except when you explicitly send one to us in a support or feedback request. More on the <a href=\"privacy.html\">Private &amp; secure</a> page." },
+  { "id": "delete", "group": "Privacy", "question": "How do I delete my account?",
+    "answer": "<a href=\"account.html\">Account &amp; earnings</a>, Account tab, Close my account." }
 ]

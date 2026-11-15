@@ -7,7 +7,7 @@
 <title>Membership · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115p">
+<link rel="stylesheet" href="site.css?v=20261115q">
 <style>
   /* Membership: what a paid member sees. One heading, one box of three lines, one cancel line. */
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -23,6 +23,7 @@
   .mrow .k{padding-top:5px;font-family:var(--font-mono);font-weight:400;font-size:12px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
   .mrow .d1{display:block;font-weight:400;font-size:19px;line-height:1.4;color:#fff;}
   .mrow .d2{display:block;margin-top:3px;font-size:15px;line-height:1.5;color:var(--s-text2);}
+  .mrow .d2[hidden]{display:none;}
   .lnk{display:inline-flex;align-items:center;min-height:32px;padding:0;border:0;background:none;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1.4;color:#fff;text-decoration:underline;text-underline-offset:4px;cursor:pointer;white-space:nowrap;}
   .lnk:focus{outline:none;} .lnk:focus-visible{outline:2px solid #808080;outline-offset:3px;}
   .cancel{margin:8px 0 0;font-size:14px;line-height:1.6;color:var(--s-label);}
@@ -45,7 +46,7 @@
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js?v=20261115p" data-toggle></script>
+<script src="site-header.js?v=20261115q" data-toggle></script>
 <main>
   <div class="wrap">
     <h1 class="page-title">Your membership</h1>
@@ -69,7 +70,7 @@
       </div>
     </div>
 
-    <p class="cancel" id="cancelLine"><button type="button" class="lnk" id="cancelLink">Cancel membership</button>. You keep everything until your next payment date, and you can come back any time.</p>
+    <p class="cancel" id="cancelLine"><button type="button" class="lnk" id="cancelLink">Cancel membership</button>.<span id="cancelTail"> You keep everything until your next payment date, and you can come back any time.</span></p>
   </div>
 </main>
 
@@ -87,8 +88,9 @@
 <script>
   const $=id=>document.getElementById(id);
 
-  // Paid members only. Anyone else belongs on the Join page.
-  function gate(){ if(window.sussuriAccount && window.sussuriAccount.get().state!=="member") location.replace("pricing.html"); }
+  // Free-month members and paid members. A visitor, or an account with no card yet, belongs on the Join page.
+  function who(){ return window.sussuriAccount ? window.sussuriAccount.get() : {state:"member",days:0}; }
+  function gate(){ const st=who().state; if(st!=="member" && st!=="trial") location.replace("pricing.html"); }
   gate(); if(window.sussuriAccount) window.sussuriAccount.onChange(gate);
 
   // ================= SAMPLE VALUES =================
@@ -100,7 +102,11 @@
   const COVER=4;   // members whose $10 a month cover the $39 membership
   const NUM=["No","One","Two","Three","Four"];
   function day(iso){ return new Date(iso+"T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}); }
+  const THEN={ monthly:"$39 a month", annual:"$349 a year" };
   function draw(){
+    const w=who();
+    if(w.state==="trial"){ drawTrial(w); return; }
+    $("planSub").hidden=false; $("earnSub").hidden=false;
     $("mSince").textContent=day(M.since);
     $("planMain").textContent=PRICE[M.interval].words;
     $("planSub").textContent=(M.cancelled?"Ends ":"Next payment ")+day(M.next);
@@ -114,7 +120,19 @@
     }
     if(M.cancelled) $("cancelLine").textContent="Membership cancelled. You keep everything until "+day(M.next)+", and you can come back any time.";
   }
-  draw();
+  // In the free month: the day it ends, then the price that follows. Nothing has been charged yet.
+  function drawTrial(w){
+    const end=new Date(Date.now()+(w.days||0)*864e5).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+    $("mSince").textContent=day(M.since);
+    $("planMain").textContent = M.cancelled ? "Free month. Ends "+end : "Free month. Ends "+end+", then "+THEN[M.interval];
+    $("planSub").hidden=true;
+    $("planChange").textContent=PRICE[M.interval].other; $("planChange").hidden=M.cancelled;
+    $("cardMain").textContent=M.cardType+" ending "+M.last4;
+    $("earnMain").textContent="Starts when your membership does"; $("earnSub").hidden=true;
+    if(M.cancelled) $("cancelLine").textContent="Membership cancelled. You will not be charged.";
+    else if($("cancelTail")) $("cancelTail").textContent=" You will not be charged.";
+  }
+  draw(); if(window.sussuriAccount) window.sussuriAccount.onChange(draw);
 
   // PLAN: change between monthly and annual
   $("planChange").onclick=()=>{

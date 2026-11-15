@@ -4,10 +4,10 @@
 <script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Help · Sussuri</title>
+<title>Help &amp; FAQ · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115p">
+<link rel="stylesheet" href="site.css?v=20261115q">
 <style>
   :root{
     --bg:#000;--surround:#000;--bone:#fff;--bone-dim:#d6d6d6;--bone-faint:#a8a8a8;--gold:#fff;--indigo:#fff;
@@ -159,17 +159,20 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 .composer input::placeholder{color:var(--s-label);}
 .composer .send{width:46px;height:46px;border-radius:8px;background:#fff;border:1px solid #fff;color:#000;box-shadow:none;font-size:17px;}
 @media (max-width:1023px){ .frame{padding:32px 20px 24px;} .lead{font-size:20px;} .psy .msg{font-size:16px;} }
+/* 15 Nov 2026: page names inside answers are links; one small grey line under the answer area */
+.psy .msg a,.yours a{color:#fff;text-decoration:underline;text-underline-offset:4px;}
+.stuck{flex:0 0 auto;margin:0;padding:8px 0 12px;font-size:14px;line-height:1.5;color:var(--s-label);}
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115p"></script>
+<script src="site-header.js?v=20261115q"></script>
 
 <main>
   <div class="frame">
     <div class="intro">
       <div class="lead">How can we help?</div>
-      <div class="scope">Using Sussuri &mdash; navigating, sharing, your account &amp; payments. This isn&rsquo;t the coaching chat, just app help. Pick a question, then ask anything more below.</div>
+      <div class="scope">Using Sussuri: finding your way around, your membership, and earning. This isn&rsquo;t the coaching chat, just help with the app. Pick a question, or ask below.</div>
     </div>
 
     <div class="picker" id="picker">
@@ -182,6 +185,8 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     <div class="thread" id="thread">
       <div class="empty" id="empty">Pick a question above &mdash; the answer appears here,<br>and you can keep asking from there.</div>
     </div>
+
+    <p class="stuck">Still stuck? Email hello@sussuri.com and a person will reply.</p>
 
     <div class="composer">
       <input placeholder="Ask about using Sussuri&hellip;" id="inp">
@@ -296,7 +301,22 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     const item=CONTENT.find(c=>c.id===id);
     if(!item) return;
     $("picker").classList.remove('open');
-    askHelp(item.question);
+    showAnswer(item);
+  }
+  // A question picked from the list gets its written answer, word for word.
+  const IS_ANDROID=/Android/i.test(navigator.userAgent);
+  const PAYOUT_BOX="<span class='yours'><span class='lbl'>Your account</span>No payout method set yet. <a href='account.html'>Account &amp; earnings</a>, Earnings tab, Paid into</span>";
+  function answerHTML(item){
+    let h=(IS_ANDROID && item.answerAndroid) || item.answer;
+    if(item.box==="payout" && acctUid && !payoutMethodSet()) h+=PAYOUT_BOX;
+    return h;
+  }
+  function showAnswer(item){
+    addUserBubble(item.question);
+    const h=answerHTML(item);
+    history.push({role:'user', content:item.question});
+    history.push({role:'assistant', content:h.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()});
+    addPsyBubble(h, item.question);
   }
 
   // ================= ACCOUNT-AWARE CONTEXT (read-only) =================
@@ -304,65 +324,61 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
   // Balance/payout figures aren't backed by a real payouts system yet (same
   // placeholder data account.html shows), so they're read from the same
   // public placeholder file rather than invented fresh here.
-  let EARNINGS=null;
-  async function loadEarnings(){
-    try{ const res=await fetch("account-earnings-data.json"); EARNINGS=await res.json(); }catch(e){ EARNINGS=null; }
-  }
-  function referralCode(){
-    const base=((acctProfile&&acctProfile.display_name)||"friend").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,6)||"friend";
-    const suffix=(acctUid||"").replace(/-/g,"").slice(-2)||"00";
-    return "sussuri.com/"+base+suffix;
-  }
+  // Only what is really known: the kind of account, and that nowhere to be paid is on file yet
+  // ("Paid into" does not save yet, so it is never set).
+  function payoutMethodSet(){ return false; }
+  function personState(){ try{ return window.sussuriAccount.get().state; }catch(e){ return acctUid?"nocard":"visitor"; } }
   function accountContext(){
     if(!acctUid) return { signedIn:false };
-    const plan=(acctProfile&&acctProfile.plan)||"free";
-    const apiKeyConnected=!!(acctProfile&&acctProfile.api_key);
-    const e=EARNINGS||{};
-    const np=e.nextPayout||{};
-    return {
-      signedIn:true,
-      plan,
-      apiKeyConnected,
-      payoutMethodSet: !!e.payoutMethod,
-      pendingPayoutAmount: np.amount||0,
-      pendingPayoutNote: np.note||"",
-      paidToDate: e.paidToDate||0,
-      referralCode: referralCode()
-    };
+    return { signedIn:true, state:personState(), payoutMethodSet:payoutMethodSet() };
   }
   function accountContextText(){
     const c=accountContext();
-    if(!c.signedIn) return "The visitor is not signed in — no account facts are available. If a question needs their account, ask them to sign in.";
-    const lines=[
-      "Plan: "+cap(c.plan)+".",
-      "API key: "+(c.apiKeyConnected?"connected":"not connected")+". Never reveal the key value — you don't have it, only this status.",
-      "Payout method: "+(c.payoutMethodSet?"set":"not set")+".",
-      c.pendingPayoutAmount ? ("Next payout: $"+c.pendingPayoutAmount+", "+c.pendingPayoutNote+".") : "No pending payout right now.",
-      "Total paid to date: $"+c.paidToDate+".",
-      "Referral link: "+c.referralCode+"."
-    ];
-    return lines.join(" ");
+    if(!c.signedIn) return "The visitor is not signed in. No account facts are available. If a question needs their account, ask them to sign in.";
+    const kind={ nocard:"signed in, free month not started (no card yet)", trial:"in their free month", member:"a paying member" }[c.state]||"signed in";
+    return "This person is "+kind+". Payout method: "+(c.payoutMethodSet?"set":"not set")+".";
   }
 
   // ================= THE HELP ASSISTANT (reuses the existing /api/chat proxy) =================
   function contentPackText(){
-    return CONTENT.map(c=>"Q: "+c.question+"\nA: "+c.answer).join("\n\n");
+    return CONTENT.map(c=>"Q: "+c.question+"\nA: "+c.answer+(c.answerAndroid?"\nA (on an Android phone): "+c.answerAndroid:"")).join("\n\n");
   }
+  // The pages the assistant may name, and the only links it may write.
+  const PAGES=[
+    ["chat.html","Chat","the coaching chat: type, dictate, or (members) speak with Sussuri"],
+    ["practice.html","Practice & schedule","tick what to be reminded about and choose the times"],
+    ["assessment.html","Know yourself","a short picture-based self-assessment"],
+    ["your-goals.html","Your goals","set your goals through a short chat"],
+    ["personal-meditations.html","Personal meditations","meditations made for you: one in the free month, four a month as a member"],
+    ["meditations.html","Meditations","the guided meditation library"],
+    ["education.html","Education","the course; a new week opens every week"],
+    ["how-it-works.html","How it works","how earning by sharing works"],
+    ["pricing.html","Join","start the free month; $39 a month or $349 a year afterwards"],
+    ["membership.html","Membership","plan, card and receipts, change plan, cancel"],
+    ["account.html","Account & earnings","Account tab (details, Close my account) and Earnings tab (your link, earnings, Paid into)"],
+    ["privacy.html","Private & secure","how conversations and data are handled"],
+    ["terms.html","Terms & conditions","the terms"],
+    ["help.html","Help & FAQ","this page"],
+    ["urgent.html","Urgent support","helplines and emergency numbers, for anyone in distress or danger"]
+  ];
   function buildSystem(){
-    return "You are \"Sussuri Help\" — a narrow, scoped support assistant for the Sussuri app. "
+    return "You are \"Sussuri Help\", a narrow, scoped support assistant for the Sussuri app. "
       + "You are NOT the Sussuri coaching persona: you never coach, never discuss feelings or the practice itself, never give life advice. "
-      + "Your only job is helping people use the app — navigating, sharing pearls, their account, payments and payouts.\n\n"
-      + "RULES — follow exactly, every reply:\n"
-      + "1. Answer ONLY using the CONTENT PACK below. Never use outside/general knowledge. Never invent steps, numbers, dates, prices or URLs that aren't in the pack.\n"
-      + "2. If the question is about using the app but the CONTENT PACK doesn't cover it, do not guess. Reply starting with the exact token [ESCALATE] then one short warm sentence saying you can't find that and offering to pass it to Mark.\n"
-      + "3. If the question is off-topic, personal coaching, or anything other than using the app, do not answer it. Reply starting with the exact token [REDIRECT] then one short warm sentence steering them back — this page is only for app help; the coaching chat is a separate space.\n"
-      + "4. Otherwise reply starting with the exact token [ANSWER] then your answer, grounded only in the CONTENT PACK.\n"
-      + "5. Formatting: plain text, <b>bold</b> for key facts only, 1-3 sentences. If — and only if — ACCOUNT CONTEXT below has a fact directly relevant to the question, end an [ANSWER] with exactly one extra line in this exact form: <span class='yours'><span class='lbl'>Your account</span>THE SPECIFIC FACT</span>. Never fabricate an account fact beyond what ACCOUNT CONTEXT states, and never write out an API key value.\n\n"
-      + "CONTENT PACK (the only source of truth — nothing outside this exists):\n" + contentPackText() + "\n\n"
+      + "Your only job is helping people use the app: finding their way around, their membership, and earning.\n\n"
+      + "RULES. Follow exactly, every reply:\n"
+      + "1. Answer ONLY using the QUESTION LIST and the PAGES below. Never use outside or general knowledge. Never invent steps, numbers, dates, prices or links that aren't there. Where the QUESTION LIST answers the question, keep to its wording.\n"
+      + "2. Never mention API keys, pearls, avatars, or posting to social media. Sussuri has none of these. If asked about them, treat the question as not covered (rule 3).\n"
+      + "3. If the question is about using the app but isn't covered, do not guess. Reply starting with the exact token [ESCALATE] then one short warm sentence saying you can't find that and offering to pass it to Mark.\n"
+      + "4. If the question is off-topic, personal coaching, or anything other than using the app, do not answer it. Reply starting with the exact token [REDIRECT] then one short warm sentence steering them back: this page is only for help with the app; the coaching chat is a separate space. If the person sounds in distress or danger, point them to <a href='urgent.html'>Urgent support</a> instead.\n"
+      + "5. Otherwise reply starting with the exact token [ANSWER] then your answer.\n"
+      + "6. Formatting: plain text, 1-3 sentences, plain words. When you name a page, write its name exactly as in PAGES and make it a link in this exact form: <a href='FILE'>Page name</a>, using only the files listed in PAGES. No other links or markup. If, and only if, the question is about getting paid and ACCOUNT CONTEXT says the payout method is not set, end an [ANSWER] with exactly this line: <span class='yours'><span class='lbl'>Your account</span>No payout method set yet. <a href='account.html'>Account &amp; earnings</a>, Earnings tab, Paid into</span>. Never state any other account fact.\n\n"
+      + "QUESTION LIST:\n" + contentPackText() + "\n\n"
+      + "PAGES (file, name, what is there):\n" + PAGES.map(p=>p[0]+" | "+p[1]+" | "+p[2]).join("\n") + "\n\n"
       + "ACCOUNT CONTEXT (read-only facts about the person you're talking to right now):\n" + accountContextText();
   }
 
-  // Allowlist sanitizer — the model may only produce <b> and <span class="yours"|"lbl">.
+  // Allowlist sanitizer: only <b>, <span class="yours"|"lbl">, and links to Sussuri's own pages.
+  const OK_HREF=/^(chat|practice|assessment|your-goals|personal-meditations|meditations|education|how-it-works|pricing|membership|account|privacy|terms|help|urgent)\.html$/;
   function sanitizeHelpHTML(html){
     const tmp=document.createElement('div');
     tmp.innerHTML=html;
@@ -371,8 +387,9 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
         if(child.nodeType!==1) return;
         const tag=child.tagName.toLowerCase();
         const okSpan = tag==='span' && (child.className==='yours' || child.className==='lbl');
-        if(tag==='b' || okSpan){
-          [...child.attributes].forEach(a=>{ if(a.name!=='class') child.removeAttribute(a.name); });
+        const okLink = tag==='a' && OK_HREF.test(child.getAttribute('href')||'');
+        if(tag==='b' || okSpan || okLink){
+          [...child.attributes].forEach(a=>{ if(!(a.name==='class' && okSpan) && !(a.name==='href' && okLink)) child.removeAttribute(a.name); });
           clean(child);
         } else {
           const text=document.createTextNode(child.textContent);
@@ -499,7 +516,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 
   // ================= BOOT =================
   async function boot(){
-    await Promise.all([loadContent(), loadEarnings()]);
+    await loadContent();
     renderPicker();
   }
 

@@ -9,7 +9,7 @@
    Icons are the landing's own strokes (stroke 1.05, viewBox 22).
    Layout follows psyche-chat-sidebar.html: Recents (clamped to 3 with a
    Show more toggle) sits above "Your path"; the footer is the landing's
-   Private & secure / Terms / Need urgent help rows plus the account row.
+   Private & secure / Terms / Urgent support rows plus the account row.
    ========================================================================== */
 (function () {
   var I = {
@@ -64,10 +64,10 @@
       { show:true,  route:'account.html',                  icon:'coin',     label:'Account &amp; earnings' }
     ]},
     { foot:true, items:[
-      { show:true,  route:'help.html',                     icon:'question', label:'Help' },
+      { show:true,  route:'help.html',                     icon:'question', label:'Help & FAQ' },
       { show:true,  route:'privacy.html',                  icon:'lock',     label:'Private &amp; secure' },
       { show:true,  route:'terms.html',                    icon:'doc',      label:'Terms &amp; conditions' },
-      { show:true,  route:'urgent.html',                   icon:'cross',    label:'Need urgent help' }
+      { show:true,  route:'urgent.html',                   icon:'cross',    label:'Urgent support' }
     ]}
   ];
   function shown(g){ return g.items.filter(function (it) { return it.show !== false; }); }
@@ -114,7 +114,7 @@
     assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path', 'your-goals':'Your path',
     'how-it-works':'Affiliate program', 'your-plan':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
-    pricing:'Join', membership:'Membership', signup:'Start free month', 'youre-in':"You're in", welcome:'Welcome', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
+    help:'Help &amp; FAQ', urgent:'Urgent support', pricing:'Join', membership:'Membership', signup:'Start free month', 'youre-in':"You're in", welcome:'Welcome', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
   };
   function pageName(){
     return (document.title || '').replace(/sussuri/i, '').replace(/[\u00b7\u2014\u2013|-]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -267,11 +267,11 @@
     function norm(h) { tmp.innerHTML = h; return tmp.innerHTML; }   // as the browser writes it back, so the comparison below is exact
     function paint() {
       var w = who(), a = norm(acctHTML(w));
-      // the line under Your account: "Join" for a visitor or someone in the free month, "Membership" for a paid member
-      // A paid member's line opens the Membership page; everyone else's opens the Join page.
+      // the line under Your account: "Join" for a visitor or an account with no card yet; "Membership" for a
+      // free-month member or a paid member, and theirs opens the Membership page.
       var jrow = document.querySelector('#nav [data-route="pricing.html"], #nav [data-route="membership.html"]');
       if (jrow) {
-        var paid = w.state === 'member', jl = paid ? 'Membership' : 'Join', jroute = paid ? 'membership.html' : 'pricing.html', jr = jrow.querySelector('.row-label');
+        var paid = w.state === 'member' || w.state === 'trial', jl = paid ? 'Membership' : 'Join', jroute = paid ? 'membership.html' : 'pricing.html', jr = jrow.querySelector('.row-label');
         if (jr.textContent !== jl) jr.textContent = jl;
         if (jrow.getAttribute('data-route') !== jroute) jrow.setAttribute('data-route', jroute);
         jrow.classList.toggle('active', here === (paid ? 'membership' : 'pricing'));
