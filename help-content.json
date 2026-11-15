@@ -39,7 +39,7 @@
     "answer": "<a href=\"account.html\">Account &amp; earnings</a>, Earnings tab, under Paid into." },
 
   { "id": "whosees", "group": "Privacy", "question": "Who can see my conversations?",
-    "answer": "Your conversations are never sold, never shared with advertisers, and never read by a human at Sussuri except when you explicitly send one to us in a support or feedback request. More on the <a href=\"privacy.html\">Private &amp; secure</a> page." },
+    "answer": "Your conversations are never sold and never shared with advertisers. A person at Sussuri does not read them, with three exceptions: you send one to us in a support or feedback request, the law requires it, or we reasonably believe it is needed to prevent serious harm to you or someone else. More on the <a href=\"privacy.html\">Private &amp; secure</a> page." },
   { "id": "delete", "group": "Privacy", "question": "How do I delete my account?",
     "answer": "<a href=\"account.html\">Account &amp; earnings</a>, Account tab, Close my account." }
 ]
