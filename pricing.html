@@ -56,6 +56,17 @@
   .tier.hl{border-color:#000;}
   .tier .tk{color:#5f5f5f;}
 
+  /* FREE is a short word in a box sized for the longer one beside it, so it is drawn larger and sits in the middle of its box */
+  .bx:first-child{justify-content:center;}
+  .bx:first-child .huge{font-size:min(240px,50cqw);}
+  /* narrower computer windows: the two boxes stack (as on a phone) so the big words keep their size */
+  @media (max-width:1359px){
+    .big{grid-template-columns:minmax(0,1fr);gap:20px;}
+    .bx{padding:28px 32px 26px;gap:14px;}
+    .bx .huge{font-size:min(132px,24cqw);}
+    .bx:first-child .huge{font-size:min(180px,50cqw);}
+  }
+
   /* 2. slim price lines: information only */
   .prices{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;}
   .pline{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;padding:14px 20px;border:1px solid var(--s-border);border-radius:8px;font-weight:300;font-size:15px;line-height:1.4;color:var(--s-text2);}
