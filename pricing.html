@@ -58,14 +58,24 @@
 
   /* FREE is a short word in a box sized for the longer one beside it, so it is drawn larger and sits in the middle of its box */
   .bx:first-child{justify-content:center;}
-  .bx:first-child .huge{font-size:min(240px,50cqw);}
+  .bx:first-child .huge{font-size:min(240px,58cqw);}
+  /* the Earn side is the wider of the two, so "Earn $10" can be larger */
+  .big{grid-template-columns:minmax(0,2fr) minmax(0,3fr);}
+  .bx .huge{font-size:min(190px,24cqw);}
+  /* the three small figures: smaller, and sitting low in the box with the grey line under them */
+  .tiers{margin-top:auto;padding-top:10px;gap:8px;}
+  .tier{padding:9px 8px;gap:4px;}
+  .tier .tk{font-size:10px;}
+  .tier .tv{font-size:14px;}
   /* narrower computer windows: the two boxes stack (as on a phone) so the big words keep their size */
   @media (max-width:1359px){
     .big{grid-template-columns:minmax(0,1fr);gap:20px;}
     .bx{padding:28px 32px 26px;gap:14px;}
-    .bx .huge{font-size:min(132px,24cqw);}
+    .bx .huge{font-size:min(150px,24cqw);}
     .bx:first-child .huge{font-size:min(180px,50cqw);}
   }
+
+  @media (max-width:1023px){ .tiers{gap:6px;} .tier{padding:9px 4px;} .tier .tk{font-size:9.5px;} .tier .tv{font-size:13px;} }
 
   /* 2. slim price lines: information only */
   .prices{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;}
