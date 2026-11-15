@@ -7,7 +7,7 @@
 <title>Join · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115m">
+<link rel="stylesheet" href="site.css?v=20261115n">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept */
@@ -118,7 +118,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115m"></script>
+<script src="site-header.js?v=20261115n"></script>
 
 <main>
   <div class="scroll">
@@ -280,7 +280,7 @@
         const now=new Date().toISOString();
         try{ localStorage.setItem("sussuri:fms:"+acctUid, now); }catch(e){}
         if(window.sussuriAccount) window.sussuriAccount.update({ id:acctUid, plan:"member", name:"" });
-        sb.auth.updateUser({ data:{ free_month_started: now } }).catch(()=>{}).then(()=>{ location.href="chat.html"; });
+        sb.auth.updateUser({ data:{ free_month_started: now, plan_interval: selected==='m' ? 'monthly' : 'annual' } }).catch(()=>{}).then(()=>{ location.href="chat.html"; });
       }
     }
   });

@@ -7,7 +7,7 @@
 <title>Account · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115m">
+<link rel="stylesheet" href="site.css?v=20261115n">
 <style>
   /* ===== psyche-account-earnings-v12 (verbatim values; --creamtxt = mock's --cream,
      renamed so the shared nav tokens keep their own cream) ===== */
@@ -153,14 +153,48 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 .yr{border:1px solid var(--s-border);border-bottom:none;} .yr:first-of-type{border-radius:8px 8px 0 0;} .yr:last-of-type{border-bottom:1px solid var(--s-border);border-radius:0 0 8px 8px;} .yr:only-of-type{border-radius:8px;}
 .yr summary{min-height:52px;font-size:16px;color:#fff;} .yr[open] summary{border-bottom:1px solid var(--s-rule);} .yr-row{font-size:15px;color:var(--s-text2);} .yr-empty{font-size:15px;color:var(--s-label);}
 @media (max-width:1023px){ .scroll{padding:36px 20px 40px !important;} .topbar-right{top:8px;right:20px;} .acct-name{font-size:16px;} .acct-email{margin-bottom:24px;padding-bottom:24px;} .stat-num{font-size:28px;} .stats{gap:10px;} }
+
+/* ════════ 15 Nov 2026 ════════ */
+/* BUG FIX: the page was a full window tall but sits under the top strip, so its last strip-height was cut off and
+   "How payouts work" could not be reached. It now takes only the space it is given, and scrolls to the end. */
+main{height:auto !important;min-height:0;}
+/* Earnings: the line for anyone who is not a paid member yet */
+.earn-gate{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 20px;margin:0 0 32px;padding:14px 18px;border:1px solid #fff;border-radius:8px;font-size:16px;line-height:1.5;color:#fff;}
+.earn-gate[hidden]{display:none;}
+.earn-gate .site-cta{height:44px;}
+.linkbox.off{border-color:var(--s-border);}
+.linkbox.off .linktext{color:#8f8f8f;}
+.linkbox.off .copybtn{background:transparent;color:#8f8f8f;border-left:1px solid var(--s-border);cursor:default;}
+.link-note{margin:-4px 0 14px;font-size:14px;line-height:1.5;color:var(--s-label);}
+.link-note[hidden]{display:none;}
+/* Payout history: heading with the year and Download at the right, then one row per payout */
+.hist-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px;}
+.hist-head .sect{margin:0;}
+.hist-tools{display:flex;align-items:center;gap:18px;}
+.ydd{position:relative;}
+.ybtn{display:flex;align-items:center;gap:10px;height:36px;padding:0 12px;border:1px solid var(--s-border);border-radius:8px;background:transparent;color:#fff;font-family:var(--font-jost);font-weight:300;font-size:15px;cursor:pointer;}
+.ybtn::after{content:"";width:10px;height:6px;background:no-repeat center/10px 6px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23d6d6d6' stroke-width='1.2'/%3E%3C/svg%3E");}
+.ybtn:focus{outline:none;} .ybtn:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+.ylist{position:absolute;right:0;top:calc(100% + 6px);z-index:20;min-width:100%;max-height:220px;overflow-y:auto;padding:6px 0;background:#000;border:1px solid #d6d6d6;border-radius:8px;box-shadow:0 14px 40px rgba(0,0,0,.7);scrollbar-width:thin;scrollbar-color:#666 transparent;}
+.ylist[hidden]{display:none;}
+.ylist .yo{display:flex;align-items:center;min-height:38px;padding:0 14px;font-size:15px;color:#d6d6d6;cursor:pointer;white-space:nowrap;}
+.ylist .yo:hover{background:#1c1c1c;color:#fff;}
+.ylist .yo.sel{background:#fff;color:#000;font-weight:400;}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) 110px 110px;cursor:default;}
+.hrow:hover{background:none;}
+.hrow span:nth-child(2),.hrow span:nth-child(3){text-align:right;}
+.hrow .none{color:var(--s-label);}
+/* Account: the one Membership row */
+.mrow-link{font-size:15px;color:#fff;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;}
+.listrow.plain{cursor:default;} .listrow.plain:hover{background:none;}
+@media (max-width:1023px){ .hrow{grid-template-columns:minmax(0,1fr) 78px 86px;} .earn-gate .site-cta{flex:1 1 100%;} }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115m"></script>
+<script src="site-header.js?v=20261115n"></script>
 
 <main>
-  <a class="topbar-right" id="topRight" href="auth.html">Log in</a>
   <div class="scroll">
     <div class="shell">
 
@@ -175,15 +209,10 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 
       <!-- ================= ACCOUNT ================= -->
       <div id="pane-acct">
-        <p class="sect">Your membership</p>
+        <p class="sect">Membership</p>
         <div class="listrows">
-          <div class="listrow"><span>Status</span><span class="rowval" id="planStatus">&hellip;</span></div>
-          <div class="listrow"><span>Plan</span><span class="rowval" id="planLabel">&hellip;</span></div>
-          <div class="listrow"><span>Card</span><span class="rowval"><span id="cardVal">&hellip;</span> · <span class="inline-link" id="cardUpdate">Update</span></span></div>
+          <div class="listrow plain"><span id="memPlan">&hellip;</span><span class="rowval"><a class="mrow-link" id="memLink" href="pricing.html">&hellip;</a></span></div>
         </div>
-
-        <p class="sect">Invoices</p>
-        <div class="listrows" id="invoiceRows"></div>
 
         <p class="sect">Your details</p>
         <div class="listrows">
@@ -211,26 +240,22 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 
       <!-- ================= EARNINGS ================= -->
       <div id="pane-earn" style="display:none">
+        <div class="earn-gate" id="earnGate" hidden><span>Earning starts when you become a member.</span><a class="site-cta" id="earnGateBtn" href="pricing.html">Start free month</a></div>
         <p class="sect">Your link</p>
-        <div class="linkbox">
+        <div class="linkbox" id="linkBox">
           <span class="linktext" id="refLink">&hellip;</span>
           <button class="copybtn" id="copyLinkBtn">Copy</button>
         </div>
-        <div class="sharerow">
-          <button class="sharebtn" data-kind="an avatar">Share an avatar</button>
-          <button class="sharebtn" data-kind="a mini meditation">Share a mini meditation</button>
-          <button class="sharebtn" data-kind="a mini teaching">Share a mini teaching</button>
-        </div>
+        <p class="link-note" id="linkNote" hidden>Your link switches on when you become a member.</p>
         <p class="earn-line">Everything you share carries your link. When someone joins through it, you earn $10 a month for a monthly member, or $100 a year for an annual member, for as long as they stay.</p>
 
         <p class="sect">Your balance</p>
-        <p class="earn-signin" id="earnSignin" hidden>Sign in to see your earnings. <a href="auth.html">Sign in &rarr;</a></p>
         <div class="stats">
           <div class="stat"><div class="stat-num" id="earnPending">&hellip;</div><div class="stat-label">Pending</div><div class="stat-note" id="pendingNote"></div></div>
           <div class="stat accent"><div class="stat-num" id="earnReady">&hellip;</div><div class="stat-label">Ready</div><div class="stat-note" id="readyNote"></div></div>
         </div>
 
-        <p class="sect">Your referrals</p>
+        <p class="sect">Your members</p>
         <div class="stats">
           <div class="stat"><div class="stat-num" id="earnArrived">&hellip;</div><div class="stat-label">Arrived</div></div>
           <div class="stat"><div class="stat-num" id="earnJoined">&hellip;</div><div class="stat-label">Joined</div></div>
@@ -247,8 +272,14 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
           </div>
         </div>
 
-        <p class="sect">Payout history</p>
-        <div id="histBox"></div>
+        <div class="hist-head">
+          <p class="sect">Payout history</p>
+          <span class="hist-tools">
+            <span class="ydd"><button type="button" class="ybtn" id="yBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Year"></button><div class="ylist" id="yList" role="listbox" hidden></div></span>
+            <a href="#" class="inline-link" id="histDl">Download</a>
+          </span>
+        </div>
+        <div class="listrows" id="histBox" style="margin-bottom:0"></div>
         <div style="margin-bottom:48px"></div>
 
         <p class="sect">How payouts work</p>
@@ -338,16 +369,6 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
   $("fbCancel").onclick=()=>fbModal.classList.remove('open');
   $("fbSend").onclick=()=>{ const t=$("fbText").value.trim(); if(t){ try{ const f=JSON.parse(localStorage.getItem("psyche:feedback")||"[]"); f.push({text:t,at:new Date().toISOString()}); localStorage.setItem("psyche:feedback",JSON.stringify(f)); }catch(e){} } $("fbText").value=""; fbModal.classList.remove('open'); alert("Thank you — your feedback was recorded."); };
 
-  // ================= TOP-RIGHT SIGN IN / OUT =================
-  function renderTopRight(){
-    const el=$("topRight");
-    if(acctUid){
-      el.textContent="Sign out"; el.href="#";
-      el.onclick=async(e)=>{ e.preventDefault(); if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(err){} location.href="index.html"; };
-    } else {
-      el.textContent="Log in"; el.href="auth.html"; el.onclick=null;
-    }
-  }
   $("signOutLink").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
 
   // ================= IDENTITY / MEMBERSHIP =================
@@ -360,28 +381,26 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     $("whoEmail").textContent=acctUid ? (acctEmail||"") : "Not signed in";
   }
 
+  // who this is, as the rest of the site sees them: visitor, nocard (signed in, no card), trial (free month), member (paying)
+  function person(){ return window.sussuriAccount ? window.sussuriAccount.get().state : (acctUid ? "nocard" : "visitor"); }
+  function paid(){ return person()==="member"; }
+
+  // ACCOUNT TAB: the one Membership row. The plan at the left; at the right a link to the Membership page (paid member)
+  // or the same words as the top-right button, opening the Join page (everyone else).
+  let planInterval="";   // "annual" or "monthly", noted when the checkout completes
   function renderMembership(){
-    $("planStatus").textContent = !acctUid ? "Not signed in" : (isMember() ? "Active" : "Free");
-    $("planLabel").textContent = !acctUid ? "—" : (isMember() ? cap(acctProfile.plan) : "Free — no card needed");
-    $("cardVal").textContent = "None on file"; // Paddle holds the card; portal is the manage surface
-    $("cardUpdate").onclick = ()=>{ if(!acctUid){ location.href="auth.html"; return; } if(isMember()){ openBillingPortal(); } else { location.href="pricing.html"; } };
+    const st=person();
+    const words = st==="member" ? (planInterval==="monthly" ? "Monthly, $39 a month" : planInterval==="annual" || window.PSYCHE_PREVIEW ? "Annual, $349 a year" : "Member")
+                : st==="trial" ? "Free month" : "Not a member yet";
+    $("memPlan").textContent=words;
+    const link=$("memLink");
+    if(st==="member"){ link.textContent="See your membership"; link.href="membership.html"; }
+    else { link.textContent = st==="trial" ? "Become a member" : "Start free month"; link.href="pricing.html"; }
   }
 
   function renderProvider(){
     const provider = acctUid ? (window.__provider || "email") : null;
     $("providerVal").textContent = acctUid ? (provider==="email" ? (acctEmail||"Email") : cap(provider)) : "Not signed in";
-  }
-
-  async function openBillingPortal(){
-    if(window.PSYCHE_PREVIEW){ alert("Preview mode — billing portal is not opened."); return; }
-    try{
-      const res=await fetch("/api/portal",{method:"POST",headers:{Authorization:"Bearer "+(acctToken||"")}});
-      const data=await res.json();
-      if(!res.ok || !data.url) throw new Error(data.error||"no url");
-      location.href=data.url;
-    }catch(err){
-      alert("Couldn't open billing just now — please try again in a moment.");
-    }
   }
 
   function renderContact(){
@@ -438,81 +457,76 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     }
   };
 
-  // ================= REFERRAL LINK (UI only — no /j/ redirect route exists yet) =================
+  // ================= YOUR LINK =================
+  // The link uses the site's own address (never the address this page happens to be served from).
+  const SITE="sussuri.com";
   function slugify(s){ return (s||"").toLowerCase().replace(/[^a-z0-9]+/g,"").slice(0,20)||"you"; }
   function refSlug(){ return slugify((acctProfile&&acctProfile.display_name)||(acctEmail?acctEmail.split("@")[0]:"")); }
   function renderRefLink(){
-    $("refLink").textContent = acctUid ? (location.host+"/j/"+refSlug()) : "Sign in to get your link";
+    const on=paid();
+    $("refLink").textContent = SITE+"/j/"+refSlug();
+    $("linkBox").classList.toggle("off",!on);
+    $("copyLinkBtn").disabled=!on; $("copyLinkBtn").setAttribute("aria-disabled",String(!on));
+    $("linkNote").hidden=on;
+    // anyone who is not a paid member: one line at the top, with the same button as the top right of the page
+    $("earnGate").hidden=on;
+    if(!on && window.sussuriAccount){ const c=window.sussuriAccount.cta(); $("earnGateBtn").textContent=c.label; $("earnGateBtn").href=c.href; }
   }
   $("copyLinkBtn").onclick=async()=>{
-    if(!acctUid){ location.href="auth.html"; return; }
-    try{ await navigator.clipboard.writeText(location.origin+"/j/"+refSlug()); }catch(e){}
+    if(!paid()) return;
+    try{ await navigator.clipboard.writeText("https://"+SITE+"/j/"+refSlug()); }catch(e){}
     const btn=$("copyLinkBtn"), label=btn.textContent;
     btn.textContent="Copied"; setTimeout(()=>btn.textContent=label,1400);
   };
-  document.querySelectorAll('.sharebtn').forEach(btn=>{
-    btn.onclick=async()=>{
-      if(!acctUid){ location.href="auth.html"; return; }
-      const text="A little of what's helped me lately — "+location.origin+"/j/"+refSlug();
-      if(navigator.share){
-        try{ await navigator.share({title:"Sussuri",text:text}); return; }catch(e){ /* cancelled or unsupported, fall through */ }
-      }
-      try{ await navigator.clipboard.writeText(text); const label=btn.textContent; btn.textContent="Link copied"; setTimeout(()=>btn.textContent=label,1400); }catch(e){}
-    };
-  });
 
-  // ================= INVOICES / EARNINGS (placeholder data) =================
-  async function loadEarnings(){
-    let data=null;
-    try{ const res=await fetch("account-earnings-data.json"); data=await res.json(); }catch(e){}
-    const ZERO={arrived:0,joined:0,retained:0,paidToDate:0,pending:{amount:0,note:""},nextPayout:{amount:0,note:""},payoutMethod:null,invoices:[],ledger:[]};
-    data = data || ZERO;
-    // signed out: zeros, never the sample figures
-    if(!acctUid) data = ZERO;
-    $("earnSignin").hidden = !!acctUid;
-
-    // invoices (Account tab)
-    const inv=Array.isArray(data.invoices)?data.invoices:[];
-    $("invoiceRows").innerHTML = inv.map(row=>
-      '<div class="listrow"><span>'+esc(row.date)+' — '+esc(row.label)+'</span><span class="rowval">$'+(row.amount||0)+' · <span class="inline-link" onclick="alert(\'Invoice downloads aren\\\'t wired up yet.\')">Download</span></span></div>'
-    ).join("") || '<div class="listrow" style="cursor:default"><span style="font-style:normal;color:#a8a8a8">No invoices yet.</span><span></span></div>';
-
-    // balance + referrals (Earnings tab)
-    $("earnArrived").textContent=(data.arrived||0).toLocaleString("en-US");
-    $("earnJoined").textContent=(data.joined||0).toLocaleString("en-US");
-    $("earnRetained").textContent=(data.retained||0).toLocaleString("en-US");
-    $("earnPaid").textContent="$"+(data.paidToDate||0).toLocaleString("en-US");
-
-    const pend=data.pending||{amount:0,note:""};
-    $("earnPending").textContent="$"+(pend.amount||0).toLocaleString("en-US");
-    $("pendingNote").textContent=pend.note||"";
-
-    const np=data.nextPayout||{amount:0,note:""};
-    $("earnReady").textContent="$"+(np.amount||0).toLocaleString("en-US");
-    $("readyNote").textContent=np.note||"";
-
-    // paid into
-    $("payoutMethodVal").textContent = data.payoutMethod || "No account on file";
-    $("payoutMethodState").innerHTML = (data.payoutMethod?'Verified · ':'') +
-      '<span class="inline-link" onclick="document.getElementById(\'bankEdit\').style.display=\'flex\'">'+(data.payoutMethod?'Change':'Add')+'</span>';
-
-    // payout history — year accordions
-    const ledger=Array.isArray(data.ledger)?data.ledger:[];
-    const byYear={};
-    ledger.forEach(row=>{ const y=row.year||"2026"; (byYear[y]=byYear[y]||[]).push(row); });
-    const years=Object.keys(byYear).sort().reverse();
-    $("histBox").innerHTML = years.map(y=>
-      '<details class="yr">'
-      + '<summary><span>'+esc(y)+'</span><span class="rowval inline-link" onclick="event.preventDefault();event.stopPropagation();alert(\'Statement downloads aren\\\'t wired up yet.\')">Download</span></summary>'
-      + '<div class="yr-rows">'
-      + byYear[y].map(row=>{
-          const neg=(row.amount||0)<0;
-          const amtTxt=(neg?"−":"")+"$"+Math.abs(row.amount||0);
-          const statusLabel = row.status==="paid" ? "Paid" : (row.status==="clawback" ? "Clawback" : "Pending");
-          return '<div class="yr-row"><span>'+esc(row.title)+' · '+esc(row.detail)+'</span><span>'+amtTxt+' · '+statusLabel+'</span></div>';
-        }).join("")
-      + '</div></details>'
-    ).join("") || '<div class="yr"><div class="yr-empty">No payouts yet.</div></div>';
+  // ================= EARNINGS: real figures, and zeros where there is nothing yet =================
+  // Nothing counts arrivals, joins or payouts yet, so every figure is nought and the history is empty.
+  // When earnings are recorded, fill EARN from the member's own record:
+  //   payouts: [{ date:"2026-11-01", amount:120, status:"paid" | "onway" }]   clears: "2026-12-01" (only when pending is above 0)
+  const ZERO={ arrived:0, joined:0, retained:0, paidToDate:0, pending:0, clears:"", ready:0, payoutMethod:null, payouts:[] };
+  let EARN=ZERO;
+  const money=n=>"$"+(Number(n)||0).toLocaleString("en-US");
+  function dayText(iso){ const d=new Date(String(iso)+"T12:00:00"); return isNaN(d) ? "" : d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}); }
+  let histYear=new Date().getFullYear();
+  function yearsList(){
+    const now=new Date().getFullYear(), ys=(EARN.payouts||[]).map(p=>Number(String(p.date).slice(0,4))).filter(Boolean);
+    const first=Math.min(now, ...ys); const out=[]; for(let y=now;y>=first;y--) out.push(y); return out;
+  }
+  function payoutsFor(y){ return (EARN.payouts||[]).filter(p=>String(p.date).slice(0,4)===String(y)).sort((a,b)=>String(b.date).localeCompare(String(a.date))); }   // newest first
+  function statusText(p){ return p.status==="paid" ? "Paid" : "On its way"; }
+  function renderHistory(){
+    $("yBtn").textContent=histYear;
+    $("yList").innerHTML=yearsList().map(y=>'<div class="yo'+(y===histYear?' sel':'')+'" role="option" data-y="'+y+'">'+y+'</div>').join("");
+    const rows=payoutsFor(histYear);
+    $("histBox").innerHTML = rows.map(p=>'<div class="listrow hrow"><span>'+esc(dayText(p.date))+'</span><span>'+money(p.amount)+'</span><span class="rowval">'+statusText(p)+'</span></div>').join("")
+      || '<div class="listrow hrow"><span class="none">No payouts yet.</span><span></span><span></span></div>';
+  }
+  $("yBtn").onclick=(e)=>{ e.stopPropagation(); const l=$("yList"); l.hidden=!l.hidden; $("yBtn").setAttribute("aria-expanded",String(!l.hidden)); };
+  $("yList").onclick=(e)=>{ const o=e.target.closest(".yo"); if(!o) return; histYear=Number(o.dataset.y); $("yList").hidden=true; $("yBtn").setAttribute("aria-expanded","false"); renderHistory(); };
+  document.addEventListener("click",()=>{ $("yList").hidden=true; $("yBtn").setAttribute("aria-expanded","false"); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ $("yList").hidden=true; $("yBtn").setAttribute("aria-expanded","false"); } });
+  // Download: the year shown, as a spreadsheet file
+  $("histDl").onclick=(e)=>{
+    e.preventDefault();
+    const lines=["Date,Amount (USD),Status"].concat(payoutsFor(histYear).map(p=>p.date+","+(Number(p.amount)||0)+","+statusText(p)));
+    const url=URL.createObjectURL(new Blob([lines.join("\n")+"\n"],{type:"text/csv"}));
+    const a=document.createElement("a"); a.href=url; a.download="sussuri-payouts-"+histYear+".csv"; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+  };
+  function loadEarnings(){
+    const d = paid() ? EARN : ZERO;   // anyone who is not a paid member sees noughts
+    $("earnArrived").textContent=(d.arrived||0).toLocaleString("en-US");
+    $("earnJoined").textContent=(d.joined||0).toLocaleString("en-US");
+    $("earnRetained").textContent=(d.retained||0).toLocaleString("en-US");
+    $("earnPaid").textContent=money(d.paidToDate);
+    $("earnPending").textContent=money(d.pending);
+    $("pendingNote").textContent = (d.pending>0 && d.clears) ? "Clears "+dayText(d.clears) : "";   // nothing when Pending is $0
+    $("earnReady").textContent=money(d.ready);
+    $("readyNote").textContent="";
+    $("payoutMethodVal").textContent = d.payoutMethod || "No account on file";
+    $("payoutMethodState").innerHTML = (d.payoutMethod?'Verified · ':'') +
+      '<span class="inline-link" onclick="document.getElementById(\'bankEdit\').style.display=\'flex\'">'+(d.payoutMethod?'Change':'Add')+'</span>';
+    renderHistory();
   }
   $("bankSave").onclick=()=>{
     if(!acctUid){ location.href="auth.html"; return; }
@@ -526,9 +540,10 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     renderProvider();
     renderContact();
     renderAccount();
-    renderTopRight();
     renderRefLink();
+    loadEarnings();
   }
+  if(window.sussuriAccount) window.sussuriAccount.onChange(()=>{ renderMembership(); renderRefLink(); loadEarnings(); });   // the page follows the person
 
   if(window.PSYCHE_PREVIEW){
     const p=window.PSYCHE_PREVIEW_PROFILE;
@@ -543,6 +558,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
       if(s && s.user){
         acctUid=s.user.id; acctToken=s.access_token; acctEmail=s.user.email||"";
         window.__provider = (s.user.app_metadata && s.user.app_metadata.provider) || "email";
+        planInterval = (s.user.user_metadata && s.user.user_metadata.plan_interval) || "";
         const {data:p,error}=await sb.from("profiles").select("*").eq("id",acctUid).single();
         if(error){ console.error("profile fetch failed:",error); }
         acctProfile=p||{};
