@@ -7,7 +7,7 @@
 <title>Sussuri — Sanctuary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115k">
+<link rel="stylesheet" href="site.css?v=20261115l">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept so the scripts' inline styles still resolve */
@@ -138,7 +138,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115k"></script>
+<script src="site-header.js?v=20261115l"></script>
 
 <main>
   <div class="frame">
@@ -476,7 +476,8 @@
   // already kept in this browser, so it is still here, and open, when they come back from signing up.
   const VISITOR_MAX=3, VK="sussuri:visitor";
   let visitor=load(VK,{n:0});
-  function isVisitor(){ return !profile && !!window.sussuriAccount && window.sussuriAccount.get().state==='visitor'; }
+  // "visitor" here means anyone whose free month has not started: not signed in, or signed in with no card yet
+  function isVisitor(){ const st=window.sussuriAccount ? window.sussuriAccount.get().state : 'visitor'; return st==='visitor' || st==='nocard'; }
   function visitorLocked(){ return isVisitor() && visitor.n>=VISITOR_MAX; }
   function countVisitorReply(){ visitor.n=(Number(visitor.n)||0)+1; try{ localStorage.setItem(VK,JSON.stringify(visitor)); }catch(e){} }
   const INVITE=[
@@ -487,7 +488,7 @@
   function addInvite(bubble){
     const before=bubble.querySelector('.actions');
     INVITE.forEach(t=>{ const p=document.createElement('div'); p.className='msg more'; p.textContent=t; bubble.insertBefore(p,before); });
-    const a=document.createElement('a'); a.className='s-btn vbtn'; a.href='pricing.html'; a.textContent='Start free month';
+    const a=document.createElement('a'); a.className='s-btn vbtn'; a.href=window.sussuriAccount ? window.sussuriAccount.cta().href : 'signup.html'; a.textContent='Start free month';   // Sign-up page, or straight to Join if already signed in
     bubble.insertBefore(a,before);
     scrollThread();
   }
@@ -890,6 +891,8 @@
     var num=direct[region]||(eu.indexOf(region)>=0?"112":"111");
     var el=$("crisisTel"); if(el) el.setAttribute("href","tel:"+num);
   })();
+
+  if(window.sussuriAccount) window.sussuriAccount.onChange(()=>syncVisitorLock());   // the box follows the person (card accepted -> open)
 
   // ================= INIT =================
   renderSidebar();

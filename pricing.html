@@ -7,7 +7,7 @@
 <title>Join · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115k">
+<link rel="stylesheet" href="site.css?v=20261115l">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept */
@@ -93,6 +93,7 @@
   .plan-price{font-family:'Poiret One',var(--font-jost);font-size:72px;line-height:1;color:#fff;}
   .plan-price .per{font-family:var(--font-jost);font-weight:300;font-size:18px;color:#fff;}
   .plan-sub{margin:0;font-weight:300;font-size:16px;line-height:1.45;color:var(--s-text2);}
+  .cardFrame:empty{display:none;}
   .co-line{margin:-8px 0 0;text-align:center;font-weight:300;font-size:16px;line-height:1.5;color:var(--s-text2);}
 
   /* phone and tablet: the two big boxes stack (FREE first), the three earn boxes stay in a row, the price lines stack */
@@ -118,7 +119,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115k"></script>
+<script src="site-header.js?v=20261115l"></script>
 
 <main>
   <div class="scroll">
@@ -192,6 +193,7 @@
       </div>
       <button class="cta" id="coGo" type="button">Continue to card details</button>
       <p class="co-line" id="coLine">Nothing to pay today. $349 a year after your free month. Cancel anytime.</p>
+      <div class="cardFrame" id="cardFrame"></div>   <!-- the payment provider's card form opens here, on the same page -->
     </div>
 
   </div>
@@ -259,7 +261,11 @@
     $("joinView").hidden=co; $("coView").hidden=!co; scroller.scrollTop=0;
   }
   window.addEventListener("hashchange", showView);
-  document.querySelectorAll(".startbtn").forEach(b=>{ b.onclick=()=>{ location.hash="checkout"; }; });
+  // not signed in: the Sign-up page comes first (email, then back here). Signed in: the checkout.
+  document.querySelectorAll(".startbtn").forEach(b=>{ b.onclick=()=>{
+    if(window.sussuriAccount && window.sussuriAccount.get().state==="visitor"){ location.href="signup.html"; return; }
+    location.hash="checkout";
+  }; });
   // someone already in their free month reads BECOME A MEMBER on both buttons; the checkout is the same
   function labelButtons(){
     const t=(window.sussuriAccount && window.sussuriAccount.get().state==="trial") ? "Become a member" : "Start free month";
@@ -268,11 +274,12 @@
   labelButtons(); if(window.sussuriAccount) window.sussuriAccount.onChange(labelButtons);
 
   // ================= CHECKOUT, FIRST STEP: monthly or annual (annual to begin with) =================
-  let selected='a';
+  let selected='a', cardOpen=false;
   function pick(w){
     selected=w;
     $("pm").classList.toggle('selected', w==='m'); $("pm").setAttribute("aria-checked", String(w==='m'));
     $("pa").classList.toggle('selected', w==='a'); $("pa").setAttribute("aria-checked", String(w==='a'));
+    if(cardOpen){ try{ Paddle.Checkout.updateItems([{ priceId: PRICE[w], quantity: 1 }]); }catch(e){} }   // the card form follows the choice
     $("coLine").textContent = w==='m' ? "Nothing to pay today. $39 a month after your free month. Cancel anytime."
                                       : "Nothing to pay today. $349 a year after your free month. Cancel anytime.";
   }
@@ -288,20 +295,25 @@
     token: PADDLE_TOKEN,
     eventCallback: function(ev){
       if(ev && ev.name==="checkout.completed"){
-        alert("Thank you — your payment was received. Your plan will update shortly.");
-        location.href="account.html";
+        // card accepted: the free month starts now, and they land on the chat page
+        const now=new Date().toISOString();
+        try{ localStorage.setItem("sussuri:fms:"+acctUid, now); }catch(e){}
+        if(window.sussuriAccount) window.sussuriAccount.update({ id:acctUid, plan:"member", name:"" });
+        sb.auth.updateUser({ data:{ free_month_started: now } }).catch(()=>{}).then(()=>{ location.href="chat.html"; });
       }
     }
   });
   function openCheckout(interval){
     if(window.PSYCHE_PREVIEW){ alert("Preview mode — checkout is not opened."); return; }
-    if(!acctUid){ location.href="auth.html"; return; }
+    if(!acctUid){ location.href="signup.html"; return; }
     const priceId=PRICE[interval];
     if(!priceId || priceId.indexOf("TODO")>-1){
       alert("Membership checkout isn't fully set up yet — check back shortly.");
       return;
     }
+    cardOpen=true;
     Paddle.Checkout.open({
+      settings: { displayMode:"inline", frameTarget:"cardFrame", frameInitialHeight:450, frameStyle:"width:100%; min-width:312px; background-color:transparent; border:none;" },   // card details underneath, on this page
       items: [{ priceId: priceId, quantity: 1 }],
       customer: { email: acctEmail },
       customData: { user_id: acctUid, plan: "member", interval: interval==='m'?'monthly':'annual' }

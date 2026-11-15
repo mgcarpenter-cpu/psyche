@@ -101,7 +101,7 @@
     assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path', 'your-goals':'Your path',
     'how-it-works':'Affiliate program', 'your-plan':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
-    pricing:'Join', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
+    pricing:'Join', signup:'Start free month', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
   };
   function pageName(){
     return (document.title || '').replace(/sussuri/i, '').replace(/[\u00b7\u2014\u2013|-]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -111,11 +111,13 @@
       '<a class="tab' + (here === 'practice' ? ' on' : '') + '" href="practice.html">Practice &amp; schedule</a>'
     : '<span class="sb-name">' + (section[here] || pageName()) + '</span>' +
       ((section[here] && parentOf[here]) ? '<span class="sb-sep" aria-hidden="true">/</span><span class="sb-here">' + pageName() + '</span>' : '');
-  // WHO IS LOOKING. Three kinds of person, worked out once here for every page:
+  // WHO IS LOOKING. Four kinds of person, worked out once here for every page:
   //   visitor = not signed in
-  //   trial   = signed in, in the free month (30 days from the day they signed up), not paying
-  //   member  = signed in with a paid plan
-  // Payments are connected later; until then the paid plan comes from the profile's "plan" field.
+  //   nocard  = signed in, but no card given yet: the free month has not started (same limits as a visitor)
+  //   trial   = card accepted, inside the free month (30 days from the day the card was accepted)
+  //   member  = paying
+  // "Card accepted" is the profile's plan no longer being "free" (the payment provider sets that).
+  // The day the free month started is noted when the checkout completes (pricing.html).
   var FREE_DAYS = 30;
   var SB_REF = 'hydzekyzbqhcvajnuegh', SB_URL = 'https://' + SB_REF + '.supabase.co', SB_KEY = 'sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb';
   var pushed = null;   // what a page has told us about the signed-in person (plan, name)
@@ -130,35 +132,46 @@
     }
   } catch (e) {}
   function who(){
-    if (window.PSYCHE_PREVIEW) {   // preview mode: ?as=visitor | trial | member picks the person to look at
+    if (window.PSYCHE_PREVIEW) {   // preview mode: ?as=visitor | nocard | trial | member picks the person to look at
       var as = 'trial';
       try { var q = new URLSearchParams(location.search).get('as'); if (q) sessionStorage.setItem('psycheAs', q); as = sessionStorage.getItem('psycheAs') || as; } catch (e) {}
       if (as === 'visitor') return { state:'visitor', name:'', days:0 };
+      if (as === 'nocard') return { state:'nocard', name:'Preview', days:0 };
       return { state: as === 'member' ? 'member' : 'trial', name:'Preview', days:23 };
     }
     var sess = stored('sb-' + SB_REF + '-auth-token'), u = sess && sess.user;
     if (!u) return { state:'visitor', name:'', days:0 };
     var c = stored('sussuri:acct'); if (!c || c.id !== u.id) c = {};
     if (pushed && pushed.id === u.id) { c.plan = pushed.plan || c.plan; c.name = pushed.name || c.name; }
-    var age = Math.floor((Date.now() - Date.parse(u.created_at || '')) / 864e5);
-    var days = isNaN(age) ? FREE_DAYS : Math.max(0, FREE_DAYS - age);
-    return { state: (c.plan && c.plan !== 'free') ? 'member' : 'trial', name: c.name || u.email || '', days: days, id: u.id, token: sess.access_token };
+    var name = c.name || u.email || '', started = (u.user_metadata && u.user_metadata.free_month_started) || '';
+    try { started = started || localStorage.getItem('sussuri:fms:' + u.id) || ''; } catch (e) {}
+    var since = started ? Date.now() - Date.parse(started) : NaN;
+    var justPaid = since >= 0 && since < 6e5;   // the card was accepted in the last few minutes; the plan can take a moment to arrive
+    if ((!c.plan || c.plan === 'free') && !justPaid) return { state:'nocard', name:name, days:0, id:u.id, token:sess.access_token };
+    var days = isNaN(since) ? 0 : Math.max(0, FREE_DAYS - Math.floor(since / 864e5));
+    return { state: days > 0 ? 'trial' : 'member', name:name, days:days, id:u.id, token:sess.access_token };
   }
   function daysText(n){ return n + (n === 1 ? ' day left' : ' days left'); }
   function escH(t){ return String(t || '').replace(/[&<>"]/g, function (c) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
 
-  // the top-right slot: one item, depending on the person (none on the Membership page for people who are not members yet)
+  // the one sales button: what it says and where it goes, for each kind of person
+  function ctaFor(w){
+    if (w.state === 'member') return { label:'Give a free month', href:'account.html' };       // until the share-link page exists
+    if (w.state === 'trial') return { label:'Become a member', href:'pricing.html' };
+    if (w.state === 'nocard') return { label:'Start free month', href:'pricing.html' };        // signed in, no card yet: straight to the Join page
+    return { label:'Start free month', href:'signup.html' };                                   // not signed in: the Sign-up page first
+  }
+  // the top-right slot: one item, depending on the person
   function slotHTML(w){
-    if (here === 'auth') return '';   // the sign-in page keeps the slot empty
-    if (here === 'pricing') return '';   // the Join page has no top-right button
-    if (w.state === 'member') return '<a class="site-cta" id="siteCta" href="account.html">Give a free month</a>';   // until the share-link page exists
-    if (w.state === 'trial') return (w.days > 0 ? '<span class="sb-days">' + daysText(w.days) + '</span>' : '') + '<a class="site-cta" id="siteCta" href="pricing.html">Become a member</a>';
-    return '<a class="site-cta" id="siteCta" href="pricing.html">Start free month</a>';
+    if (here === 'auth' || here === 'pricing') return '';   // the sign-in page and the Join page keep the slot empty
+    if (here === 'signup') return '<span class="sb-days">Already a member?</span><a class="sb-link" href="auth.html">Sign in</a>';
+    var c = ctaFor(w);
+    return (w.state === 'trial' ? '<span class="sb-days">' + daysText(w.days) + '</span>' : '') + '<a class="site-cta" id="siteCta" href="' + c.href + '">' + c.label + '</a>';
   }
   // the account block at the bottom of the menu
   function acctHTML(w){
     var label = w.state === 'visitor' ? 'Guest' : (w.name || 'Account');
-    var sub = w.state === 'visitor' ? 'Sign in' : w.state === 'member' ? 'Member' : (w.days > 0 ? 'Free month \u00b7 ' + daysText(w.days) : 'Free month ended');
+    var sub = w.state === 'visitor' ? 'Sign in' : w.state === 'member' ? 'Member' : w.state === 'trial' ? 'Free month \u00b7 ' + daysText(w.days) : 'Free month not started';
     return '<div class="avatar-dot">' + escH(((label.trim()[0]) || '\u00b7').toUpperCase()) + '</div>' +
       '<div class="meta">' + escH(label) + '<br><span class="plan">' + escH(sub) + '</span></div>';
   }
@@ -250,8 +263,8 @@
     new MutationObserver(paint).observe(box, { childList: true, subtree: true, characterData: true });
     window.sussuriAccount = {
       get: who,
-      // the one sales button's wording and where it goes, for a page that shows the same button elsewhere (Education's bottom button)
-      cta: function () { var w = who(); return w.state === 'member' ? { label:'Give a free month', href:'account.html' } : w.state === 'trial' ? { label:'Become a member', href:'pricing.html' } : { label:'Start free month', href:'pricing.html' }; },
+      // the one sales button's wording and where it goes, for a page that shows the same button elsewhere
+      cta: function () { return ctaFor(who()); },
       update: function (p) { pushed = p; try { localStorage.setItem('sussuri:acct', JSON.stringify({ id: p.id, plan: p.plan, name: p.name })); } catch (e) {} paint(); },
       onChange: function (f) { listeners.push(f); }
     };
