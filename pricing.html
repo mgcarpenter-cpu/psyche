@@ -46,6 +46,16 @@
   .tier .tv{font-weight:400;font-size:15px;line-height:1.35;color:#fff;}
   .bx .sm{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:var(--s-label);}
 
+  /* the two big boxes are solid white with black text; the three small figures have light grey borders, black on "4 members" */
+  .bx{background:#fff;color:#000;}
+  .bx .lab{color:#5f5f5f;}
+  .bx .huge,.bx .say.w,.tier .tv{color:#000;}
+  .bx .say{color:#333;}
+  .bx .sm{color:#5f5f5f;}
+  .tier{border-color:#cfcfcf;}
+  .tier.hl{border-color:#000;}
+  .tier .tk{color:#5f5f5f;}
+
   /* 2. slim price lines: information only */
   .prices{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;}
   .pline{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;padding:14px 20px;border:1px solid var(--s-border);border-radius:8px;font-weight:300;font-size:15px;line-height:1.4;color:var(--s-text2);}
