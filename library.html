@@ -7,7 +7,7 @@
 <title>Avatar library · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115j">
+<link rel="stylesheet" href="site.css?v=20261115k">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept */
@@ -128,7 +128,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115j"></script>
+<script src="site-header.js?v=20261115k"></script>
 
 <main>
   <div class="page">
@@ -352,7 +352,7 @@
     const el=$(elId);
     el.innerHTML = ITEMS.filter(i=>i.section===sectionKey).map(cardHTML).join("");
   }
-  const EARN_PER_JOIN=6; // placeholder rate — no billing wired up yet, same convention as pricing.html's "$12/mo"
+  const EARN_PER_JOIN=10; // $10 a month for each member who joined through the link (nothing counts real joins yet)
   function renderTotals(){
     const arrived=ITEMS.reduce((s,i)=>s+(i.arrived||0),0);
     const joined=ITEMS.reduce((s,i)=>s+(i.joined||0),0);

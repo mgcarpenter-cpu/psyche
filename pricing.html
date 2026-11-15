@@ -4,10 +4,10 @@
 <script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Membership · Sussuri</title>
+<title>Join · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115j">
+<link rel="stylesheet" href="site.css?v=20261115k">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept */
@@ -24,262 +24,176 @@
   }
   a{color:inherit;}
 
-  /* ================= MAIN — joining page (design rules, 14 Nov 2026) =================
-     The sales page, so the most spacious: a 104px heading, then two columns — the plans, Begin button and
-     tax note at the left; what you get and the Affiliate program block at the right. */
+  /* ================= MAIN — Join page (15 Nov 2026) =================
+     Two big boxes (the free month, the Affiliate program), two slim price lines, one full-width button,
+     the What you get table, the button again, closing lines. The checkout's first step is a second view of this page. */
   main{ flex:1; min-width:0; overflow:hidden; background:#000; display:flex; flex-direction:column; position:relative; }
-  .topbar{ display:none; }   /* no Log in / Sign out in the top bar on this page; the menu's account row carries it */
-
   .scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#666 #000;padding:56px 72px 80px;}
-  .shell{display:flex;flex-direction:column;gap:64px;max-width:none;margin:0;text-align:left;}
+  .shell{display:flex;flex-direction:column;gap:28px;max-width:none;margin:0;text-align:left;}
+  .shell[hidden]{display:none;}
+  .lab{margin:0;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
 
-  .hd.hero{display:flex;flex-direction:column;gap:20px;padding-bottom:56px;border-bottom:1px solid var(--s-rule);}
-  .hd.hero .page-title{margin:0;font-size:min(104px,7.23vw) !important;}
-  .subhead{margin:0;max-width:820px;font-weight:300;font-style:normal;font-size:25px;line-height:1.55;color:var(--s-text2);}
+  /* 1. the two biggest things on the page */
+  .big{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;}
+  .bx{display:flex;flex-direction:column;gap:18px;padding:36px 36px 34px;border:2px solid #fff;border-radius:8px;min-width:0;container-type:inline-size;}
+  .bx .huge{margin:0;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:min(160px,24cqw);line-height:.95;letter-spacing:.02em;color:#fff;white-space:nowrap;}   /* sized from the box, so "Earn $10" always fits on one line and FREE matches it */
+  .bx .say{margin:0;font-weight:300;font-size:19px;line-height:1.5;color:var(--s-text2);}
+  .bx .say.w{font-size:22px;line-height:1.4;color:#fff;}
+  .tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+  .tier{display:flex;flex-direction:column;gap:6px;padding:12px 10px;border:1px solid var(--s-border);border-radius:8px;text-align:center;min-width:0;}
+  .tier.hl{border-color:#fff;}
+  .tier .tk{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+  .tier .tv{font-weight:400;font-size:15px;line-height:1.35;color:#fff;}
+  .bx .sm{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:var(--s-label);}
 
-  .jg{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:72px;align-items:start;}
-  .buy{display:flex;flex-direction:column;gap:28px;min-width:0;}
+  /* 2. slim price lines: information only */
+  .prices{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;}
+  .pline{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;padding:14px 20px;border:1px solid var(--s-border);border-radius:8px;font-weight:300;font-size:15px;line-height:1.4;color:var(--s-text2);}
+  .pline .lab{font-size:11px;}
+  .pline .pp{font-weight:400;color:#fff;}
+  .badge{display:inline-block;margin-left:8px;padding:3px 7px;border-radius:4px;background:#fff;color:#000;font-family:var(--font-mono);font-size:10px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;vertical-align:1px;}
 
-  /* ---------- Plan cards ---------- */
-  .plans{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin:0;}
-  .plan{min-height:300px;padding:36px 20px;border:1px solid var(--s-border);border-radius:8px;background:transparent;color:#fff;cursor:pointer;position:relative;text-align:center;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:border-color .18s;}
-  .plan:hover{border-color:#8a8a8a;}
-  .plan.selected{border-color:#fff;background:transparent;}
-  .plan-name{margin:0;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .plan.selected .plan-name{color:#fff;}
-  .badge{position:static;transform:none;display:inline-block;margin-left:10px;padding:5px 9px;border:0;border-radius:4px;background:#fff;color:#000;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;}
-  .plan-price{font-family:'Poiret One',var(--font-jost);font-size:88px;line-height:1;color:#fff;}
-  .plan-price .per{font-family:var(--font-jost);font-weight:300;font-style:normal;font-size:18px;color:#fff;}
-  .plan-sub{margin:0;font-weight:300;font-style:normal;font-size:17px;line-height:1.45;color:var(--s-text2);}
-
-  /* ---------- Begin ---------- */
+  /* 3 + 5. the button, right across */
   .cta{display:flex;align-items:center;justify-content:center;width:100%;height:68px;border:1px solid #fff;border-radius:8px;background:#fff;color:#000;font-family:var(--font-jost);font-size:15px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;}
   .cta:hover{background:#e6e6e6;}
-  .cta[disabled]{opacity:.55;cursor:default;}
+  .cta:focus{outline:none;} .cta:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+  .under{margin:-12px 0 0;font-weight:300;font-size:14px;line-height:1.55;color:var(--s-label);}
+  .under a,.fine a{color:var(--s-text2);text-decoration:underline;text-underline-offset:3px;}
 
-  /* ---------- Tax note + country ---------- */
-  .country-row{margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:10px;text-align:left;}
-  .cap-main,.cap-sub{margin:0;font-weight:300;font-style:normal;font-size:15px;line-height:1.5;color:var(--s-text2);}
-  .dd{position:relative;display:inline-block;width:220px;text-align:left;}
-  .dd-trigger{display:flex;align-items:center;justify-content:space-between;gap:10px;height:44px;padding:0 12px;border:1px solid var(--s-border);border-radius:8px;background:#000;font-weight:300;font-size:15px;color:#fff;cursor:pointer;}
-  .dd-chev{font-size:11px;color:var(--s-label);transition:transform .18s;}
-  .dd.open .dd-chev{transform:rotate(180deg);}
-  .dd-list{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:20;max-height:308px;overflow-y:auto;background:#000;border:1px solid var(--s-border);border-radius:8px;}
-  .dd.open .dd-list{display:block;}
-  .dd-opt{display:flex;align-items:center;min-height:44px;padding:0 12px;font-weight:300;font-size:15px;color:var(--s-text2);cursor:pointer;}
-  .dd-opt:hover{background:#1c1c1c;color:#fff;}
-  .tax-break{margin:0;border:1px solid var(--s-border);border-radius:8px;overflow:hidden;}
-  .tax-break:empty{display:none;}
-  .tb-row{display:flex;font-weight:300;font-size:15px;color:var(--s-text2);border-top:1px solid var(--s-rule);}
-  .tb-row:first-child{border-top:none;}
-  .tb-row span{flex:1;padding:12px 8px;text-align:center;}
-  .tb-row span:first-child{text-align:left;padding-left:16px;color:#fff;}
-  .tb-row b{flex:1;padding:12px 8px;text-align:center;color:#fff;font-weight:400;}
-  .tb-head span{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .tb-head span:first-child{color:var(--s-label);}
-
-  /* ---------- right column: what membership unlocks, then the Affiliate program block ---------- */
-  .get{display:flex;flex-direction:column;gap:18px;min-width:0;}
-  .get-head,.compare-head{margin:0;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .get ul{list-style:none;margin:0;padding:0;font-size:18px;line-height:1.5;display:flex;flex-direction:column;gap:12px;}
-  .get li{display:flex;gap:14px;}
-  .get li::before{content:"\2014";color:var(--s-label);}
-  .earn{margin:22px 0 0;padding:28px 0 0;border:0;border-top:1px solid var(--s-rule);background:none;text-align:left;display:flex;flex-direction:column;gap:10px;}
-  .earn-head{display:block;margin:0;padding:0;border:0;background:none;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .earn-figure{font-family:'Poiret One',var(--font-jost);font-size:96px;line-height:1;color:#fff;margin:0;}
-  .earn-body{margin:0;max-width:none;font-weight:300;font-size:17px;line-height:1.55;color:var(--s-text2);}
-  .earn-note{margin:6px 0 0;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;line-height:1.7;text-transform:uppercase;color:var(--s-label);}
-  .earn-note a{text-decoration:underline;text-underline-offset:3px;color:inherit;}
-
-  /* ---------- Free vs Member comparison ---------- */
-  .cmp{display:flex;flex-direction:column;gap:18px;}
+  /* 4. What you get */
+  .cmp{display:flex;flex-direction:column;gap:18px;margin-top:28px;}
   .compare{border:1px solid var(--s-border);border-radius:8px;overflow:hidden;margin:0;text-align:left;}
   .c-row{display:flex;align-items:center;border-top:1px solid var(--s-rule);}
   .c-row:first-child{border-top:none;}
   .c-label{flex:1;min-width:0;padding:16px 22px;}
   .c-title{display:block;font-weight:400;font-size:17px;line-height:1.4;color:#fff;}
-  .c-sub{display:block;margin-top:3px;font-weight:300;font-style:normal;font-size:15px;line-height:1.5;color:var(--s-text2);}
-  .c-col{flex:0 0 110px;text-align:center;font-weight:300;font-size:15px;color:var(--s-label);border-left:1px solid var(--s-rule);align-self:stretch;display:flex;align-items:center;justify-content:center;}
-  .c-col.member{color:#fff;background:none;}
+  .c-sub{display:block;margin-top:3px;font-weight:300;font-size:15px;line-height:1.5;color:var(--s-text2);}
+  .c-col{flex:0 0 150px;padding:0 8px;text-align:center;font-weight:300;font-size:15px;color:var(--s-text2);border-left:1px solid var(--s-rule);align-self:stretch;display:flex;align-items:center;justify-content:center;}
+  .c-col.member{color:#fff;}
   .c-head .c-label{padding:12px 22px;}
   .c-head .c-col{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
   .c-head .c-col.member{color:#fff;}
 
-  .fine{display:flex;flex-direction:column;gap:8px;}
-  .micro{margin:0;font-weight:300;font-style:normal;font-size:17px;color:var(--s-text2);}
-  .crisis{text-align:left;font-size:14px;color:var(--s-label);padding:0;}
-  .crisis a,.note a{color:var(--s-text2);text-decoration:underline;text-underline-offset:3px;}
-  .note{margin:0;font-size:14px;color:var(--s-label);}
+  /* 6. closing lines */
+  .fine{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+  .fine p{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:var(--s-label);}
+  .fine .micro{font-size:16px;color:var(--s-text2);}
 
-  /* ---------- Begin again at the bottom edge, once the first one has scrolled away ---------- */
-  .sticky-cta{
-    position:absolute;left:0;right:0;bottom:0;   /* lies over the bottom edge only while shown; takes no room otherwise */
-    padding:12px 72px 16px;background:#000;border-top:1px solid var(--s-rule);
-    display:flex;justify-content:flex-start;
-    opacity:0;pointer-events:none;transition:opacity .25s;
-  }
-  .sticky-cta.show{opacity:1;pointer-events:auto;}
-  .sticky-cta .cta{max-width:560px;height:56px;font-size:13.5px;}
+  /* ---------- checkout, first step ---------- */
+  .co{max-width:860px;}
+  .co h1{margin:0 0 8px;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:48px;line-height:1.15;letter-spacing:.04em;color:#fff;}
+  .plans{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin:0;}
+  .plan{min-height:230px;padding:30px 20px;border:1px solid var(--s-border);border-radius:8px;background:transparent;color:#fff;cursor:pointer;text-align:center;font-family:var(--font-jost);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:border-color .18s;}
+  .plan:hover{border-color:#8a8a8a;}
+  .plan.selected{border:2px solid #fff;padding:29px 19px;}
+  .plan:focus{outline:none;} .plan:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+  .plan-name{margin:0;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+  .plan.selected .plan-name{color:#fff;}
+  .plan-price{font-family:'Poiret One',var(--font-jost);font-size:72px;line-height:1;color:#fff;}
+  .plan-price .per{font-family:var(--font-jost);font-weight:300;font-size:18px;color:#fff;}
+  .plan-sub{margin:0;font-weight:300;font-size:16px;line-height:1.45;color:var(--s-text2);}
+  .co-line{margin:-8px 0 0;text-align:center;font-weight:300;font-size:16px;line-height:1.5;color:var(--s-text2);}
 
-  /* narrower desktop windows: the two columns stack so the plan cards keep their width */
-  @media (max-width:1399px){ .jg{grid-template-columns:minmax(0,1fr);gap:48px;} }
-  /* phone and tablet */
+  /* phone and tablet: the two big boxes stack (FREE first), the three earn boxes stay in a row, the price lines stack */
   @media (max-width:1023px){
     .scroll{padding:36px 20px 40px;}
-    .shell{gap:32px;}
-    .hd.hero{gap:12px;padding-bottom:28px;}
-    .hd.hero .page-title{font-size:46px !important;}
-    .subhead{font-size:18px;}
-    .jg{gap:32px;}
-    .plans{grid-template-columns:1fr;gap:18px;}
-    .plan{min-height:200px;padding:26px 16px;gap:14px;}
-    .plan-price{font-size:64px;}
+    .shell{gap:20px;}
+    .big,.prices{grid-template-columns:minmax(0,1fr);gap:16px;}
+    .bx{padding:26px 20px 24px;gap:14px;}
+    .bx .say{font-size:17px;} .bx .say.w{font-size:19px;}
+    .tiers{gap:6px;} .tier{padding:10px 4px;} .tier .tk{font-size:9.5px;letter-spacing:.08em;} .tier .tv{font-size:13px;}
     .cta{height:60px;font-size:13.5px;}
-    .earn-figure{font-size:72px;}
-    .dd{width:100%;max-width:320px;}
+    .under{margin-top:-6px;}
+    .cmp{margin-top:16px;}
     .c-label{padding:14px 16px;}
-    .c-col{flex-basis:68px;}
-    .sticky-cta{padding:10px 20px 14px;}
-    .sticky-cta .cta{max-width:none;}
+    .c-col{flex-basis:74px;padding:0 4px;font-size:14px;}
+    .c-head .c-col{font-size:9.5px;letter-spacing:.08em;}
+    .co h1{font-size:32px;}
+    .plans{grid-template-columns:1fr;gap:16px;}
+    .plan{min-height:180px;padding:24px 16px;gap:12px;} .plan.selected{padding:23px 15px;}
+    .plan-price{font-size:60px;}
   }
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115j"></script>
+<script src="site-header.js?v=20261115k"></script>
 
 <main>
-  <div class="topbar">
-    <a class="topbar-right" id="topRight" href="auth.html">Log in</a>
-  </div>
-
   <div class="scroll">
-    <div class="shell">
 
-      <header class="hd hero">
-        <h1 class="page-title">Start your journey</h1>
-        <p class="subhead">For everything you keep carrying — a way through, at your own pace.</p>
-      </header>
-
-      <div class="jg">
-        <div class="buy">
-      <div class="plans">
-        <div class="plan" id="pm" onclick="pick('m')">
-          <p class="plan-name">Monthly</p>
-          <div class="plan-price">$39<span class="per"> /mo</span></div>
-          <p class="plan-sub">Cancel anytime</p>
-        </div>
-        <div class="plan selected" id="pa" onclick="pick('a')">
-          <p class="plan-name">Annual <span class="badge">Save 25%</span></p>
-          <div class="plan-price">$349<span class="per"> /yr</span></div>
-          <p class="plan-sub">Just $29 a month<br>Three months free</p>
-        </div>
-      </div>
-
-      <button class="cta" id="cta">Begin — $349 / yr</button>
-
-      <div class="country-row">
-        <div class="tax-cap">
-          <p class="cap-main">Prices are in USD, for US customers — tax excluded.</p>
-          <p class="cap-sub">Outside the US? Calculate your added tax:</p>
-        </div>
-        <div class="dd" id="countryDD">
-          <div class="dd-trigger" onclick="document.getElementById('countryDD').classList.toggle('open')"><span id="ddLabel">United States</span><span class="dd-chev">▾</span></div>
-          <div class="dd-list">
-            <div class="dd-opt" data-r="0" onclick="pickCountry(this)">United States</div>
-            <div class="dd-opt" data-r="10" onclick="pickCountry(this)">Australia</div>
-            <div class="dd-opt" data-r="13" onclick="pickCountry(this)">Canada</div>
-            <div class="dd-opt" data-r="20" onclick="pickCountry(this)">France</div>
-            <div class="dd-opt" data-r="19" onclick="pickCountry(this)">Germany</div>
-            <div class="dd-opt" data-r="18" onclick="pickCountry(this)">India</div>
-            <div class="dd-opt" data-r="22" onclick="pickCountry(this)">Italy</div>
-            <div class="dd-opt" data-r="10" onclick="pickCountry(this)">Japan</div>
-            <div class="dd-opt" data-r="16" onclick="pickCountry(this)">Mexico</div>
-            <div class="dd-opt" data-r="21" onclick="pickCountry(this)">Netherlands</div>
-            <div class="dd-opt" data-r="15" onclick="pickCountry(this)">New Zealand</div>
-            <div class="dd-opt" data-r="9" onclick="pickCountry(this)">Singapore</div>
-            <div class="dd-opt" data-r="15" onclick="pickCountry(this)">South Africa</div>
-            <div class="dd-opt" data-r="21" onclick="pickCountry(this)">Spain</div>
-            <div class="dd-opt" data-r="25" onclick="pickCountry(this)">Sweden</div>
-            <div class="dd-opt" data-r="8.1" onclick="pickCountry(this)">Switzerland</div>
-            <div class="dd-opt" data-r="20" onclick="pickCountry(this)">United Kingdom</div>
+    <!-- ============ the Join page ============ -->
+    <div class="shell" id="joinView">
+      <div class="big">
+        <section class="bx">
+          <p class="lab">First month</p>
+          <p class="huge">FREE</p>
+          <p class="say">Cancel any time in that month and you pay nothing.</p>
+        </section>
+        <section class="bx">
+          <p class="lab">Affiliate program</p>
+          <p class="huge">Earn $10</p>
+          <p class="say w">every month, for every member you bring</p>
+          <div class="tiers">
+            <div class="tier"><span class="tk">1 member</span><span class="tv">$10 a month</span></div>
+            <div class="tier hl"><span class="tk">4 members</span><span class="tv">your $39 covered</span></div>
+            <div class="tier"><span class="tk">10 members</span><span class="tv">$100 a month</span></div>
           </div>
-        </div>
+          <p class="sm">On monthly memberships. An annual member pays you $100 a year.</p>
+        </section>
       </div>
 
-      <div class="tax-break" id="taxBreak"></div>
-        </div>
+      <div class="prices">
+        <div class="pline"><span class="lab">Then monthly</span><span class="pp">$39 a month</span><span>Cancel anytime</span></div>
+        <div class="pline"><span class="lab">Or annual <span class="badge">Save 25%</span></span><span class="pp">$349 a year</span><span>Just $29 a month</span></div>
+      </div>
 
-        <div class="get">
-          <p class="get-head">What membership unlocks</p>
-          <ul><li><span>Voice &amp; text chat — found nowhere else</span></li><li><span>The avatars</span></li><li><span>Mini meditations</span></li><li><span>Mini teachings</span></li><li><span>30% commission</span></li><li><span>The full path</span></li><li><span>Know yourself — 12 dimensions</span></li></ul>
-      <div class="earn">
-        <p class="earn-head">Affiliate program</p>
-        <div class="earn-figure">30%</div>
-        <p class="earn-body">Share the avatars, mini meditations and teachings on your socials — every share carries your own link. When someone joins through it, you earn 30% of every payment they make, month after month.</p>
-        <p class="earn-note">Paid monthly · Fully automated · <a href="payment-terms.html">Terms apply</a></p>
-      </div>
-        </div>
-      </div>
+      <button class="cta startbtn" type="button">Start free month</button>
+      <p class="under">Choose monthly or annual at checkout. Prices are in US dollars. Tax is added at checkout. Earnings are paid monthly, fully automated. <a href="payment-terms.html">Terms apply</a>.</p>
 
       <section class="cmp">
-      <p class="compare-head">What membership unlocks</p>
-      <div class="compare">
-        <div class="c-row c-head">
-          <span class="c-label"></span>
-          <span class="c-col">Free</span>
-          <span class="c-col member">Member</span>
+        <p class="lab">What you get</p>
+        <div class="compare">
+          <div class="c-row c-head"><span class="c-label"></span><span class="c-col">Free month</span><span class="c-col member">Member</span></div>
+        <div class="c-row"><span class="c-label"><span class="c-title">Chat</span><span class="c-sub">Speak or type whatever is on your mind</span></span><span class="c-col">Text</span><span class="c-col member">Voice and text</span></div>
+        <div class="c-row"><span class="c-label"><span class="c-title">Personal meditations</span><span class="c-sub">Made for you, about what you are working through</span></span><span class="c-col">1</span><span class="c-col member">4 a month</span></div>
+        <div class="c-row"><span class="c-label"><span class="c-title">Meditations</span><span class="c-sub">The full guided library</span></span><span class="c-col">&#10003;</span><span class="c-col member">&#10003;</span></div>
+        <div class="c-row"><span class="c-label"><span class="c-title">Education</span><span class="c-sub">Twelve courses, a new week every week</span></span><span class="c-col">&#10003;</span><span class="c-col member">&#10003;</span></div>
+        <div class="c-row"><span class="c-label"><span class="c-title">Your goals and reminders</span><span class="c-sub">Set your goals and stay on track at the times you choose</span></span><span class="c-col">&#10003;</span><span class="c-col member">&#10003;</span></div>
+        <div class="c-row"><span class="c-label"><span class="c-title">Know yourself</span><span class="c-sub">See where you stand, and what is driving it</span></span><span class="c-col">&#10003;</span><span class="c-col member">&#10003;</span></div>
+        <div class="c-row"><span class="c-label"><span class="c-title">Affiliate program</span><span class="c-sub">Earn $10 a month for every member you bring</span></span><span class="c-col">&mdash;</span><span class="c-col member">&#10003;</span></div>
         </div>
-        <div class="c-row">
-          <span class="c-label"><span class="c-title">Voice &amp; text chat — found nowhere else</span><span class="c-sub">Speak or type whatever's on your mind — a generous monthly allowance</span></span>
-          <span class="c-col">Sample</span>
-          <span class="c-col member">✓</span>
-        </div>
-        <div class="c-row">
-          <span class="c-label"><span class="c-title">The avatars</span><span class="c-sub">Avatar videos to watch and share — the owl, the stag, the wolf and more</span></span>
-          <span class="c-col">✓</span>
-          <span class="c-col member">✓</span>
-        </div>
-        <div class="c-row">
-          <span class="c-label"><span class="c-title">Mini meditations</span><span class="c-sub">Short sits to watch, feel, and share</span></span>
-          <span class="c-col">✓</span>
-          <span class="c-col member">✓</span>
-        </div>
-        <div class="c-row">
-          <span class="c-label"><span class="c-title">Mini teachings</span><span class="c-sub">Small pieces of clarity — watch and pass them on</span></span>
-          <span class="c-col">✓</span>
-          <span class="c-col member">✓</span>
-        </div>
-        <div class="c-row">
-          <span class="c-label"><span class="c-title">30% commission</span><span class="c-sub">Share the avatars, mini meditations and teachings — get paid month after month</span></span>
-          <span class="c-col">—</span>
-          <span class="c-col member">✓</span>
-        </div>
-        <div class="c-row">
-          <span class="c-label"><span class="c-title">The full path</span><span class="c-sub">Full-length courses, teachings, guided meditations and practices — twelve weeks at a time, a new week every Monday, a certificate when you finish</span></span>
-          <span class="c-col">—</span>
-          <span class="c-col member">✓</span>
-        </div>
-        <div class="c-row">
-          <span class="c-label"><span class="c-title">Know yourself — 12 dimensions</span><span class="c-sub">See where you stand, and what's actually driving it</span></span>
-          <span class="c-col">—</span>
-          <span class="c-col member">✓</span>
-        </div>
-      </div>
       </section>
 
-      <div class="fine">
-      <p class="micro">Start easy. Build deep. Go at your own pace.</p>
-      <p class="crisis">A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
-      <p class="note">Prices are starting points and may change. Billing runs in Paddle <b>sandbox</b> (test mode) — no real charge.</p>
-      <p class="note">By purchasing, you agree to our <a href="terms.html">Terms</a> and <a href="payment-terms.html">Payment Terms</a>.</p>
-      </div>
+      <button class="cta startbtn" type="button">Start free month</button>
 
+      <div class="fine">
+        <p class="micro">Start easy. Build deep. Go at your own pace.</p>
+        <p>A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
+        <p>By joining, you agree to our <a href="terms.html">Terms</a> and <a href="payment-terms.html">Payment Terms</a>.</p>
+      </div>
     </div>
-  </div>
-  <div class="sticky-cta" id="stickyBar">
-    <button class="cta" id="ctaSticky">Begin — $349 / yr</button>
+
+    <!-- ============ checkout, first step (pricing.html#checkout) ============ -->
+    <div class="shell co" id="coView" hidden>
+      <h1>Choose what follows your free month</h1>
+      <div class="plans" role="radiogroup" aria-label="What follows your free month">
+        <button type="button" class="plan" id="pm" role="radio" aria-checked="false">
+          <span class="plan-name">Monthly</span>
+          <span class="plan-price">$39<span class="per"> /mo</span></span>
+          <span class="plan-sub">Cancel anytime</span>
+        </button>
+        <button type="button" class="plan selected" id="pa" role="radio" aria-checked="true">
+          <span class="plan-name">Annual <span class="badge">Save 25%</span></span>
+          <span class="plan-price">$349<span class="per"> /yr</span></span>
+          <span class="plan-sub">Just $29 a month<br>Three months free</span>
+        </button>
+      </div>
+      <button class="cta" id="coGo" type="button">Continue to card details</button>
+      <p class="co-line" id="coLine">Nothing to pay today. $349 a year after your free month. Cancel anytime.</p>
+    </div>
+
   </div>
 </main>
 
@@ -337,51 +251,32 @@
   $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
   document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!$("account").contains(e.target)) acctMenu.classList.remove('open'); });
 
-  function renderTopRight(){
-    const el=$("topRight");
-    if(acctUid){
-      el.textContent="Sign out"; el.href="#";
-      el.onclick=async(e)=>{ e.preventDefault(); if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(err){} location.href="index.html"; };
-    } else {
-      el.textContent="Log in"; el.href="auth.html"; el.onclick=null;
-    }
+  // ================= THE TWO VIEWS =================
+  // The Join page, and the checkout's first step (pricing.html#checkout). The browser's Back button returns to the Join page.
+  const scroller=document.querySelector('.scroll');
+  function showView(){
+    const co=location.hash==="#checkout";
+    $("joinView").hidden=co; $("coView").hidden=!co; scroller.scrollTop=0;
   }
+  window.addEventListener("hashchange", showView);
+  document.querySelectorAll(".startbtn").forEach(b=>{ b.onclick=()=>{ location.hash="checkout"; }; });
+  // someone already in their free month reads BECOME A MEMBER on both buttons; the checkout is the same
+  function labelButtons(){
+    const t=(window.sussuriAccount && window.sussuriAccount.get().state==="trial") ? "Become a member" : "Start free month";
+    document.querySelectorAll(".startbtn").forEach(b=>{ b.textContent=t; });
+  }
+  labelButtons(); if(window.sussuriAccount) window.sussuriAccount.onChange(labelButtons);
 
-  // ================= PLAN TOGGLE =================
+  // ================= CHECKOUT, FIRST STEP: monthly or annual (annual to begin with) =================
   let selected='a';
   function pick(w){
     selected=w;
-    $("pm").classList.toggle('selected', w==='m');
-    $("pa").classList.toggle('selected', w==='a');
-    const label = w==='m' ? 'Begin — $39 / mo' : 'Begin — $349 / yr';
-    $("cta").textContent=label;
-    $("ctaSticky").textContent=label;
+    $("pm").classList.toggle('selected', w==='m'); $("pm").setAttribute("aria-checked", String(w==='m'));
+    $("pa").classList.toggle('selected', w==='a'); $("pa").setAttribute("aria-checked", String(w==='a'));
+    $("coLine").textContent = w==='m' ? "Nothing to pay today. $39 a month after your free month. Cancel anytime."
+                                      : "Nothing to pay today. $349 a year after your free month. Cancel anytime.";
   }
-
-  // ================= COUNTRY / TAX CALCULATOR =================
-  function pickCountry(el){
-    $("ddLabel").textContent = el.textContent;
-    $("countryDD").classList.remove('open');
-    window._taxRate = parseFloat(el.dataset.r);
-    taxCalc();
-  }
-  window._taxRate = 0;
-  document.addEventListener('click', function(e){
-    const dd = $("countryDD");
-    if(!dd.contains(e.target)) dd.classList.remove('open');
-  });
-  function taxCalc(){
-    const out = $("taxBreak");
-    const r = window._taxRate;
-    if(r === 0){ out.innerHTML = ''; return; }
-    const head = '<div class="tb-row tb-head"><span>Plan</span><span>Price</span><span>Tax</span><span>Total</span></div>';
-    const mt = (39*r/100).toFixed(2), mTot = (39*(1+r/100)).toFixed(2);
-    const yt = (349*r/100).toFixed(2), yTot = (349*(1+r/100)).toFixed(2);
-    out.innerHTML = head
-      + '<div class="tb-row"><span>Monthly</span><span>$39</span><span>$'+mt+'</span><b>$'+mTot+'</b></div>'
-      + '<div class="tb-row"><span>Annual</span><span>$349</span><span>$'+yt+'</span><b>$'+yTot+'</b></div>';
-  }
-  taxCalc();
+  $("pm").onclick=()=>pick('m'); $("pa").onclick=()=>pick('a');
 
   // ================= PADDLE (sandbox) =================
   // NOTE: these two membership prices don't exist in Paddle yet — create a $39/mo
@@ -412,11 +307,10 @@
       customData: { user_id: acctUid, plan: "member", interval: interval==='m'?'monthly':'annual' }
     });
   }
-  $("cta").onclick=()=>openCheckout(selected);
-  $("ctaSticky").onclick=()=>openCheckout(selected);
+  $("coGo").onclick=()=>openCheckout(selected);   // then the payment provider's card form, as before
 
   // ================= BOOT =================
-  function renderAll(){ renderAccount(); renderTopRight(); }
+  function renderAll(){ renderAccount(); }
   if(window.PSYCHE_PREVIEW){
     const p=window.PSYCHE_PREVIEW_PROFILE;
     acctUid=p.id; acctEmail=p.email; acctProfile={plan:p.plan};
@@ -438,11 +332,7 @@
     });
   }
 
-  // ================= STICKY CTA VISIBILITY =================
-  const mainCta=$("cta"), bar=$("stickyBar"), scroller=document.querySelector('.scroll');
-  new IntersectionObserver(function(es){
-    bar.classList.toggle('show', !es[0].isIntersecting);
-  },{root:scroller, threshold:0}).observe(mainCta);
+  showView();
 </script>
 </body>
 </html>

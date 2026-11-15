@@ -101,7 +101,7 @@
     assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path', 'your-goals':'Your path',
     'how-it-works':'Affiliate program', 'your-plan':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
-    pricing:'Membership', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
+    pricing:'Join', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
   };
   function pageName(){
     return (document.title || '').replace(/sussuri/i, '').replace(/[\u00b7\u2014\u2013|-]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -150,8 +150,8 @@
   // the top-right slot: one item, depending on the person (none on the Membership page for people who are not members yet)
   function slotHTML(w){
     if (here === 'auth') return '';   // the sign-in page keeps the slot empty
+    if (here === 'pricing') return '';   // the Join page has no top-right button
     if (w.state === 'member') return '<a class="site-cta" id="siteCta" href="account.html">Give a free month</a>';   // until the share-link page exists
-    if (here === 'pricing') return '';
     if (w.state === 'trial') return (w.days > 0 ? '<span class="sb-days">' + daysText(w.days) + '</span>' : '') + '<a class="site-cta" id="siteCta" href="pricing.html">Become a member</a>';
     return '<a class="site-cta" id="siteCta" href="pricing.html">Start free month</a>';
   }
@@ -240,6 +240,9 @@
     function norm(h) { tmp.innerHTML = h; return tmp.innerHTML; }   // as the browser writes it back, so the comparison below is exact
     function paint() {
       var w = who(), a = norm(acctHTML(w));
+      // the line under Your account: "Join" for a visitor or someone in the free month, "Membership" for a paid member
+      var jr = document.querySelector('#nav [data-route="pricing.html"] .row-label'), jl = w.state === 'member' ? 'Membership' : 'Join';
+      if (jr && jr.textContent !== jl) jr.textContent = jl;
       if (box.innerHTML !== a) box.innerHTML = a;
       if (slot) { var h = norm(slotHTML(w)); if (slot.innerHTML !== h) slot.innerHTML = h; slot.style.display = h ? '' : 'none'; }
       listeners.forEach(function (f) { f(w); });
