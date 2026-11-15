@@ -73,6 +73,19 @@
   function shown(g){ return g.items.filter(function (it) { return it.show !== false; }); }
 
   var here = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
+  // Sussuri on a phone's home screen: the icon and the details the phone needs when someone taps "Add to Home Screen".
+  (function () {
+    function tag(name, attrs) { var e = document.createElement(name); for (var k in attrs) e.setAttribute(k, attrs[k]); document.head.appendChild(e); }
+    if (!document.querySelector('link[rel="manifest"]')) {
+      tag('link', { rel:'manifest', href:'/manifest.webmanifest' });
+      tag('link', { rel:'apple-touch-icon', href:'/images/app-icon-180.png' });
+      tag('meta', { name:'apple-mobile-web-app-capable', content:'yes' });
+      tag('meta', { name:'mobile-web-app-capable', content:'yes' });
+      tag('meta', { name:'apple-mobile-web-app-title', content:'Sussuri' });
+      tag('meta', { name:'apple-mobile-web-app-status-bar-style', content:'black' });
+      tag('meta', { name:'theme-color', content:'#000000' });
+    }
+  })();
   // Pages with no menu item of their own belong to one that has: the black band sits on that item,
   // and the top bar names both ("Your account / Settings"), so people always know where they are.
   var parentOf = { settings:'account', 'delete-account':'account', creator:'account', 'payment-terms':'terms', support:'urgent' };
@@ -101,7 +114,7 @@
     assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path', 'your-goals':'Your path',
     'how-it-works':'Affiliate program', 'your-plan':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
-    pricing:'Join', membership:'Membership', signup:'Start free month', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
+    pricing:'Join', membership:'Membership', signup:'Start free month', 'youre-in':"You're in", welcome:'Welcome', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
   };
   function pageName(){
     return (document.title || '').replace(/sussuri/i, '').replace(/[\u00b7\u2014\u2013|-]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -163,7 +176,7 @@
   }
   // the top-right slot: one item, depending on the person
   function slotHTML(w){
-    if (here === 'auth' || here === 'pricing') return '';   // the sign-in page and the Join page keep the slot empty
+    if (here === 'auth' || here === 'pricing' || here === 'youre-in') return '';   // the sign-in page, the Join page and the "You're in" screen keep the slot empty
     if (here === 'signup') return '<span class="sb-days">Already a member?</span><a class="sb-link" href="auth.html">Sign in</a>';
     var c = ctaFor(w);
     return (w.state === 'trial' ? '<span class="sb-days">' + daysText(w.days) + '</span>' : '') + '<a class="site-cta" id="siteCta" href="' + c.href + '">' + c.label + '</a>';

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Welcome · Sussuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261115o">
+<style>
+  /* Welcome: one column, like the Join page. Shown once, straight after joining. */
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;}
+  main{overflow-y:auto;padding:56px 72px 80px;scrollbar-width:thin;scrollbar-color:#666 #000;}
+  .wrap{max-width:1100px;display:flex;flex-direction:column;gap:20px;}
+  .lede{margin:0 0 12px;font-size:21px;line-height:1.55;color:var(--s-text2);}
+  .lab{margin:16px 0 -6px;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+  a{color:inherit;}
+  /* not on their phone yet */
+  .phone{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 20px;padding:14px 18px;border:1px solid #fff;border-radius:8px;font-size:16px;line-height:1.5;}
+  .phone[hidden]{display:none;}
+  .phone a{white-space:nowrap;text-decoration:underline;text-underline-offset:4px;}
+  /* where would you like to start: one box, five equal rows */
+  .starts{border:1px solid var(--s-border);border-radius:8px;overflow:hidden;}
+  .starts a{display:flex;align-items:center;gap:20px;min-height:84px;padding:14px 22px;border-top:1px solid var(--s-rule);text-decoration:none;color:#fff;}
+  .starts a:first-child{border-top:0;}
+  .starts a:hover{background:#1c1c1c;}
+  .starts a:focus{outline:none;} .starts a:focus-visible{outline:2px solid #808080;outline-offset:-3px;}
+  .starts .t{display:block;font-weight:400;font-size:19px;line-height:1.35;}
+  .starts .d{display:block;margin-top:2px;font-size:16px;line-height:1.5;color:var(--s-text2);}
+  .starts .a{flex:0 0 auto;margin-left:auto;font-size:20px;line-height:1;}
+  /* the Affiliate program box: solid white, black text, the same as on the Join page */
+  .bx{display:flex;flex-direction:column;gap:16px;margin-top:8px;padding:32px 36px 30px;border-radius:8px;background:#fff;color:#000;min-width:0;container-type:inline-size;}
+  .bx .lab{margin:0;color:#5f5f5f;}
+  .bx .huge{margin:0;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:min(150px,24cqw);line-height:.95;letter-spacing:.02em;color:#000;white-space:nowrap;}
+  .bx .say{margin:0;font-weight:300;font-size:22px;line-height:1.4;color:#000;}
+  .bx .sm{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:#5f5f5f;}
+  .bx .sm a{color:#000;text-decoration:underline;text-underline-offset:3px;}
+  @media (max-width:1023px){
+    main{padding:36px 20px 60px;}
+    .wrap{gap:16px;}
+    .lede{font-size:17px;}
+    .starts a{min-height:76px;padding:12px 16px;gap:12px;} .starts .t{font-size:18px;} .starts .d{font-size:15px;}
+    .bx{padding:24px 20px 22px;gap:12px;} .bx .say{font-size:19px;}
+  }
+</style>
+</head>
+<body class="site-shell">
+<script src="site-header.js?v=20261115o" data-toggle></script>
+<main>
+  <div class="wrap">
+    <h1 class="page-title">Welcome</h1>
+    <p class="lede">Your free month has started. Nothing to pay until <span id="payDate">&hellip;</span>.</p>
+
+    <p class="phone" id="phoneLine" hidden><span>Sussuri is not on your phone yet, so reminders cannot reach you.</span><a href="youre-in.html">Put it on my phone</a></p>
+
+    <p class="lab">Where would you like to start?</p>
+    <div class="starts">
+      <a href="chat.html" id="startTalk"><span><span class="t">Talk</span><span class="d">Say what is on your mind.</span></span><span class="a" aria-hidden="true">&rarr;</span></a>
+      <a href="meditations.html"><span><span class="t">Listen to a meditation</span><span class="d">Choose from the guided library.</span></span><span class="a" aria-hidden="true">&rarr;</span></a>
+      <a href="education.html#week1"><span><span class="t">Start your course</span><span class="d">Week 1: The world and the mind.</span></span><span class="a" aria-hidden="true">&rarr;</span></a>
+      <a href="assessment.html"><span><span class="t">Get to know yourself</span><span class="d">See where you stand, and what is driving it.</span></span><span class="a" aria-hidden="true">&rarr;</span></a>
+      <a href="your-goals.html"><span><span class="t">Set your goals</span><span class="d">A few questions, about ten minutes.</span></span><span class="a" aria-hidden="true">&rarr;</span></a>
+    </div>
+
+    <section class="bx">
+      <p class="lab">Affiliate program</p>
+      <p class="huge">Earn $10</p>
+      <p class="say">every month, for every paying member you bring</p>
+      <p class="sm">Your link switches on when your membership starts on <span id="payDate2">&hellip;</span>. <a href="how-it-works.html">See how it works</a></p>
+    </section>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const $=id=>document.getElementById(id);
+  const FREE_DAYS=30;
+  function dayText(d){ return d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}); }
+  // the date of the first payment: thirty days after the free month started
+  function paint(started, phoneRec){
+    const s=started ? new Date(started) : new Date(); const first=new Date(s.getTime()+FREE_DAYS*864e5);
+    $("payDate").textContent=dayText(first); $("payDate2").textContent=dayText(first);
+    // only if Sussuri is not yet on their phone, or reminders are off
+    $("phoneLine").hidden = !!(phoneRec && phoneRec.on_phone && phoneRec.reminders_on);
+  }
+  let local={}; try{ local=JSON.parse(localStorage.getItem("sussuri:phone")||"{}"); }catch(e){}
+  paint("", local);
+  $("startTalk").onclick=()=>{ try{ localStorage.setItem("psyche:current",""); }catch(e){} };   // Talk opens a new conversation
+  if(!window.PSYCHE_PREVIEW){
+    try{
+      const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
+      sb.auth.getUser().then(({data})=>{
+        const u=data&&data.user; if(!u){ location.replace("signup.html"); return; }
+        const m=u.user_metadata||{}; let started=m.free_month_started||"";
+        try{ started=started||localStorage.getItem("sussuri:fms:"+u.id)||""; }catch(e){}
+        paint(started, { on_phone: !!m.on_phone || !!local.on_phone, reminders_on: !!m.reminders_on || !!local.reminders_on });
+      });
+    }catch(e){}
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>You're in · Sussuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261115o">
+<style>
+  /* "You're in": one job only: Sussuri onto their phone with reminders switched on. No menu, no other links. */
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;}
+  nav#nav{display:none !important;}                                   /* no menu on this screen */
+  @media (min-width:1024px){ body.has-side{grid-template-columns:0 minmax(0,1fr) !important;} }   /* computer: the page takes the menu's room */
+  .site-bar .menu-btn{display:none !important;}
+  .site-bar .wordmark{pointer-events:none;}
+  main{overflow-y:auto;padding:56px 72px 80px;scrollbar-width:thin;scrollbar-color:#666 #000;}
+  .wrap{max-width:720px;display:flex;flex-direction:column;gap:20px;}
+  .lede{margin:0 0 12px;font-size:21px;line-height:1.55;color:var(--s-text2);}
+  .view[hidden]{display:none;}
+  .view{display:flex;flex-direction:column;gap:18px;}
+  /* computer: the code to scan */
+  .code{align-self:flex-start;padding:18px;border-radius:8px;background:#fff;line-height:0;}
+  .code svg{display:block;width:232px;height:232px;}
+  .small{margin:0;font-size:16px;line-height:1.5;color:var(--s-text2);}
+  /* phone: three numbered steps */
+  .steps{list-style:none;border:1px solid var(--s-border);border-radius:8px;}
+  .steps li{display:flex;align-items:center;gap:18px;min-height:60px;padding:12px 18px;border-top:1px solid var(--s-rule);font-size:18px;line-height:1.4;color:#fff;}
+  .steps li:first-child{border-top:0;}
+  .steps .n{flex:0 0 auto;font-family:'Poiret One',var(--font-jost);font-size:30px;line-height:1;width:22px;}
+  .cta{display:flex;align-items:center;justify-content:center;width:100%;height:60px;border:1px solid #fff;border-radius:8px;background:#fff;color:#000;font-family:var(--font-jost);font-size:13.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;cursor:pointer;}
+  .cta.o{background:transparent;color:#fff;}
+  .cta[disabled]{background:transparent;color:#fff;cursor:default;}
+  .cta:focus{outline:none;} .cta:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+  .note{margin:0;font-size:15px;line-height:1.5;color:var(--s-label);}
+  .note[hidden]{display:none;}
+  .end{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:20px;padding-top:28px;border-top:1px solid var(--s-rule);}
+  .end .cta{max-width:340px;}
+  .later{display:inline-flex;align-items:center;min-height:44px;font-size:15px;color:var(--s-text2);text-decoration:underline;text-underline-offset:4px;}
+  @media (max-width:1023px){
+    main{padding:36px 20px 60px;}
+    .lede{font-size:17px;}
+    .end{align-items:stretch;} .end .cta{max-width:none;} .later{justify-content:center;}
+  }
+</style>
+</head>
+<body class="site-shell">
+<script src="site-header.js?v=20261115o" data-toggle></script>
+<main>
+  <div class="wrap">
+    <h1 class="page-title">You&rsquo;re in</h1>
+    <p class="lede">Your free month has started. Now put Sussuri on your phone, so your reminders can reach you.</p>
+
+    <!-- on a computer: a code to scan, which opens Sussuri on their phone already signed in -->
+    <section class="view" id="viewComputer" hidden>
+      <div class="code" id="code" aria-label="Code to scan with your phone"></div>
+      <p class="small">Point your phone&rsquo;s camera at this code.</p>
+    </section>
+
+    <!-- on a phone: three steps (skipped when Sussuri is already open from its home screen icon), then the reminders button -->
+    <section class="view" id="viewPhone" hidden>
+      <ol class="steps" id="steps"></ol>
+      <button type="button" class="cta" id="remind">Switch on reminders</button>
+      <p class="note" id="remindNote" hidden></p>
+    </section>
+
+    <div class="end">
+      <a class="cta o" id="done" href="welcome.html">Done</a>
+      <a class="later" href="welcome.html">Later</a>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+  const $=id=>document.getElementById(id);
+  const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
+
+  // ---- which device is this? (in preview mode, ?device=computer | iphone | android | installed shows each one) ----
+  const ua=navigator.userAgent||"";
+  let ios=/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints>1);
+  let android=/Android/i.test(ua);
+  let installed=(window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone===true;   // opened from its home screen icon
+  if(window.PSYCHE_PREVIEW){
+    const d=new URLSearchParams(location.search).get("device");
+    if(d==="computer"){ ios=android=installed=false; }
+    if(d==="iphone"){ ios=true; android=false; installed=false; }
+    if(d==="android"){ android=true; ios=false; installed=false; }
+    if(d==="installed"){ ios=true; installed=true; }
+  }
+  const phone=ios||android||installed;
+
+  // ---- record, for each member: is Sussuri on their phone, and are reminders switched on ----
+  // Kept in this browser and on the member's account. "On their phone" is known once it is opened from the home screen icon.
+  function remindersOn(){ return ("Notification" in window) && Notification.permission==="granted"; }
+  function record(){
+    const rec={ on_phone: !!installed, reminders_on: remindersOn(), phone_checked_at: new Date().toISOString() };
+    let old={}; try{ old=JSON.parse(localStorage.getItem("sussuri:phone")||"{}"); }catch(e){}
+    if(old.on_phone) rec.on_phone=true;                 // once on the phone, a later look from a computer does not undo it
+    if(!phone && old.reminders_on) rec.reminders_on=true;
+    try{ localStorage.setItem("sussuri:phone",JSON.stringify(rec)); }catch(e){}
+    if(window.PSYCHE_PREVIEW) return;
+    sb.auth.getUser().then(({data})=>{
+      const m=(data&&data.user&&data.user.user_metadata)||{}; if(!data||!data.user) return;
+      return sb.auth.updateUser({ data:{ on_phone: rec.on_phone||!!m.on_phone, reminders_on: phone ? rec.reminders_on : !!m.reminders_on, phone_checked_at: rec.phone_checked_at } });
+    }).catch(()=>{});
+  }
+
+  // ---- computer: the code ----
+  function drawCode(url){
+    const q=qrcode(0,"M"); q.addData(url); q.make();
+    $("code").innerHTML=q.createSvgTag({ cellSize:6, margin:0, scalable:true });
+  }
+  async function showComputer(){
+    $("viewComputer").hidden=false;
+    const plain=location.origin+"/youre-in.html";   // if a signed-in link cannot be made, the code still opens Sussuri (they sign in on the phone)
+    drawCode(plain);
+    if(window.PSYCHE_PREVIEW) return;
+    try{
+      const {data}=await sb.auth.getSession(); const token=data.session&&data.session.access_token; if(!token) return;
+      const res=await fetch("/api/phone-link",{method:"POST",headers:{Authorization:"Bearer "+token}});
+      const j=await res.json(); if(res.ok && j.url) drawCode(j.url);   // opens Sussuri on the phone already signed in
+    }catch(e){}
+  }
+
+  // ---- phone: the steps, then the reminders button ----
+  function showPhone(){
+    $("viewPhone").hidden=false;
+    const steps = installed ? [] : ios
+      ? ["Tap the Share button","Tap Add to Home Screen","Open Sussuri from its new icon"]
+      : ["Tap the menu button (three dots)","Tap Add to Home screen","Open Sussuri from its new icon"];
+    $("steps").hidden=!steps.length;
+    $("steps").innerHTML=steps.map((t,i)=>'<li><span class="n">'+(i+1)+'</span><span>'+t+'</span></li>').join("");
+    paintRemind();
+  }
+  function paintRemind(){
+    if(remindersOn()){ $("remind").textContent="Reminders are on"; $("remind").disabled=true; }
+  }
+  $("remind").onclick=async()=>{
+    const note=$("remindNote");
+    if(!("Notification" in window)){   // an iPhone only allows this once Sussuri is opened from its home screen icon
+      note.textContent="Open Sussuri from its new icon first, then switch on reminders there."; note.hidden=false; return;
+    }
+    let r="default"; try{ r=await Notification.requestPermission(); }catch(e){}
+    if(r==="granted"){ note.hidden=true; paintRemind(); }
+    else if(r==="denied"){ note.textContent="Reminders are switched off for Sussuri in your phone's settings."; note.hidden=false; }
+    record();
+  };
+
+  if(phone) showPhone(); else showComputer();
+  record();
+</script>
+</body>
+</html>

@@ -7,7 +7,7 @@
 <title>Education · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115n">
+<link rel="stylesheet" href="site.css?v=20261115o">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept */
@@ -149,7 +149,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115n"></script>
+<script src="site-header.js?v=20261115o"></script>
 
 <main>
   <div class="head"><h1 class="page-title">Twelve courses. Ninety-six weeks.</h1><p class="lede">One path, top to bottom, in the order it is taught. Week by week it uncovers what was there all along — more calm, more peace, clearer thinking, warmer relationships, and a contentment that lasts. Each week: a lesson to watch, a chapter to read, and one meditation to do daily.</p><div class="nowopen"><span class="no-l" id="nowOpen">Now open: Week 1</span><span class="no-t">A new week opens every week.</span></div><p class="tot"><span class="totnote">Written for this path. Available nowhere else.</span></p>
@@ -216,6 +216,7 @@ document.getElementById('startHere').onclick=function(){
  if(!t.classList.contains('on')) t.click();
  t.scrollIntoView({behavior:'smooth',block:'start'});
 };
+if(location.hash==='#week1') setTimeout(function(){ document.getElementById('startHere').click(); },300);   // "Start your course" on the Welcome page
 // the bottom button says and does what the top-right button does for this person
 (function(){ var b=document.getElementById('joinBig'); function set(){ var c=window.sussuriAccount.cta(); b.textContent=c.label; b.setAttribute('href',c.href); } set(); window.sussuriAccount.onChange(set); })();
 // spine ends at the goal box

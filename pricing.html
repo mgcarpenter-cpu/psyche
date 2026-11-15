@@ -7,7 +7,7 @@
 <title>Join · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261115n">
+<link rel="stylesheet" href="site.css?v=20261115o">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept */
@@ -126,7 +126,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115n"></script>
+<script src="site-header.js?v=20261115o"></script>
 
 <main>
   <div class="scroll">
@@ -306,11 +306,11 @@
     token: PADDLE_TOKEN,
     eventCallback: function(ev){
       if(ev && ev.name==="checkout.completed"){
-        // card accepted: the free month starts now, and they land on the chat page
+        // card accepted: the free month starts now. Next: the "You're in" screen, then the Welcome page.
         const now=new Date().toISOString();
         try{ localStorage.setItem("sussuri:fms:"+acctUid, now); }catch(e){}
         if(window.sussuriAccount) window.sussuriAccount.update({ id:acctUid, plan:"member", name:"" });
-        sb.auth.updateUser({ data:{ free_month_started: now, plan_interval: selected==='m' ? 'monthly' : 'annual' } }).catch(()=>{}).then(()=>{ location.href="chat.html"; });
+        sb.auth.updateUser({ data:{ free_month_started: now, plan_interval: selected==='m' ? 'monthly' : 'annual' } }).catch(()=>{}).then(()=>{ location.href="youre-in.html"; });
       }
     }
   });
