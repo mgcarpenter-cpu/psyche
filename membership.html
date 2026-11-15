@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Membership · Sussuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261115m">
+<style>
+  /* Membership: what a paid member sees. One heading, one box of three lines, one cancel line. */
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;}
+  main{overflow-y:auto;padding:56px 72px 80px;scrollbar-width:thin;scrollbar-color:#666 #000;}
+  .wrap{max-width:1100px;display:flex;flex-direction:column;gap:14px;}
+  .since{margin:0 0 22px;font-size:15px;line-height:1.5;color:var(--s-label);}
+  /* the box: thin grey border, three lines divided by thin lines */
+  .mbox{border:1px solid var(--s-border);border-radius:8px;}
+  .mrow{display:grid;grid-template-columns:140px minmax(0,1fr) auto;align-items:start;gap:8px 24px;padding:22px 24px;border-top:1px solid var(--s-rule);}
+  .mrow:first-child{border-top:0;}
+  .mrow .k{padding-top:5px;font-family:var(--font-mono);font-weight:400;font-size:12px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+  .mrow .d1{display:block;font-weight:400;font-size:19px;line-height:1.4;color:#fff;}
+  .mrow .d2{display:block;margin-top:3px;font-size:15px;line-height:1.5;color:var(--s-text2);}
+  .lnk{display:inline-flex;align-items:center;min-height:32px;padding:0;border:0;background:none;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1.4;color:#fff;text-decoration:underline;text-underline-offset:4px;cursor:pointer;white-space:nowrap;}
+  .lnk:focus{outline:none;} .lnk:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+  .cancel{margin:8px 0 0;font-size:14px;line-height:1.6;color:var(--s-label);}
+  .cancel .lnk{display:inline;min-height:0;font-size:14px;color:var(--s-text2);white-space:normal;}
+  /* the one question before cancelling */
+  .ask{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.78);}
+  .ask.open{display:flex;}
+  .askbox{width:100%;max-width:440px;padding:28px 24px 24px;border:1px solid #fff;border-radius:8px;background:#000;}
+  .askbox h2{margin:0 0 22px;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:30px;line-height:1.2;letter-spacing:.03em;color:#fff;}
+  .askbtns{display:flex;flex-wrap:wrap;gap:12px;}
+  .askbtns .s-btn{flex:1 1 180px;}
+  /* phone: each line stacks: label, detail, then the link */
+  @media (max-width:1023px){
+    main{padding:36px 20px 60px;}
+    .mrow{grid-template-columns:minmax(0,1fr);gap:6px;padding:18px 16px;}
+    .mrow .k{padding-top:0;}
+    .lnk{min-height:44px;white-space:normal;}
+    .askbox h2{font-size:26px;}
+  }
+</style>
+</head>
+<body class="site-shell">
+<script src="site-header.js?v=20261115m" data-toggle></script>
+<main>
+  <div class="wrap">
+    <h1 class="page-title">Your membership</h1>
+    <p class="since">Member since <span id="mSince">12 November 2026</span>.</p>
+
+    <div class="mbox">
+      <div class="mrow">
+        <span class="k">Plan</span>
+        <span><span class="d1" id="planMain">Annual, $349 a year</span><span class="d2" id="planSub">Next payment 12 November 2027</span></span>
+        <button type="button" class="lnk" id="planChange">Change to monthly</button>
+      </div>
+      <div class="mrow">
+        <span class="k">Card</span>
+        <span><span class="d1" id="cardMain">Visa ending 4242</span><span class="d2">Receipts are emailed after each payment</span></span>
+        <button type="button" class="lnk" id="cardLink">Update card or see receipts</button>
+      </div>
+      <div class="mrow">
+        <span class="k">Earning</span>
+        <span><span class="d1" id="earnMain">Nothing yet</span><span class="d2" id="earnSub">Four members cover your membership</span></span>
+        <a class="lnk" href="account.html">Account &amp; earnings</a>
+      </div>
+    </div>
+
+    <p class="cancel" id="cancelLine"><button type="button" class="lnk" id="cancelLink">Cancel membership</button>. You keep everything until your next payment date, and you can come back any time.</p>
+  </div>
+</main>
+
+<div class="ask" id="ask" role="dialog" aria-modal="true" aria-labelledby="askH">
+  <div class="askbox">
+    <h2 id="askH">Cancel your membership?</h2>
+    <div class="askbtns">
+      <button type="button" class="s-btn o" id="askYes">Cancel membership</button>
+      <button type="button" class="s-btn" id="askNo">Keep membership</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const $=id=>document.getElementById(id);
+
+  // Paid members only. Anyone else belongs on the Join page.
+  function gate(){ if(window.sussuriAccount && window.sussuriAccount.get().state!=="member") location.replace("pricing.html"); }
+  gate(); if(window.sussuriAccount) window.sussuriAccount.onChange(gate);
+
+  // ================= SAMPLE VALUES =================
+  // The payment provider is not connected yet, so the plan, next payment, card and earnings below are samples
+  // that show the layout. When it is connected, fill M from the member's real subscription and set SAMPLE to false.
+  const SAMPLE=true;
+  const M={ since:"2026-11-12", interval:"annual", next:"2027-11-12", cardType:"Visa", last4:"4242", members:2, cancelled:false };
+  const PRICE={ monthly:{ words:"Monthly, $39 a month", other:"Change to annual" }, annual:{ words:"Annual, $349 a year", other:"Change to monthly" } };
+  const COVER=4;   // members whose $10 a month cover the $39 membership
+  const NUM=["No","One","Two","Three","Four"];
+  function day(iso){ return new Date(iso+"T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}); }
+  function draw(){
+    $("mSince").textContent=day(M.since);
+    $("planMain").textContent=PRICE[M.interval].words;
+    $("planSub").textContent=(M.cancelled?"Ends ":"Next payment ")+day(M.next);
+    $("planChange").textContent=PRICE[M.interval].other; $("planChange").hidden=M.cancelled;
+    $("cardMain").textContent=M.cardType+" ending "+M.last4;
+    if(!M.members){ $("earnMain").textContent="Nothing yet"; $("earnSub").textContent="Four members cover your membership"; }
+    else {
+      $("earnMain").textContent="$"+(M.members*10)+" a month from "+M.members+(M.members===1?" member":" members");
+      const more=COVER-M.members;
+      $("earnSub").textContent = more>0 ? more+" more cover your membership" : "Your membership is covered";
+    }
+    if(M.cancelled) $("cancelLine").textContent="Membership cancelled. You keep everything until "+day(M.next)+", and you can come back any time.";
+  }
+  draw();
+
+  // PLAN: change between monthly and annual
+  $("planChange").onclick=()=>{
+    if(SAMPLE){ M.interval = M.interval==="annual" ? "monthly" : "annual"; M.next = M.interval==="annual" ? "2027-11-12" : "2026-12-12"; draw(); return; }
+  };
+  // CARD: the payment provider's own customer page (card, receipts)
+  let token="";
+  try{ const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb"); sb.auth.getSession().then(({data})=>{ token=(data.session&&data.session.access_token)||""; }); }catch(e){}
+  $("cardLink").onclick=async()=>{
+    if(window.PSYCHE_PREVIEW){ alert("Preview mode — the payment provider's page is not opened."); return; }
+    try{
+      const res=await fetch("/api/portal",{method:"POST",headers:{Authorization:"Bearer "+token}});
+      const data=await res.json();
+      if(!res.ok || !data.url) throw new Error(data.error||"no url");
+      location.href=data.url;
+    }catch(err){ alert("Couldn't open that just now — please try again in a moment."); }
+  };
+  // CANCEL: asks once, then cancels. No other steps.
+  const ask=$("ask");
+  $("cancelLink").onclick=()=>{ ask.classList.add("open"); $("askNo").focus(); };
+  $("askNo").onclick=()=>ask.classList.remove("open");
+  ask.addEventListener("click",e=>{ if(e.target===ask) ask.classList.remove("open"); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") ask.classList.remove("open"); });
+  $("askYes").onclick=()=>{
+    ask.classList.remove("open");
+    if(SAMPLE){ M.cancelled=true; draw(); return; }
+  };
+</script>
+</body>
+</html>

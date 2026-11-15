@@ -101,7 +101,7 @@
     assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path', 'your-goals':'Your path',
     'how-it-works':'Affiliate program', 'your-plan':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
-    pricing:'Join', signup:'Start free month', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
+    pricing:'Join', membership:'Membership', signup:'Start free month', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
   };
   function pageName(){
     return (document.title || '').replace(/sussuri/i, '').replace(/[\u00b7\u2014\u2013|-]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -254,8 +254,14 @@
     function paint() {
       var w = who(), a = norm(acctHTML(w));
       // the line under Your account: "Join" for a visitor or someone in the free month, "Membership" for a paid member
-      var jr = document.querySelector('#nav [data-route="pricing.html"] .row-label'), jl = w.state === 'member' ? 'Membership' : 'Join';
-      if (jr && jr.textContent !== jl) jr.textContent = jl;
+      // A paid member's line opens the Membership page; everyone else's opens the Join page.
+      var jrow = document.querySelector('#nav [data-route="pricing.html"], #nav [data-route="membership.html"]');
+      if (jrow) {
+        var paid = w.state === 'member', jl = paid ? 'Membership' : 'Join', jroute = paid ? 'membership.html' : 'pricing.html', jr = jrow.querySelector('.row-label');
+        if (jr.textContent !== jl) jr.textContent = jl;
+        if (jrow.getAttribute('data-route') !== jroute) jrow.setAttribute('data-route', jroute);
+        jrow.classList.toggle('active', here === (paid ? 'membership' : 'pricing'));
+      }
       if (box.innerHTML !== a) box.innerHTML = a;
       if (slot) { var h = norm(slotHTML(w)); if (slot.innerHTML !== h) slot.innerHTML = h; slot.style.display = h ? '' : 'none'; }
       listeners.forEach(function (f) { f(w); });
