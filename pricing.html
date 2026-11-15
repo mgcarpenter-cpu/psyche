@@ -50,26 +50,23 @@
   .tier .tv{font-weight:400;font-size:15px;line-height:1.35;color:#000;}
   .bx .sm{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:#5f5f5f;}
 
-  /* the two price lines: stacked, each full width, information only */
+  /* the two price lines: stacked, each full width. They are the choice: press one to select monthly or annual. */
+  .pick{display:flex;flex-direction:column;gap:20px;}
+  button.pline{width:100%;margin:0;background:transparent;font-family:var(--font-jost);text-align:left;cursor:pointer;-webkit-appearance:none;appearance:none;transition:border-color .15s;}
+  button.pline:hover{border-color:#8a8a8a;}
+  button.pline.selected{border-color:#fff;box-shadow:inset 0 0 0 1px #fff;color:#fff;}
+  button.pline.selected .lab{color:#fff;}
+  button.pline:focus{outline:none;} button.pline:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+  .pline .dot{flex:0 0 auto;align-self:center;width:16px;height:16px;border:1px solid #8a8a8a;border-radius:50%;}
+  .pline.selected .dot{border-color:#fff;background:radial-gradient(circle,#fff 0 4.5px,transparent 5px);}
   .pline{display:flex;flex-wrap:nowrap;align-items:baseline;gap:18px;padding:14px 20px;border:1px solid var(--s-border);border-radius:8px;font-weight:300;font-size:15px;line-height:1.4;color:var(--s-text2);white-space:nowrap;overflow:hidden;}
   .pline .lab{font-size:11px;}
   .pline .pp{font-weight:400;color:#fff;}
   .badge{display:inline-block;margin-left:8px;padding:3px 7px;border-radius:4px;background:#fff;color:#000;font-family:var(--font-mono);font-size:10px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;vertical-align:1px;}
 
-  /* the card box: opens under the button. White outline on black. Monthly or annual, then the card details. */
+  /* the card box: opens under the button. White outline on black. What will be charged, then the card details. */
   .cardbox{display:flex;flex-direction:column;gap:18px;padding:24px;border:1px solid #fff;border-radius:8px;background:#000;}
   .cardbox[hidden]{display:none;}
-  .plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0;}
-  .plan{padding:18px 16px;border:1px solid var(--s-border);border-radius:8px;background:transparent;color:#fff;cursor:pointer;text-align:left;font-family:var(--font-jost);
-    display:flex;flex-direction:column;gap:8px;transition:border-color .18s;}
-  .plan:hover{border-color:#8a8a8a;}
-  .plan.selected{border-color:#fff;box-shadow:inset 0 0 0 1px #fff;}
-  .plan:focus{outline:none;} .plan:focus-visible{outline:2px solid #808080;outline-offset:3px;}
-  .plan-name{margin:0;font-family:var(--font-mono);font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .plan.selected .plan-name{color:#fff;}
-  .plan-price{font-family:'Poiret One',var(--font-jost);font-size:40px;line-height:1;color:#fff;}
-  .plan-price .per{font-family:var(--font-jost);font-weight:300;font-size:16px;color:#fff;}
-  .plan-sub{margin:0;font-weight:300;font-size:15px;line-height:1.45;color:var(--s-text2);}
   .co-line{margin:0;font-weight:300;font-size:15px;line-height:1.5;color:var(--s-text2);}
   .cardFrame:empty{display:none;}
   .cardnote{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:var(--s-label);}
@@ -104,19 +101,19 @@
   /* phone and tablet */
   @media (max-width:1023px){
     .scroll{padding:36px 20px 40px;}
-    .shell{gap:16px;}
+    .shell{gap:16px;} .pick{gap:16px;}
     .bx{padding:24px 20px 22px;gap:12px;}
     .bx .say{font-size:17px;} .bx .say.w{font-size:19px;}
     .tiers{gap:6px;} .tier{padding:9px 4px;} .tier .tk{font-size:9.5px;letter-spacing:.08em;} .tier .tv{font-size:13px;}
-    .pline{gap:10px;padding:13px 14px;font-size:13.5px;} .pline .lab{font-size:9.5px;letter-spacing:.08em;} .badge{margin-left:5px;padding:2px 5px;font-size:9px;letter-spacing:.08em;}
+    .pline{gap:7px;padding:13px 10px;font-size:12.5px;} .pline .lab{font-size:9px;letter-spacing:.06em;} .pline .dot{width:14px;height:14px;} .badge{margin-left:3px;padding:2px 4px;font-size:8.5px;letter-spacing:.04em;}
     .cta{height:60px;font-size:13.5px;}
     .cardbox{padding:16px;gap:14px;}
-    .plans{gap:10px;} .plan{padding:14px 12px;} .plan-price{font-size:32px;} .plan-sub{font-size:13.5px;}
     .cmp{margin-top:16px;}
     .c-label{padding:14px 16px;}
     .c-col{flex-basis:74px;padding:0 4px;font-size:14px;}
     .c-head .c-col{font-size:9.5px;letter-spacing:.08em;}
   }
+  @media (max-width:379px){ .pline{gap:6px;padding:13px 8px;font-size:11.5px;} }   /* the smallest phones */
 </style>
 </head>
 <body class="site-shell">
@@ -144,25 +141,16 @@
           <p class="sm">On monthly memberships. An annual member pays you $100 a year.</p>
         </section>
 
-        <div class="pline"><span class="lab">Then monthly</span><span class="pp">$39 a month</span><span>Cancel anytime</span></div>
-        <div class="pline"><span class="lab">Or annual <span class="badge">Save 25%</span></span><span class="pp">$349 a year</span><span>Just $29 a month</span></div>
+        <!-- the two price lines are the choice: monthly or annual (annual to begin with) -->
+        <div class="pick" role="radiogroup" aria-label="Monthly or annual">
+          <button type="button" class="pline" id="pm" role="radio" aria-checked="false"><span class="dot" aria-hidden="true"></span><span class="lab">Then monthly</span><span class="pp">$39 a month</span><span>Cancel anytime</span></button>
+          <button type="button" class="pline selected" id="pa" role="radio" aria-checked="true"><span class="dot" aria-hidden="true"></span><span class="lab">Or annual <span class="badge">Save 25%</span></span><span class="pp">$349 a year</span><span>Just $29 a month</span></button>
+        </div>
 
       <button class="cta startbtn" type="button">Start free month</button>
 
       <!-- the card box: opens here when the button is pressed -->
-      <section class="cardbox" id="cardBox" hidden aria-label="Monthly or annual, and card details">
-        <div class="plans" role="radiogroup" aria-label="Monthly or annual">
-          <button type="button" class="plan" id="pm" role="radio" aria-checked="false">
-            <span class="plan-name">Monthly</span>
-            <span class="plan-price">$39<span class="per"> /mo</span></span>
-            <span class="plan-sub">Cancel anytime</span>
-          </button>
-          <button type="button" class="plan selected" id="pa" role="radio" aria-checked="true">
-            <span class="plan-name">Annual <span class="badge">Save 25%</span></span>
-            <span class="plan-price">$349<span class="per"> /yr</span></span>
-            <span class="plan-sub">Just $29 a month. Three months free</span>
-          </button>
-        </div>
+      <section class="cardbox" id="cardBox" hidden aria-label="Card details">
         <p class="co-line" id="coLine">Nothing to pay today. $349 a year after your free month. Cancel anytime.</p>
         <div class="cardFrame" id="cardFrame"></div>   <!-- the payment provider's card form -->
         <p class="cardnote" id="cardNote" hidden>Card details appear here once payments are connected.</p>
@@ -266,7 +254,7 @@
   }
   labelButtons(); if(window.sussuriAccount) window.sussuriAccount.onChange(labelButtons);
 
-  // ================= THE CARD BOX: monthly or annual (annual to begin with), then the card details =================
+  // ================= MONTHLY OR ANNUAL: chosen on the two price lines (annual to begin with) =================
   let selected='a', cardOpen=false;
   function pick(w){
     selected=w;
