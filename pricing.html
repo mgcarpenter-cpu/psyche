@@ -33,62 +33,53 @@
   .shell[hidden]{display:none;}
   .lab{margin:0;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
 
-  /* 1. the two biggest things on the page */
-  .big{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;}
-  .bx{display:flex;flex-direction:column;gap:18px;padding:36px 36px 34px;border:2px solid #fff;border-radius:8px;min-width:0;container-type:inline-size;}
-  .bx .huge{margin:0;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:min(160px,24cqw);line-height:.95;letter-spacing:.02em;color:#fff;white-space:nowrap;}   /* sized from the box, so "Earn $10" always fits on one line and FREE matches it */
-  .bx .say{margin:0;font-weight:300;font-size:19px;line-height:1.5;color:var(--s-text2);}
-  .bx .say.w{font-size:22px;line-height:1.4;color:#fff;}
-  .tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
-  .tier{display:flex;flex-direction:column;gap:6px;padding:12px 10px;border:1px solid var(--s-border);border-radius:8px;text-align:center;min-width:0;}
-  .tier.hl{border-color:#fff;}
-  .tier .tk{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .tier .tv{font-weight:400;font-size:15px;line-height:1.35;color:#fff;}
-  .bx .sm{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:var(--s-label);}
-
-  /* the two big boxes are solid white with black text; the three small figures have light grey borders, black on "4 members" */
-  .bx{background:#fff;color:#000;}
+  /* ONE COLUMN at every window width: the FREE box, the Earn $10 box, the two price lines, the button, the card box,
+     the small line, the table, the second button. The column stops growing at 1100px and stays at the left. */
+  .shell{max-width:1100px;gap:20px;}   /* equal spacing between the stacked boxes */
+  .bx{display:flex;flex-direction:column;gap:16px;padding:32px 36px 30px;border-radius:8px;background:#fff;color:#000;min-width:0;container-type:inline-size;}
   .bx .lab{color:#5f5f5f;}
-  .bx .huge,.bx .say.w,.tier .tv{color:#000;}
-  .bx .say{color:#333;}
-  .bx .sm{color:#5f5f5f;}
-  .tier{border-color:#cfcfcf;}
+  /* FREE and Earn $10: the same size as each other, never wrapping, shrinking smoothly with the box */
+  .bx .huge{margin:0;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:min(150px,24cqw);line-height:.95;letter-spacing:.02em;color:#000;white-space:nowrap;}
+  .bx .say{margin:0;font-weight:300;font-size:19px;line-height:1.5;color:#333;}
+  .bx .say.w{font-size:22px;line-height:1.4;color:#000;}
+  /* the three small figures: one row, and they stop growing at 760px */
+  .tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:760px;}
+  .tier{display:flex;flex-direction:column;gap:5px;padding:11px 10px;border:1px solid #cfcfcf;border-radius:8px;text-align:center;min-width:0;}
   .tier.hl{border-color:#000;}
-  .tier .tk{color:#5f5f5f;}
+  .tier .tk{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#5f5f5f;}
+  .tier .tv{font-weight:400;font-size:15px;line-height:1.35;color:#000;}
+  .bx .sm{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:#5f5f5f;}
 
-  /* FREE is a short word in a box sized for the longer one beside it, so it is drawn larger and sits in the middle of its box */
-  .bx:first-child{justify-content:center;}
-  .bx:first-child .huge{font-size:min(240px,58cqw);}
-  /* the Earn side is the wider of the two, so "Earn $10" can be larger */
-  .big{grid-template-columns:minmax(0,2fr) minmax(0,3fr);}
-  .bx .huge{font-size:min(190px,24cqw);}
-  /* the three small figures: smaller, and sitting low in the box with the grey line under them */
-  .tiers{margin-top:auto;padding-top:10px;gap:8px;}
-  .tier{padding:9px 8px;gap:4px;}
-  .tier .tk{font-size:10px;}
-  .tier .tv{font-size:14px;}
-  /* narrower computer windows: the two boxes stack (as on a phone) so the big words keep their size */
-  @media (max-width:1359px){
-    .big{grid-template-columns:minmax(0,1fr);gap:20px;}
-    .bx{padding:28px 32px 26px;gap:14px;}
-    .bx .huge{font-size:min(150px,24cqw);}
-    .bx:first-child .huge{font-size:min(180px,50cqw);}
-  }
-
-  @media (max-width:1023px){ .tiers{gap:6px;} .tier{padding:9px 4px;} .tier .tk{font-size:9.5px;} .tier .tv{font-size:13px;} }
-
-  /* 2. slim price lines: information only */
-  .prices{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;}
-  .pline{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;padding:14px 20px;border:1px solid var(--s-border);border-radius:8px;font-weight:300;font-size:15px;line-height:1.4;color:var(--s-text2);}
+  /* the two price lines: stacked, each full width, information only */
+  .pline{display:flex;flex-wrap:nowrap;align-items:baseline;gap:18px;padding:14px 20px;border:1px solid var(--s-border);border-radius:8px;font-weight:300;font-size:15px;line-height:1.4;color:var(--s-text2);white-space:nowrap;overflow:hidden;}
   .pline .lab{font-size:11px;}
   .pline .pp{font-weight:400;color:#fff;}
   .badge{display:inline-block;margin-left:8px;padding:3px 7px;border-radius:4px;background:#fff;color:#000;font-family:var(--font-mono);font-size:10px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;vertical-align:1px;}
+
+  /* the card box: opens under the button. White outline on black. Monthly or annual, then the card details. */
+  .cardbox{display:flex;flex-direction:column;gap:18px;padding:24px;border:1px solid #fff;border-radius:8px;background:#000;}
+  .cardbox[hidden]{display:none;}
+  .plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0;}
+  .plan{padding:18px 16px;border:1px solid var(--s-border);border-radius:8px;background:transparent;color:#fff;cursor:pointer;text-align:left;font-family:var(--font-jost);
+    display:flex;flex-direction:column;gap:8px;transition:border-color .18s;}
+  .plan:hover{border-color:#8a8a8a;}
+  .plan.selected{border-color:#fff;box-shadow:inset 0 0 0 1px #fff;}
+  .plan:focus{outline:none;} .plan:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+  .plan-name{margin:0;font-family:var(--font-mono);font-size:11px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+  .plan.selected .plan-name{color:#fff;}
+  .plan-price{font-family:'Poiret One',var(--font-jost);font-size:40px;line-height:1;color:#fff;}
+  .plan-price .per{font-family:var(--font-jost);font-weight:300;font-size:16px;color:#fff;}
+  .plan-sub{margin:0;font-weight:300;font-size:15px;line-height:1.45;color:var(--s-text2);}
+  .co-line{margin:0;font-weight:300;font-size:15px;line-height:1.5;color:var(--s-text2);}
+  .cardFrame:empty{display:none;}
+  .cardnote{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:var(--s-label);}
+  .cardnote[hidden]{display:none;}
 
   /* 3 + 5. the button, right across */
   .cta{display:flex;align-items:center;justify-content:center;width:100%;height:68px;border:1px solid #fff;border-radius:8px;background:#fff;color:#000;font-family:var(--font-jost);font-size:15px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;}
   .cta:hover{background:#e6e6e6;}
   .cta:focus{outline:none;} .cta:focus-visible{outline:2px solid #808080;outline-offset:3px;}
-  .under{margin:-12px 0 0;font-weight:300;font-size:14px;line-height:1.55;color:var(--s-label);}
+  .under{margin:-6px 0 0;font-weight:300;font-size:14px;line-height:1.55;color:var(--s-label);}
   .under a,.fine a{color:var(--s-text2);text-decoration:underline;text-underline-offset:3px;}
 
   /* 4. What you get */
@@ -110,41 +101,21 @@
   .fine p{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:var(--s-label);}
   .fine .micro{font-size:16px;color:var(--s-text2);}
 
-  /* ---------- checkout, first step ---------- */
-  .co{max-width:860px;}
-  .co h1{margin:0 0 8px;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:48px;line-height:1.15;letter-spacing:.04em;color:#fff;}
-  .plans{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin:0;}
-  .plan{min-height:230px;padding:30px 20px;border:1px solid var(--s-border);border-radius:8px;background:transparent;color:#fff;cursor:pointer;text-align:center;font-family:var(--font-jost);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:border-color .18s;}
-  .plan:hover{border-color:#8a8a8a;}
-  .plan.selected{border:2px solid #fff;padding:29px 19px;}
-  .plan:focus{outline:none;} .plan:focus-visible{outline:2px solid #808080;outline-offset:3px;}
-  .plan-name{margin:0;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .plan.selected .plan-name{color:#fff;}
-  .plan-price{font-family:'Poiret One',var(--font-jost);font-size:72px;line-height:1;color:#fff;}
-  .plan-price .per{font-family:var(--font-jost);font-weight:300;font-size:18px;color:#fff;}
-  .plan-sub{margin:0;font-weight:300;font-size:16px;line-height:1.45;color:var(--s-text2);}
-  .cardFrame:empty{display:none;}
-  .co-line{margin:-8px 0 0;text-align:center;font-weight:300;font-size:16px;line-height:1.5;color:var(--s-text2);}
-
-  /* phone and tablet: the two big boxes stack (FREE first), the three earn boxes stay in a row, the price lines stack */
+  /* phone and tablet */
   @media (max-width:1023px){
     .scroll{padding:36px 20px 40px;}
-    .shell{gap:20px;}
-    .big,.prices{grid-template-columns:minmax(0,1fr);gap:16px;}
-    .bx{padding:26px 20px 24px;gap:14px;}
+    .shell{gap:16px;}
+    .bx{padding:24px 20px 22px;gap:12px;}
     .bx .say{font-size:17px;} .bx .say.w{font-size:19px;}
-    .tiers{gap:6px;} .tier{padding:10px 4px;} .tier .tk{font-size:9.5px;letter-spacing:.08em;} .tier .tv{font-size:13px;}
+    .tiers{gap:6px;} .tier{padding:9px 4px;} .tier .tk{font-size:9.5px;letter-spacing:.08em;} .tier .tv{font-size:13px;}
+    .pline{gap:10px;padding:13px 14px;font-size:13.5px;} .pline .lab{font-size:9.5px;letter-spacing:.08em;} .badge{margin-left:5px;padding:2px 5px;font-size:9px;letter-spacing:.08em;}
     .cta{height:60px;font-size:13.5px;}
-    .under{margin-top:-6px;}
+    .cardbox{padding:16px;gap:14px;}
+    .plans{gap:10px;} .plan{padding:14px 12px;} .plan-price{font-size:32px;} .plan-sub{font-size:13.5px;}
     .cmp{margin-top:16px;}
     .c-label{padding:14px 16px;}
     .c-col{flex-basis:74px;padding:0 4px;font-size:14px;}
     .c-head .c-col{font-size:9.5px;letter-spacing:.08em;}
-    .co h1{font-size:32px;}
-    .plans{grid-template-columns:1fr;gap:16px;}
-    .plan{min-height:180px;padding:24px 16px;gap:12px;} .plan.selected{padding:23px 15px;}
-    .plan-price{font-size:60px;}
   }
 </style>
 </head>
@@ -155,9 +126,7 @@
 <main>
   <div class="scroll">
 
-    <!-- ============ the Join page ============ -->
     <div class="shell" id="joinView">
-      <div class="big">
         <section class="bx">
           <p class="lab">First month</p>
           <p class="huge">FREE</p>
@@ -174,14 +143,31 @@
           </div>
           <p class="sm">On monthly memberships. An annual member pays you $100 a year.</p>
         </section>
-      </div>
 
-      <div class="prices">
         <div class="pline"><span class="lab">Then monthly</span><span class="pp">$39 a month</span><span>Cancel anytime</span></div>
         <div class="pline"><span class="lab">Or annual <span class="badge">Save 25%</span></span><span class="pp">$349 a year</span><span>Just $29 a month</span></div>
-      </div>
 
       <button class="cta startbtn" type="button">Start free month</button>
+
+      <!-- the card box: opens here when the button is pressed -->
+      <section class="cardbox" id="cardBox" hidden aria-label="Monthly or annual, and card details">
+        <div class="plans" role="radiogroup" aria-label="Monthly or annual">
+          <button type="button" class="plan" id="pm" role="radio" aria-checked="false">
+            <span class="plan-name">Monthly</span>
+            <span class="plan-price">$39<span class="per"> /mo</span></span>
+            <span class="plan-sub">Cancel anytime</span>
+          </button>
+          <button type="button" class="plan selected" id="pa" role="radio" aria-checked="true">
+            <span class="plan-name">Annual <span class="badge">Save 25%</span></span>
+            <span class="plan-price">$349<span class="per"> /yr</span></span>
+            <span class="plan-sub">Just $29 a month. Three months free</span>
+          </button>
+        </div>
+        <p class="co-line" id="coLine">Nothing to pay today. $349 a year after your free month. Cancel anytime.</p>
+        <div class="cardFrame" id="cardFrame"></div>   <!-- the payment provider's card form -->
+        <p class="cardnote" id="cardNote" hidden>Card details appear here once payments are connected.</p>
+      </section>
+
       <p class="under">Choose monthly or annual at checkout. Prices are in US dollars. Tax is added at checkout. Earnings are paid monthly, fully automated. <a href="payment-terms.html">Terms apply</a>.</p>
 
       <section class="cmp">
@@ -205,26 +191,6 @@
         <p>A space to reflect, not a substitute for professional care. <a href="urgent.html">Need urgent help?</a></p>
         <p>By joining, you agree to our <a href="terms.html">Terms</a> and <a href="payment-terms.html">Payment Terms</a>.</p>
       </div>
-    </div>
-
-    <!-- ============ checkout, first step (pricing.html#checkout) ============ -->
-    <div class="shell co" id="coView" hidden>
-      <h1>Choose what follows your free month</h1>
-      <div class="plans" role="radiogroup" aria-label="What follows your free month">
-        <button type="button" class="plan" id="pm" role="radio" aria-checked="false">
-          <span class="plan-name">Monthly</span>
-          <span class="plan-price">$39<span class="per"> /mo</span></span>
-          <span class="plan-sub">Cancel anytime</span>
-        </button>
-        <button type="button" class="plan selected" id="pa" role="radio" aria-checked="true">
-          <span class="plan-name">Annual <span class="badge">Save 25%</span></span>
-          <span class="plan-price">$349<span class="per"> /yr</span></span>
-          <span class="plan-sub">Just $29 a month<br>Three months free</span>
-        </button>
-      </div>
-      <button class="cta" id="coGo" type="button">Continue to card details</button>
-      <p class="co-line" id="coLine">Nothing to pay today. $349 a year after your free month. Cancel anytime.</p>
-      <div class="cardFrame" id="cardFrame"></div>   <!-- the payment provider's card form opens here, on the same page -->
     </div>
 
   </div>
@@ -284,18 +250,14 @@
   $("acctSignout").onclick=async()=>{ if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; } try{ await sb.auth.signOut(); }catch(e){} location.href="index.html"; };
   document.addEventListener('click',e=>{ if(acctMenu&&!acctMenu.contains(e.target)&&!$("account").contains(e.target)) acctMenu.classList.remove('open'); });
 
-  // ================= THE TWO VIEWS =================
-  // The Join page, and the checkout's first step (pricing.html#checkout). The browser's Back button returns to the Join page.
+  // ================= THE BUTTONS =================
+  // Not signed in: the Sign-up page comes first (email, then back here). Signed in: the card box opens under the first button.
   const scroller=document.querySelector('.scroll');
-  function showView(){
-    const co=location.hash==="#checkout";
-    $("joinView").hidden=co; $("coView").hidden=!co; scroller.scrollTop=0;
-  }
-  window.addEventListener("hashchange", showView);
-  // not signed in: the Sign-up page comes first (email, then back here). Signed in: the checkout.
   document.querySelectorAll(".startbtn").forEach(b=>{ b.onclick=()=>{
     if(window.sussuriAccount && window.sussuriAccount.get().state==="visitor"){ location.href="signup.html"; return; }
-    location.hash="checkout";
+    $("cardBox").hidden=false;
+    openCheckout(selected);
+    $("cardBox").scrollIntoView({behavior:"smooth",block:"center"});
   }; });
   // someone already in their free month reads BECOME A MEMBER on both buttons; the checkout is the same
   function labelButtons(){
@@ -304,7 +266,7 @@
   }
   labelButtons(); if(window.sussuriAccount) window.sussuriAccount.onChange(labelButtons);
 
-  // ================= CHECKOUT, FIRST STEP: monthly or annual (annual to begin with) =================
+  // ================= THE CARD BOX: monthly or annual (annual to begin with), then the card details =================
   let selected='a', cardOpen=false;
   function pick(w){
     selected=w;
@@ -335,22 +297,19 @@
     }
   });
   function openCheckout(interval){
-    if(window.PSYCHE_PREVIEW){ alert("Preview mode — checkout is not opened."); return; }
-    if(!acctUid){ location.href="signup.html"; return; }
+    if(cardOpen) return;   // already showing; choosing monthly or annual updates it
     const priceId=PRICE[interval];
-    if(!priceId || priceId.indexOf("TODO")>-1){
-      alert("Membership checkout isn't fully set up yet — check back shortly.");
-      return;
-    }
+    // payments not connected yet (or preview): the box shows the choice and a note where the card details will be
+    if(window.PSYCHE_PREVIEW || !priceId || priceId.indexOf("TODO")>-1){ $("cardNote").hidden=false; return; }
+    if(!acctUid){ location.href="signup.html"; return; }
     cardOpen=true;
     Paddle.Checkout.open({
-      settings: { displayMode:"inline", frameTarget:"cardFrame", frameInitialHeight:450, frameStyle:"width:100%; min-width:312px; background-color:transparent; border:none;" },   // card details underneath, on this page
+      settings: { displayMode:"inline", frameTarget:"cardFrame", frameInitialHeight:450, frameStyle:"width:100%; min-width:312px; background-color:transparent; border:none;" },
       items: [{ priceId: priceId, quantity: 1 }],
       customer: { email: acctEmail },
       customData: { user_id: acctUid, plan: "member", interval: interval==='m'?'monthly':'annual' }
     });
   }
-  $("coGo").onclick=()=>openCheckout(selected);   // then the payment provider's card form, as before
 
   // ================= BOOT =================
   function renderAll(){ renderAccount(); }
@@ -375,7 +334,6 @@
     });
   }
 
-  showView();
 </script>
 </body>
 </html>
