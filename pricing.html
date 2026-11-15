@@ -68,6 +68,14 @@
   .cardbox{display:flex;flex-direction:column;gap:18px;padding:24px;border:1px solid #fff;border-radius:8px;background:#000;}
   .cardbox[hidden]{display:none;}
   .co-line{margin:0;font-weight:300;font-size:15px;line-height:1.5;color:var(--s-text2);}
+  /* the agreement: an unticked box; the button under it stays switched off until it is ticked */
+  .agree{display:flex;align-items:flex-start;gap:12px;font-weight:300;font-size:16px;line-height:1.5;color:#fff;cursor:pointer;}
+  .agree input{-webkit-appearance:none;appearance:none;flex:0 0 auto;width:24px;height:24px;margin:0;border:1px solid #fff;border-radius:4px;background:transparent no-repeat center/14px 12px;cursor:pointer;}
+  .agree input:checked{background-color:#fff;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 17'%3E%3Cpath d='M1.5 9l5 5.5L16.5 2' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");}
+  .agree input:focus{outline:none;} .agree input:focus-visible{outline:2px solid #808080;outline-offset:3px;}
+  .agree a{color:#fff;text-decoration:underline;text-underline-offset:3px;}
+  .cta[disabled]{background:transparent;color:#8f8f8f;border-color:#4a4a4a;cursor:default;}
+  .cta[disabled]:hover{background:transparent;}
   .cardFrame:empty{display:none;}
   .cardnote{margin:0;font-weight:300;font-size:14px;line-height:1.5;color:var(--s-label);}
   .cardnote[hidden]{display:none;}
@@ -152,6 +160,8 @@
       <!-- the card box: opens here when the button is pressed -->
       <section class="cardbox" id="cardBox" hidden aria-label="Card details">
         <p class="co-line" id="coLine">Nothing to pay today. $349 a year after your free month. Cancel anytime.</p>
+        <label class="agree"><input type="checkbox" id="agree"><span>I agree to the <a href="terms.html" target="_blank" rel="noopener">Terms</a>, and to pay <span id="agreeAmt">$349 a year</span> after my free month unless I cancel.</span></label>
+        <button class="cta startlabel" id="cardGo" type="button" disabled>Start free month</button>
         <div class="cardFrame" id="cardFrame"></div>   <!-- the payment provider's card form -->
         <p class="cardnote" id="cardNote" hidden>Card details appear here once payments are connected.</p>
       </section>
@@ -244,13 +254,12 @@
   document.querySelectorAll(".startbtn").forEach(b=>{ b.onclick=()=>{
     if(window.sussuriAccount && window.sussuriAccount.get().state==="visitor"){ location.href="signup.html"; return; }
     $("cardBox").hidden=false;
-    openCheckout(selected);
     $("cardBox").scrollIntoView({behavior:"smooth",block:"center"});
   }; });
   // someone already in their free month reads BECOME A MEMBER on both buttons; the checkout is the same
   function labelButtons(){
     const t=(window.sussuriAccount && window.sussuriAccount.get().state==="trial") ? "Become a member" : "Start free month";
-    document.querySelectorAll(".startbtn").forEach(b=>{ b.textContent=t; });
+    document.querySelectorAll(".startbtn, .startlabel").forEach(b=>{ b.textContent=t; });
   }
   labelButtons(); if(window.sussuriAccount) window.sussuriAccount.onChange(labelButtons);
 
@@ -261,10 +270,31 @@
     $("pm").classList.toggle('selected', w==='m'); $("pm").setAttribute("aria-checked", String(w==='m'));
     $("pa").classList.toggle('selected', w==='a'); $("pa").setAttribute("aria-checked", String(w==='a'));
     if(cardOpen){ try{ Paddle.Checkout.updateItems([{ priceId: PRICE[w], quantity: 1 }]); }catch(e){} }   // the card form follows the choice
+    $("agreeAmt").textContent = w==='m' ? "$39 a month" : "$349 a year";
+    if($("agree").checked){ $("agree").checked=false; $("cardGo").disabled=true; }   // a different amount: it has to be agreed to again
     $("coLine").textContent = w==='m' ? "Nothing to pay today. $39 a month after your free month. Cancel anytime."
                                       : "Nothing to pay today. $349 a year after your free month. Cancel anytime.";
   }
   $("pm").onclick=()=>pick('m'); $("pa").onclick=()=>pick('a');
+
+  // ================= THE AGREEMENT =================
+  // "I agree to the Terms, and to pay $349 a year after my free month unless I cancel." Unticked to begin with.
+  // The card box's button is switched off until it is ticked. Every tick is recorded with its date and time:
+  // on the person's account, in this browser, and it is sent with the payment.
+  let agreedAt="";
+  function recordAgreement(){
+    agreedAt=new Date().toISOString();
+    const rec={ at:agreedAt, plan:selected==='m'?'monthly':'annual', amount:selected==='m'?'$39 a month':'$349 a year' };
+    try{ const log=JSON.parse(localStorage.getItem("sussuri:agreed")||"[]"); log.push(rec); localStorage.setItem("sussuri:agreed",JSON.stringify(log.slice(-20))); }catch(e){}
+    if(acctUid && !window.PSYCHE_PREVIEW){
+      sb.auth.getUser().then(({data})=>{
+        const past=(data&&data.user&&data.user.user_metadata&&data.user.user_metadata.terms_agreed)||[];
+        return sb.auth.updateUser({ data:{ terms_agreed: past.concat([rec]).slice(-20), terms_agreed_at: rec.at } });
+      }).catch(()=>{});
+    }
+  }
+  $("agree").onchange=()=>{ $("cardGo").disabled=!$("agree").checked; if($("agree").checked) recordAgreement(); };
+  $("cardGo").onclick=()=>{ if(!$("agree").checked) return; openCheckout(selected); };
 
   // ================= PADDLE (sandbox) =================
   // NOTE: these two membership prices don't exist in Paddle yet — create a $39/mo
@@ -295,7 +325,7 @@
       settings: { displayMode:"inline", frameTarget:"cardFrame", frameInitialHeight:450, frameStyle:"width:100%; min-width:312px; background-color:transparent; border:none;" },
       items: [{ priceId: priceId, quantity: 1 }],
       customer: { email: acctEmail },
-      customData: { user_id: acctUid, plan: "member", interval: interval==='m'?'monthly':'annual' }
+      customData: { user_id: acctUid, plan: "member", interval: interval==='m'?'monthly':'annual', terms_agreed_at: agreedAt }
     });
   }
 
