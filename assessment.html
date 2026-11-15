@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Sussuri</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="site.css?v=20261115q">
+<link rel="stylesheet" href="site.css?v=20261116a">
 <style>
 /* ═══════════════════════════════════════════════════════════
    SUSSURI — DESIGN SYSTEM
@@ -1317,7 +1317,7 @@ html,body{ background:#000; color:#fff; }
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js?v=20261115q"></script>
+<script src="site-header.js?v=20261116a"></script>
 <div class="scrim" id="scrim"></div>
 
 <!-- ═════════════════════════════════════════
@@ -2881,6 +2881,31 @@ document.addEventListener("keydown", e => {
       box.appendChild(d);
     });
   })();
+})();
+</script>
+<script>
+/* Arrived from a gift link (gift.html, ?gift=<id>): a "Start my free month" button stays in view,
+   and is offered again under the result. Nothing changes for anyone else. */
+(function(){
+  var gid=null; try{ gid=new URLSearchParams(location.search).get('gift')||sessionStorage.getItem('sussuri:gift'); if(gid) sessionStorage.setItem('sussuri:gift',gid); }catch(e){}
+  if(!gid) return;
+  var css=document.createElement('style');
+  css.textContent='.giftStick{position:fixed;right:24px;bottom:24px;z-index:60;display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 26px;border-radius:8px;background:#fff;color:#000;text-decoration:none;font:500 13px/1 Jost,sans-serif;letter-spacing:.2em;text-transform:uppercase;box-shadow:0 6px 24px rgba(0,0,0,.45);}'+
+    '.giftAgain{margin:40px auto 0;max-width:640px;padding:28px 0 0;border-top:1px solid #333;text-align:center;font:300 19px/1.5 Jost,sans-serif;color:#fff;}.giftAgain a{display:inline-flex;margin-top:18px;height:52px;align-items:center;padding:0 28px;border-radius:8px;background:#fff;color:#000;text-decoration:none;font-weight:500;font-size:13px;letter-spacing:.2em;text-transform:uppercase;}'+
+    '@media (max-width:900px){.giftStick{left:16px;right:16px;bottom:16px;}}';
+  document.head.appendChild(css);
+  var a=document.createElement('a'); a.className='giftStick'; a.href='signup.html'; a.textContent='Start my free month'; document.body.appendChild(a);
+  if(typeof saveAssessmentResult==='function'){
+    var orig=saveAssessmentResult;
+    saveAssessmentResult=function(){
+      orig.apply(this,arguments);
+      if(document.getElementById('giftAgain')) return;
+      var el=document.getElementById('revName'), host=(el&&el.closest('section,.screen,.reveal'))||document.body;
+      var d=document.createElement('div'); d.id='giftAgain'; d.className='giftAgain';
+      d.innerHTML='That is who you are underneath. Sussuri can help you work with it: a guide to talk to, meditations, and the training to reach your goals. One whole month free.<br><a href="signup.html">Start my free month</a>';
+      host.appendChild(d);
+    };
+  }
 })();
 </script>
 </body>

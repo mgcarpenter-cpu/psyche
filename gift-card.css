@@ -1,0 +1,66 @@
+/* The gift card: the front page composition (1440 x 820), from give-a-gift-design.html.
+   Used by give-a-gift.html (the live preview) and gift.html (the page the friend lands on). */
+  /* The card: the front page composition, 1440 x 820, taken from the front page file and scaled as one piece. */
+  .fpfit { width:100%; aspect-ratio:1440 / 820; overflow:hidden; border-radius:6px; border:1px solid var(--hair); }
+  .fp { position:relative; width:1440px; height:820px; transform-origin:0 0; font:300 17px/1.6 'Jost',system-ui,sans-serif; color:#000; background:linear-gradient(#000 410px,#fff 410px); overflow:hidden; }
+  .fp .wheel { position:absolute; left:18.6px; top:97.4px; width:625.2px; height:625.2px; display:block; }
+  .fp .ln { fill:none; stroke:#f4f4f4; stroke-width:1; }
+  .fp .ln.f { stroke-width:.7; }
+  .fp .dots circle { fill:#f4f4f4; }
+  .fp .dial circle, .fp .dial path { fill:none; stroke-width:.8; }
+  .fp .dup circle, .fp .dup path { stroke:#8a8a8a; }
+  .fp .dlow circle, .fp .dlow path { stroke:#777; }
+  .fp .dial .reg { stroke-width:.7; }
+  .fp .dlow .reg { stroke:#000; opacity:.4; }
+  .fp .hit { fill:transparent; }
+  .fp .lit { fill:#f4f4f4; opacity:0; }
+  .fp .seg.on .lit { opacity:1; }
+  .fp .lbl { font:400 22px 'Poiret One',Georgia,serif; letter-spacing:4px; fill:#f4f4f4; opacity:0; }
+  .fp .lbl.show { opacity:1; }
+  .fp .seg.on .lbl { fill:#000; font-size:25px; }
+  .fp .h { position:absolute; left:40px; top:-5px; margin:0; font:400 328px/1 'Poiret One',Georgia,serif; letter-spacing:16.4px; color:#f4f4f4; white-space:nowrap; z-index:2; }
+  .fp .bars { position:absolute; left:51.5px; top:55px; z-index:4; width:24px; height:14px; border-top:1.5px solid #f4f4f4; border-bottom:1.5px solid #f4f4f4; }
+  .fp .bars::after { content:""; position:absolute; left:0; right:0; top:50%; margin-top:-.75px; border-top:1.5px solid #f4f4f4; }
+  .fp .line { position:absolute; left:520px; top:556.4px; width:237.3px; height:1px; background:#000; }
+  .fp .box { position:absolute; left:757.3px; top:428px; width:631.2px; height:368px; padding:22px 36px 24px; }
+  .fp .box::before, .fp .box::after, .fp .cn::before, .fp .cn::after { content:""; position:absolute; width:16px; height:16px; border:1px solid #000; }
+  .fp .box::before { left:0; top:0; border-right:0; border-bottom:0; border-top-left-radius:7px; }
+  .fp .box::after { right:0; bottom:0; border-left:0; border-top:0; border-bottom-right-radius:7px; }
+  .fp .cn::before { right:0; top:0; border-left:0; border-bottom:0; border-top-right-radius:7px; }
+  .fp .cn::after { left:0; bottom:0; border-right:0; border-top:0; border-bottom-left-radius:7px; }
+  .fp .row { display:flex; justify-content:space-between; align-items:center; height:12px; white-space:nowrap; font:400 12px/1 'JetBrains Mono',ui-monospace,monospace; letter-spacing:1.1px; text-transform:uppercase; }
+  .fp .name { display:flex; align-items:flex-end; margin:6px 0 0; height:60px; font:400 58px/1 'Poiret One',Georgia,serif; letter-spacing:.06em; white-space:nowrap; overflow:hidden; }
+  .fp .offer { position:absolute; right:51.5px; top:72px; width:350px; z-index:3; background:#b3261e; color:#fff; border-radius:8px; padding:22px 26px 22px; display:flex; flex-direction:column; }
+  .fp .o1 { font:500 35px/1.1 'Jost',system-ui,sans-serif; letter-spacing:.01em; }
+  .fp .o2 { font:400 124px/.95 'Poiret One',Georgia,serif; letter-spacing:.04em; margin:2px 0 12px -4px; }
+  .fp .o3 { font:400 20px/1.3 'Jost',system-ui,sans-serif; }
+  .fp .gift { margin:8px 0 0; font-size:24px; line-height:30px; height:30px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .fp .about { margin:0; font-size:18.5px; line-height:24px; max-height:50px; overflow:hidden; color:#222; font-weight:400; }
+  .fp .desc { margin:8px 0 0; font-size:20px; line-height:26px; max-height:80px; font-weight:400; overflow:hidden; overflow-wrap:anywhere; }
+  .fp .desc:not(:empty)::before { content:"“"; }
+  .fp .desc:not(:empty)::after { content:"”"; }
+  .fp .cta { position:absolute; right:36px; bottom:26px; height:48px; border-radius:8px; padding:0 24px; display:flex; align-items:center; background:#000; color:#fff; font:500 14.5px/1 'Jost',system-ui,sans-serif; letter-spacing:.2em; text-indent:.2em; text-transform:uppercase; }
+  .fp .small { position:absolute; left:36px; bottom:26px; width:300px; min-height:46px; display:flex; align-items:center; margin:0; font-size:13px; line-height:1.35; color:#6a6a6a; }
+
+/* the stacked card (phones, tall windows): sizes come from the script as --W --m --F --R --bw --bp --hs --ds --ls --ms */
+.fp.tall { position:relative; width:100%; height:auto; transform:none; background:#fff; padding-bottom:var(--m); }
+.fp.tall .tblack { background:#000; padding:calc(var(--F) * .02) var(--m) 0; display:flex; flex-direction:column; align-items:center; }
+.fp.tall .h { position:static; align-self:stretch; font-size:var(--F); letter-spacing:calc(var(--F) * .05); line-height:1; margin-top:calc(var(--F) * -.12); }
+.fp.tall .offer { position:static; width:var(--bw); margin:calc(var(--m) * .6) 0 0; padding:calc(var(--bp) * .9) var(--bp); }
+.fp.tall .o1 { font-size:calc(var(--bw) * .055 + 6px); }
+.fp.tall .o2 { font-size:calc(var(--bw) * .2); margin:2px 0 8px -2px; }
+.fp.tall .o3 { font-size:calc(var(--bw) * .03 + 6px); }
+.fp.tall .twheel { position:relative; height:calc(var(--R) * 2.336); background:linear-gradient(#000 50%, #fff 50%); }
+.fp.tall .wheel { left:calc(var(--W) / 2 - var(--R) * 1.2824); top:calc(var(--R) * 1.168 - var(--R) * 1.2824); width:calc(var(--R) * 2.5649); height:calc(var(--R) * 2.5649); }
+.fp.tall .reg { display:none; }
+.fp.tall .line { position:static; display:block; width:1px; height:calc(var(--m) * 1.2); margin:0 auto; }
+.fp.tall .box { position:relative; left:auto; top:auto; width:var(--bw); height:auto; margin:0 auto; padding:var(--bp) calc(var(--bp) * 1.3) calc(var(--bp) * 1.1); }
+.fp.tall .row { font-size:var(--ms); height:auto; letter-spacing:.1em; white-space:normal; gap:12px; align-items:flex-start; line-height:1.3; }
+.fp.tall .row span:last-child { text-align:right; }
+.fp.tall .name { font-size:var(--hs); height:calc(var(--hs) * 1.05); margin-top:calc(var(--hs) * .15); }
+.fp.tall .gift { font-size:calc(var(--ds) * 1.12); line-height:1.3; height:auto; white-space:normal; }
+.fp.tall .about { font-size:calc(var(--ds) * .92); line-height:1.35; max-height:none; margin-top:4px; }
+.fp.tall .desc { font-size:var(--ds); line-height:1.35; max-height:none; margin-top:calc(var(--ds) * .5); }
+.fp.tall .small { position:static; width:auto; min-height:0; margin-top:calc(var(--ls) * 1.1); font-size:calc(var(--ls) * .82); }
+.fp.tall .cta { position:static; margin-top:calc(var(--ls) * .9); height:calc(var(--ls) * 3.1); justify-content:center; font-size:calc(var(--ls) * .85); }
+.fp.tall .twheel { margin-top:-1px; }

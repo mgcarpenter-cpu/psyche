@@ -1,11 +1,30 @@
 {
   "cleanUrls": true,
   "redirects": [
-    { "source": "/", "destination": "/front-v2", "permanent": false }
+    {
+      "source": "/",
+      "destination": "/front-v2",
+      "permanent": false
+    }
   ],
   "functions": {
     "api/chat.js": {
       "maxDuration": 60
+    },
+    "api/g.js": {
+      "includeFiles": "{gift.html,meditation-sessions.js}"
+    },
+    "api/gift.js": {
+      "includeFiles": "meditation-sessions.js"
+    },
+    "api/gift-image.js": {
+      "includeFiles": "{fonts/**,gift-card.js,meditation-sessions.js}"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/g/:id",
+      "destination": "/api/g?id=:id"
+    }
+  ]
 }

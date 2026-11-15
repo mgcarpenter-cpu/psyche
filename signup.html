@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Start free month · Sussuri</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="site.css?v=20261115q">
+<link rel="stylesheet" href="site.css?v=20261116a">
 <style>
   :root{
     --cream:#fff; --night:#000; --indigo:#fff;
@@ -138,7 +138,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261115q"></script>
+<script src="site-header.js?v=20261116a"></script>
 <div class="scrim" id="scrim"></div>
 
 <main>
@@ -248,7 +248,9 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
         keepChoice();
         var btn=$("emailBtn"); btn.disabled=true; btn.textContent="Sending…";
         try{
-          var res=await sb2.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin + "/pricing.html" } });
+          // arrived from a gift link (gift.html)? note the gift on the new account, so the member who gave it is credited if they join
+          var gref=null; try{ var gg=JSON.parse(localStorage.getItem("sussuri:gift")); if(gg && gg.id && !/^preview-/.test(gg.id) && Date.now()-Date.parse(gg.at)<60*864e5) gref=gg.id; }catch(e){}
+          var res=await sb2.auth.signInWithOtp({ email:email, options:{ emailRedirectTo: location.origin + "/pricing.html", data: gref ? { gift_ref: gref } : undefined } });
           btn.disabled=false; btn.textContent="Email me a sign-in link";
           if(res.error){
             console.error("Sussuri auth: signInWithOtp returned an error —", res.error);

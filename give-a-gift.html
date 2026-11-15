@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Give a gift · Sussuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="meditation-cover.css?v=20261116a">
+<link rel="stylesheet" href="gift-card.css?v=20261116a">
+<style>
+  /* Give a gift (Affiliate program). Design: give-a-gift-design.html (16 Nov 2026).
+     Three large bars, all closed to begin with, one open at a time. Every gift goes out on the same card (gift-card.js). */
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;-webkit-font-smoothing:antialiased;}
+  main{overflow-y:auto;padding:56px 72px 0;display:flex;flex-direction:column;}
+  .how{margin:18px 0 40px;font-size:21px;line-height:1.45;max-width:800px;color:#fff;}
+  .how b{font-weight:500;}
+
+  .accs{display:flex;flex-direction:column;gap:16px;padding-bottom:80px;}
+  .acc{border:1px solid rgba(255,255,255,.26);border-radius:var(--s-radius);}
+  .acc.open{border-color:#fff;}
+  .acchead{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:grid;grid-template-columns:1fr 44px;gap:30px;align-items:center;padding:34px 34px 36px;}
+  .acchead:hover{background:rgba(255,255,255,.05);}
+  .acchead:focus-visible{outline:2px solid #fff;outline-offset:3px;}
+  .acchead .w{display:flex;flex-direction:column;gap:12px;}
+  .acchead .t{font-family:var(--font-display);font-size:56px;line-height:1;}
+  .acchead .d{font-size:21px;max-width:760px;line-height:1.4;}
+  .chev{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s;}
+  .acc.open .chev{transform:rotate(180deg);}
+  .pane{display:none;flex-direction:column;gap:14px;padding:0 34px 34px;}
+  .acc.open .pane{display:flex;}
+  .lab{display:block;font-family:var(--font-mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--s-label);margin-bottom:8px;}
+  .recv{margin:18px 0 0;}
+  .ctl{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;}
+  .picks{display:flex;flex-direction:column;gap:6px;}
+  .pick{all:unset;box-sizing:border-box;cursor:pointer;width:100%;border:1px solid rgba(255,255,255,.26);border-radius:var(--s-radius);padding:10px 14px;font-size:17px;line-height:1.35;}
+  .pick:hover{background:rgba(255,255,255,.07);}
+  .pick:focus-visible,.copy:focus-visible,.give:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+  .pick.on{background:#fff;color:#000;border-color:#fff;font-weight:400;}
+  .pick.med{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;padding:8px 14px;}
+  .pick.med .pl{all:unset;box-sizing:border-box;cursor:pointer;width:26px;height:26px;border:1px solid currentColor;border-radius:50%;display:grid;place-items:center;}
+  .pick.med .pl svg{width:9px;height:9px;fill:currentColor;margin-left:1px;}
+  .pick.med .pl.playing svg{margin-left:0;}
+  .pick.med .mm{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7;white-space:nowrap;}
+  input.from{width:100%;background:#000;color:#fff;border:1px solid rgba(255,255,255,.26);border-radius:var(--s-radius);padding:11px 14px;font:300 19px/1.3 var(--font-jost);display:block;margin-bottom:6px;}
+  .fromnote{font-size:14px;color:var(--s-label);margin:0 0 16px;min-height:0;}
+  .fromnote:empty{display:none;}
+  textarea{width:100%;height:118px;resize:none;background:#000;color:#fff;border:1px solid rgba(255,255,255,.26);border-radius:var(--s-radius);padding:14px;font:300 19px/1.4 var(--font-jost);display:block;}
+  input.from:focus-visible,textarea:focus-visible{outline:2px solid #fff;outline-offset:1px;}
+  .lab.mt{margin-top:10px;}
+  .count{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;color:var(--s-label);text-align:right;margin:8px 0 12px;}
+  .give{all:unset;box-sizing:border-box;cursor:pointer;width:100%;border-radius:var(--s-radius);padding:18px;display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--font-mono);font-size:14px;letter-spacing:.22em;text-transform:uppercase;background:#fff;color:#000;font-weight:500;}
+  .give:hover{background:#dcdcd8;}
+  .give[disabled]{opacity:.6;cursor:default;}
+  .give svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+  .err{margin:10px 0 0;font-size:15px;color:#fff;}
+  .err:empty{display:none;}
+  .panel{display:none;padding-top:12px;}
+  .msg.done .panel{display:block;}
+  .linkrow{display:grid;grid-template-columns:1fr auto;gap:8px;}
+  .link{border:1px solid rgba(255,255,255,.26);border-radius:var(--s-radius);padding:11px 12px;font-family:var(--font-mono);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .copy{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid #fff;border-radius:var(--s-radius);padding:10px 14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;white-space:nowrap;}
+  .gives{margin:10px 0 0;color:var(--s-label);font-size:15px;}
+  .fpfit{width:100%;aspect-ratio:1440 / 820;overflow:hidden;border-radius:var(--s-radius);border:1px solid rgba(255,255,255,.26);}
+  .fpfit.tallfit{aspect-ratio:auto;}
+
+  /* the player (same as the Meditations page): along the bottom while you scroll */
+  .round{flex:0 0 auto;width:44px;height:44px;border:1px solid #fff;border-radius:50%;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center;}
+  .round svg{width:14px;height:14px;fill:currentColor;}
+  .player{position:sticky;bottom:0;margin:auto -72px 0;padding:14px 72px 16px;background:#000;border-top:1px solid var(--s-rule);display:flex;align-items:center;gap:20px;flex:0 0 auto;z-index:5;}
+  .player[hidden]{display:none;}
+  .player .cv{flex:0 0 auto;width:120px;border-radius:8px;border:1px solid var(--s-rule);overflow:hidden;}
+  .player .pp{width:52px;height:52px;cursor:pointer;}
+  .player .pp svg{width:16px;height:16px;}
+  .player .mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .player .now{display:flex;align-items:baseline;gap:14px;min-width:0;}
+  .player .ttl{font-weight:400;font-size:18px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .player .tag,.player .time{font-family:var(--font-mono);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);white-space:nowrap;}
+  .player .scrub{position:relative;height:24px;cursor:pointer;display:flex;align-items:center;}
+  .player .scrub::before{content:"";position:absolute;left:0;right:0;height:2px;background:#4a4a4a;}
+  .player .scrub i{position:relative;display:block;height:2px;width:0;background:#fff;}
+  .player .credit{font-size:13px;color:var(--s-label);}
+  .player .credit b{font-weight:400;color:var(--s-text2);}
+  .player .time{flex:0 0 auto;}
+
+  @media (max-width:1180px){ .acchead .t{font-size:44px;} .acchead .d{font-size:19px;} }
+  @media (max-width:1023px){
+    main{padding:28px 20px 0;}
+    .how{font-size:17px;margin:12px 0 28px;}
+    .ctl{grid-template-columns:1fr;gap:22px;}
+    .acchead{padding:22px 18px 24px;gap:14px;grid-template-columns:1fr 32px;}
+    .acchead .t{font-size:34px;}
+    .acchead .d{font-size:16px;}
+    .chev{width:32px;height:32px;}
+    .pane{padding:0 18px 20px;}
+    .pick{font-size:16px;}
+    .player{margin:auto -20px 0;padding:12px 20px 14px;gap:14px;}
+    .player .cv,.player .credit,.player .tag{display:none;}
+    .player .ttl{font-size:16px;}
+  }
+</style>
+</head>
+<body class="site-shell">
+<script src="site-header.js?v=20261116a" data-toggle></script>
+
+<main id="main">
+  <h1 class="page-title">Give a gift</h1>
+  <p class="how">Choose a gift below and send your friend the link. They get the gift, and a free month of Sussuri. You earn <b>$10 a month</b> for every paying member you bring.</p>
+
+  <div class="accs" id="accs"></div>
+
+  <div class="player" id="player" hidden>
+    <span class="cv" id="plCover" aria-hidden="true"></span>
+    <button type="button" class="round pp" id="plBtn" aria-label="Play"><svg id="plIcon" aria-hidden="true" viewBox="0 0 20 20"><path d="M4 2l14 8-14 8z"/></svg></button>
+    <div class="mid">
+      <div class="now"><span class="ttl" id="plTitle"></span><span class="tag" id="plTag"></span></div>
+      <div class="scrub" id="plScrub" role="slider" aria-label="Position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="plBar"></i></div>
+      <div class="credit">Written and narrated by <b>Mark Carpenter</b><span id="plExtra"></span></div>
+    </div>
+    <span class="time"><span id="plCur">0:00</span> / <span id="plDur">0:00</span></span>
+    <audio id="plAudio" preload="none"></audio>
+  </div>
+</main>
+
+<!-- the ready-made lines (edit them in gift-lines.js), the meditations (meditation-sessions.js), the card (gift-card.js) -->
+<script src="gift-lines.js?v=20261116a"></script>
+<script src="meditation-sessions.js?v=20261116a"></script>
+<script src="gift-card.js?v=20261116a"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var MAX_MSG = 140, MAX_FROM = 20;
+  var S = window.SUSSURI_SESSIONS || [], LINES = window.GIFT_LINES || {};
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  var PLAY = '<path d="M4 2l14 8-14 8z"/>', PAUSE = '<path d="M4 2h4v16H4zM12 2h4v16h-4z"/>';
+  var CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  var SHARE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 13v6h14v-6"/></svg>';
+
+  // ---------- who is giving ----------
+  var SB_URL = 'https://hydzekyzbqhcvajnuegh.supabase.co', SB_KEY = 'sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb';
+  var sb = window.supabase ? supabase.createClient(SB_URL, SB_KEY) : null;
+  var me = { name: '', saved: '', token: '' };
+  function firstWord(t){ return String(t||'').trim().split(/\s+/)[0] || ''; }
+  // Know yourself result (saved in this browser by assessment.html)
+  var result = ''; try { result = (JSON.parse(localStorage.getItem('psyche:assessment')) || {}).archName || ''; } catch(e){}
+  result = String(result).trim();
+
+  // ---------- the three bars ----------
+  var BARS = [
+    { key:'know', kind:'know', title:'Know yourself',
+      d:'A free profile of who they really are. Your friend picks the images they are drawn to, and it shows them how their mind works. Fun, and a little eye-opening.' },
+    { key:'med', kind:'med', title:'Meditations',
+      d:'Choose the one that would help your friend: sleep, calm, confidence, focus or grief. Play them first, then send the one that fits.' },
+    { key:'cards', kind:'card', title:'Share cards',
+      d:'Choose a ready-made line, or write your own words. It goes out on a Sussuri card with your link.' }
+  ];
+  function linesFor(key){
+    if (key === 'know') {
+      var l = (LINES.KNOW_YOURSELF || []).slice();
+      if (result && LINES.KNOW_YOURSELF_RESULT_LINE) l.unshift(LINES.KNOW_YOURSELF_RESULT_LINE.replace('[result]', result));
+      return l;
+    }
+    if (key === 'cards') return (LINES.SHARE_CARDS || []).slice();
+    return [];
+  }
+  var accs = $('accs'), bars = {};
+  BARS.forEach(function(b){
+    var left;
+    if (b.key === 'med') {
+      left = '<div class="lab">1. Choose a meditation</div><div class="picks">' + S.map(function(it, i){
+        return '<div role="button" tabindex="0" class="pick med" data-i="' + i + '"><button type="button" class="pl" aria-label="Play ' + esc(it.title) + '"><svg viewBox="0 0 20 20" aria-hidden="true">' + PLAY + '</svg></button>' +
+          '<span class="mt">' + esc(it.title) + '</span><span class="mm">' + esc([it.category, it.length].filter(Boolean).join(' · ')) + '</span></div>';
+      }).join('') + '</div>';
+    } else {
+      left = '<div class="lab">Choose one</div><div class="picks">' + linesFor(b.key).map(function(t){
+        return '<button type="button" class="pick line">' + esc(t.slice(0, MAX_MSG)) + '</button>';
+      }).join('') + '</div>';
+    }
+    var sec = document.createElement('section');
+    sec.className = 'acc'; sec.setAttribute('data-acc', b.key);
+    sec.innerHTML =
+      '<button class="acchead" type="button" aria-expanded="false"><span class="w"><span class="t">' + b.title + '</span><span class="d">' + b.d + '</span></span>' + CHEV + '</button>' +
+      '<div class="pane"><div class="ctl"><div>' + left + '</div>' +
+        '<div class="msg">' +
+          '<label class="lab" for="f-' + b.key + '">From</label>' +
+          '<input class="from" id="f-' + b.key + '" type="text" maxlength="' + MAX_FROM + '" autocomplete="given-name" placeholder="Your first name">' +
+          '<p class="fromnote"></p>' +
+          '<label class="lab mt" for="w-' + b.key + '">' + (b.key === 'med' ? '2. Your message' : 'Or write your own') + '</label>' +
+          '<textarea id="w-' + b.key + '" maxlength="' + MAX_MSG + '" placeholder="A few words to your friend"></textarea>' +
+          '<div class="count"><span class="n">0</span> / ' + MAX_MSG + '</div>' +
+          '<button class="give" type="button">' + SHARE + '<span>Give to a friend</span></button>' +
+          '<p class="err" role="alert"></p>' +
+          '<div class="panel"><div class="linkrow"><span class="link"></span><button class="copy" type="button">Copy link</button></div>' +
+          '<p class="gives">Your link. It opens Sussuri right on this gift, with a free month.</p></div>' +
+        '</div></div>' +
+        '<div class="lab recv">What your friend receives</div>' +
+        '<div class="fpfit"></div>' +
+      '</div>';
+    accs.appendChild(sec);
+    bars[b.key] = { b: b, sec: sec, med: 0, card: null, tall: null,
+      ta: sec.querySelector('textarea'), fr: sec.querySelector('input.from'), n: sec.querySelector('.count .n'),
+      holder: sec.querySelector('.fpfit'), msg: sec.querySelector('.msg'), err: sec.querySelector('.err'), link: sec.querySelector('.link') };
+  });
+
+  // ---------- the card preview ----------
+  function cardWords(x){ return window.SussuriCard.words(x.b.kind, x.b.key === 'med' ? withShort(S[x.med]) : null); }
+  function withShort(it){ if (!it) return it; var c = {}; for (var k in it) c[k] = it[k]; c.about = window.sussuriShort ? window.sussuriShort(it.about) : it.about; return c; }
+  function paint(x){
+    if (!x.sec.classList.contains('open')) return;
+    var tall = x.holder.parentNode.clientWidth < 640;           // phones and narrow windows get the stacked card
+    if (!x.card || tall !== x.tall) { x.tall = tall; x.holder.classList.toggle('tallfit', tall); x.card = window.SussuriCard.make(x.holder, { tall: tall }); x.card.set({ kind: x.b.kind }); }
+    var w = cardWords(x);
+    x.card.set({ from: x.fr.value, gift: w.gift, about: w.about, message: x.ta.value });
+    x.card.size();
+  }
+  function count(x){ x.n.textContent = x.ta.value.length; }
+  function clearLines(x){ [].forEach.call(x.sec.querySelectorAll('.pick.line'), function(p){ p.classList.remove('on'); }); }
+  function done(x, on){ x.msg.classList.toggle('done', !!on); if (!on) x.err.textContent = ''; }
+
+  Object.keys(bars).forEach(function(key){
+    var x = bars[key];
+    x.ta.addEventListener('input', function(){ clearLines(x); count(x); done(x, false); paint(x); });
+    x.fr.addEventListener('input', function(){ done(x, false); syncFrom(x.fr.value, x); paint(x); });
+    [].forEach.call(x.sec.querySelectorAll('.pick.line'), function(p){
+      p.addEventListener('click', function(){ clearLines(x); p.classList.add('on'); x.ta.value = p.textContent; count(x); done(x, false); paint(x); });
+    });
+    [].forEach.call(x.sec.querySelectorAll('.pick.med'), function(row){
+      function choose(){ x.med = +row.getAttribute('data-i'); markMed(); done(x, false); paint(x); }
+      row.addEventListener('click', function(e){ if (e.target.closest('.pl')) return; choose(); });
+      row.addEventListener('keydown', function(e){ if ((e.key === 'Enter' || e.key === ' ') && e.target === row) { e.preventDefault(); choose(); } });
+      row.querySelector('.pl').addEventListener('click', function(){ x.med = +row.getAttribute('data-i'); markMed(); paint(x); play(x.med); });
+    });
+    x.sec.querySelector('.acchead').addEventListener('click', function(){
+      var willOpen = !x.sec.classList.contains('open');
+      Object.keys(bars).forEach(function(k){
+        var on = bars[k] === x && willOpen;
+        bars[k].sec.classList.toggle('open', on);
+        bars[k].sec.querySelector('.acchead').setAttribute('aria-expanded', on ? 'true' : 'false');
+      });
+      paint(x);
+    });
+    x.sec.querySelector('.give').addEventListener('click', function(){ give(x, this); });
+    x.sec.querySelector('.copy').addEventListener('click', function(){
+      var c = this, ok = function(){ c.textContent = 'Copied'; setTimeout(function(){ c.textContent = 'Copy link'; }, 1600); };
+      try { navigator.clipboard.writeText(x.link.textContent).then(ok, ok); } catch (e) { ok(); }
+    });
+  });
+  // the From name is the same in all three bars until they change it
+  function syncFrom(v, from){ Object.keys(bars).forEach(function(k){ if (bars[k] !== from) bars[k].fr.value = v; }); }
+  function setFromAll(v, note){ Object.keys(bars).forEach(function(k){ bars[k].fr.value = v; bars[k].sec.querySelector('.fromnote').textContent = note || ''; }); }
+  // ready-made first choices: the first line in Know yourself and Share cards, the first meditation
+  ['know','cards'].forEach(function(k){ var p = bars[k].sec.querySelector('.pick.line'); if (p) p.click(); });
+  function markMed(){ [].forEach.call(bars.med.sec.querySelectorAll('.pick.med'), function(r){ r.classList.toggle('on', +r.getAttribute('data-i') === bars.med.med); }); }
+  markMed();
+  window.addEventListener('resize', function(){ Object.keys(bars).forEach(function(k){ paint(bars[k]); }); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ Object.keys(bars).forEach(function(k){ paint(bars[k]); }); });
+
+  // ---------- the player (same as the Meditations page) ----------
+  var player = $('player'), a = $('plAudio'), btn = $('plBtn'), icon = $('plIcon'), bar = $('plBar'), scrub = $('plScrub'), cur = $('plCur'), dur = $('plDur'), now = -1;
+  function fmt(t){ t = Math.max(0, t|0); return Math.floor(t/60) + ':' + ('0' + (t%60)).slice(-2); }
+  function mark(){
+    [].forEach.call(bars.med.sec.querySelectorAll('.pick.med'), function(r){
+      var i = +r.getAttribute('data-i'), on = (i === now && !a.paused), pl = r.querySelector('.pl');
+      pl.querySelector('svg').innerHTML = on ? PAUSE : PLAY; pl.classList.toggle('playing', on);
+      pl.setAttribute('aria-label', (on ? 'Pause ' : 'Play ') + S[i].title);
+    });
+    icon.innerHTML = a.paused ? PLAY : PAUSE; btn.setAttribute('aria-label', a.paused ? 'Play' : 'Pause');
+  }
+  function play(i){
+    if (i === now) { if (a.paused) a.play(); else a.pause(); return; }
+    now = i; var it = S[i];
+    $('plCover').innerHTML = window.sussuriCover ? window.sussuriCover(it) : '';
+    $('plTitle').textContent = it.title;
+    $('plTag').textContent = [it.label, it.length].filter(Boolean).join(' · ');
+    $('plExtra').textContent = it.extra_credit ? ' · ' + it.extra_credit : '';
+    bar.style.width = '0'; cur.textContent = '0:00'; dur.textContent = '0:00';
+    player.hidden = false; a.src = it.audio; a.play().catch(function(){}); mark();
+  }
+  btn.onclick = function(){ if (now < 0) return; if (a.paused) a.play(); else a.pause(); };
+  a.onplay = a.onpause = mark;
+  a.onended = function(){ bar.style.width = '0'; mark(); };
+  a.onloadedmetadata = function(){ dur.textContent = fmt(a.duration); };
+  a.ontimeupdate = function(){ cur.textContent = fmt(a.currentTime); if (a.duration) { var p = a.currentTime / a.duration * 100; bar.style.width = p + '%'; scrub.setAttribute('aria-valuenow', Math.round(p)); } };
+  scrub.onclick = function(e){ var r = scrub.getBoundingClientRect(); if (a.duration) a.currentTime = (e.clientX - r.left) / r.width * a.duration; };
+  scrub.onkeydown = function(e){ if (!a.duration) return; if (e.key === 'ArrowRight') a.currentTime = Math.min(a.duration, a.currentTime + 15); if (e.key === 'ArrowLeft') a.currentTime = Math.max(0, a.currentTime - 15); };
+
+  // ---------- Give to a friend ----------
+  var phone = window.matchMedia && matchMedia('(pointer:coarse)').matches && !!navigator.share;
+  async function give(x, b){
+    var from = x.fr.value.trim(), message = x.ta.value.trim();
+    x.err.textContent = '';
+    if (!from) { x.err.textContent = 'Add your first name, so your friend knows who it is from.'; x.fr.focus(); return; }
+    var body = { kind: x.b.kind, from: from, message: message };
+    if (x.b.key === 'med') body.meditation = S[x.med].slug;
+    b.disabled = true;
+    try {
+      var url;
+      if (window.PSYCHE_PREVIEW) {
+        url = location.origin + '/g/preview-' + x.b.kind;          // preview mode: nothing is saved
+      } else {
+        var r = await fetch('/api/gift', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + me.token }, body: JSON.stringify(body) });
+        var j = await r.json().catch(function(){ return {}; });
+        if (!r.ok || !j.url) { x.err.textContent = j.error || 'The link could not be made just now. Please try again.'; return; }
+        url = j.url;
+        if (from !== me.saved && sb) { me.saved = from; sb.auth.updateUser({ data: { first_name: from } }).catch(function(){}); }   // filled in next time
+      }
+      x.link.textContent = url;
+      if (phone) {
+        try { await navigator.share({ title: from + ' has given you a free month of Sussuri', url: url }); } catch (e) {}
+      } else done(x, true);
+    } finally { b.disabled = false; }
+  }
+
+  // ---------- members only: signed out -> sign in, no card -> Join (?preview=1 looks without signing in) ----------
+  if (window.PSYCHE_PREVIEW) { setFromAll('Mark'); return; }
+  if (!sb) return;
+  sb.auth.getSession().then(async function(res){
+    var s = res.data && res.data.session;
+    if (!(s && s.user)) { location.replace('auth.html'); return; }
+    me.token = s.access_token;
+    var md = s.user.user_metadata || {};
+    var p = await sb.from('profiles').select('plan,display_name').eq('id', s.user.id).single();
+    if (!p.error && p.data && (!p.data.plan || p.data.plan === 'free')) { location.replace('pricing.html'); return; }
+    // the From name: saved here before > Google first name > the account name. Email sign-ups are asked for it the first time.
+    me.saved = md.first_name || '';
+    var name = me.saved || md.given_name || firstWord(md.full_name || md.name) || firstWord(p.data && p.data.display_name);
+    setFromAll(String(name).slice(0, MAX_FROM), name ? '' : 'Your first name, as your friend knows you. We keep it for next time.');
+    Object.keys(bars).forEach(function(k){ paint(bars[k]); });
+  });
+})();
+</script>
+</body>
+</html>
