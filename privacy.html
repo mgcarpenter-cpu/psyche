@@ -96,6 +96,12 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 .page a{color:#fff;}
 .page .note{max-width:820px;text-align:left !important;font-size:15px;color:var(--s-label);opacity:1;border-top:1px solid var(--s-rule);}
 @media (max-width:1023px){ .page{padding:36px 20px 40px !important;} .page p,.page li{font-size:16px;} .updated{margin-bottom:24px;padding-bottom:24px;} }
+/* the companies that help run Sussuri: name on the left, what it does on the right, a thin line between rows */
+.helpers{max-width:820px;margin:0 0 14px;}
+.hrow{display:grid;grid-template-columns:240px minmax(0,1fr);gap:4px 24px;padding:12px 0;border-top:1px solid var(--s-rule);font-size:18px;line-height:1.5;}
+.hrow:first-child{border-top:0;padding-top:4px;}
+.hn{color:#fff;} .hd{color:var(--s-text2);}
+@media (max-width:1023px){ .hrow{grid-template-columns:132px minmax(0,1fr);gap:4px 16px;font-size:16px;} }
 </style>
 </head>
 <body class="site-shell">
@@ -107,40 +113,63 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
   <div class="content">
     <div class="page">
 <h1 class="page-title">Privacy policy</h1>
-      <div class="updated">Last updated: 14 August 2026</div>
-      <p>Sussuri is a reflection and coaching tool built around private conversation. Privacy isn't a feature we added — it's the reason the product can work at all. This page explains plainly what we collect, why, and what we never do.</p>
+      <div class="updated">Last updated: 15 November 2026</div>
+      <p>Sussuri is a reflection and coaching tool built around private conversation. Privacy is the reason it can work at all. This page explains plainly what we collect, why, who helps us run it, and what we never do.</p>
       <h2>What we collect</h2>
       <ul>
-        <li><strong>Account details:</strong> your email address, and your name if you provide it. Sign-in is by email link or Google — we never see or store a password.</li>
-        <li><strong>Your conversations and assessment responses:</strong> stored so your coaching can be continuous and personal to you.</li>
-        <li><strong>Plan and usage information:</strong> which plan you're on and daily message counts, to apply your plan's limits.</li>
-        <li><strong>Referral information:</strong> if you share Sussuri, we track sign-ups from your link so you can be rewarded.</li>
-        <li><strong>Your API key:</strong> stored securely so Sussuri can run on your behalf. You can remove it any time.</li>
-        <li><strong>Anonymous website visits (sussuri.com):</strong> when you visit, we record the page, the site or link that sent you (for example a YouTube or TikTok link), your country and city, and whether you're on a phone, tablet or computer. A small cookie holds a random ID so repeat visits count once. We don't store your IP address, and this isn't linked to your name. If you join the list, we note where you first came from so we know which channels work.</li>
+        <li><strong>Account details:</strong> your email address, and your name if you give it. Sign-in is by email link or Google. We never see or store a password.</li>
+        <li><strong>Your conversations:</strong> what you type or say to Sussuri and its replies, stored so your coaching can carry on from where you left off.</li>
+        <li><strong>Know yourself answers and your goals:</strong> stored so Sussuri can be personal to you.</li>
+        <li><strong>Practice &amp; schedule:</strong> what you chose to be reminded about, your times and your time zone, so reminders arrive when you asked for them.</li>
+        <li><strong>Personal meditations:</strong> what you asked for, the script written for you and the finished recording, kept so you can listen again.</li>
+        <li><strong>Membership and usage:</strong> which plan you are on, and how much of your monthly allowance you have used.</li>
+        <li><strong>Affiliate information:</strong> if you share Sussuri, we record who joined from your link and whether they became a paying member, so you can be paid. Where you are paid is held by our payment provider.</li>
+        <li><strong>Share cards:</strong> the words you type on a share card. A share card is public: anyone with its link can read it.</li>
+        <li><strong>Anonymous website visits:</strong> the page, the site or link that sent you, your country and city, and whether you are on a phone, tablet or computer. A small cookie holds a random ID so repeat visits count once. We don't store your IP address, and this isn't linked to your name.</li>
       </ul>
       <h2>How your conversations are processed</h2>
-      <p>When you interact with Sussuri — by text, and by voice — your messages are processed by our AI providers to generate replies. Text is processed by Anthropic under your own API key; voice is processed by Google (Gemini) for real-time speech. We only use providers under terms where your conversations are not used to train their models. Because you bring your own key, your text conversations run under your own provider account. Your conversations are never sold, never shared with advertisers, and never read by a human at Sussuri except when you explicitly send one to us in a support or feedback request.</p>
+      <p>Your messages are sent to our AI providers to produce a reply. Text is processed by Anthropic. Voice is processed by Google (Gemini). We only use them under terms where your conversations are not used to train their models.</p>
+      <p>Your conversations are never sold and never shared with advertisers. A person at Sussuri does not read them, with three exceptions: you send one to us in a support or feedback request, the law requires it, or we reasonably believe it is needed to prevent serious harm to you or someone else.</p>
       <h2>Voice</h2>
-      <p>When you speak to Sussuri, your speech is processed in real time to produce a transcript and a spoken reply. Audio is processed as it happens and is not stored — only the resulting text is kept as part of your conversation.</p>
+      <p>When you speak to Sussuri, your speech is processed in real time to produce a transcript and a spoken reply. The audio is not stored. Only the text is kept, as part of your conversation.</p>
+      <h2>Personal meditations</h2>
+      <p>When you ask for a personal meditation, what you tell Sussuri is used to write a script for you. The script is sent to ElevenLabs, which turns it into the spoken recording. The recording is stored in your account and is only available to you.</p>
+      <h2>Reminders</h2>
+      <p>Reminders are sent as Sussuri notifications and by email, only for the things you ticked on Practice &amp; schedule. Untick them there and they stop.</p>
+      <h2>Who helps us run Sussuri</h2>
+      <p>We share only what each company needs to do its job.</p>
+      <div class="helpers">
+        <div class="hrow"><span class="hn">Anthropic</span><span class="hd">Text chat and writing personal meditation scripts</span></div>
+        <div class="hrow"><span class="hn">Google (Gemini)</span><span class="hd">Voice chat</span></div>
+        <div class="hrow"><span class="hn">ElevenLabs</span><span class="hd">The spoken recording of a personal meditation</span></div>
+        <div class="hrow"><span class="hn">Supabase</span><span class="hd">Our database: accounts, conversations, answers, goals</span></div>
+        <div class="hrow"><span class="hn">Vercel</span><span class="hd">Hosting the website</span></div>
+        <div class="hrow"><span class="hn">Our payment provider</span><span class="hd">Card payments, receipts, tax and affiliate payouts. We never see or store your card details</span></div>
+        <div class="hrow"><span class="hn">Our email provider</span><span class="hd">Sign-in links, receipts and reminders</span></div>
+      </div>
       <h2>Where data lives</h2>
-      <p>Account data, conversations, and assessment results are stored with Supabase, our database provider, using industry-standard encryption in transit and at rest. Payments (when available) are handled by Paddle — we never see or store your card details.</p>
+      <p>Your information is stored with Supabase using industry-standard encryption in transit and at rest. These companies hold and process data outside New Zealand, mainly in the United States.</p>
+      <h2>How long we keep it</h2>
+      <p>We keep your information while your account is open. When you delete your account, your conversations, answers, goals and personal meditations are deleted. Records of payments and commission are kept for as long as tax law requires.</p>
       <h2>What we never do</h2>
       <ul>
-        <li>No selling of personal data — to anyone, ever.</li>
+        <li>No selling of personal data, to anyone, ever.</li>
         <li>No advertising trackers in the app.</li>
-        <li>No third-party AI training — your conversations are never used by our AI providers or anyone else to train their models.</li>
+        <li>No AI training on your conversations by our AI providers.</li>
         <li>No reading your conversations, except as described above.</li>
       </ul>
       <h2>How Sussuri improves</h2>
-      <p>We review patterns in how Sussuri performs — where conversations help and where they fall short — to improve our own coaching engine. Where practical we use aggregated or de-identified information for this. This work stays inside Sussuri: it makes your coach better, and is never shared or sold.</p>
+      <p>We look at patterns in how Sussuri performs, such as where conversations help and where they fall short, to improve our own coaching. Where practical we use combined or de-identified information for this. This work stays inside Sussuri and is never shared or sold.</p>
       <h2>Your choices</h2>
       <ul>
-        <li><strong>Export or deletion:</strong> email us at hello@sussuri.com to request a copy of your data or full deletion of your account and conversations. Deletion is permanent.</li>
+        <li><strong>Delete your account:</strong> use Delete account on the Account &amp; earnings page, or email hello@sussuri.com. Deletion is permanent.</li>
+        <li><strong>A copy of your data:</strong> email hello@sussuri.com and we will send it.</li>
+        <li><strong>Reminders:</strong> switch them on or off on Practice &amp; schedule.</li>
         <li><strong>Ambience &amp; preferences:</strong> stored on your device, not our servers.</li>
       </ul>
-      <p>Sussuri is based in New Zealand and handles your information under the New Zealand Privacy Act 2020. You can ask us to access, correct, or delete your information, and you can complain to the Office of the Privacy Commissioner. Where you're in another region, additional laws (such as the GDPR) may give you further rights.</p>
+      <p>Sussuri is based in New Zealand and handles your information under the New Zealand Privacy Act 2020. You can ask us to access, correct or delete your information, and you can complain to the Office of the Privacy Commissioner. Where you are in another region, additional laws (such as the GDPR) may give you further rights.</p>
       <h2>Important limits</h2>
-      <p>Sussuri is a reflection tool, not therapy or crisis care. If a conversation suggests you may be in crisis, we show support options — we do not contact anyone on your behalf.</p>
+      <p>Sussuri is a reflection tool, not therapy or crisis care. If a conversation suggests you may be in crisis, we show support options. We do not contact anyone on your behalf.</p>
       <h2>Children</h2>
       <p>Sussuri is for adults. It is not directed at, and must not be used by, anyone under 18.</p>
       <h2>Changes</h2>
