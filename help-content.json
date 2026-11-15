@@ -15,6 +15,8 @@
     "answer": "Go to <a href=\"membership.html\">Membership</a> and press Change to monthly, or Change to annual." },
   { "id": "receipts", "group": "Your membership", "question": "Where are my receipts?",
     "answer": "A receipt is emailed after each payment. You can also find them from <a href=\"membership.html\">Membership</a>, under Card." },
+  { "id": "refund", "group": "Your membership", "question": "Can I get a refund?",
+    "answer": "You have a full free month to try Sussuri, and we email you three days before your first charge. After that, payments aren't refunded, except where the law gives you that right. If you think you were charged by mistake, email hello@sussuri.com." },
 
   { "id": "textvoice", "group": "Using Sussuri", "question": "What is the difference between text and voice chat?",
     "answer": "Text chat is for everyone. Voice chat, where you speak and Sussuri speaks back, is for members." },
@@ -24,6 +26,8 @@
     "answer": "A new week opens every week. <a href=\"education.html\">Education</a> shows which weeks are open." },
   { "id": "goals", "group": "Using Sussuri", "question": "How do I set my goals?",
     "answer": "Go to <a href=\"your-goals.html\">Your goals</a> and press Set my goals. A short chat walks you through it." },
+  { "id": "therapy", "group": "Using Sussuri", "question": "Is Sussuri therapy?",
+    "answer": "No. Sussuri is a reflection and coaching tool, not therapy or crisis care. If you need help now, go to <a href=\"urgent.html\">Urgent support</a>." },
 
   { "id": "earn", "group": "Earning", "question": "How do I earn $10 a month?",
     "answer": "Share your link. When someone joins through it and starts paying, you earn $10 a month for a monthly member, or $100 a year for an annual member, for as long as they stay. Nothing is earned during their free month. Earning is for members." },
