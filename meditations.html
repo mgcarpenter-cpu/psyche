@@ -190,6 +190,18 @@
   a.ontimeupdate=function(){ cur.textContent=fmt(a.currentTime); if(a.duration){ var p=a.currentTime/a.duration*100; bar.style.width=p+'%'; scrub.setAttribute('aria-valuenow',Math.round(p)); } };
   scrub.onclick=function(e){ var r=scrub.getBoundingClientRect(); if(a.duration) a.currentTime=(e.clientX-r.left)/r.width*a.duration; };
   scrub.onkeydown=function(e){ if(!a.duration) return; if(e.key==='ArrowRight') a.currentTime=Math.min(a.duration,a.currentTime+15); if(e.key==='ArrowLeft') a.currentTime=Math.max(0,a.currentTime-15); };
+  // ?play=<slug> (from a gift link): that meditation selected in the player, ready to play
+  var want=new URLSearchParams(location.search).get('play'), wi=-1;
+  S.forEach(function(it,i){ if(it.slug===want) wi=i; });
+  if(wi>=0){
+    var it=S[wi]; now=wi;
+    document.getElementById('plCover').innerHTML=cover(it);
+    document.getElementById('plTitle').textContent=it.title;
+    document.getElementById('plTag').textContent=tag(it);
+    document.getElementById('plExtra').textContent=it.extra_credit?' · '+it.extra_credit:'';
+    player.hidden=false; a.preload='metadata'; a.src=it.audio; mark();
+    if(tiles.children[wi]) tiles.children[wi].scrollIntoView({block:'center'});
+  }
 })();
 </script>
 
