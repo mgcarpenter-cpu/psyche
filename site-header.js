@@ -46,7 +46,7 @@
     ]},
     { title:'Your path', items:[
       { show:true,  route:'assessment.html',               icon:'chart',    label:'Know yourself' },
-      { show:true,  route:'your-goals.html',               icon:'flag',     label:'Your goals' },
+      { show:true,  route:'your-goals.html',               icon:'flag',     label:'Goals' },
       { show:true,  route:'personal-meditations.html',     icon:'person',   label:'Personal meditations' },
       { show:true,  route:'meditations.html',              icon:'lotus',    label:'Meditations' },
       { show:true,  route:'education.html',                icon:'doc',      label:'Education' }
@@ -87,7 +87,7 @@
   })();
   // Pages with no menu item of their own belong to one that has: the black band sits on that item,
   // and the top bar names both ("Your account / Settings"), so people always know where they are.
-  var parentOf = { settings:'account', 'delete-account':'account', creator:'account', 'payment-terms':'terms', support:'urgent' };
+  var parentOf = { settings:'account', 'delete-account':'account', creator:'account', 'payment-terms':'terms', support:'urgent', 'goals-plan':'your-goals', 'goals-schedule':'your-goals', 'goals-today':'your-goals' };
   var home = parentOf[here] || here;
   function isActive(route){ return route && route.split('?')[0].replace(/\.html$/, '') === home; }
 
@@ -110,7 +110,7 @@
 
   // top bar: tabs on Chat / Practice, otherwise the section name (or the page's own name)
   var section = {
-    assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path', 'your-goals':'Your path',
+    assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path',
     'how-it-works':'Affiliate program', 'your-plan':'Affiliate program', 'give-a-gift':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
     help:'Help &amp; FAQ', urgent:'Urgent support', pricing:'Join', membership:'Membership', signup:'Start free month', 'youre-in':"You're in", welcome:'Welcome', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'

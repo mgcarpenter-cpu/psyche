@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Goals · Sussuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261118g">
+<link rel="stylesheet" href="goals.css?v=20261118g">
+<style>
+  /* Goals 3: Schedule. The kept plan items across the week, in time order. */
+  *{margin:0;padding:0;}
+  html,body{height:100%;}
+  body{background:#000;color:#fff;}
+  main{overflow-y:auto;}
+  .thd,.tr{display:grid;grid-template-columns:150px 1fr 240px 110px;gap:32px;}
+  .thd{font-family:var(--body);font-weight:500;font-size:18px;padding:20px 0 12px;border-bottom:1px solid #4a4a4a;}
+  .tl{display:flex;flex-direction:column;}
+  .tr{align-items:center;border-bottom:1px solid #333;padding:15px 0;}
+  .tl .tr:last-child{border-bottom:0;}
+  .wt{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:20px;}
+  .none{color:var(--dim);font-size:17px;}
+  .goals main .tr .gdd{width:122px;font-size:17px;padding:8px 10px 8px 12px;justify-self:start;}
+  .seg{justify-self:start;display:grid;grid-template-columns:repeat(7,33px);border:1px solid #4a4a4a;border-radius:6px;overflow:hidden;}
+  .goals main .sg{height:38px;display:grid;place-items:center;font-size:14px;cursor:pointer;color:#55554f;}
+  .goals main .sg:hover{color:#fff;}
+  .goals main .sg.on{color:#fff;font-weight:500;font-size:15px;}
+  .goals main .tr .tk1{justify-self:start;}
+  .empty{padding:26px 0;font-size:19px;color:var(--dim);}
+  .empty a{border-bottom:1px solid #5a5a5a;color:#c9c9c5;}
+  .setrow{display:grid;grid-template-columns:auto auto;justify-content:start;gap:56px;align-items:end;margin-top:26px;padding:24px 0 34px;border-top:1px solid #4a4a4a;}
+  .set{display:flex;flex-direction:column;gap:8px;}
+  .sl2{font-weight:500;font-size:18px;}
+  .goals main .set .gdd{width:214px;font-size:17px;padding:8px 10px 8px 12px;align-self:flex-start;}
+  .sn{font-size:16px;color:var(--dim);}
+  .sn b{color:#fff;font-weight:400;}
+  @media (max-width:1100px){ .thd,.tr{grid-template-columns:130px 1fr 240px 80px;gap:20px;} }
+  @media (max-width:860px){
+    .thd{display:none;}
+    .tr{grid-template-columns:auto 1fr;gap:10px 14px;padding:16px 0;}
+    .tr .wt{grid-column:1 / -1;grid-row:1;font-size:18px;}
+    .tr .tk1{justify-self:end;}
+    .setrow{grid-template-columns:1fr;gap:24px;}
+  }
+  @media (max-width:420px){ .seg{grid-template-columns:repeat(7,30px);} }
+</style>
+</head>
+<body class="site-shell goals">
+<script src="site-header.js?v=20261118g" data-toggle></script>
+<main>
+  <nav class="topnav" id="gnav" aria-label="Goals steps"></nav>
+  <h1 class="ptitle">Schedule</h1>
+  <p class="intro">Your week. Change anything.</p>
+  <div class="thd"><span>Time</span><span>What you will do</span><span>Days</span><span>Remind me</span></div>
+  <div class="tl" id="tl"></div>
+  <div class="setrow">
+    <div class="set"><span class="sl2">Run this plan for</span><span id="runBox"></span><span class="sn" id="runt"></span></div>
+    <div class="set"><span class="sl2">Send reminders</span><span id="earlyBox"></span><span class="sn" id="rc"></span></div>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="goals.js?v=20261118g"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var LET = ['M', 'T', 'W', 'T', 'F', 'S', 'S'], FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  var DS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var TIMES = G.times();
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  G.nav(2);
+
+  function draw() {
+    var tl = $('tl'), rows = G.scheduleRows(), rc = 0; tl.innerHTML = '';
+    if (!rows.length) { var e = el('div', 'empty', 'Nothing to schedule yet. '), a = el('a', '', 'Make your plan first'); a.href = 'goals-plan.html'; e.appendChild(a); tl.appendChild(e); }
+    rows.forEach(function (row) {
+      var it = row.it, l = row.l, r = el('div', 'tr');
+      if (l.time) {
+        var ti = TIMES.indexOf(l.time);
+        r.appendChild(G.dd(TIMES, ti < 0 ? 0 : ti, function (v) { l.time = TIMES[v]; G.save(); draw(); }));
+      } else r.appendChild(el('span', 'none', 'Any time'));
+      r.appendChild(el('span', 'wt', it.what));
+      var sg = el('span', 'seg');
+      l.days.split('').forEach(function (v, n) {
+        var b = el('button', 'sg' + (v === '1' ? ' on' : ''), LET[n]); b.type = 'button';
+        b.setAttribute('aria-label', FULL[n]); b.setAttribute('aria-pressed', v === '1' ? 'true' : 'false');
+        b.addEventListener('click', function () { var d = l.days.split(''); d[n] = d[n] === '1' ? '0' : '1'; l.days = d.join(''); G.save(); draw(); });
+        sg.appendChild(b);
+      });
+      r.appendChild(sg);
+      if (l.time) {
+        if (l.remind) rc++;
+        var tk = el('button', 'tk1' + (l.remind ? ' on' : ''), l.remind ? '✓' : ''); tk.type = 'button';
+        tk.setAttribute('aria-label', 'Remind me: ' + it.what); tk.setAttribute('aria-pressed', l.remind ? 'true' : 'false');
+        tk.addEventListener('click', function () { l.remind = !l.remind; G.save(); draw(); });
+        r.appendChild(tk);
+      } else r.appendChild(el('span', ''));
+      tl.appendChild(r);
+    });
+    $('rc').textContent = rc + (rc === 1 ? ' reminder is on' : ' reminders are on');
+    var rv = G.reviewDate(), t = $('runt'); t.innerHTML = '';
+    t.appendChild(document.createTextNode('Review with Sussuri on ')); t.appendChild(el('b', '', DS[rv.getDay()] + ' ' + rv.getDate() + ' ' + MS[rv.getMonth()]));
+    G.save();
+  }
+  G.ready(function () {
+    var s = G.data.sched, RUNL = ['1 week', '2 weeks', '4 weeks'];
+    $('runBox').appendChild(G.dd(RUNL, Math.max(0, G.RUNS.indexOf(s.run)), function (v) { s.run = G.RUNS[v]; G.save(); draw(); }));
+    $('earlyBox').appendChild(G.dd(G.EARLY, s.early || 0, function (v) { s.early = v; G.save(); }));
+    draw();
+  });
+})();
+</script>
+</body>
+</html>

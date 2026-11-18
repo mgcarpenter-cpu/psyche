@@ -4,23 +4,221 @@
 <script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Your goals · Sussuri</title>
+<title>Goals · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261118g">
+<link rel="stylesheet" href="goals.css?v=20261118g">
 <style>
-  /* holding page: the normal frame and the page title, nothing else yet */
-  *{margin:0;padding:0;box-sizing:border-box;}
+  /* Goals 1: Talk it through. The areas on the left, a chat with Sussuri for the open area on the right. */
+  *{margin:0;padding:0;}
   html,body{height:100%;}
   body{background:#000;color:#fff;}
-  main{overflow-y:auto;padding:56px 72px 80px;}
-  @media (max-width:1023px){ main{padding:28px 20px 60px;} }
+  main{overflow-y:auto;gap:18px !important;}
+  .work{display:flex;gap:24px;height:648px;flex:none;}
+  .apanel{flex:0 0 290px;display:flex;flex-direction:column;}
+  .areas{flex:1;display:flex;flex-direction:column;gap:8px;}
+  .goals main .ara{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;border:1px solid #4a4a4a;border-radius:6px;padding:0 16px;font-size:18.5px;width:100%;color:#fff;flex:0 0 74px;cursor:pointer;}
+  .goals main .ara:hover{background:rgba(255,255,255,.07);}
+  .goals main .ara.on{background:#fff;color:#000;border-color:#fff;font-weight:400;}
+  .goals main .ara.lf{border-style:dashed;}
+  .an{font-family:var(--display);font-size:26px;line-height:1;}
+  .ara .tk{font-size:12px;white-space:nowrap;color:var(--dim);font-weight:400;text-align:right;}
+  .ara .tk.full{font-size:15px;color:inherit;font-weight:500;}
+  .ara.on .tk{color:#444;}
+  .talk{flex:1;min-width:0;min-height:0;border:1px solid #5a5a5a;border-radius:6px;display:flex;flex-direction:column;}
+  .th2{padding:26px 34px 18px;border-bottom:1px solid #333;}
+  .th2 h2{font-family:var(--display);font-weight:400;font-size:38px;line-height:1;margin:0;}
+  .trow{display:flex;justify-content:space-between;align-items:center;gap:20px;}
+  .goals main .leave{font-size:15.5px;color:var(--dim);border:1px solid #5a5a5a;border-radius:6px;padding:8px 14px;cursor:pointer;white-space:nowrap;}
+  .goals main .leave:hover{color:#fff;border-color:#fff;}
+  .need{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;}
+  .nd{border:1px solid #4a4a4a;border-radius:6px;padding:9px 12px;font-size:15px;line-height:1.2;color:var(--dim);display:grid;grid-template-columns:20px 1fr;gap:8px;align-items:center;}
+  .nd i{width:18px;height:18px;border-radius:50%;border:1px solid #6a6a6a;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:500;}
+  .nd.ok{border-color:#fff;color:#fff;}
+  .nd.ok i{background:#fff;border-color:#fff;color:#000;}
+  .cmsgs{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:12px;scrollbar-width:none;padding:20px 34px 18px;}
+  .cmsgs::-webkit-scrollbar{display:none;}
+  .m{font-size:19px;line-height:1.4;max-width:80%;}
+  .m small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--dim);margin-bottom:3px;}
+  .m.y{align-self:flex-end;max-width:70%;border:1px solid #4a4a4a;border-radius:6px;padding:9px 14px;}
+  .m a{border-bottom:1px solid #5a5a5a;}
+  .gcard{border:1px solid #fff;border-radius:6px;padding:13px 16px;max-width:80%;font-size:18px;}
+  .gcard small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
+  .gb{display:flex;gap:8px;margin-top:10px;align-items:center;}
+  .agreed{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-top:8px;}
+  .agreed.no{color:var(--dim);}
+  .inrow{padding:0 34px 20px;}
+  .gbusy{padding:0 2px;}
+  @media (max-width:1180px){ .work{flex-direction:column;height:auto;} .apanel{flex:none;} .goals main .ara{flex:0 0 58px;} .talk{height:min(680px,82dvh);flex:none;} }
+  @media (max-width:760px){
+    .th2{padding:18px 16px 14px;} .th2 h2{font-size:30px;} .trow{align-items:flex-start;flex-direction:column;gap:12px;}
+    .need{grid-template-columns:1fr 1fr;} .cmsgs{padding:16px;} .inrow{padding:0 16px 16px;}
+    .m,.gcard{max-width:92%;font-size:17.5px;} .m.y{max-width:85%;}
+    .goals main .ara{font-size:17px;padding:0 12px;}
+  }
 </style>
 </head>
-<body class="site-shell">
-<script src="site-header.js?v=20261116a" data-toggle></script>
+<body class="site-shell goals">
+<script src="site-header.js?v=20261118g" data-toggle></script>
 <main>
-  <h1 class="page-title">Your goals</h1>
+  <nav class="topnav" id="gnav" aria-label="Goals steps"></nav>
+  <h1 class="ptitle">Talk it through</h1>
+  <p class="intro">Do one area at a time. Start with the one that matters most to you today.</p>
+  <div class="work">
+    <aside class="apanel"><div class="areas" id="areas"></div></aside>
+    <section class="talk">
+      <div class="th2"><div class="trow"><h2 id="aT"></h2><button type="button" class="leave" id="leave"></button></div><div class="need" id="need"></div></div>
+      <div class="cmsgs" id="msgs" aria-live="polite"></div>
+      <div class="inrow"><div class="own"><input id="inp" type="text" placeholder="Type your answer" aria-label="Type your answer" autocomplete="off"><button type="button" id="send" aria-label="Send">&rarr;</button></div></div>
+    </section>
+  </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="goals.js?v=20261118g"></script>
+<script>
+(function () {
+  var A = G.AREAS, NEED = G.NEED, busy = false, cur = 0;
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  G.nav(0);
+
+  // Sussuri's instructions for this chat (first version, to be tested and improved), then how to mark things for the page
+  function SYSTEM(i) {
+    var a = G.data.areas[i], have = a.lines.map(function (l, n) { return l ? '- ' + NEED[n] + ': ' + l : null; }).filter(Boolean);
+    return 'You are Sussuri, helping a member think through one area of their life: ' + A[i] + '. Your only job here is to gather four things, not to give advice or solutions:\n\n' +
+      '1. What they want in this area, and why. Go one layer under their first answer to the feeling or reason behind it, then stop digging.\n' +
+      '2. What is stopping them.\n' +
+      '3. What they already bring: strengths, skills, people, past successes.\n' +
+      '4. How much time they can give it in a normal week.\n\n' +
+      'Ask one short question at a time, in plain warm language. When you have one of the four clearly, say it back in one line using their own words, and mark it for confirmation. Keep each line specific enough to act on. If they say the area is fine as it is, or they are not ready to look at it, accept that kindly and mark the area as left for now. If they show signs of real distress, gently point them to the Urgent support page.\n\n' +
+      'HOW THE PAGE READS YOUR REPLY. Write plain text, one or two short sentences, never lists or headings. ' +
+      'To mark a line for confirmation, end your reply with exactly one line of the form <<GOT n | the line>> where n is 1, 2, 3 or 4 (the number above) and the line is in their own words, first person, one sentence. The page shows it as a card with "Yes, that\'s it" and "Not quite", so do not also ask them to confirm in your text: keep the text before it to a few words, or nothing. Mark only one line per reply, and only for something not yet confirmed. ' +
+      'When they answer "Yes, that\'s it", go straight to the next of the four not yet confirmed. When they answer "Not quite", ask what to change, then mark it again. ' +
+      'To leave the area for now, end your reply with <<LEFT>>. If they show real distress, end your reply with <<URGENT>> and the page shows a link to Urgent support.\n\n' +
+      (have.length ? 'Already confirmed:\n' + have.join('\n') : 'Nothing is confirmed yet.');
+  }
+  var OPEN = function (i) { return 'Let’s look at ' + A[i].toLowerCase() + '. In a sentence, what would you like to be different here?'; };
+  var DONE_LINE = 'That is everything I need for this area. Pick another on the left, or go on to your plan.';
+  var LEFT_LINE = 'No problem. This area is left for now. It will not be in your plan. Come back to it any time.';
+
+  function drawList() {
+    var list = $('areas'); list.innerHTML = '';
+    A.forEach(function (name, i) {
+      var a = G.data.areas[i], g = G.got(a), b = el('button', 'ara' + (i === cur ? ' on' : '') + (a.left ? ' lf' : '')); b.type = 'button';
+      b.appendChild(el('span', 'an', i + 1)); b.appendChild(el('span', '', name));
+      b.appendChild(el('span', 'tk' + (g === 4 && !a.left ? ' full' : ''), a.left ? 'Left for now' : g === 4 ? '✓' : g ? g + ' of 4' : ''));
+      b.setAttribute('aria-pressed', i === cur ? 'true' : 'false');
+      b.addEventListener('click', function () { if (busy) return; cur = i; G.data.cur = i; G.save(); draw(); });
+      list.appendChild(b);
+    });
+  }
+  function drawNeed() {
+    var n = $('need'), a = G.data.areas[cur]; n.innerHTML = '';
+    NEED.forEach(function (t, i) {
+      var ok = !!a.lines[i], d = el('div', 'nd' + (ok ? ' ok' : '')); d.appendChild(el('i', '', ok ? '✓' : '')); d.appendChild(el('span', '', t)); n.appendChild(d);
+    });
+  }
+  function sus(text, urgent) {
+    var m = el('div', 'm s'); m.appendChild(el('small', '', 'SUSSURI')); m.appendChild(document.createTextNode(text));
+    if (urgent) { m.appendChild(document.createTextNode(' ')); var l = el('a', '', 'Urgent support'); l.href = 'urgent.html'; m.appendChild(l); }
+    return m;
+  }
+  function draw() {
+    drawList(); drawNeed();
+    var a = G.data.areas[cur], box = $('msgs'), g = G.got(a);
+    $('aT').textContent = A[cur];
+    var lv = $('leave'); lv.textContent = a.left ? 'Work on this area after all' : 'Leave this area for now';
+    lv.style.visibility = g === 4 && !a.left ? 'hidden' : 'visible';
+    box.innerHTML = '';
+    if (a.left) { box.appendChild(sus(LEFT_LINE)); return; }
+    if (!a.chat.length) { a.chat.push({ r: 's', t: OPEN(cur) }); G.save(); }
+    a.chat.forEach(function (c) {
+      if (c.r === 'h') return;
+      if (c.r === 'y') { box.appendChild(el('div', 'm y', c.t)); return; }
+      if (c.r === 's') { box.appendChild(sus(c.t, c.urgent)); return; }
+      var card = el('div', 'gcard'); card.appendChild(el('small', '', NEED[c.n])); card.appendChild(document.createTextNode(c.t));
+      if (c.ok) card.appendChild(el('div', 'agreed', '✓ Agreed'));
+      else if (c.no) card.appendChild(el('div', 'agreed no', 'Not quite'));
+      else {
+        var gb = el('div', 'gb'), y = el('button', 'put', 'Yes, that’s it'), n = el('button', 'chg', 'Not quite');
+        y.type = n.type = 'button';
+        y.addEventListener('click', function () { answer(c, true); }); n.addEventListener('click', function () { answer(c, false); });
+        gb.appendChild(y); gb.appendChild(n); card.appendChild(gb);
+      }
+      box.appendChild(card);
+    });
+    if (busy) box.appendChild(el('div', 'gbusy', 'Sussuri is writing'));
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function answer(c, yes) {
+    if (busy) return;
+    var a = G.data.areas[cur];
+    if (yes) { c.ok = true; a.lines[c.n] = c.t; a.chat.push({ r: 'h', t: 'Yes, that’s it.' }); }
+    else { c.no = true; a.chat.push({ r: 'h', t: 'Not quite.' }); }
+    G.save();
+    if (yes && G.got(a) === 4) { a.chat.push({ r: 's', t: DONE_LINE }); G.save(); draw(); return; }
+    talk();
+  }
+  function send() {
+    var v = $('inp').value.trim(); if (!v || busy) return;
+    var a = G.data.areas[cur];
+    if (!G.canSend()) { a.chat.push({ r: 's', t: 'You have used the messages on your plan for now. Your answers so far are saved.' }); draw(); return; }
+    $('inp').value = '';
+    if (a.left) a.left = false;
+    a.chat.push({ r: 'y', t: v }); G.countMessage(); G.save();
+    talk();
+  }
+  // the conversation as the model sees it: gathered cards are Sussuri's own words, marked as it wrote them
+  function history(a) {
+    var out = [{ role: 'user', content: '(The member has opened this area.)' }];
+    a.chat.forEach(function (c) {
+      var role = (c.r === 'y' || c.r === 'h') ? 'user' : 'assistant', t = c.r === 'g' ? '<<GOT ' + (c.n + 1) + ' | ' + c.t + '>>' : c.t;
+      var last = out[out.length - 1];
+      if (last.role === role) last.content += '\n' + t; else out.push({ role: role, content: t });
+    });
+    if (out[out.length - 1].role !== 'user') out.push({ role: 'user', content: '(Carry on.)' });
+    return out;
+  }
+  function take(a, text, crisis) {
+    var m = /<<\s*GOT\s*(\d)\s*\|\s*([^>]+?)\s*>>/i.exec(text), left = /<<\s*LEFT\s*>>/i.test(text), urgent = crisis || /<<\s*URGENT\s*>>/i.test(text);
+    var clean = text.replace(/<<[^>]*>>/g, '').trim();
+    if (clean) a.chat.push({ r: 's', t: clean, urgent: urgent || undefined });
+    if (left) { a.left = true; return; }
+    if (m) { var n = +m[1] - 1; if (n >= 0 && n < 4 && !a.lines[n]) a.chat.push({ r: 'g', n: n, t: m[2].trim() }); }
+  }
+  function talk() {
+    var a = G.data.areas[cur], i = cur; busy = true; draw();
+    var p = window.PSYCHE_PREVIEW ? fake(a) : G.ask(SYSTEM(i), history(a), 300);
+    p.then(function (r) {
+      take(G.data.areas[i], r.text || (r.error ? '(Sussuri could not answer just now. Try again.)' : ''), r.crisis);
+    }).catch(function () { G.data.areas[i].chat.push({ r: 's', t: '(Sussuri could not answer just now. Try again.)' }); })
+      .then(function () { busy = false; G.save(); draw(); });
+  }
+  // preview only (?preview=1): a stand-in Sussuri with no AI call, so the page can be walked through locally
+  function fake(a) {
+    var last = a.chat[a.chat.length - 1], k = a.lines.indexOf(null);
+    var Q = ['In a sentence, what would you like to be different here?', 'What usually stops you?', 'What do you already have going for you here?', 'Last one. How much time could you give this in a normal week?'];
+    var t;
+    if (last.r === 'y' && /fine as it is|not ready|not now|don.t want to/i.test(last.t)) t = 'That is fine. We can leave this one. <<LEFT>>';
+    else if (last.r === 'y') t = '<<GOT ' + (k + 1) + ' | ' + last.t.replace(/[<>|]/g, '') + '>>';
+    else if (last.r === 'h' && /Not quite/.test(last.t)) t = 'Say it again in your own words, and I will write it down.';
+    else t = Q[k];
+    return new Promise(function (res) { setTimeout(function () { res({ text: t }); }, 300); });
+  }
+
+  $('leave').addEventListener('click', function () { if (busy) return; var a = G.data.areas[cur]; a.left = !a.left; G.save(); draw(); });
+  $('send').addEventListener('click', send);
+  $('inp').addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
+
+  G.ready(function () {
+    var q = parseInt(new URLSearchParams(location.search).get('area'), 10);
+    cur = q >= 1 && q <= 8 ? q - 1 : (G.data.cur || 0);
+    if (q >= 1 && q <= 8 && new URLSearchParams(location.search).get('add') === '1') { G.data.areas[cur].left = false; G.save(); }
+    draw();
+  });
+})();
+</script>
 </body>
 </html>

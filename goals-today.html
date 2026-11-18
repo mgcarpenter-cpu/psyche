@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Goals · Sussuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261118g">
+<link rel="stylesheet" href="goals.css?v=20261118g">
+<style>
+  /* Goals 4: Today. The page a member opens each day once the plan is running. */
+  *{margin:0;padding:0;}
+  html,body{height:100%;}
+  body{background:#000;color:#fff;}
+  main{overflow-y:auto;}
+  .toprow{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;}
+  .datew{position:relative;align-self:flex-end;}
+  .goals main .dateb{border:1px solid #6a6a6a;border-radius:6px;padding:9px 14px;font-size:17px;cursor:pointer;display:flex;gap:12px;align-items:center;white-space:nowrap;}
+  .goals main .dateb:hover{border-color:#fff;}
+  .dateb i{font-style:normal;font-size:11px;color:var(--dim);}
+  .cal{position:absolute;top:48px;right:0;z-index:5;background:#000;border:1px solid #fff;border-radius:6px;padding:14px 16px 16px;width:330px;}
+  .cal[hidden]{display:none;}
+  .calh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:18px;font-weight:500;}
+  .goals main .calh button{width:34px;height:34px;border:1px solid #5a5a5a;border-radius:6px;text-align:center;cursor:pointer;}
+  .calg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;}
+  .calg span{font-family:var(--mono);font-size:11px;color:var(--dim);padding:4px 0;}
+  .goals main .calg button{height:36px;border-radius:6px;font-size:16px;cursor:pointer;text-align:center;}
+  .goals main .calg button:hover{background:rgba(255,255,255,.14);}
+  .goals main .calg button.tod{border:1px solid #fff;}
+  .goals main .calg button.sel{background:#fff;color:#000;}
+  .runl{margin:0;font-size:17px;color:var(--dim);}
+  .runl b{color:#fff;font-weight:400;}
+  .due{margin:0;font-size:17px;color:#fff;}
+  .wkrow{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:16px;color:var(--dim);}
+  .goals main .wkrow button{cursor:pointer;border-bottom:1px solid #5a5a5a;}
+  .goals main .wkrow button:hover{color:#fff;}
+  .wkrow span{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;}
+  .strip{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:6px;}
+  .goals main .dp{border:1px solid #4a4a4a;border-radius:6px;padding:10px 12px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:2px;}
+  .goals main .dp:hover{border-color:#fff;}
+  .dp b{font-weight:400;font-size:17px;}
+  .dp small{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--dim);min-height:14px;}
+  .goals main .dp.on{background:#fff;color:#000;border-color:#fff;}
+  .dp.on small{color:#444;}
+  .thd,.tr{display:grid;grid-template-columns:170px 1fr 150px;gap:36px;}
+  .thd{font-family:var(--body);font-weight:500;font-size:18px;padding:20px 0 12px;border-bottom:1px solid #4a4a4a;}
+  .thd span:last-child{text-align:right;}
+  .tl{display:flex;flex-direction:column;}
+  .tr{align-items:center;padding:17px 0;border-bottom:1px solid #333;}
+  .tm{font-size:19px;}
+  .tm small{display:block;margin-top:3px;font-size:14.5px;color:var(--dim);letter-spacing:.06em;}
+  .wt{font-size:21px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .wt small{font-size:15px;color:var(--dim);}
+  .tr.on .wt{color:#77776f;}
+  .goals main .ply{border:1px solid #fff;border-radius:6px;font-family:var(--body);font-weight:500;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap;padding:7px 14px;font-size:11.5px;}
+  .goals main .tr .tk1{justify-self:end;margin-right:2px;}
+  .empty{padding:26px 0;font-size:19px;color:var(--dim);border-bottom:1px solid #333;}
+  .empty a{border-bottom:1px solid #5a5a5a;color:#c9c9c5;}
+  .well{font-size:18px;margin:14px 0 0;}
+  .well[hidden]{display:none;}
+  @media (max-width:1100px){ .strip{grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;} .goals main .dp{padding:8px;} .dp b{font-size:15px;} }
+  @media (max-width:760px){
+    .toprow{flex-direction:column;align-items:flex-start;gap:14px;} .datew{align-self:flex-start;} .cal{left:0;right:auto;width:min(330px,calc(100vw - 40px));}
+    .strip{grid-template-columns:repeat(4,minmax(0,1fr));}
+    .thd{display:none;}
+    .tr{grid-template-columns:1fr auto;gap:6px 14px;}
+    .tr .tm{grid-column:1;grid-row:1;font-size:16px;color:var(--dim);} .tr .tm small{display:inline;margin-left:8px;}
+    .tr .wt{grid-column:1;grid-row:2;font-size:19px;} .tr .tk1{grid-column:2;grid-row:1 / 3;}
+  }
+</style>
+</head>
+<body class="site-shell goals">
+<script src="site-header.js?v=20261118g" data-toggle></script>
+<main>
+  <nav class="topnav" id="gnav" aria-label="Goals steps"></nav>
+  <div class="toprow"><h1 class="ptitle" id="dt">Today</h1><div class="datew"><button type="button" class="dateb" id="dateb" aria-haspopup="dialog"><span id="dl"></span><i aria-hidden="true">&#9662;</i></button><div class="cal" id="cal" hidden></div></div></div>
+  <p class="runl" id="runl"></p>
+  <p class="due" id="due" hidden></p>
+  <div class="wkrow"><button type="button" id="pw">&larr; Week before</button><span id="wl"></span><button type="button" id="nw">Week after &rarr;</button></div>
+  <div class="strip" id="strip"></div>
+  <div class="thd"><span>Time</span><span>What you will do</span><span>Did you do it?</span></div>
+  <div class="tl" id="tl"></div>
+  <p class="well" id="well" hidden>Everything is ticked for this day. Well done.</p>
+  <audio id="aud" preload="none"></audio>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="meditation-sessions.js?v=20261118g"></script>
+<script src="goals.js?v=20261118g"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DAYN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], MS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var WORD = { 1: 'one-week', 2: 'two-week', 4: 'four-week' };
+  var LIB = {}; (window.SUSSURI_SESSIONS || []).forEach(function (s) { LIB[s.slug] = s; });
+  var TODAY = G.today(), sel = TODAY, view = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1), START, RUN, rows = [], playing = null;
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function idx(d) { return Math.round((d - START) / 864e5); }
+  function same(a, b) { return G.ymd(a) === G.ymd(b); }
+  function wd(d) { return (d.getDay() + 6) % 7; }
+  function on(r, d) { var i = idx(d); return i >= 0 && i < RUN && r.l.days[wd(d)] === '1'; }
+  function ticks(d) { return G.data.ticks[G.ymd(d)] || {}; }
+  function count(d) { var t = 0, n = 0, k = ticks(d); rows.forEach(function (r) { if (on(r, d)) { t++; if (k[r.it.id]) n++; } }); return [n, t]; }
+  function sd(d) { return SHORT[d.getDay()] + ' ' + d.getDate() + ' ' + MS[d.getMonth()]; }
+  G.nav(3);
+
+  function drawCal() {
+    var c = $('cal'); c.innerHTML = '';
+    var hd = el('div', 'calh'), p = el('button', '', '←'), n = el('button', '', '→');
+    p.type = n.type = 'button'; p.setAttribute('aria-label', 'Month before'); n.setAttribute('aria-label', 'Month after');
+    p.addEventListener('click', function (e) { e.stopPropagation(); view = new Date(view.getFullYear(), view.getMonth() - 1, 1); drawCal(); });
+    n.addEventListener('click', function (e) { e.stopPropagation(); view = new Date(view.getFullYear(), view.getMonth() + 1, 1); drawCal(); });
+    hd.appendChild(p); hd.appendChild(el('span', '', MON[view.getMonth()] + ' ' + view.getFullYear())); hd.appendChild(n); c.appendChild(hd);
+    var g = el('div', 'calg');
+    ['M', 'T', 'W', 'T', 'F', 'S', 'S'].forEach(function (x) { g.appendChild(el('span', '', x)); });
+    for (var b = 0; b < wd(view); b++) g.appendChild(el('span', '', ''));
+    var last = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+    for (var d = 1; d <= last; d++) (function (dt) {
+      var bt = el('button', (same(dt, sel) ? 'sel' : '') + (same(dt, TODAY) ? ' tod' : ''), dt.getDate()); bt.type = 'button';
+      bt.addEventListener('click', function (e) { e.stopPropagation(); sel = dt; c.hidden = true; draw(); });
+      g.appendChild(bt);
+    })(new Date(view.getFullYear(), view.getMonth(), d));
+    c.appendChild(g);
+  }
+
+  function draw() {
+    var i = idx(sel), now = same(sel, TODAY), past = sel < TODAY, mon = G.add(sel, -wd(sel)), rv = G.add(START, RUN);
+    $('dl').textContent = DAYN[sel.getDay()] + ' ' + sel.getDate() + ' ' + MON[sel.getMonth()] + ' ' + sel.getFullYear();
+    $('dt').textContent = now ? 'Today' : past ? 'Looking back' : 'Coming up';
+    var rl = $('runl'); rl.innerHTML = '';
+    rl.appendChild(document.createTextNode(i < 0 ? 'Your plan starts on ' + sd(START) + '. ' : i >= RUN ? 'This ' + WORD[G.data.sched.run] + ' plan has finished. ' : 'Day ' + (i + 1) + ' of ' + RUN + '. '));
+    rl.appendChild(document.createTextNode('Review with Sussuri on ')); rl.appendChild(el('b', '', sd(rv))); rl.appendChild(document.createTextNode('.'));
+    // the review page is not built yet: on (and after) the review date, just say it is due
+    var due = $('due'); due.hidden = TODAY < rv || !rows.length; due.textContent = 'Your ' + WORD[G.data.sched.run] + ' review is due.';
+    $('wl').textContent = 'Week of ' + mon.getDate() + ' ' + MS[mon.getMonth()];
+    var st = $('strip'); st.innerHTML = '';
+    for (var d = 0; d < 7; d++) (function (dt) {
+      var c = count(dt), b = el('button', 'dp' + (same(dt, sel) ? ' on' : '')); b.type = 'button';
+      b.appendChild(el('b', '', sd(dt)));
+      b.appendChild(el('small', '', !c[1] ? '' : dt <= TODAY ? c[0] + ' of ' + c[1] : c[1] + (c[1] === 1 ? ' thing' : ' things')));
+      b.setAttribute('aria-pressed', same(dt, sel) ? 'true' : 'false');
+      b.addEventListener('click', function () { sel = dt; draw(); });
+      st.appendChild(b);
+    })(G.add(mon, d));
+    var tl = $('tl'), open = 0, shown = 0, k = ticks(sel), early = G.EARLY_MIN[G.data.sched.early || 0]; tl.innerHTML = '';
+    rows.forEach(function (r) {
+      if (!on(r, sel)) return; shown++;
+      var it = r.it, done = !!k[it.id], row = el('div', 'tr' + (done ? ' on' : ''));
+      if (!done) open++;
+      var tm = el('span', 'tm', r.l.time || 'Any time');
+      if (r.l.time && r.l.remind) tm.appendChild(el('small', '', 'Reminder at ' + G.shift(r.l.time, -early).replace(/ (am|pm)$/, '')));
+      row.appendChild(tm);
+      var w = el('span', 'wt'); w.appendChild(el('span', '', it.what));
+      if (G.LONG[it.long] !== 'No set time') w.appendChild(el('small', '', G.LONG[it.long]));
+      var med = it.med && LIB[it.med];
+      if (med && !done) {
+        var pb = el('button', 'ply', playing === it.id ? '❚❚ Pause' : '▶ Play meditation'); pb.type = 'button';
+        pb.addEventListener('click', function () { play(it.id, med.audio); });
+        w.appendChild(pb);
+      }
+      row.appendChild(w);
+      var tk = el('button', 'tk1' + (done ? ' on' : ''), done ? '✓' : ''); tk.type = 'button';
+      tk.setAttribute('aria-label', 'Did you do it: ' + it.what); tk.setAttribute('aria-pressed', done ? 'true' : 'false');
+      tk.addEventListener('click', function () {
+        var day = G.ymd(sel), t = G.data.ticks[day] || (G.data.ticks[day] = {});
+        if (t[it.id]) delete t[it.id]; else t[it.id] = 1;
+        if (!Object.keys(t).length) delete G.data.ticks[day];
+        G.save(); draw();
+      });
+      row.appendChild(tk);
+      tl.appendChild(row);
+    });
+    if (!rows.length) { var e = el('div', 'empty', 'Nothing here yet. '), a = el('a', '', 'Set your schedule first'); a.href = 'goals-schedule.html'; e.appendChild(a); tl.appendChild(e); }
+    else if (!shown) tl.appendChild(el('div', 'empty', i < 0 ? 'Nothing here. Your plan had not started yet.' : i >= RUN ? 'Nothing here. This is after your plan ended. The next plan is set at the review.' : 'Nothing planned for this day.'));
+    $('well').hidden = !shown || open > 0 || sel > TODAY;
+    view = new Date(sel.getFullYear(), sel.getMonth(), 1); drawCal();
+  }
+  function play(id, src) {
+    var a = $('aud');
+    if (playing === id) { a.pause(); playing = null; draw(); return; }
+    a.src = src; a.play().catch(function () {}); playing = id; draw();
+  }
+  $('aud').addEventListener('ended', function () { playing = null; draw(); });
+  $('dateb').addEventListener('click', function (e) { e.stopPropagation(); var c = $('cal'); c.hidden = !c.hidden; });
+  document.addEventListener('click', function (e) { var c = $('cal'); if (!c.hidden && !c.contains(e.target)) c.hidden = true; });
+  $('pw').addEventListener('click', function () { sel = G.add(sel, -7); draw(); });
+  $('nw').addEventListener('click', function () { sel = G.add(sel, 7); draw(); });
+
+  G.ready(function () {
+    rows = G.scheduleRows();
+    // the plan starts the first day the member opens Today with something scheduled
+    if (rows.length && !G.data.sched.start) G.data.sched.start = G.ymd(TODAY);
+    G.save();
+    START = G.data.sched.start ? G.parse(G.data.sched.start) : TODAY; RUN = G.data.sched.run * 7;
+    draw();
+  });
+})();
+</script>
+</body>
+</html>

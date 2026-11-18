@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Goals · Sussuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261118g">
+<link rel="stylesheet" href="goals.css?v=20261118g">
+<style>
+  /* Goals 2: Plan. Sussuri's suggestions, grouped by area; each with a keep tick and three drop-downs. */
+  *{margin:0;padding:0;}
+  html,body{height:100%;}
+  body{background:#000;color:#fff;}
+  main{overflow-y:auto;gap:12px !important;padding-bottom:0 !important;}
+  .tablew{position:relative;display:flex;flex-direction:column;border-top:1px solid #4a4a4a;height:max(360px,calc(100dvh - var(--bar-h) - 410px));flex:none;}
+  .hd,.ln{display:grid;grid-template-columns:30px 1fr 160px 140px 132px;gap:16px;}
+  .hd{padding:14px 26px 14px 0;border-bottom:1px solid #333;font-family:var(--body);font-weight:500;font-size:17.5px;color:#fff;}
+  .scroll{flex:1;min-height:0;overflow:auto;scrollbar-width:none;padding:0 26px 20px 0;}
+  .scroll::-webkit-scrollbar{display:none;}
+  .rail{top:56px;}
+  .ah{display:flex;align-items:baseline;gap:14px;padding:34px 0 10px;}
+  .ah b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1;}
+  .ah.off b{color:#77776f;}
+  .ln{align-items:center;width:100%;padding:11px 0;font-size:20px;}
+  .goals main .ln .bx{border-radius:4px;border:1px solid #fff;display:grid;place-items:center;font-size:13px;font-weight:500;cursor:pointer;width:22px;height:22px;}
+  .goals main .ln.on .bx{background:#fff;color:#000;}
+  .ln .t{display:flex;gap:12px;align-items:baseline;}
+  .ln:not(.on) .t{color:#77776f;text-decoration:line-through;}
+  .ln:not(.on) .gdd{opacity:.35;}
+  .goals main .ln .gdd{justify-self:stretch;}
+  .offl{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;padding:6px 0 4px 50px;font-size:17px;color:var(--dim);}
+  .offl a{border-bottom:1px solid #5a5a5a;color:#c9c9c5;}
+  .offl a:hover{color:#fff;}
+  .empty{padding:30px 0;font-size:19px;color:var(--dim);}
+  .empty a{border-bottom:1px solid #5a5a5a;color:#c9c9c5;}
+  .sumrow{display:flex;justify-content:space-between;gap:20px;font-size:17px;margin-top:10px;}
+  .sumrow b{font-weight:500;}
+  .dock{flex:0 0 auto;border-top:1px solid #4a4a4a;background:#000;padding:14px 48px 20px;display:grid;grid-template-columns:1fr;gap:8px;margin:14px -48px 0;position:sticky;bottom:0;}
+  .dock label{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:#fff;}
+  .dock .own input{border-color:#fff;padding:16px 18px;}
+  .goals main .dock .own button{border-color:#fff;}
+  .dock .note{font-size:16px;color:var(--dim);}
+  @media (max-width:1023px){ .dock{margin:14px -20px 0;padding:14px 20px 18px;} }
+  @media (max-width:900px){
+    .hd{display:none;}
+    .tablew{height:auto;border-top:0;} .scroll{overflow:visible;padding-right:0;} .tablew .rail{display:none;}
+    .ln{grid-template-columns:30px 1fr 1fr;gap:8px 10px;padding:12px 0;font-size:18px;align-items:start;}
+    .ln .t{grid-column:2 / -1;}
+    .ln .gdd:nth-of-type(1){grid-column:2;} .ln .gdd:nth-of-type(2){grid-column:3;} .ln .gdd:nth-of-type(3){grid-column:2;}
+    .goals main .ln .gdd{font-size:15px;}
+    .ah{padding-top:24px;} .ah b{font-size:26px;} .offl{padding-left:0;}
+  }
+</style>
+</head>
+<body class="site-shell goals">
+<script src="site-header.js?v=20261118g" data-toggle></script>
+<main>
+  <nav class="topnav" id="gnav" aria-label="Goals steps"></nav>
+  <h1 class="ptitle">Plan</h1>
+  <p class="intro">Sussuri's suggestions. Change anything.</p>
+  <div class="tablew">
+    <div class="hd"><span></span><span>What you will do</span><span>How often</span><span>Time of day</span><span>How long</span></div>
+    <div class="scroll" id="scroll"></div>
+    <div class="rail"><div class="thumb" id="thumb"></div></div>
+  </div>
+  <div class="sumrow"><span id="tot"></span></div>
+  <div class="dock">
+    <label for="tell">Ask Sussuri to change it for you</label>
+    <div class="own"><input id="tell" type="text" placeholder="Make the walk every second day" autocomplete="off"><button type="button" id="tellSend" aria-label="Send">&rarr;</button></div>
+    <div class="note" id="tellNote" hidden></div>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="meditation-sessions.js?v=20261118g"></script>
+<script src="goals.js?v=20261118g"></script>
+<script>
+(function () {
+  var A = G.AREAS, NEED = G.NEED, busy = false;
+  var LIB = (window.SUSSURI_SESSIONS || []).map(function (s) { return { slug: s.slug, title: s.title, length: s.length, about: s.about }; });
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  G.nav(1);
+  var root = $('scroll'), bar = G.rail(root, $('thumb'));
+
+  // Sussuri's instructions for building the plan (first version), then the answer format the page reads
+  var RULES = 'From the member\'s four confirmed lines in each area, suggest one to three things per area: things to work on inside (meditations and practices) and things to do outside (actions). Give each one how often, a time of day and how long. Keep the total realistic against the time they said they can give. For meditations: suggest a ready-made meditation from the library first, because it costs nothing to play. Suggest a made-for-you meditation only when nothing in the library fits, and never more than the member\'s monthly allowance. Each time a member needed a meditation the library did not have, record it, so the most common gaps can be recorded later.';
+  function FORMAT() {
+    return '\n\nThe library of ready-made meditations (slug: title, length, about):\n' + LIB.map(function (s) { return '- ' + s.slug + ': ' + s.title + ', ' + s.length + '. ' + s.about; }).join('\n') +
+      '\n\nThe member\'s monthly allowance of made-for-you meditations: ' + G.MADE_PER_MONTH + '.' +
+      '\n\nAnswer with JSON only, no other words: {"items":[{"area":<area number 1-8>,"kind":"inside" or "outside","what":"<short, plain, in their words where you can>","often":"<one of: ' + G.OFTEN.join(', ') + '>","time":"<one of: ' + G.TOD.join(', ') + '>","long":"<one of: ' + G.LONG.join(', ') + '>","meditation":"<library slug, or empty>","madeForYou":true or false}],"gaps":[{"area":<number>,"need":"<the meditation they needed that the library does not have>"}]}' +
+      '\nFor a library meditation write what as "Meditation: <title>" and give its slug. For a made-for-you meditation write what as "Meditation made for you: <what it is for>", set madeForYou true, and also list it in gaps.';
+  }
+  function linesFor(areas) {
+    return areas.map(function (i) { var a = G.data.areas[i]; return 'Area ' + (i + 1) + ': ' + A[i] + '\n' + NEED.map(function (n, k) { return '- ' + n + ': ' + a.lines[k]; }).join('\n'); }).join('\n\n');
+  }
+  function pick(list, v, d) { var i = list.indexOf(String(v || '').trim()); return i < 0 ? d : i; }
+  function json(text) { var s = text.indexOf('{'), e = text.lastIndexOf('}'); return JSON.parse(text.slice(s, e + 1)); }
+  function madeCount(items) { return items.filter(function (it) { return it.made; }).length; }
+  function toItems(out, keepIds) {
+    var items = [], made = madeCount(G.data.plan && !keepIds ? G.data.plan.items : []);
+    (out.items || []).forEach(function (r) {
+      var area = parseInt(r.area, 10) - 1; if (!(area >= 0 && area < 8)) return;
+      var it = { id: (keepIds && r.id) || G.newId(), area: area, kind: r.kind === 'inside' ? 'inside' : 'outside', what: String(r.what || '').slice(0, 140),
+        often: pick(G.OFTEN, r.often, 0), time: pick(G.TOD, r.time, 5), long: pick(G.LONG, r.long, 6), keep: r.keep !== false,
+        med: LIB.some(function (s) { return s.slug === r.meditation; }) ? r.meditation : '', made: !!r.madeForYou };
+      if (it.made && ++made > G.MADE_PER_MONTH) return;   // never more than the allowance
+      if (it.what) items.push(it);
+    });
+    (out.gaps || []).forEach(function (g) { var ar = parseInt(g.area, 10) - 1; if (g.need) G.data.gaps.push({ area: ar >= 0 ? ar : null, need: String(g.need).slice(0, 140), at: new Date().toISOString() }); });
+    return items;
+  }
+
+  // build items for areas talked through but not yet in the plan (the first time, that is every finished area)
+  function build() {
+    var plan = G.data.plan || (G.data.plan = { items: [], built: [] });
+    var todo = A.map(function (_, i) { return i; }).filter(function (i) { return G.state(G.data.areas[i]) === 'done' && plan.built.indexOf(i) < 0; });
+    if (!todo.length) return Promise.resolve();
+    busy = true; draw();
+    var p = window.PSYCHE_PREVIEW ? fakeBuild(todo) : G.ask('You are Sussuri, building a member\'s goals plan.\n\n' + RULES + FORMAT(),
+      [{ role: 'user', content: 'The member\'s confirmed lines:\n\n' + linesFor(todo) }], 1800).then(function (r) { return json(r.text); });
+    return p.then(function (out) {
+      plan.items = plan.items.concat(toItems(out)); todo.forEach(function (i) { plan.built.push(i); }); G.save();
+    }).catch(function (e) { console.error('plan build failed:', e); note('Sussuri could not build the plan just now. Open this page again to try again.'); })
+      .then(function () { busy = false; draw(); });
+  }
+  function fakeBuild(todo) {   // preview only: a stand-in plan with no AI call
+    var MED = [1, 4, 0, 6, 8, 5, 7, 3];
+    return new Promise(function (res) { setTimeout(function () { res({ items: todo.reduce(function (o, i) {
+      var s = LIB[MED[i]] || LIB[0];
+      o.push({ area: i + 1, kind: 'inside', what: 'Meditation: ' + s.title, often: '3 days a week', time: 'Evening', long: '20 min', meditation: s.slug });
+      o.push({ area: i + 1, kind: 'outside', what: 'One small step: ' + G.data.areas[i].lines[0].replace(/\.$/, '').toLowerCase(), often: 'Every day', time: 'Morning', long: '10 min' });
+      return o; }, []), gaps: [] }); }, 400); });
+  }
+
+  function note(t) { var n = $('tellNote'); n.hidden = !t; n.textContent = t || ''; }
+  function tell() {
+    var v = $('tell').value.trim(); if (!v || busy || !G.data.plan) return;
+    if (window.PSYCHE_PREVIEW) { note('In preview, Sussuri does not change the plan. Use the boxes above.'); return; }
+    if (!G.canSend()) { note('You have used the messages on your plan for now.'); return; }
+    G.countMessage(); busy = true; note('Sussuri is changing your plan.'); draw();
+    var cur = G.data.plan.items.filter(G.inPlan).map(function (it) { return { id: it.id, area: it.area + 1, kind: it.kind, what: it.what, often: G.OFTEN[it.often], time: G.TOD[it.time], long: G.LONG[it.long], meditation: it.med, madeForYou: it.made, keep: it.keep }; });
+    G.ask('You are Sussuri, changing a member\'s goals plan the way they ask. Change only what they ask; keep every other item exactly as it is, with its id and keep value. A new item gets no id.\n\n' + RULES + FORMAT() + '\nAlso give back "id" and "keep" for each existing item.',
+      [{ role: 'user', content: 'The member\'s confirmed lines:\n\n' + linesFor(G.data.plan.built.filter(function (i) { return G.state(G.data.areas[i]) === 'done'; })) + '\n\nThe plan now:\n' + JSON.stringify({ items: cur }) + '\n\nWhat they ask: ' + v }], 2200)
+      .then(function (r) {
+        var items = toItems(json(r.text), true), others = G.data.plan.items.filter(function (it) { return !G.inPlan(it); });
+        G.data.plan.items = others.concat(items); G.save(); $('tell').value = ''; note('');
+      }).catch(function (e) { console.error('plan change failed:', e); note('Sussuri could not change it just now. Try again, or use the boxes above.'); })
+      .then(function () { busy = false; draw(); });
+  }
+
+  function draw() {
+    var keep = root.scrollTop, plan = G.data.plan; root.innerHTML = '';
+    var shown = A.map(function (_, i) { return i; }).filter(function (i) { return G.state(G.data.areas[i]) === 'done'; });
+    if (busy && (!plan || !plan.items.length)) root.appendChild(el('div', 'empty', 'Sussuri is building your plan.'));
+    else if (!shown.length) { var e = el('div', 'empty', 'Nothing to plan yet. '), l = el('a', '', 'Talk an area through first'); l.href = 'your-goals.html'; e.appendChild(l); root.appendChild(e); }
+    shown.forEach(function (i) {
+      var items = (plan && plan.items || []).filter(function (it) { return it.area === i; });
+      var ah = el('div', 'ah'); ah.appendChild(el('b', '', A[i])); root.appendChild(ah);
+      if (!items.length && busy) root.appendChild(el('div', 'offl', 'Sussuri is adding this area.'));
+      items.forEach(function (it) {
+        var r = el('div', 'ln' + (it.keep ? ' on' : ''));
+        var bx = el('button', 'bx', it.keep ? '✓' : ''); bx.type = 'button'; bx.setAttribute('aria-label', 'Keep ' + it.what); bx.setAttribute('aria-pressed', it.keep ? 'true' : 'false');
+        bx.addEventListener('click', function () { it.keep = !it.keep; G.save(); draw(); });
+        r.appendChild(bx); r.appendChild(el('span', 't', it.what));
+        [['often', G.OFTEN], ['time', G.TOD], ['long', G.LONG]].forEach(function (c) {
+          r.appendChild(G.dd(c[1], it[c[0]], function (v) { it[c[0]] = v; G.save(); draw(); }));
+        });
+        root.appendChild(r);
+      });
+    });
+    // areas not in the plan, greyed, with the reason and a way back
+    A.forEach(function (name, i) {
+      var a = G.data.areas[i], st = G.state(a); if (st === 'done') return;
+      var ah = el('div', 'ah off'); ah.appendChild(el('b', '', name)); root.appendChild(ah);
+      var l = el('div', 'offl'), go = el('a');
+      if (a.left) { l.appendChild(el('span', '', 'Left for now.')); go.textContent = 'Add it'; go.href = 'your-goals.html?area=' + (i + 1) + '&add=1'; }
+      else { l.appendChild(el('span', '', 'Not talked through yet.')); go.textContent = 'Go back and talk it through'; go.href = 'your-goals.html?area=' + (i + 1); }
+      l.appendChild(go); root.appendChild(l);
+    });
+    var kept = G.kept(), tot = $('tot'); tot.innerHTML = '';
+    tot.appendChild(document.createTextNode('This plan: ' + kept.length + (kept.length === 1 ? ' thing' : ' things') + ', about '));
+    tot.appendChild(el('b', '', G.minutesADay(kept) + ' minutes a day')); tot.appendChild(document.createTextNode('.'));
+    $('tellSend').disabled = busy; root.scrollTop = keep; bar();
+  }
+  $('tellSend').addEventListener('click', tell);
+  $('tell').addEventListener('keydown', function (e) { if (e.key === 'Enter') tell(); });
+  G.ready(function () { draw(); build(); });
+})();
+</script>
+</body>
+</html>
