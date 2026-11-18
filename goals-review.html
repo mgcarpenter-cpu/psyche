@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="preview.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Goals · Sussuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="site.css?v=20261118g">
+<link rel="stylesheet" href="goals.css?v=20261119a">
+<style>
+  /* Goals: the two-week Review. The Talk it through page again (same frame, sizes and parts), with four differences:
+     the title, the score beside it, a score on each area, and the row of boxes under the area name. */
+  *{margin:0;padding:0;}
+  html,body{height:100%;}
+  body{background:#000;color:#fff;}
+  main{overflow-y:auto;gap:18px !important;}
+  .headrow{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;}
+  .headrow .intro{margin-top:10px;}
+  .score{display:flex;align-items:center;gap:16px;}
+  .score b{font-family:var(--display);font-weight:400;font-size:58px;line-height:1;}
+  .score span{font-size:17px;color:#c9c9c5;line-height:1.35;}
+  .work{display:flex;gap:24px;height:640px;flex:none;}
+  .apanel{flex:0 0 290px;display:flex;flex-direction:column;}
+  .areas{flex:1;display:flex;flex-direction:column;gap:8px;}
+  .goals main .ara{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;border:1px solid #4a4a4a;border-radius:6px;padding:0 16px;font-size:18.5px;width:100%;color:#fff;flex:0 0 74px;cursor:pointer;}
+  .goals main .ara:hover{background:rgba(255,255,255,.07);}
+  .goals main .ara.on{background:#fff;color:#000;border-color:#fff;font-weight:400;}
+  .goals main .ara.lf{border-style:dashed;}
+  .an{font-family:var(--display);font-size:26px;line-height:1;}
+  .ara .tk{font-size:15px;white-space:nowrap;color:#c9c9c5;text-align:right;}
+  .ara .tk.sm{font-size:12px;color:var(--dim);}
+  .ara.on .tk{color:#222;}
+  .talk{flex:1;min-width:0;min-height:0;border:1px solid #5a5a5a;border-radius:6px;display:flex;flex-direction:column;}
+  .th2{padding:26px 34px 18px;border-bottom:1px solid #333;}
+  .th2 h2{font-family:var(--display);font-weight:400;font-size:38px;line-height:1;margin:0;}
+  .trow{display:flex;justify-content:space-between;align-items:center;gap:20px;}
+  .goals main .leave{font-size:15.5px;color:var(--dim);border:1px solid #5a5a5a;border-radius:6px;padding:8px 14px;cursor:pointer;white-space:nowrap;}
+  .goals main .leave:hover{color:#fff;border-color:#fff;}
+  .need{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;}
+  .need[hidden]{display:none;}
+  .nd{border:1px solid #4a4a4a;border-radius:6px;padding:9px 12px;font-size:15px;line-height:1.25;color:#fff;display:flex;flex-direction:column;justify-content:space-between;gap:4px;min-height:62px;}
+  .nd b{font-weight:400;color:var(--dim);}
+  .nd.low{border-color:#fff;}
+  .nd.low b{color:#fff;font-weight:500;}
+  .cmsgs{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:12px;scrollbar-width:none;padding:20px 34px 18px;}
+  .cmsgs::-webkit-scrollbar{display:none;}
+  .m{font-size:19px;line-height:1.4;max-width:80%;}
+  .m small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--dim);margin-bottom:3px;}
+  .m.y{align-self:flex-end;max-width:70%;border:1px solid #4a4a4a;border-radius:6px;padding:9px 14px;}
+  .m a{border-bottom:1px solid #5a5a5a;}
+  .gcard{border:1px solid #fff;border-radius:6px;padding:13px 16px;max-width:80%;font-size:18px;}
+  .gcard small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
+  .gcard ul{margin:0;padding-left:20px;}
+  .gb{display:flex;gap:8px;margin-top:12px;align-items:center;}
+  .agreed{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-top:8px;}
+  .inrow{padding:0 34px 20px;}
+  .gbusy{padding:0 2px;}
+  @media (max-width:1180px){ .work{flex-direction:column;height:auto;} .apanel{flex:none;} .goals main .ara{flex:0 0 58px;} .talk{height:min(680px,82dvh);flex:none;} }
+  @media (max-width:760px){
+    .headrow{flex-direction:column;align-items:flex-start;gap:14px;}
+    .th2{padding:18px 16px 14px;} .th2 h2{font-size:30px;} .trow{align-items:flex-start;flex-direction:column;gap:12px;}
+    .need{grid-template-columns:1fr 1fr;} .cmsgs{padding:16px;} .inrow{padding:0 16px 16px;}
+    .m,.gcard{max-width:92%;font-size:17.5px;} .m.y{max-width:85%;}
+    .goals main .ara{font-size:17px;padding:0 12px;}
+  }
+</style>
+</head>
+<body class="site-shell goals">
+<script src="site-header.js?v=20261118g" data-toggle></script>
+<main>
+  <nav class="topnav" id="gnav" aria-label="Goals steps"></nav>
+  <div class="headrow">
+    <div><h1 class="ptitle">Two-week review</h1><p class="intro" id="intro"></p></div>
+    <div class="score"><b id="tot"></b><span id="totl"></span></div>
+  </div>
+  <div class="work">
+    <aside class="apanel"><div class="areas" id="areas"></div></aside>
+    <section class="talk">
+      <div class="th2"><div class="trow"><h2 id="aT"></h2><button type="button" class="leave" id="again"></button></div><div class="need" id="need"></div></div>
+      <div class="cmsgs" id="msgs" aria-live="polite"></div>
+      <div class="inrow"><div class="own"><input id="inp" type="text" placeholder="Type your answer" aria-label="Type your answer" autocomplete="off"><button type="button" id="send" aria-label="Send">&rarr;</button></div></div>
+    </section>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="meditation-sessions.js?v=20261118g"></script>
+<script src="goals.js?v=20261119b"></script>
+<script>
+(function () {
+  var A = G.AREAS, NEED = G.NEED, busy = false, cur = 0, R, FROM, TO;
+  var MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var LIB = (window.SUSSURI_SESSIONS || []).map(function (s) { return { slug: s.slug, title: s.title, length: s.length }; });
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  G.nav(0, G.REVIEW_PAGES);
+
+  // ---- what this review covers ----
+  // review = { start, days, areas:[{ chat:[{r:'s'|'y'|'c'|'q', t, list, items, res}], done }] }, one per run.
+  // It is made when the page opens, from the run on Schedule / Today, and kept until Next starts the next run.
+  function setup() {
+    var s = G.data.sched, rv = G.data.review;
+    if (!rv || (s.start && rv.start !== s.start)) {
+      rv = G.data.review = { start: s.start || G.ymd(G.today()), days: (s.run || 2) * 7, areas: A.map(function () { return { chat: [], done: false }; }) };
+      G.save();
+    }
+    R = rv; FROM = G.parse(R.start); TO = G.add(FROM, R.days - 1);
+  }
+  function items(i) { return (G.data.plan && G.data.plan.items || []).filter(function (it) { return it.area === i && it.keep; }); }
+  function counts(i) { return items(i).map(function (it) { var c = G.count(it, FROM, TO); return { it: it, d: c[0], t: c[1] }; }); }
+  function sum(cs) { var d = 0, t = 0; cs.forEach(function (c) { d += c.d; t += c.t; }); return [d, t]; }
+  function pct(s) { return s[1] ? Math.round(100 * s[0] / s[1]) : 0; }
+  function inPlan(i) { return G.state(G.data.areas[i]) === 'done' && items(i).length > 0; }
+  function dates() {
+    var a = FROM.getDate(), b = TO.getDate();
+    return FROM.getMonth() === TO.getMonth() ? a + ' – ' + b + ' ' + MON[TO.getMonth()] : a + ' ' + MON[FROM.getMonth()] + ' – ' + b + ' ' + MON[TO.getMonth()];
+  }
+
+  // ---- Sussuri's instructions for the review chat (first version), then how the page reads the reply ----
+  function SYSTEM(i) {
+    var a = G.data.areas[i], cs = counts(i);
+    return 'You are Sussuri, reviewing one area of a member’s goals plan with them: ' + A[i] + '. The plan ran ' + dates() + '. Your job is to review and adjust, not to set the goal again.\n\n' +
+      'What they told you when they set this goal:\n' + NEED.map(function (n, k) { return '- ' + n + ': ' + (a.lines[k] || '—'); }).join('\n') + '\nDo not ask those four things again.\n\n' +
+      'Their plan for this area, and how often each thing was ticked on Today:\n' + cs.map(function (c) { return '- ' + c.it.what + ' (' + G.OFTEN[c.it.often] + ', ' + G.TOD[c.it.time] + ', ' + G.LONG[c.it.long] + '): ticked ' + c.d + ' of ' + c.t + (c.it.med ? ', library meditation ' + c.it.med : '') + (c.it.made ? ', made for you' : '') + ' [id ' + c.it.id + ']'; }).join('\n') + '\n\n' +
+      'Open with one short message: their goal in a few words, then what you see in the ticks. If something is low (under three quarters), ask whether they did it and did not tick, or it did not happen. Either way, ask them to tick each thing on Today as they do it from now on, so the score is real. If the area is going well, say so and ask whether to keep it as it is. Ask one short question at a time, in plain warm language, one or two sentences, never lists or headings.\n\n' +
+      'At the end, and only at the end, offer one card of changes: end your reply with <<CARD {"changes":["one short line per change, in plain words"],"items":[every item this area should have after the change]}>>. Each item: {"id":"<the id above when it is the same thing, changed; leave out for a new thing>","kind":"inside" or "outside","what":"<short, plain>","often":"<one of: ' + G.OFTEN.join(', ') + '>","time":"<one of: ' + G.TOD.join(', ') + '>","long":"<one of: ' + G.LONG.join(', ') + '>","meditation":"<library slug or empty>","madeForYou":true or false}. Library meditations (slug: title, length): ' + LIB.map(function (s) { return s.slug + ': ' + s.title + ', ' + s.length; }).join('; ') + '. If nothing should change, the card has "changes":["Keep it as it is"] and the items unchanged. The page shows the card with "Yes, change it" and "Keep it as it is", so do not ask them to confirm in your text. If the member asks for something different after a card, offer a new card. If they show signs of real distress, end your reply with <<URGENT>>.';
+  }
+  var KEPT_LINE = 'No problem. The plan stays as it is. Pick another area, or press Next.';
+  var CHANGED_LINE = 'Done. Your plan is updated. Tick each thing on Today as you do it, so your score is real. Pick another area, or press Next.';
+  function opener(i) {   // areas with no plan need no AI: one fixed line
+    var a = G.data.areas[i];
+    if (a.left) return 'You left this area out, so it is not in your plan. If you would like a goal here now, press “Set a goal here”.';
+    if (G.state(a) !== 'done') return 'This area is not in your plan yet. If you would like a goal here now, press “Set a goal here”.';
+    return 'This area has nothing in the plan. If you would like a goal here now, press “Set a goal here”.';
+  }
+
+  // ---- drawing ----
+  function drawList() {
+    var list = $('areas'); list.innerHTML = '';
+    A.forEach(function (name, i) {
+      var a = G.data.areas[i], ra = R.areas[i], b = el('button', 'ara' + (i === cur ? ' on' : '') + (a.left ? ' lf' : '')); b.type = 'button';
+      b.appendChild(el('span', 'an', i + 1)); b.appendChild(el('span', '', name));
+      var t = a.left ? 'Left for now' : inPlan(i) ? pct(sum(counts(i))) + '%' + (ra.done ? ' ✓' : '') : (ra.done ? '✓' : '');
+      b.appendChild(el('span', 'tk' + (a.left ? ' sm' : ''), t));
+      b.setAttribute('aria-pressed', i === cur ? 'true' : 'false');
+      b.addEventListener('click', function () { if (busy) return; cur = i; R.cur = i; G.save(); draw(); });
+      list.appendChild(b);
+    });
+  }
+  function drawNeed() {
+    var n = $('need'), cs = counts(cur); n.innerHTML = ''; n.hidden = !cs.length;
+    cs.forEach(function (c) {
+      var d = el('div', 'nd' + (c.t && c.d / c.t < .75 ? ' low' : '')); d.appendChild(el('span', '', c.it.what)); d.appendChild(el('b', '', c.d + ' of ' + c.t)); n.appendChild(d);
+    });
+  }
+  function sus(text, urgent) {
+    var m = el('div', 'm s'); m.appendChild(el('small', '', 'SUSSURI')); m.appendChild(document.createTextNode(text));
+    if (urgent) { m.appendChild(document.createTextNode(' ')); var l = el('a', '', 'Urgent support'); l.href = 'urgent.html'; m.appendChild(l); }
+    return m;
+  }
+  function card(c) {
+    var g = el('div', 'gcard');
+    if (c.r === 'c') { g.appendChild(el('small', '', 'What to change')); var u = el('ul'); c.list.forEach(function (x) { u.appendChild(el('li', '', x)); }); g.appendChild(u); }
+    else g.appendChild(document.createTextNode(c.t));
+    if (c.res) g.appendChild(el('div', 'agreed', '✓ ' + c.res));
+    else {
+      var gb = el('div', 'gb'), y, n;
+      if (c.r === 'c') {
+        y = el('button', 'put', 'Yes, change it'); n = el('button', 'chg', 'Keep it as it is');
+        y.addEventListener('click', function () { decide(c, true); }); n.addEventListener('click', function () { decide(c, false); });
+      } else {
+        y = el('button', 'put', 'Yes, start again'); n = el('button', 'chg', 'No, keep it');
+        y.addEventListener('click', function () { again(c, true); }); n.addEventListener('click', function () { again(c, false); });
+      }
+      y.type = n.type = 'button'; gb.appendChild(y); gb.appendChild(n); g.appendChild(gb);
+    }
+    return g;
+  }
+  function draw() {
+    drawList(); drawNeed();
+    var a = G.data.areas[cur], ra = R.areas[cur], box = $('msgs');
+    var d = 0, t = 0; A.forEach(function (_, i) { if (inPlan(i)) { var s = sum(counts(i)); d += s[0]; t += s[1]; } });
+    var p = t ? Math.round(100 * d / t) : 0;
+    $('tot').textContent = p + '%';
+    $('totl').innerHTML = 'You’re running at about ' + p + '% of your plan.<br>Every tick moves it up.';
+    $('intro').textContent = dates() + '. Go through one area at a time, then press Next.';
+    $('aT').textContent = A[cur];
+    $('again').textContent = inPlan(cur) ? 'Start this area again' : 'Set a goal here';
+    box.innerHTML = '';
+    if (!ra.chat.length && !busy) { if (inPlan(cur)) { talk(); return; } ra.chat.push({ r: 's', t: opener(cur) }); G.save(); }
+    ra.chat.forEach(function (c) {
+      if (c.r === 'y') box.appendChild(el('div', 'm y', c.t));
+      else if (c.r === 's') box.appendChild(sus(c.t, c.urgent));
+      else box.appendChild(card(c));
+    });
+    if (busy) box.appendChild(el('div', 'gbusy', 'Sussuri is writing'));
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // ---- the member's choices ----
+  function pick(list, v, d) { var i = list.indexOf(String(v || '').trim()); return i < 0 ? d : i; }
+  function decide(c, yes) {
+    if (busy) return;
+    var ra = R.areas[cur];
+    if (yes && c.items) {
+      var old = items(cur), plan = G.data.plan, next = [];
+      c.items.forEach(function (r) {
+        var was = old.filter(function (o) { return o.id === r.id; })[0];
+        var it = { id: was ? was.id : G.newId(), area: cur, kind: r.kind === 'inside' ? 'inside' : 'outside', what: String(r.what || (was && was.what) || '').slice(0, 140),
+          often: pick(G.OFTEN, r.often, was ? was.often : 0), time: pick(G.TOD, r.time, was ? was.time : 5), long: pick(G.LONG, r.long, was ? was.long : 6), keep: true,
+          med: LIB.some(function (s) { return s.slug === r.meditation; }) ? r.meditation : (was && !r.meditation ? was.med : ''), made: !!r.madeForYou };
+        if (it.what) next.push(it);
+      });
+      if (next.length) plan.items = plan.items.filter(function (it) { return it.area !== cur || !it.keep; }).concat(next);
+      c.res = 'Changed'; ra.chat.push({ r: 's', t: CHANGED_LINE });
+    } else { c.res = 'Kept as it is'; ra.chat.push({ r: 's', t: KEPT_LINE }); }
+    ra.done = true; G.save(); draw();
+  }
+  function again(c, yes) {
+    if (busy) return;
+    if (!yes) { c.res = 'Kept'; G.save(); draw(); return; }
+    c.res = 'Starting again'; G.save();
+    location.href = 'your-goals.html?area=' + (cur + 1) + (inPlan(cur) ? '&again=1' : '&add=1');
+  }
+  $('again').addEventListener('click', function () {
+    if (busy) return;
+    var ra = R.areas[cur], n = A[cur].toLowerCase();
+    ra.chat.push({ r: 'q', t: inPlan(cur) ? 'Start ' + n + ' again? Your plan for this area stays as it is until we agree a new one.' : 'Set a goal for ' + n + '? We will talk it through, then add it to your plan.' });
+    G.save(); draw();
+  });
+
+  // ---- talking to Sussuri ----
+  function send() {
+    var v = $('inp').value.trim(); if (!v || busy) return;
+    var ra = R.areas[cur];
+    if (!G.canSend()) { ra.chat.push({ r: 's', t: 'You have used the messages on your plan for now.' }); draw(); return; }
+    $('inp').value = '';
+    ra.chat.push({ r: 'y', t: v }); G.countMessage(); G.save();
+    if (!inPlan(cur)) { ra.chat.push({ r: 's', t: opener(cur) }); G.save(); draw(); return; }
+    talk();
+  }
+  function history(ra) {
+    var out = [{ role: 'user', content: '(The member has opened this area’s review.)' }];
+    ra.chat.forEach(function (c) {
+      var role = c.r === 'y' ? 'user' : 'assistant', t = c.t;
+      if (c.r === 'c') t = '<<CARD ' + JSON.stringify({ changes: c.list, items: c.items }) + '>>' + (c.res ? '' : '');
+      if (c.r === 'q') return;
+      out.push({ role: role, content: t });
+      if (c.res && c.r === 'c') out.push({ role: 'user', content: c.res === 'Changed' ? 'Yes, change it.' : 'Keep it as it is.' });
+    });
+    var m = []; out.forEach(function (x) { var l = m[m.length - 1]; if (l && l.role === x.role) l.content += '\n' + x.content; else m.push({ role: x.role, content: x.content }); });
+    if (m[m.length - 1].role !== 'user') m.push({ role: 'user', content: '(Carry on.)' });
+    return m;
+  }
+  function take(ra, text, crisis) {
+    var m = /<<\s*CARD\s*(\{[\s\S]*\})\s*>>/i.exec(text), urgent = crisis || /<<\s*URGENT\s*>>/i.test(text);
+    var clean = text.replace(/<<[\s\S]*?>>/g, '').trim();
+    if (clean) ra.chat.push({ r: 's', t: clean, urgent: urgent || undefined });
+    if (m) { try { var j = JSON.parse(m[1]); ra.chat.push({ r: 'c', list: (j.changes || []).map(String).slice(0, 6), items: Array.isArray(j.items) ? j.items : null }); } catch (e) { console.error('card not readable:', e); } }
+  }
+  function talk() {
+    var ra = R.areas[cur], i = cur; busy = true; draw();
+    var p = window.PSYCHE_PREVIEW ? fake(i, ra) : G.ask(SYSTEM(i), history(ra), 700);
+    p.then(function (r) { take(R.areas[i], r.text || (r.error ? '(Sussuri could not answer just now. Try again.)' : ''), r.crisis); })
+      .catch(function () { R.areas[i].chat.push({ r: 's', t: '(Sussuri could not answer just now. Try again.)' }); })
+      .then(function () { busy = false; G.save(); draw(); });
+  }
+  // preview only (?preview=1): a stand-in Sussuri with no AI call
+  function fake(i, ra) {
+    var cs = counts(i), s = sum(cs), low = cs.filter(function (c) { return c.t && c.d / c.t < .75; }), last = ra.chat[ra.chat.length - 1], t;
+    var goal = (G.data.areas[i].lines[0] || '').replace(/\.$/, '');
+    if (!last) t = 'Your goal here is to ' + goal.charAt(0).toLowerCase() + goal.slice(1) + '. ' + (low.length ? low.map(function (c) { return c.it.what; }).join(' and ') + ' happened about ' + pct(sum(low)) + '% of the time. Did you do it and not tick, or did it not happen?' : 'This area is going well: ' + s[0] + ' of ' + s[1] + '. Is there anything you would change, or shall we keep it as it is?');
+    else {
+      var its = cs.map(function (c) { var it = c.it, lo = c.t && c.d / c.t < .75; return { id: it.id, kind: it.kind, what: it.what, often: G.OFTEN[it.often], time: lo ? 'Morning' : G.TOD[it.time], long: G.LONG[it.long], meditation: it.med, madeForYou: it.made }; });
+      t = 'Thank you. Tick each thing on Today as you do it from now on, so the score is real. <<CARD ' + JSON.stringify({ changes: low.length ? low.map(function (c) { return c.it.what + ' moves to the morning.'; }) : ['Keep it as it is'], items: its }) + '>>';
+    }
+    return new Promise(function (res) { setTimeout(function () { res({ text: t }); }, 300); });
+  }
+  $('send').addEventListener('click', send);
+  $('inp').addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
+
+  // Next (or any page in the row): this run is over. The next one starts the first time Today is opened again,
+  // and its review is two weeks on. The ticks stay as the record.
+  $('gnav').addEventListener('click', function (e) {
+    var a = e.target.closest('a'); if (!a) return;
+    e.preventDefault();
+    var s = G.data.sched;
+    if (s.start) { (G.data.runs = G.data.runs || []).push({ start: s.start, run: s.run, reviewed: G.ymd(G.today()) }); s.start = null; }
+    G.save(); G.push();
+    location.href = a.getAttribute('href');
+  });
+
+  G.ready(function () {
+    setup();
+    var q = parseInt(new URLSearchParams(location.search).get('area'), 10);
+    cur = q >= 1 && q <= 8 ? q - 1 : (R.cur || 0);
+    draw();
+  });
+})();
+</script>
+</body>
+</html>

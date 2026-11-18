@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="site.css?v=20261118g">
-<link rel="stylesheet" href="goals.css?v=20261118g">
+<link rel="stylesheet" href="goals.css?v=20261119a">
 <style>
   /* Goals 4: Today. The page a member opens each day once the plan is running. */
   *{margin:0;padding:0;}
@@ -33,6 +33,7 @@
   .runl{margin:0;font-size:17px;color:var(--dim);}
   .runl b{color:#fff;font-weight:400;}
   .due{margin:0;font-size:17px;color:#fff;}
+  .due a{border-bottom:1px solid #fff;}
   .wkrow{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:16px;color:var(--dim);}
   .goals main .wkrow button{cursor:pointer;border-bottom:1px solid #5a5a5a;}
   .goals main .wkrow button:hover{color:#fff;}
@@ -87,7 +88,7 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="meditation-sessions.js?v=20261118g"></script>
-<script src="goals.js?v=20261118g"></script>
+<script src="goals.js?v=20261119b"></script>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -128,12 +129,13 @@
   function draw() {
     var i = idx(sel), now = same(sel, TODAY), past = sel < TODAY, mon = G.add(sel, -wd(sel)), rv = G.add(START, RUN);
     $('dl').textContent = DAYN[sel.getDay()] + ' ' + sel.getDate() + ' ' + MON[sel.getMonth()] + ' ' + sel.getFullYear();
-    $('dt').textContent = now ? 'Today' : past ? 'Looking back' : 'Coming up';
     var rl = $('runl'); rl.innerHTML = '';
     rl.appendChild(document.createTextNode(i < 0 ? 'Your plan starts on ' + sd(START) + '. ' : i >= RUN ? 'This ' + WORD[G.data.sched.run] + ' plan has finished. ' : 'Day ' + (i + 1) + ' of ' + RUN + '. '));
     rl.appendChild(document.createTextNode('Review with Sussuri on ')); rl.appendChild(el('b', '', sd(rv))); rl.appendChild(document.createTextNode('.'));
     // the review page is not built yet: on (and after) the review date, just say it is due
-    var due = $('due'); due.hidden = TODAY < rv || !rows.length; due.textContent = 'Your ' + WORD[G.data.sched.run] + ' review is due.';
+    var due = $('due'); due.hidden = TODAY < rv || !rows.length; due.innerHTML = '';
+    due.appendChild(document.createTextNode('Your ' + WORD[G.data.sched.run] + ' review is due. '));
+    var rl2 = el('a', '', 'Review with Sussuri'); rl2.href = 'goals-review.html'; due.appendChild(rl2);
     $('wl').textContent = 'Week of ' + mon.getDate() + ' ' + MS[mon.getMonth()];
     var st = $('strip'); st.innerHTML = '';
     for (var d = 0; d < 7; d++) (function (dt) {

@@ -8,14 +8,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="site.css?v=20261118g">
-<link rel="stylesheet" href="goals.css?v=20261118g">
+<link rel="stylesheet" href="goals.css?v=20261119a">
 <style>
   /* Goals 1: Talk it through. The areas on the left, a chat with Sussuri for the open area on the right. */
   *{margin:0;padding:0;}
   html,body{height:100%;}
   body{background:#000;color:#fff;}
   main{overflow-y:auto;gap:18px !important;}
-  .work{display:flex;gap:24px;height:648px;flex:none;}
+  .work{display:flex;gap:24px;height:640px;flex:none;}
   .apanel{flex:0 0 290px;display:flex;flex-direction:column;}
   .areas{flex:1;display:flex;flex-direction:column;gap:8px;}
   .goals main .ara{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;border:1px solid #4a4a4a;border-radius:6px;padding:0 16px;font-size:18.5px;width:100%;color:#fff;flex:0 0 74px;cursor:pointer;}
@@ -75,7 +75,7 @@
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="goals.js?v=20261118g"></script>
+<script src="goals.js?v=20261119b"></script>
 <script>
 (function () {
   var A = G.AREAS, NEED = G.NEED, busy = false, cur = 0;
@@ -158,7 +158,14 @@
     if (yes) { c.ok = true; a.lines[c.n] = c.t; a.chat.push({ r: 'h', t: 'Yes, that’s it.' }); }
     else { c.no = true; a.chat.push({ r: 'h', t: 'Not quite.' }); }
     G.save();
-    if (yes && G.got(a) === 4) { a.chat.push({ r: 's', t: DONE_LINE }); G.save(); draw(); return; }
+    if (yes && G.got(a) === 4) {
+      if (a.redo && G.data.plan) {   // the new goal is agreed: the old plan for this area goes, and Plan builds a new one
+        G.data.plan.items = G.data.plan.items.filter(function (it) { return it.area !== cur; });
+        G.data.plan.built = G.data.plan.built.filter(function (i) { return i !== cur; });
+        delete a.redo; delete a.old;
+      }
+      a.chat.push({ r: 's', t: DONE_LINE }); G.save(); draw(); return;
+    }
     talk();
   }
   function send() {
@@ -215,7 +222,13 @@
   G.ready(function () {
     var q = parseInt(new URLSearchParams(location.search).get('area'), 10);
     cur = q >= 1 && q <= 8 ? q - 1 : (G.data.cur || 0);
-    if (q >= 1 && q <= 8 && new URLSearchParams(location.search).get('add') === '1') { G.data.areas[cur].left = false; G.save(); }
+    var qs = new URLSearchParams(location.search);
+    if (q >= 1 && q <= 8 && qs.get('add') === '1') { G.data.areas[cur].left = false; G.save(); }
+    // from the Review page: start this one area again. The plan for it stays until the new goal is agreed (see answer()).
+    if (q >= 1 && q <= 8 && qs.get('again') === '1' && !G.data.areas[cur].redo) {
+      var ar = G.data.areas[cur]; ar.old = { chat: ar.chat, lines: ar.lines }; ar.chat = []; ar.lines = [null, null, null, null]; ar.left = false; ar.redo = true; G.save();
+      window.history.replaceState(null, '', 'your-goals.html?area=' + (cur + 1));
+    }
     draw();
   });
 })();

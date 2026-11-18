@@ -87,7 +87,7 @@
   })();
   // Pages with no menu item of their own belong to one that has: the black band sits on that item,
   // and the top bar names both ("Your account / Settings"), so people always know where they are.
-  var parentOf = { settings:'account', 'delete-account':'account', creator:'account', 'payment-terms':'terms', support:'urgent', 'goals-plan':'your-goals', 'goals-schedule':'your-goals', 'goals-today':'your-goals' };
+  var parentOf = { settings:'account', 'delete-account':'account', creator:'account', 'payment-terms':'terms', support:'urgent', 'goals-plan':'your-goals', 'goals-schedule':'your-goals', 'goals-today':'your-goals', 'goals-review':'your-goals' };
   var home = parentOf[here] || here;
   function isActive(route){ return route && route.split('?')[0].replace(/\.html$/, '') === home; }
 

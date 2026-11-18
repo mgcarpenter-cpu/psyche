@@ -56,7 +56,7 @@
   function state(a) { return a.left ? 'left for now' : got(a) === 4 ? 'done' : got(a) ? 'part done' : 'not started'; }
 
   var G = window.G = {
-    AREAS: AREAS, NEED: NEED, OFTEN: OFTEN, TOD: TOD, LONG: LONG, RUNS: RUNS, EARLY: EARLY, EARLY_MIN: EARLY_MIN, MADE_PER_MONTH: MADE_PER_MONTH,
+    AREAS: AREAS, NEED: NEED, PAGES: PAGES, REVIEW_PAGES: [['goals-review.html', 'Review'], PAGES[1], PAGES[2], PAGES[3]], OFTEN: OFTEN, TOD: TOD, LONG: LONG, RUNS: RUNS, EARLY: EARLY, EARLY_MIN: EARLY_MIN, MADE_PER_MONTH: MADE_PER_MONTH,
     data: blank(), got: got, state: state,
     save: function () {
       var d = G.data; d.updated = Date.now(); d.areas.forEach(function (a) { a.state = state(a); });
@@ -106,13 +106,26 @@
       return G.kept().map(function (it) { return { it: it, l: G.data.sched.lines[it.id] }; })
         .sort(function (a, b) { return G.mins(a.l.time) - G.mins(b.l.time); });
     },
+    // the run: from the day Today was first opened, for run weeks; the review is the day after it ends
+    runEnd: function () { return G.data.sched.start ? G.add(G.parse(G.data.sched.start), G.data.sched.run * 7 - 1) : null; },
+    reviewDue: function () { var e = G.runEnd(); return !!e && G.today() > e; },
+    // how often an item was scheduled and ticked between two dates (both included), up to today
+    count: function (it, from, to) {
+      var l = G.data.sched.lines[it.id], d = 0, t = 0, last = to < G.today() ? to : G.today();
+      if (!l) return [0, 0];
+      for (var x = new Date(from); x <= last; x = G.add(x, 1)) {
+        if (l.days[(x.getDay() + 6) % 7] !== '1') continue;
+        t++; if ((G.data.ticks[G.ymd(x)] || {})[it.id]) d++;
+      }
+      return [d, t];
+    },
     reviewDate: function () {
       var s = G.data.sched.start ? G.parse(G.data.sched.start) : G.today();
       return G.add(s, G.data.sched.run * 7);
     },
     // ---- the one navigation row ----
-    nav: function (n) {
-      var el = document.getElementById('gnav'); if (!el) return;
+    nav: function (n, pages) {
+      var el = document.getElementById('gnav'), PAGES = pages || G.PAGES; if (!el) return;
       var h = '<div class="tn">';
       PAGES.forEach(function (p, i) {
         if (i) h += '<i aria-hidden="true">&rarr;</i>';
@@ -187,9 +200,13 @@
         uid = s.user.id;
         var local = readLocal();
         G.data = fix(local);
+        // members only, like Education and Meditations: a free plan (no card yet) goes to the Join page
         sb.from('profiles').select('plan,message_count,display_name').eq('id', uid).single().then(function (p) {
           if (p.data) profile = { id: uid, plan: p.data.plan || 'free', message_count: Number(p.data.message_count) || 0, display_name: p.data.display_name || '' };
+          if (!profile || profile.plan === 'free') { location.replace('pricing.html'); return; }
+          loadGoals();
         });
+        function loadGoals() {
         sb.from('member_goals').select('data').eq('user_id', uid).maybeSingle().then(function (q) {
           if (q.error) console.error('goals load failed:', q.error);
           var remote = q.data && q.data.data;
@@ -197,6 +214,7 @@
           else if (local && (!remote || (local.updated || 0) > (remote.updated || 0))) G.push();
           fn();
         });
+        }
       });
     }
   };
