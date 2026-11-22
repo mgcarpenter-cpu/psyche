@@ -1,120 +1,103 @@
-// Vercel serverless function — the link-preview picture for a gift: /api/gift-image?id=<id>  (PNG, 1200 x 683)
-// The same card as gift-card.js: the front page composition with the From name, the gift and the message.
-// Text is laid out by satori (fonts in /fonts); the wheel is the card's own SVG, taken from gift-card.js;
-// resvg turns the whole thing into a PNG.
+// Vercel serverless function — the link-preview picture for a gift: /api/gift-image?id=<id>  (PNG, 1200 x 630)
+// The wide card from gift-card-design.html (drawn at 900 x 472), every size scaled by 4/3:
+// black band with "sussuri" and the sender's circle (photo or initial), white below with the sentence,
+// the reading line, "Valid for 7 days" + the small print, and the black Claim button.
+// Text is laid out by satori (fonts in /fonts); resvg turns it into a PNG. Keep it under 300 KB (WhatsApp).
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
-import { getGift, cardWords } from "./_gifts.js";
+import { getGift, sampleGift, giftName } from "./_gifts.js";
 
 export const config = { maxDuration: 20 };
 
 const ROOT = process.cwd();
 const F = n => join(ROOT, "fonts", n);
-let FONTS = null, WHEEL = null, DEFS = null, WIDTHS = null;
+const K = 1200 / 900;          // design px -> picture px
+const W = 1200, H = 630, RED = "#b3261e";
+let FONTS = null, WIDTHS = null;
 function assets() {
   if (FONTS) return;
   FONTS = [
     { name: "Jost", data: readFileSync(F("Jost-300.ttf")), weight: 300, style: "normal" },
-    { name: "Jost", data: readFileSync(F("Jost-400.ttf")), weight: 400, style: "normal" },
     { name: "Jost", data: readFileSync(F("Jost-500.ttf")), weight: 500, style: "normal" },
-    { name: "Poiret One", data: readFileSync(F("PoiretOne.ttf")), weight: 400, style: "normal" }
+    { name: "Poiret One", data: readFileSync(F("PoiretOne.ttf")), weight: 400, style: "normal" },
+    { name: "JetBrains Mono", data: readFileSync(F("JetBrainsMono-400.ttf")), weight: 400, style: "normal" }
   ];
   WIDTHS = JSON.parse(readFileSync(F("poiret-widths.json"), "utf8"));
-  const js = readFileSync(join(ROOT, "gift-card.js"), "utf8");
-  DEFS = JSON.parse(js.match(/var DEFS = (".*?");\n/)[1]);
-  const card = JSON.parse(js.match(/var CARD = (".*?");\n/)[1]);
-  WHEEL = card.slice(card.indexOf("<svg"), card.indexOf("</svg>") + 6);
 }
 
-const SAMPLES = {
-  "preview-know": { kind: "know", from_name: "Mark", message: "This shows you how your mind works. It’s quick, it’s fun, and it got me thinking. Have a go." },
-  "preview-med": { kind: "med", meditation: "fall-asleep", from_name: "Mark", message: "This one helps me switch off at night. Have a listen." },
-  "preview-card": { kind: "card", from_name: "Mark", message: "A calm mind sees clearly. I’ve been using Sussuri to find mine. Try it with me, you get a month free." }
-};
-
-// the wheel, standing still with one part lit (as gift-card.js light(), rest 135)
-const LIT = { know: 6, med: 1, card: 4 };
-function wheel(kind) {
-  const k = LIT[kind] ?? 4, mod = a => ((a % 360) + 360) % 360;
-  let s = WHEEL.replace(/<g class="rotO">/g, `<g class="rotO" transform="rotate(${k * 45 + 135})">`)
-               .replace(/<g class="rotI">/g, `<g class="rotI" transform="rotate(${135 - k * 45})">`);
-  s = s.replace(/<g class="seg" data-i="(\d)">([\s\S]*?)(?=<g class="seg" data-i="|<\/g><\/g><\/g>)/g, (m, i, body) => {
-    i = +i; const th = mod(135 + 45 * (k - i)), top = th <= 90 || th >= 270, on = i === k;
-    body = body.replace(/<path class="hit"[^>]*\/>/, "")
-      .replace(/<path class="lit"/, `<path fill="#f4f4f4" opacity="${on ? 1 : 0}"`)
-      .replace(/<text class="lbl up"/, `<text font-family="Poiret One" font-size="${on ? 25 : 22}" letter-spacing="4" fill="${on ? "#000" : "#f4f4f4"}" opacity="${top ? 1 : 0}"`)
-      .replace(/<text class="lbl dn"/, `<text font-family="Poiret One" font-size="${on ? 25 : 22}" letter-spacing="4" fill="${on ? "#000" : "#f4f4f4"}" opacity="${top ? 0 : 1}"`);
-    return `<g data-i="${i}">${body}`;
-  });
-  // the card's CSS, written onto the elements (class names stay; resvg reads these attributes reliably)
-  s = s.replace(/class="ln f"/g, 'fill="none" stroke="#f4f4f4" stroke-width=".7"')
-       .replace(/class="ln"/g, 'fill="none" stroke="#f4f4f4" stroke-width="1"')
-       .replace(/<g class="dots">/g, '<g fill="#f4f4f4">')
-       .replace(/class="dial dup"/g, 'fill="none" stroke="#8a8a8a" stroke-width=".8"')
-       .replace(/class="dial dlow"/g, 'fill="none" stroke="#777" stroke-width=".8"')
-       .replace(/class="reg"/g, 'stroke-width=".7"');
-  s = s.replace(/<svg class="wheel"[^>]*>/, `<svg x="18.6" y="97.4" width="625.2" height="625.2" viewBox="-16 -16 672 672" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">${DEFS.replace(/^<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "")}`);
-  return s;
+// ---- the sentence, broken into lines by hand so "free month" can sit in its red box ----
+// Poiret One advance widths (em) from fonts/poiret-widths.json, plus the .03em letter spacing.
+const LS = 0.03;
+function emWidth(t) { let w = 0; for (const ch of t) w += (WIDTHS[ch] ?? 0.55) + LS; return w; }
+function lines(name, size, maxW) {
+  const words = ["Your", "friend", ...name.split(/\s+/).filter(Boolean), "gave", "you", "a", "\u0000", "of", "Sussuri,", "worth", "$39."];
+  const sp = emWidth(" ") * size, out = [[]];
+  let x = 0;
+  for (const w of words) {
+    const ww = w === "\u0000" ? (emWidth("free month") + 0.36) * size : emWidth(w) * size;
+    if (out[out.length - 1].length && x + sp + ww > maxW) { out.push([]); x = 0; }
+    x += (out[out.length - 1].length ? sp : 0) + ww;
+    out[out.length - 1].push(w);
+  }
+  return out;
 }
 
-// "From [name]" in Poiret One at 58px, smaller for a long name so it stays on one line (box width 559px)
-function nameSize(text) {
-  let w = 0; for (const ch of text) w += (WIDTHS[ch] ?? .55) + .06;
-  return Math.max(24, Math.min(58, Math.floor(559 / w)));
-}
-
-const h = (type, style, children) => ({ type, props: { style, children } });
+const h = (type, style, children, extra) => ({ type, props: { style, children, ...(extra || {}) } });
 function layout(g) {
-  const w = cardWords(g), from = g.from_name || "a friend", name = `From ${from}`;
-  const abs = (o) => ({ position: "absolute", display: "flex", ...o });
-  const corner = (o) => abs({ width: 16, height: 16, borderColor: "#000", borderStyle: "solid", ...o });
-  return h("div", { width: 1440, height: 820, display: "flex", position: "relative", fontFamily: "Jost", fontWeight: 300, fontSize: 17, color: "#000" }, [
-    h("div", abs({ left: 40, top: -5, fontFamily: "Poiret One", fontSize: 328, lineHeight: 1, letterSpacing: 16.4, color: "#f4f4f4", whiteSpace: "nowrap" }), "sussuri"),
-    h("div", abs({ right: 51.5, top: 72, width: 350, background: "#b3261e", color: "#fff", borderRadius: 8, padding: "22px 26px", flexDirection: "column" }), [
-      h("div", { fontWeight: 500, fontSize: 35, lineHeight: 1.1 }, "One whole month"),
-      h("div", { fontFamily: "Poiret One", fontSize: 124, lineHeight: .95, letterSpacing: 5, margin: "2px 0 12px -4px" }, "free"),
-      h("div", { fontWeight: 400, fontSize: 20, lineHeight: 1.3 }, "Calm, clarity and the training to reach your goals.")
+  const name = giftName(g);
+  const padX = 44 * K, padY = 26 * K, band = 128 * K;
+  const textW = W - 2 * padX;
+  // the sentence: 50px in the design, smaller only if it would need more than three lines (a long name)
+  let size = 50 * K, ls;
+  while ((ls = lines(name, size, textW - 4)).length > 3 && size > 30 * K) size -= 1;
+  const lh = size * 1.2;
+  const sentence = ls.map(row => h("div", { display: "flex", height: lh, alignItems: "center", whiteSpace: "nowrap" },
+    row.map((w, i) => w === "\u0000"
+      ? h("div", { display: "flex", background: RED, color: "#fff", borderRadius: 6 * K, padding: `${0.05 * size}px ${0.18 * size}px ${0.1 * size}px`, lineHeight: 1, marginLeft: i ? emWidth(" ") * size : 0, position: "relative", top: 0.05 * size }, "free month")
+      : h("div", { display: "flex", marginLeft: i ? emWidth(" ") * size : 0 }, w))));
+
+  const av = 78 * K;
+  const circle = g.photo
+    ? h("div", { display: "flex", width: av, height: av, borderRadius: av / 2, border: `${1.5 * K}px solid #fff`, overflow: "hidden" },
+        [h("img", { width: av - 3 * K, height: av - 3 * K, borderRadius: av / 2, objectFit: "cover" }, undefined, { src: g.photo, width: av - 3 * K, height: av - 3 * K })])
+    : h("div", { display: "flex", width: av, height: av, borderRadius: av / 2, border: `${1.5 * K}px solid #fff`, alignItems: "center", justifyContent: "center", fontFamily: "Poiret One", fontSize: 44 * K, lineHeight: 1, color: "#fff" }, name.charAt(0).toUpperCase());
+
+  return h("div", { width: W, height: H, display: "flex", flexDirection: "column", fontFamily: "Jost", fontWeight: 300 }, [
+    h("div", { display: "flex", height: band, background: "#000", padding: `0 ${padX}px`, alignItems: "center", justifyContent: "space-between" }, [
+      h("div", { display: "flex", fontFamily: "Poiret One", fontSize: 86 * K, letterSpacing: "0.05em", lineHeight: 1, color: "#fff", position: "relative", top: -11 * K }, "sussuri"),
+      circle
     ]),
-    h("div", abs({ left: 520, top: 556.4, width: 237.3, height: 1, background: "#000" }), ""),
-    h("div", abs({ left: 757.3, top: 428, width: 631.2, height: 368, padding: "22px 36px 24px", flexDirection: "column" }), [
-      h("div", corner({ left: 0, top: 0, borderWidth: "1px 0 0 1px", borderTopLeftRadius: 7 }), ""),
-      h("div", corner({ right: 0, top: 0, borderWidth: "1px 1px 0 0", borderTopRightRadius: 7 }), ""),
-      h("div", corner({ left: 0, bottom: 0, borderWidth: "0 0 1px 1px", borderBottomLeftRadius: 7 }), ""),
-      h("div", corner({ right: 0, bottom: 0, borderWidth: "0 1px 1px 0", borderBottomRightRadius: 7 }), ""),
-      h("div", { display: "flex", justifyContent: "space-between", fontWeight: 400, fontSize: 12, lineHeight: 1, height: 12, letterSpacing: 1.1, textTransform: "uppercase" }, [
-        h("span", {}, "A gift for you"), h("span", {}, "Written and developed by humans, powered by AI")
-      ]),
-      h("div", { display: "flex", alignItems: "flex-end", marginTop: 6, height: 60, fontFamily: "Poiret One", fontSize: nameSize(name), lineHeight: 1, letterSpacing: "0.06em", whiteSpace: "nowrap" }, name),
-      h("div", { display: "block", marginTop: 8, fontSize: 24, lineHeight: "30px", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }, w.gift),
-      h("div", { display: "block", fontSize: 18.5, lineHeight: "24px", color: "#222", fontWeight: 400, lineClamp: 2 }, w.about),
-      g.message ? h("div", { display: "block", marginTop: 8, fontSize: 20, lineHeight: "26px", fontWeight: 400, lineClamp: 3 }, `“${g.message}”`) : h("div", {}, ""),
-      h("div", abs({ left: 36, bottom: 26, width: 300, minHeight: 46, alignItems: "center", fontSize: 13, lineHeight: 1.35, color: "#6a6a6a" }), `${from} earns from Sussuri if you become a paying member.`),
-      h("div", abs({ right: 36, bottom: 26, height: 48, borderRadius: 8, padding: "0 24px", alignItems: "center", background: "#000", color: "#fff", fontWeight: 500, fontSize: 14.5, letterSpacing: "0.2em", textTransform: "uppercase" }), w.cta)
+    h("div", { display: "flex", flexDirection: "column", flexGrow: 1, background: "#fff", color: "#000", padding: `${padY}px ${padX}px` }, [
+      h("div", { display: "flex", flexDirection: "column", fontFamily: "Poiret One", fontSize: size, letterSpacing: `${LS}em` }, sentence),
+      h("div", { display: "flex", fontSize: 25 * K, lineHeight: 1.3, marginTop: 10 * K, color: "#111" }, "Life coaching, in your pocket. Be sure to say thanks!"),
+      h("div", { display: "flex", marginTop: "auto", alignItems: "flex-end", justifyContent: "space-between" }, [
+        h("div", { display: "flex", flexDirection: "column", width: 440 * K }, [
+          h("div", { display: "flex", fontFamily: "JetBrains Mono", fontSize: 14 * K, letterSpacing: "0.14em", color: "#111", lineHeight: 1.2 }, "VALID FOR 7 DAYS"),
+          h("div", { display: "flex", marginTop: 6 * K, fontSize: 13.5 * K, lineHeight: 1.35, color: "#5f5f5f", wordBreak: "break-word" }, `Sussuri is an AI-powered life coach. ${name} earns from Sussuri if you become a paying member.`)
+        ]),
+        h("div", { display: "flex", height: 60 * K, padding: `0 ${30 * K}px`, alignItems: "center", background: "#000", color: "#fff", borderRadius: 8 * K, fontWeight: 500, fontSize: 16.5 * K, letterSpacing: "0.2em", whiteSpace: "nowrap" }, "CLAIM MY FREE MONTH")
+      ])
     ])
   ]);
 }
 
 export async function renderPng(g) {
   assets();
-  const text = await satori(layout(g), { width: 1440, height: 820, fonts: FONTS });
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1440" height="820" viewBox="0 0 1440 820">` +
-    `<rect width="1440" height="410" fill="#000"/><rect y="410" width="1440" height="410" fill="#fff"/>` +
-    wheel(g.kind) + text.replace(/^<svg[^>]*>/, `<svg x="0" y="0" width="1440" height="820" viewBox="0 0 1440 820">`) + `</svg>`;
-  const r = new Resvg(svg, { fitTo: { mode: "width", value: 1200 }, font: { fontFiles: [F("PoiretOne.ttf"), F("Jost-400.ttf")], loadSystemFonts: false, defaultFontFamily: "Poiret One" } });
-  return r.render().asPng();
+  const svg = await satori(layout(g), { width: W, height: H, fonts: FONTS });
+  return new Resvg(svg, { fitTo: { mode: "width", value: W }, font: { loadSystemFonts: false } }).render().asPng();
 }
 
 export default async function handler(req, res) {
   const id = String((req.query && req.query.id) || "");
-  const g = SAMPLES[id] || await getGift(id);
+  const g = sampleGift(id, req.query && req.query.from) || await getGift(id);
   if (!g) return res.status(404).send("not found");
   try {
     const png = await renderPng(g);
     res.setHeader("Content-Type", "image/png");
-    res.setHeader("Cache-Control", "public, max-age=86400, immutable");
+    res.setHeader("Cache-Control", g.sample ? "public, max-age=300" : "public, max-age=86400, immutable");
     return res.status(200).send(Buffer.from(png));
   } catch (e) {
     console.error("gift-image failed", e);

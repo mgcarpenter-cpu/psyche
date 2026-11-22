@@ -5,6 +5,16 @@
       "source": "/",
       "destination": "/front-v2",
       "permanent": false
+    },
+    {
+      "source": "/how-it-works",
+      "destination": "/give-a-gift",
+      "permanent": false
+    },
+    {
+      "source": "/how-it-works.html",
+      "destination": "/give-a-gift",
+      "permanent": false
     }
   ],
   "functions": {

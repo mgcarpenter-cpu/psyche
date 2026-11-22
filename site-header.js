@@ -52,7 +52,6 @@
       { show:true,  route:'education.html',                icon:'doc',      label:'Education' }
     ]},
     { title:'Affiliate program', items:[
-      { show:true,  route:'how-it-works.html',             icon:'info',     label:'How it works' },
       { show:true,  route:'your-plan.html',                icon:'list',     label:'Your plan' },
       { show:true,  route:'give-a-gift.html',              icon:'share',    label:'Give a gift' },
       { show:false, route:'library.html',                  icon:'cards',    label:'Avatar library' },
@@ -111,7 +110,7 @@
   // top bar: tabs on Chat / Practice, otherwise the section name (or the page's own name)
   var section = {
     assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path',
-    'how-it-works':'Affiliate program', 'your-plan':'Affiliate program', 'give-a-gift':'Affiliate program', 'share-cards':'Affiliate program',
+    'your-plan':'Affiliate program', 'give-a-gift':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
     help:'Help &amp; FAQ', urgent:'Urgent support', pricing:'Join', membership:'Membership', signup:'Start free month', 'youre-in':"You're in", welcome:'Welcome', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
   };

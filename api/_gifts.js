@@ -31,7 +31,7 @@ export async function memberPlan(uid) {
 
 export async function getGift(id) {
   if (!/^[A-Za-z0-9]{4,16}$/.test(String(id || ""))) return null;
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/gifts?id=eq.${id}&select=id,kind,meditation,from_name,message,created_at`, { headers: svc() });
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/gifts?id=eq.${id}&select=id,kind,meditation,from_name,message,photo,created_at`, { headers: svc() });
   if (!r.ok) return null;
   const rows = await r.json();
   return rows && rows[0] ? rows[0] : null;
@@ -40,6 +40,28 @@ export async function getGift(id) {
 export async function insertGift(row) {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/gifts`, { method: "POST", headers: { ...svc(), Prefer: "return=minimal" }, body: JSON.stringify(row) });
   return r.status;   // 201 saved, 409 the id is taken
+}
+
+// A gift link works for 7 days from when it was made (the member's plain link never runs out).
+export const GIFT_DAYS = 7;
+export function expired(g) {
+  const t = Date.parse(g && g.created_at);
+  return !isNaN(t) && Date.now() - t > GIFT_DAYS * 864e5;
+}
+export function giftName(g) { return cleanLine(g && g.from_name, 20) || "A friend"; }
+
+// Preview links, nothing saved: /g/preview-card (a new gift) and /g/preview-old (one that has run out).
+// ?from=<name> tries another name on a preview (20 letters at most), so the page, the card and the picture can be checked.
+export function sampleGift(id, from) {
+  if (id !== "preview-card" && id !== "preview-old") return null;
+  const name = cleanLine(from, 20) || "Mark";
+  const age = id === "preview-old" ? 8 * 864e5 : 0;
+  return { id, kind: "card", from_name: name, photo: null, created_at: new Date(Date.now() - age).toISOString(), sample: true };
+}
+// the photo: a small square JPEG made in the browser (give-a-gift.html), kept with the gift
+export function cleanPhoto(v) {
+  const s = String(v || "");
+  return /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(s) && s.length <= 40000 ? s : null;
 }
 
 // short, unguessable id for the link: 7 letters and numbers
