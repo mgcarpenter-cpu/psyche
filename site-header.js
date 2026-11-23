@@ -109,7 +109,7 @@
 
   // top bar: tabs on Chat / Practice, otherwise the section name (or the page's own name)
   var section = {
-    assessment:'Your path', meditations:'Your path', education:'Your path', 'personal-meditations':'Your path',
+    assessment:'Your path', meditations:'Your path', education:'Your path',
     'your-plan':'Affiliate program', 'give-a-gift':'Affiliate program', 'share-cards':'Affiliate program',
     library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
     help:'Help &amp; FAQ', urgent:'Urgent support', pricing:'Join', membership:'Membership', signup:'Start free month', 'youre-in':"You're in", welcome:'Welcome', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'

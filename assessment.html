@@ -1311,6 +1311,9 @@ html,body{ background:#000; color:#fff; }
 #reveal .bar-point,#reveal .bar-point *{ font-family:var(--font-jost); }
 #reveal .join-now-btn{ height:46px; padding:0 22px !important; background:#fff !important; border:1px solid #fff !important; border-radius:8px !important; box-shadow:none !important; transform:none !important;
   color:#000 !important; font-family:var(--font-jost) !important; font-weight:500 !important; font-size:12.5px !important; letter-spacing:.2em !important; text-transform:uppercase; cursor:pointer; }
+#reveal .next-goals{ display:inline-flex; align-items:center; height:46px; padding:0 22px; margin-left:10px; border:1px solid #fff; border-radius:8px; color:#fff; text-decoration:none;
+  font-family:var(--font-jost); font-weight:500; font-size:12.5px; letter-spacing:.2em; text-transform:uppercase; vertical-align:top; }   /* after Join Now: on to Goals */
+@media (max-width:560px){ #reveal .next-goals{ margin:10px 0 0; } }
 #reveal #regenBtn{ min-height:44px; padding:0 18px !important; background:transparent !important; border:1px solid #fff !important; border-radius:8px !important; color:#fff !important;
   font-family:var(--font-jost) !important; font-weight:500 !important; font-size:12.5px !important; letter-spacing:.2em !important; }
 #reveal #personalizingBanner{ background:transparent !important; border:1px solid var(--s-border) !important; border-radius:8px !important; color:var(--s-text2) !important; font-family:var(--font-jost) !important; }
@@ -1618,7 +1621,7 @@ html,body{ background:#000; color:#fff; }
 
     <div class="rev-sec" style="text-align:center;">
       <button class="join-now-btn" onclick="document.querySelector('.membership-sec') && document.querySelector('.membership-sec').scrollIntoView({behavior:'smooth'})">Join Now</button>
-      
+      <a class="next-goals" href="your-goals.html">Next: set your goals</a>
     </div>
   </div>
 </div>
