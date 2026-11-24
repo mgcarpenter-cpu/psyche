@@ -7,8 +7,8 @@
 <title>Personal meditations · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261123a">
-<link rel="stylesheet" href="goals.css?v=20261119a">
+<link rel="stylesheet" href="site.css?v=20261124a">
+<link rel="stylesheet" href="goals.css?v=20261124a">
 <link rel="stylesheet" href="meditation-cover.css?v=20261116a">
 <style>
   /* Personal meditations (layout only, 23 Nov 2026; values from personal-meditations-design.html).
@@ -54,6 +54,7 @@
   .talk{flex:1;min-width:0;min-height:0;border:1px solid #5a5a5a;border-radius:8px;display:flex;flex-direction:column;}
   .cmsgs{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:12px;scrollbar-width:none;padding:20px 34px 18px;}
   .cmsgs::-webkit-scrollbar{display:none;}
+  .cmsgs .s-sus,.cmsgs .s-you{flex:none;}
   .m{font-size:19px;line-height:1.4;max-width:80%;}
   .m small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;color:var(--dim);margin-bottom:3px;}
   .m.y{align-self:flex-end;max-width:70%;border:1px solid #4a4a4a;border-radius:8px;padding:9px 14px;}
@@ -78,7 +79,7 @@
   .round{flex:0 0 auto;width:44px;height:44px;border:1px solid #fff;border-radius:50%;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center;}
   .round svg{width:14px;height:14px;fill:currentColor;}
   .player .tag,.player .time{font-family:var(--font-mono);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .player{position:sticky;bottom:0;margin:-16px -48px 0;padding:14px 48px 16px;background:#000;border-top:1px solid var(--s-rule);display:flex;align-items:center;gap:20px;flex:0 0 auto;z-index:2;}
+  .player{position:sticky;bottom:0;margin:-16px -72px 0;padding:14px 72px 16px;background:#000;border-top:1px solid var(--s-rule);display:flex;align-items:center;gap:20px;flex:0 0 auto;z-index:2;}
   .player[hidden]{display:none;}
   .player .cv{flex:0 0 auto;width:120px;border-radius:8px;border:1px solid var(--s-rule);overflow:hidden;}
   .goals main .player .pp{width:52px;height:52px;cursor:pointer;border:1px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;}
@@ -115,7 +116,7 @@
 </style>
 </head>
 <body class="site-shell goals">
-<script src="site-header.js?v=20261123a" data-toggle></script>
+<script src="site-header.js?v=20261124a" data-toggle></script>
 <main>
   <div class="introrow"><p class="intro" id="lead"></p><span class="left" id="count"></span></div>
   <div class="kn">
@@ -126,7 +127,7 @@
     <aside class="apanel" id="list"></aside>
     <section class="talk">
       <div class="cmsgs" id="msgs" aria-live="polite"></div>
-      <div class="inrow"><div class="own"><input id="inp" type="text" placeholder="Type your answer" aria-label="Type your answer" autocomplete="off"><button type="button" id="send" aria-label="Send">&rarr;</button></div></div>
+      <div class="inrow"><div id="pbox"></div></div>
     </section>
   </div>
   <p class="footl" id="foot"></p>
@@ -142,7 +143,8 @@
     <audio id="plAudio" preload="none"></audio>
   </div>
 </main>
-<script src="meditation-sessions.js?v=20261116a"></script>
+<script src="site-chatbox.js?v=20261124a"></script>
+<script src="meditation-sessions.js?v=20261124a"></script>
 <script>
 (function () {
   // ===== ALL THE WORDS AND SAMPLE CONTENT, IN ONE PLACE (from personal-meditations-design.html) =====
@@ -248,7 +250,7 @@
     var box = $('list'); box.innerHTML = '';
     var nw = el('button', 'ara on'); nw.type = 'button'; nw.setAttribute('aria-pressed', 'true');
     nw.appendChild(el('span', 'plus', '+')); nw.appendChild(el('span', '', 'New meditation'));
-    nw.addEventListener('click', function () { $('inp').focus(); });
+    nw.addEventListener('click', function () { tbox.focus(); });
     box.appendChild(nw);
     box.appendChild(el('p', 'ph', 'Your meditations'));
     if (!made.length) { box.appendChild(el('p', 'none', TEXT.none)); return; }
@@ -287,8 +289,7 @@
   function drawChat() {
     var box = $('msgs'); box.innerHTML = '';
     SAMPLE.chat.forEach(function (c) {
-      if (c.r === 'y') { box.appendChild(el('div', 'm y', c.t)); return; }
-      var m = el('div', 'm s'); m.appendChild(el('small', '', 'SUSSURI')); m.appendChild(document.createTextNode(c.t)); box.appendChild(m);
+      box.appendChild(el('div', c.r === 'y' ? 's-you' : 's-sus', c.t));   // the Chat page's message style
     });
     var k = SAMPLE.card, f = el('div', 'final'), gb = el('div', 'gb');
     f.appendChild(el('small', '', 'Here is what I’ll make for you'));
@@ -300,11 +301,12 @@
     mk.type = ch.type = 'button';
     // MAKE IT: preview only. Nothing is made, nothing is added to the list, the count stays.
     mk.addEventListener('click', function () { f.replaceChild(el('p', 'made', TEXT.making), gb); });
-    ch.addEventListener('click', function () { $('inp').focus(); });
+    ch.addEventListener('click', function () { tbox.focus(); });
     gb.appendChild(mk); gb.appendChild(ch); f.appendChild(gb);
     box.appendChild(f);
   }
-  // The typing box takes text, but sending is not connected yet (the questioning comes later).
+  // The Chat page's typing box (site-chatbox.js). It takes text, but sending is not connected yet (the questioning comes later).
+  var tbox = sussuriBox.mount($('pbox'), { placeholder:'Type your answer', label:'Type your answer', onSend: function (t) { tbox.set(t); } });
 
   drawCount(); drawKnows(); drawList(); drawChat();
   if (window.sussuriAccount) window.sussuriAccount.onChange(function () { drawCount(); drawKnows(); });

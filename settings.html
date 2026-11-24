@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sussuri — Settings</title>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261124a">
 <style>
   :root{ --cream:#fff; --night:#000; --indigo:#fff; --panel:rgba(0,0,0,0.96); --line:#333; }
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -106,11 +106,14 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 .danger{background:transparent;border:1px solid #fff;color:#fff;} .danger:hover{background:#1c1c1c;}   /* red is kept for the Delete account page only */
 .note{font-size:15px;color:var(--s-label);opacity:1;}
 @media (max-width:1023px){ .page{padding:36px 20px 40px !important;} .wrap .page-title{margin-bottom:24px;} }
+/* site walk fixes, 24 Nov 2026: the one set of sizes (site.css) */
+.row .lbl{font-size:var(--s-lab);} .row .val{font-size:var(--s-read);font-weight:300;}
+.actions button,.actions .linkbtn{font-size:var(--s-btn);} .note{font-size:var(--s-small);}
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261121a"></script>
+<script src="site-header.js?v=20261124a"></script>
 
 <main>
   <div class="page">
@@ -126,8 +129,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
       </div>
       <div class="actions">
         <button class="signout" id="signout">Sign out</button>
-        <button class="danger" id="del">Delete account</button>
-        <div class="note" id="delNote" style="display:none;">Account deletion isn't self-serve yet — email <a href="mailto:hello@sussuri.com" style="color:#fff;">hello@sussuri.com</a> and we'll remove your data promptly.</div>
+        <div class="note">To stop paying or close your account, go to <a href="membership.html#close" style="color:#fff;display:inline-flex;align-items:center;min-height:44px;">Membership</a>.</div>
       </div>
     </div>
   </div>
@@ -221,7 +223,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     if(window.PSYCHE_PREVIEW){ location.href="index.html"; return; }
     try{ await sb.auth.signOut(); }catch(e){} location.href="index.html";
   };
-  $("del").onclick=()=>{ $("delNote").style.display="block"; };
+
 </script>
 </body>
 </html>

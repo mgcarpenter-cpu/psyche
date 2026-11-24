@@ -7,8 +7,8 @@
 <title>Goals · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261118g">
-<link rel="stylesheet" href="goals.css?v=20261119a">
+<link rel="stylesheet" href="site.css?v=20261124a">
+<link rel="stylesheet" href="goals.css?v=20261124a">
 <style>
   /* Goals 3: Schedule. The kept plan items across the week, in time order. */
   *{margin:0;padding:0;}
@@ -48,7 +48,7 @@
 </style>
 </head>
 <body class="site-shell goals">
-<script src="site-header.js?v=20261121a" data-toggle></script>
+<script src="site-header.js?v=20261124a" data-toggle></script>
 <main>
   <nav class="topnav" id="gnav" aria-label="Goals steps"></nav>
   <h1 class="ptitle">Schedule</h1>
@@ -61,7 +61,7 @@
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="goals.js?v=20261119b"></script>
+<script src="goals.js?v=20261124a"></script>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -99,8 +99,14 @@
       tl.appendChild(r);
     });
     $('rc').textContent = rc + (rc === 1 ? ' reminder is on' : ' reminders are on');
-    var rv = G.reviewDate(), t = $('runt'); t.innerHTML = '';
-    t.appendChild(document.createTextNode('Review with Sussuri on ')); t.appendChild(el('b', '', DS[rv.getDay()] + ' ' + rv.getDate() + ' ' + MS[rv.getMonth()]));
+    // the count starts only when a schedule is set: with nothing scheduled there is no review date to show
+    var t = $('runt'); t.innerHTML = '';
+    if (!rows.length) t.appendChild(document.createTextNode('The count starts when your schedule is set.'));
+    else {
+      if (!G.data.sched.start) G.data.sched.start = G.ymd(G.today());
+      var rv = G.reviewDate();
+      t.appendChild(document.createTextNode('Review with Sussuri on ')); t.appendChild(el('b', '', DS[rv.getDay()] + ' ' + rv.getDate() + ' ' + MS[rv.getMonth()]));
+    }
     G.save();
   }
   G.ready(function () {

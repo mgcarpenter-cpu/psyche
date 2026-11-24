@@ -7,7 +7,7 @@
 <title>Urgent support · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261124a">
 <style>
   /* Need urgent help (15 Nov 2026): heading, one line, then two sections, each ending in a solid white band that is the link. */
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -21,8 +21,9 @@
   .choice + .choice{margin-top:clamp(56px,9vh,80px);}
   .choice-label{font-family:var(--font-mono);font-weight:400;font-size:12px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
   .choice-line{margin-top:10px;font-size:18px;line-height:1.5;color:#fff;}
-  .band{display:block;width:100%;margin-top:18px;padding:clamp(18px,3.2vh,28px) 32px;border:1px solid #fff;border-radius:8px;background:#fff;color:#000;text-decoration:none;cursor:pointer;}
+  .band{display:flex;align-items:center;justify-content:space-between;gap:20px;width:100%;margin-top:18px;padding:clamp(18px,3.2vh,28px) 32px;border:1px solid #fff;border-radius:8px;background:#fff;color:#000;text-decoration:none;cursor:pointer;}
   .band:hover{background:#e6e6e6;}
+  .band .bt{display:block;min-width:0;} .band .ba{flex:0 0 auto;font-size:28px;}   /* a small arrow on the right, so each box reads as something to press */
   .band:focus{outline:none;} .band:focus-visible{outline:2px solid #808080;outline-offset:3px;}
   .band .t{display:block;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:clamp(30px,4.6vh,40px);line-height:1.1;letter-spacing:.04em;}
   .band .d{display:block;margin-top:8px;font-size:17px;line-height:1.45;font-weight:400;}
@@ -49,7 +50,7 @@
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js?v=20261121a" data-toggle></script>
+<script src="site-header.js?v=20261124a" data-toggle></script>
 <main class="site-main">
   <div class="screen">
     <div class="wrap">
@@ -60,8 +61,8 @@
         <p class="choice-label">Talk to someone</p>
         <p class="choice-line">Reaching out is a strong thing to do. There are people who want to listen, right now.</p>
         <a class="band" href="https://findahelpline.com" target="_blank" rel="noopener">
-          <span class="t">Find support near you</span>
-          <span class="d">Helplines with real people, in your country.</span>
+          <span class="bt"><span class="t">Find support near you</span>
+          <span class="d">Helplines with real people, in your country.</span></span><span class="s-arrow ba" aria-hidden="true">&rarr;</span>
         </a>
       </section>
 
@@ -69,8 +70,8 @@
         <p class="choice-label">In immediate danger</p>
         <p class="choice-line">If you or someone else is in danger right now, call your emergency number.</p>
         <a class="band" href="https://en.wikipedia.org/wiki/List_of_emergency_telephone_numbers" target="_blank" rel="noopener">
-          <span class="t">Emergency numbers</span>
-          <span class="d">Police, fire and ambulance for your country.</span>
+          <span class="bt"><span class="t">Emergency numbers</span>
+          <span class="d">Police, fire and ambulance for your country.</span></span><span class="s-arrow ba" aria-hidden="true">&rarr;</span>
         </a>
       </section>
     </div>

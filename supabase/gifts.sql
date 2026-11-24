@@ -16,6 +16,6 @@ create index if not exists gifts_sender_idx on public.gifts (sender);
 
 alter table public.gifts enable row level security;
 
--- 21 Nov: the gift card carries the sender's photo (optional), a small square JPEG. Gift links run out
--- 7 days after created_at; that is checked by the server functions, nothing to set here.
+-- 21 Nov: the gift card carries the sender's photo (optional), a small square JPEG.
+-- 24 Nov: a gift does not run out. Nothing to set here.
 alter table public.gifts add column if not exists photo text check (photo is null or char_length(photo) <= 40000);

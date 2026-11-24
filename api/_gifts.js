@@ -42,21 +42,15 @@ export async function insertGift(row) {
   return r.status;   // 201 saved, 409 the id is taken
 }
 
-// A gift link works for 7 days from when it was made (the member's plain link never runs out).
-export const GIFT_DAYS = 7;
-export function expired(g) {
-  const t = Date.parse(g && g.created_at);
-  return !isNaN(t) && Date.now() - t > GIFT_DAYS * 864e5;
-}
+// A gift does not run out (24 Nov 2026): a gift link works for as long as its row exists.
 export function giftName(g) { return cleanLine(g && g.from_name, 20) || "A friend"; }
 
-// Preview links, nothing saved: /g/preview-card (a new gift) and /g/preview-old (one that has run out).
-// ?from=<name> tries another name on a preview (20 letters at most), so the page, the card and the picture can be checked.
+// Preview link, nothing saved: /g/preview-card.
+// ?from=<name> tries another name on the preview (20 letters at most), so the page, the card and the picture can be checked.
 export function sampleGift(id, from) {
-  if (id !== "preview-card" && id !== "preview-old") return null;
+  if (id !== "preview-card") return null;
   const name = cleanLine(from, 20) || "Mark";
-  const age = id === "preview-old" ? 8 * 864e5 : 0;
-  return { id, kind: "card", from_name: name, photo: null, created_at: new Date(Date.now() - age).toISOString(), sample: true };
+  return { id, kind: "card", from_name: name, photo: null, created_at: new Date().toISOString(), sample: true };
 }
 // the photo: a small square JPEG made in the browser (give-a-gift.html), kept with the gift
 export function cleanPhoto(v) {

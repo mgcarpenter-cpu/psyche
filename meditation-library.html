@@ -7,7 +7,7 @@
 <title>Meditation library · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261124a">
 <link rel="stylesheet" href="meditation-cover.css?v=20261116a">
 <style>
   :root{
@@ -165,7 +165,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261121a"></script>
+<script src="site-header.js?v=20261124a"></script>
 
 <main>
   <div class="page">
@@ -253,7 +253,7 @@
   </div>
 </div>
 
-<script src="meditation-sessions.js?v=20261116a"></script>
+<script src="meditation-sessions.js?v=20261124a"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const $=id=>document.getElementById(id);
@@ -392,7 +392,7 @@
     return '<article class="card'+(shared?' shared':'')+'" data-id="'+item.id+'">'
       + '<button type="button" class="tile" aria-label="Play '+esc(item.title)+'" onclick="playSession(\''+item.id+'\')">'
       +   sussuriCover(item)
-      +   '<span class="cap"><span class="txt"><span class="tag">'+esc(sussuriCardTag(item))+'</span><span class="about">'+esc(sussuriShort(item.about))+'</span></span>'
+      +   '<span class="cap"><span class="txt"><span class="tag">'+esc(sussuriCardTag(item))+'</span><span class="about">'+esc(sussuriCardLine(item))+'</span></span>'
       +   '<span class="round" aria-hidden="true"><svg viewBox="0 0 20 20">'+PLAY+'</svg></span></span>'
       + '</button>'
       + '<a href="#" class="share'+(shared?' done':'')+'" onclick="event.preventDefault();event.stopPropagation();openShare(\''+item.id+'\')">'

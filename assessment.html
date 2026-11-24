@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Sussuri</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261124a">
 <style>
 /* ═══════════════════════════════════════════════════════════
    SUSSURI — DESIGN SYSTEM
@@ -1265,7 +1266,6 @@ html,body{ background:#000; color:#fff; }
 .ky-ic.bd{ border:1px solid #6a6a6a; }
 .ky-ic.fill{ background:#fff; color:#000; }
 #cont:not(.show) .ky-ic{ opacity:.35; cursor:default; }   /* waits until every picture on the page has its answer */
-.opts button:focus-visible,.chip:focus-visible,.ky-ic:focus-visible{ outline:2px solid #808080; outline-offset:2px; }
 
 @media (max-width:1023px){
   #assess.active{ gap:30px; padding:36px 20px 40px; }
@@ -1317,10 +1317,107 @@ html,body{ background:#000; color:#fff; }
 #reveal #regenBtn{ min-height:44px; padding:0 18px !important; background:transparent !important; border:1px solid #fff !important; border-radius:8px !important; color:#fff !important;
   font-family:var(--font-jost) !important; font-weight:500 !important; font-size:12.5px !important; letter-spacing:.2em !important; }
 #reveal #personalizingBanner{ background:transparent !important; border:1px solid var(--s-border) !important; border-radius:8px !important; color:var(--s-text2) !important; font-family:var(--font-jost) !important; }
+/* ════════════════════════════════════════════════════════════════════════════
+   SITE WALK FIXES (24 Nov 2026) — appended last.
+   The screens after the pictures were rebuilt under new names (#qs questions, #talk chat, #profile),
+   so the older #conv / #chat / #reveal rules above no longer apply to anything.
+   Sizes come from site.css: --s-read (sentences), --s-btn (buttons), --s-lab (small labels).
+   ════════════════════════════════════════════════════════════════════════════ */
+.ky-lead{ font-size:var(--s-read); line-height:1.5; }
+.sl,.ky-count,.kq-count{ font-size:var(--s-lab); letter-spacing:.14em; }
+.ky-ic[hidden]{ display:none; }
+.ky-ic:disabled{ opacity:.35; cursor:default; }
+#cont:not(.show) .ky-ic.back{ opacity:1; cursor:pointer; }   /* back never waits for the page's answers */
+
+/* ── questions: back arrow, count, forward arrow above the question ── */
+#qs.active{ display:block; padding:56px 72px 80px; }
+.kq{ max-width:860px; display:flex; flex-direction:column; gap:28px; }
+.kq-nav{ display:flex; align-items:center; gap:16px; }
+.kq-count{ font-family:var(--font-mono); font-weight:400; text-transform:uppercase; color:var(--s-label); white-space:nowrap; }
+.kq-q{ margin:0; font-family:var(--font-jost); font-weight:300; font-size:26px; line-height:1.45; color:#fff; }
+.kq-opts{ display:flex; flex-direction:column; gap:10px; }
+.kq-opt{ min-height:56px; padding:12px 20px; text-align:left; border:1px solid var(--s-border); border-radius:8px; background:transparent; color:#fff;
+  font-family:var(--font-jost); font-weight:300; font-size:var(--s-read); line-height:1.4; cursor:pointer; }
+.kq-opt:hover{ border-color:#fff; }
+.kq-opt.picked{ background:#fff; border-color:#fff; color:#000; }
+
+/* ── chat: the Chat page's layout. One centred column, the typing box low, messages as on Chat ── */
+#talk.active{ display:flex; justify-content:center; overflow:hidden; }
+.kc-frame{ width:100%; max-width:860px; min-height:0; display:flex; flex-direction:column; overflow:hidden; padding:0 36px; }
+.kc-thread{ flex:1; min-height:0; overflow-y:auto; padding:64px 0 40px; display:flex; flex-direction:column; gap:22px; scrollbar-width:none; }
+.kc-thread::-webkit-scrollbar{ display:none; }
+.kc-think{ display:none; gap:6px; padding:4px 0; }
+.kc-think.show{ display:flex; }
+.kc-think i{ width:6px; height:6px; border-radius:50%; background:#a8a8a8; animation:kcdot 1.2s ease-in-out infinite; }
+.kc-think i:nth-child(2){ animation-delay:.2s; } .kc-think i:nth-child(3){ animation-delay:.4s; }
+@keyframes kcdot{ 0%,80%,100%{ opacity:.25; } 40%{ opacity:1; } }
+@media (prefers-reduced-motion:reduce){ .kc-think i{ animation:none; } }
+.kc-ready{ align-self:stretch; display:flex; align-items:center; justify-content:space-between; gap:18px; border:1px solid var(--s-border); border-radius:8px; padding:12px 12px 12px 20px; }
+.kc-ready p{ margin:0; font-family:var(--font-jost); font-weight:300; font-size:var(--s-read); line-height:1.5; color:#fff; }
+.kc-composer{ flex:0 0 auto; }
+.kc-note{ min-height:110px; margin:0; padding-top:14px; font-family:var(--font-jost); font-weight:300; font-size:var(--s-small); line-height:1.5; color:var(--s-label); }
+.kc-note a{ color:inherit; text-decoration:underline; text-underline-offset:3px; }
+
+/* ── profile: the result name is the page heading; twelve plain lines, one open at a time ── */
+#profile.active{ display:block; padding:56px 72px 80px; }
+.kp-head{ display:flex; flex-direction:column; gap:14px; padding-bottom:36px; border-bottom:1px solid var(--s-rule); }
+.kp-head .page-title{ margin:0; }
+.kp-lead{ margin:0; max-width:820px; font-family:var(--font-jost); font-weight:300; font-size:var(--s-read); line-height:1.5; color:var(--s-text2); }
+.kp-load{ margin:0; font-family:var(--font-jost); font-weight:300; font-size:var(--s-small); line-height:1.5; color:var(--s-label); }
+.kp-load[hidden]{ display:none; }
+.kp-load a,.kp-again a{ color:inherit; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+.kp-line{ border-bottom:1px solid var(--s-rule); }
+.kp-row,.kp-poles{ display:grid; grid-template-columns:240px minmax(0,1fr) 56px 44px; align-items:center; column-gap:20px; }
+.kp-row{ width:100%; min-height:48px; padding:0; margin:0; background:none; border:0; border-radius:0; color:#fff; text-align:left; font:inherit; cursor:default; }
+button.kp-row{ cursor:pointer; }
+.kp-name{ font-family:var(--font-jost); font-weight:300; font-size:var(--s-read); line-height:1.3; color:#fff; }
+.kp-bar{ position:relative; height:8px; border-radius:4px; background:#2a2a2a; }
+.kp-bar i{ position:absolute; left:0; top:0; bottom:0; width:0; border-radius:4px; background:#fff; transition:width .9s ease; }
+.kp-bar b{ position:absolute; top:-5px; bottom:-5px; left:86%; width:1px; background:#a8a8a8; }   /* the small mark near the end: the last stretch is rarely full */
+.kp-score{ font-family:var(--font-display); font-weight:400; font-size:24px; line-height:1; letter-spacing:.03em; text-align:right; color:#fff; }
+.kp-arrow{ width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:#fff; }
+.kp-arrow svg{ transform:rotate(90deg); }                       /* arrow down: opens */
+.kp-line.open .kp-arrow svg{ transform:rotate(-90deg); }        /* arrow up: closes */
+.kp-panel{ display:none; padding:2px 0 28px; }
+.kp-line.open .kp-panel{ display:block; }
+.kp-poles em{ font-style:normal; }
+.kp-poles span{ grid-column:2; display:flex; justify-content:space-between; gap:12px; font-family:var(--font-mono); font-weight:400; font-size:var(--s-lab); letter-spacing:.14em; text-transform:uppercase; color:var(--s-label); }
+.kp-parts{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; margin-top:22px; }
+.kp-part h3{ margin:0 0 8px; font-family:var(--font-mono); font-weight:400; font-size:var(--s-lab); letter-spacing:.14em; text-transform:uppercase; color:var(--s-label); }
+.kp-part p{ margin:0; font-family:var(--font-jost); font-weight:300; font-size:var(--s-read); line-height:1.5; color:#fff; }
+.kp-foot{ display:flex; align-items:center; flex-wrap:wrap; gap:16px 24px; margin-top:36px; }
+.kp-again{ margin:0; font-family:var(--font-jost); font-weight:300; font-size:var(--s-small); line-height:1.5; color:var(--s-label); }
+@media (prefers-reduced-motion:reduce){ .kp-bar i{ transition:none; } }
+
+@media (max-width:1023px){
+  #qs.active,#profile.active{ padding:36px 20px 48px; }
+  .kq{ gap:22px; }
+  .kq-q{ font-size:20px; }
+  .kq-opt{ min-height:52px; padding:10px 16px; }
+  .kc-frame{ padding:0 20px; }
+  .kc-thread{ padding:32px 0 30px; }
+  .kc-note{ min-height:0; padding:10px 0 16px; }
+  .kc-ready{ flex-direction:column; align-items:stretch; padding:16px; }
+  .kc-ready .s-btn{ height:44px; }
+  .kp-head{ gap:10px; padding-bottom:24px; }
+  /* a line on a phone: name, score and arrow on top; the bar underneath, full width */
+  .kp-row{ grid-template-columns:minmax(0,1fr) 44px 44px; column-gap:8px; row-gap:10px; padding:14px 0 18px; }
+  .kp-arrow{ height:24px; }
+  .kp-row .kp-name{ grid-column:1; grid-row:1; }
+  .kp-row .kp-score{ grid-column:2; grid-row:1; font-size:20px; }
+  .kp-row .kp-arrow{ grid-column:3; grid-row:1; }
+  .kp-row .kp-bar{ grid-column:1 / -1; grid-row:2; }
+  .kp-poles{ display:block; }
+  .kp-panel{ padding:0 0 24px; }
+  .kp-parts{ grid-template-columns:1fr; gap:18px; margin-top:18px; }
+  .kp-foot{ flex-direction:column; align-items:stretch; gap:14px; margin-top:28px; }
+  .kp-foot .s-btn{ height:48px; white-space:normal; }
+}
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js?v=20261121a"></script>
+<script src="site-header.js?v=20261124a"></script>
+<script src="site-chatbox.js?v=20261124a"></script>
 <div class="scrim" id="scrim"></div>
 
 <!-- ═════════════════════════════════════════
@@ -1559,6 +1656,7 @@ html,body{ background:#000; color:#fff; }
     <div class="kn">
       <span class="ky-count" id="kyCount"></span>
       <div class="ky-icons" id="cont">
+        <button type="button" class="ky-ic bd back" id="kyBack" aria-label="Previous page" hidden><svg aria-hidden="true" width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M18 7H2M8 1L2 7l6 6"/></svg></button>
         <button type="button" class="ky-ic fill" id="kyConfirm" aria-label="Confirm answers"><svg aria-hidden="true" width="18" height="16" viewBox="0 0 18 17" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1.5 9l5 5.5L16.5 2"/></svg></button>
         <button type="button" class="ky-ic bd" id="contBtn" aria-label="Next page"><svg aria-hidden="true" width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M0 7h16M10 1l6 6-6 6"/></svg></button>
       </div>
@@ -1567,62 +1665,49 @@ html,body{ background:#000; color:#fff; }
 </div>
 
 <!-- ═════════════════════════════════════════
-     SCREEN 3 — CONVERSATION (5 questions)
+     SCREEN 3 — QUESTIONS (five, one at a time)
+     Straight-through: press an answer and it moves on. Back shows the answer given, and it can be changed.
      ═════════════════════════════════════════ -->
-<div class="screen" id="conv">
-  <div class="conv-prog"><div class="conv-prog-fill" id="progFill"></div></div>
-  <div class="conv-inner">
-    <div class="conv-refl" id="convRefl"></div>
-    <div class="conv-q" id="convQ"></div>
-    <div class="conv-opts" id="convOpts"></div>
-    <div class="think" id="think"><div class="thinkg"></div><div class="thinkg"></div><div class="thinkg"></div></div>
-  </div>
-  <div class="closing" id="closing">
-    <div class="closing-text" id="closingText"></div>
-    <button id="chatBtn">Speak With Sussuri &rarr;</button>
+<div class="screen" id="qs">
+  <div class="kq">
+    <div class="kq-nav">
+      <button type="button" class="ky-ic bd" id="kqBack" aria-label="Back"><svg aria-hidden="true" width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M18 7H2M8 1L2 7l6 6"/></svg></button>
+      <span class="kq-count" id="kqCount"></span>
+      <button type="button" class="ky-ic bd" id="kqFwd" aria-label="Forward"><svg aria-hidden="true" width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M0 7h16M10 1l6 6-6 6"/></svg></button>
+    </div>
+    <p class="kq-q" id="convQ"></p>
+    <div class="kq-opts" id="convOpts"></div>
   </div>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SCREEN 4 — CHAT (before reveal, v13 change)
-     With smoke thinking + voice-ready structure
+     SCREEN 4 — CHAT (the Chat page's layout, typing box and messages: site-chatbox.js)
      ═════════════════════════════════════════ -->
-<div class="screen" id="chat">
-  <div class="chat-messages chat-inner" id="chatMessages">
-    <div class="smoke-think" id="smokeThink"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-  </div>
-  <div class="inputwrap">
-    <div class="composer">
-      <textarea class="field" id="chatInput" rows="1" placeholder="Speak freely&hellip;"></textarea>
-      <button class="iconbtn" id="micBtn" title="Voice — coming for founding members"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg></button>
-      <button class="sendbtn" id="chatSend" title="Send"></button>
+<div class="screen" id="talk">
+  <div class="kc-frame">
+    <div class="kc-thread" id="chatMessages">
+      <div class="kc-think" id="smokeThink" aria-hidden="true"><i></i><i></i><i></i></div>
+    </div>
+    <div class="kc-composer">
+      <div id="kcBox"></div>
+      <p class="kc-note">Sussuri is a reflection tool &mdash; not therapy or crisis care. <a href="urgent.html">Need support right now?</a></p>
     </div>
   </div>
-  <div class="underbar">Sussuri is a reflection tool &mdash; not therapy or crisis care. <a href="support.html">Need support right now?</a></div>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SCREEN 5 — REVEAL (12 bars with descriptions + new-way)
+     SCREEN 5 — PROFILE (the result name is the heading; twelve plain lines, one open at a time)
      ═════════════════════════════════════════ -->
-<div class="screen" id="reveal">
-  <div class="rev-inner">
-    <p class="rev-eye">Your Sussuri Profile</p>
-    <div id="personalizingBanner" style="display:none;text-align:center;font-style:italic;color:var(--indigo);font-size:.95rem;margin:0 auto 16px;padding:10px 18px;background:rgba(25,48,90,.06);border:1px solid rgba(25,48,90,.18);border-radius:24px;max-width:380px;">Reading your responses, writing your profile…</div>
-    <div style="text-align:center;margin:0 auto 20px;"><button id="regenBtn" style="display:none;font-family:Cinzel,serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--indigo);background:transparent;border:1px solid rgba(25,48,90,.35);border-radius:24px;padding:9px 20px;cursor:pointer;">Regenerate with fresh insight</button></div>
-    <h1 class="rev-name" id="revName"></h1>
-    <p class="rev-arch" id="revArch"></p>
-
-    
-
-    <div class="rev-sec">
-      <div class="dims-header"><p class="rev-sec-eye">The Twelve Dimensions</p><h2 class="rev-sec-title">Where You Sit. And Why.</h2></div>
-      <div class="bar-grid" id="spiritGrid"></div>
-    </div>
-
-    <div class="rev-sec" style="text-align:center;">
-      <button class="join-now-btn" onclick="document.querySelector('.membership-sec') && document.querySelector('.membership-sec').scrollIntoView({behavior:'smooth'})">Join Now</button>
-      <a class="next-goals" href="your-goals.html">Next: set your goals</a>
-    </div>
+<div class="screen" id="profile">
+  <header class="kp-head">
+    <h1 class="page-title" id="revName"></h1>
+    <p class="kp-lead" id="revArch"></p>
+    <p class="kp-load" id="kpLoad" hidden></p>
+  </header>
+  <div class="kp-lines" id="spiritGrid"></div>
+  <div class="kp-foot">
+    <a class="s-btn" href="your-goals.html">Next: set your goals</a>
+    <p class="kp-again" id="kpAgain"></p>
   </div>
 </div>
 
@@ -1996,7 +2081,9 @@ function setDone(qi, val) {
    ═══════════════════════════════════════════════════════════ */
 function show(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  const el = document.getElementById(id);
+  el.classList.add("active");
+  el.scrollTop = 0;
   window.scrollTo(0, 0);
 }
 
@@ -2066,6 +2153,8 @@ function loadPage(pi) {
   const items = VIEW_PAGES[pi];
   done = items.map(() => false);
   document.getElementById("cont").classList.remove("show");
+  document.getElementById("kyBack").hidden = pi === 0;
+  document.getElementById("assess").scrollTop = 0;
   document.getElementById("pager").textContent = (pi + 1) + " of " + VIEW_PAGES.length;
   const first = pi * PER_PAGE + 1;
   document.getElementById("kyCount").textContent =
@@ -2137,6 +2226,16 @@ function loadPage(pi) {
       };
       priRow.appendChild(btn);
     });
+
+    // coming back to a page: the picks made earlier show as they were left, and can still be changed
+    const prev = userPicks.find(p => p.image === img.k);
+    if (prev) {
+      const oi = img.pri.findIndex(o => o.l === prev.choice);
+      if (oi >= 0) {
+        priRow.children[oi].onclick();
+        if (prev.detail) { const chip = Array.from(secRow.children).find(c => c.textContent === prev.detail); if (chip) chip.onclick(); }
+      }
+    }
   });
 }
 
@@ -2156,6 +2255,7 @@ document.getElementById("contBtn").onclick = function() {
     loadPage(page);
   }
 };
+document.getElementById("kyBack").onclick = function() { if (page > 0) loadPage(page - 1); };
 // the tick confirms the page's answers and moves on, the same as the arrow
 document.getElementById("kyConfirm").onclick = function() { document.getElementById("contBtn").click(); };
 
@@ -2226,7 +2326,10 @@ let lastApiError = null;
 async function callClaude(messages, systemOverride, maxTokens) {
   lastApiError = null;
   try {
+    // a request that never answers is given up on after 58 seconds, so nothing on the page waits for ever
+    const stop = new AbortController(), timer = setTimeout(() => stop.abort(), 58000);
     const r = await fetch("/api/chat", {
+      signal: stop.signal,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -2236,6 +2339,7 @@ async function callClaude(messages, systemOverride, maxTokens) {
       })
     });
     const d = await r.json();
+    clearTimeout(timer);
     if (!d || !d.content) {
       lastApiError = "HTTP " + r.status + " — " + JSON.stringify(d).slice(0, 240);
       return null;
@@ -2284,74 +2388,58 @@ async function typeIn(el, text, spd = 15) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   CONVERSATION (5 questions)
+   QUESTIONS (five, one at a time)
    ═══════════════════════════════════════════════════════════ */
-const convHistory = [];
+// each answer's score. Kept in one place so a changed answer can take its old score back out exactly.
+const QMAP = { lobha: { craving: 2 }, dosa: { dosa: 2 }, confusion: { confusion: 2 }, equan: { equan: 2, pres: 1 }, pres: { pres: 2 }, aes: { aes: 2 }, warm: { warm: 2 }, neurot: { neurot: 1 }, mixed: { aware: 1 } };
+function qScore(p) { return QMAP[p] || { aware: 1 }; }
+let qIndex = 0, qLock = false;
 
-async function startConv() {
-  show("conv");
-  document.getElementById("convRefl").style.display = "none";
+function startConv() {
+  show("qs");
   showConvQ(0);
 }
 
+// One question. Pressing an answer shows it in white for a moment, then moves straight on.
+// Back shows the answer already given (it can be changed); forward works only once this question has an answer.
 function showConvQ(qi) {
-  document.getElementById("progFill").style.width = (qi / CONV_QS.length * 100) + "%";
+  qIndex = qi;
   const q = CONV_QS[qi];
+  document.getElementById("kqCount").textContent = "Question " + (qi + 1) + " of " + CONV_QS.length;
+  document.getElementById("kqFwd").disabled = !convAnswers[qi];
   document.getElementById("convQ").textContent = q.q;
   const opts = document.getElementById("convOpts");
   opts.innerHTML = "";
   q.opts.forEach(opt => {
     const btn = document.createElement("button");
-    btn.className = "conv-opt";
+    btn.type = "button";
+    btn.className = "kq-opt" + (convAnswers[qi] && convAnswers[qi].a === opt.t ? " picked" : "");
     btn.textContent = opt.t;
     btn.onclick = async function() {
-      opts.querySelectorAll(".conv-opt").forEach(b => {
-        b.classList.remove("picked");
-        b.classList.add("dim");
-        b.disabled = true;
-      });
-      btn.classList.remove("dim");
-      btn.classList.add("picked");
-      convAnswers.push({ q: q.q, a: opt.t, p: opt.p });
-      const cmap = { lobha: { craving: 2 }, dosa: { dosa: 2 }, confusion: { confusion: 2 }, equan: { equan: 2, pres: 1 }, pres: { pres: 2 }, aes: { aes: 2 }, warm: { warm: 2 }, neurot: { neurot: 1 }, mixed: { aware: 1 } };
-      sc(cmap[opt.p] || { aware: 1 });
-
-      convHistory.push({ role: "user", content: q.q + " — " + opt.t });
-      await delay(300);
-
-      const isLast = qi >= CONV_QS.length - 1;
-
-      if (isLast) {
-        document.getElementById("think").classList.add("show");
-        const profile = buildProfileContext();
-        const summary = convAnswers.map((a, i) => "Q" + (i + 1) + " \"" + a.q + "\" → " + a.a).join("\n");
-        const sysWithProfile = SYS_BASE + "\n\n" + profile;
-        const prompt = "This is the end of the structured part of the conversation. Their answers:\n" + summary + "\n\nWrite a closing reflection. 3-4 sentences. Acknowledge one specific thing they showed. Name the pattern you saw with compassion and precision — in plain English, without naming the framework. Then invite them to speak with you openly — that's where the deeper conversation can happen.";
-        const refl = await callClaude([...convHistory, { role: "user", content: prompt }], sysWithProfile);
-        const fallbacks = {
-          lobha: "There is something honest in that reaching. Come — let's sit with it a moment longer, if you'd like.",
-          dosa: "A heart that feels deeply is rare. Speak more, if you wish, before you see the profile.",
-          confusion: "The not-knowing is often the space before something real becomes clear. Speak — let's see what's there.",
-          equan: "There is a quality of knowing in what you just shared. Come, speak openly for a moment.",
-          mixed: "You carry more than one thing at once. Speak — let's see what wants to come forward."
-        };
-        const text = refl || fallbacks[opt.p] || fallbacks.mixed;
-
-        document.getElementById("think").classList.remove("show");
-        document.getElementById("convRefl").textContent = "";
-        document.getElementById("convQ").textContent = "";
-        opts.innerHTML = "";
-        document.getElementById("closing").classList.add("show");
-        await typeIn(document.getElementById("closingText"), text, 11);
-        document.getElementById("chatBtn").onclick = openChat;
-      } else {
-        await delay(200);
-        showConvQ(qi + 1);
-      }
+      if (qLock) return;
+      qLock = true;
+      opts.querySelectorAll(".kq-opt").forEach(b => b.classList.toggle("picked", b === btn));
+      const old = convAnswers[qi];
+      if (old) subScore(qScore(old.p));          // a changed answer: its old score comes back out first
+      addScore(qScore(opt.p));
+      convAnswers[qi] = { q: q.q, a: opt.t, p: opt.p };
+      await delay(500);
+      qLock = false;
+      if (qi >= CONV_QS.length - 1) openChat();  // after the last question: straight into the chat
+      else showConvQ(qi + 1);
     };
     opts.appendChild(btn);
   });
 }
+document.getElementById("kqBack").onclick = function() {
+  if (qLock) return;
+  if (qIndex === 0) { show("assess"); loadPage(VIEW_PAGES.length - 1); }   // before the first question: the last page of pictures, picks as they were left
+  else showConvQ(qIndex - 1);
+};
+document.getElementById("kqFwd").onclick = function() {
+  if (qLock || !convAnswers[qIndex]) return;
+  if (qIndex >= CONV_QS.length - 1) openChat(); else showConvQ(qIndex + 1);
+};
 
 /* ═══════════════════════════════════════════════════════════
    SCORING — dominant pattern, value mapping
@@ -2368,24 +2456,22 @@ function getVal(key, lo = 2, hi = 24, outLo = 18, outHi = 92) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   CHAT — voice-ready, smoke thinking, 10-message limit
+   CHAT — the Chat page's layout and typing box; ends after CHAT_LIMIT messages
    ═══════════════════════════════════════════════════════════ */
 const chatHistory = [];
 let chatBusy = false;
-const CHAT_LIMIT = 20; // user messages before showing membership CTA
+const CHAT_LIMIT = 20; // the chat ends after this many messages from the person, and the profile is offered
 let userMessageCount = 0;
 
+let kcBox = null;   // the typing box (site-chatbox.js), mounted once the page has loaded
 function openChat() {
-  show("chat");
-  const msgs = document.getElementById("chatMessages");
-  // Remove all message divs but keep the smoke-think
-  Array.from(msgs.children).forEach(c => {
-    if (c.id !== "smokeThink") c.remove();
-  });
-  // Hide closing screen
-  document.getElementById("closing").classList.remove("show");
-  if (chatHistory.length === 0) seedChatOpener();
-  document.getElementById("chatInput").focus();
+  show("talk");
+  if (chatHistory.length === 0) {
+    const msgs = document.getElementById("chatMessages");
+    Array.from(msgs.children).forEach(c => { if (c.id !== "smokeThink") c.remove(); });
+    seedChatOpener();
+  }
+  if (kcBox && userMessageCount < CHAT_LIMIT) kcBox.focus();
 }
 
 function showSmoke() { document.getElementById("smokeThink").classList.add("show"); }
@@ -2417,25 +2503,31 @@ async function seedChatOpener() {
 function addChatMsg(who, text) {
   const msgs = document.getElementById("chatMessages");
   const div = document.createElement("div");
-  div.className = "chat-msg " + who;
+  div.className = who === "user" ? "s-you" : "s-sus";   // the Chat page's message styles (site.css)
   div.textContent = text;
-  // Insert before smoke-think
-  const smoke = document.getElementById("smokeThink");
-  msgs.insertBefore(div, smoke);
+  msgs.insertBefore(div, document.getElementById("smokeThink"));
   msgs.scrollTop = msgs.scrollHeight;
   return div;
 }
 
+// The end of the chat (after CHAT_LIMIT messages): the profile is offered, and the typing box greys out.
+function closeChatBox() {
+  if (!kcBox) return;
+  kcBox.off(true);
+  kcBox.field.placeholder = "";
+}
 function showChatLimitNotice() {
+  if (document.getElementById("kcReady")) return;
   const msgs = document.getElementById("chatMessages");
   const div = document.createElement("div");
-  div.className = "chat-limit-notice";
-  div.innerHTML = "We've sat together for a few exchanges. To continue this conversation — and to begin a path with daily practice, deeper questions, and a coach who remembers you — explore membership.<br><button onclick=\"show('reveal'); buildReveal();\">See Your Profile First &rarr;</button>";
+  div.className = "kc-ready"; div.id = "kcReady";
+  const p = document.createElement("p"); p.textContent = "Your profile is ready.";
+  const b = document.createElement("button"); b.type = "button"; b.className = "s-btn"; b.textContent = "See my profile →";
+  b.onclick = function() { makeProfile(); };
+  div.appendChild(p); div.appendChild(b);
   msgs.insertBefore(div, document.getElementById("smokeThink"));
   msgs.scrollTop = msgs.scrollHeight;
-  document.getElementById("chatInput").disabled = true;
-  document.getElementById("chatSend").disabled = true;
-  document.getElementById("chatInput").placeholder = "Continue with membership to keep talking";
+  closeChatBox();
 }
 
 /* Generate varied fallback when API is unreachable (file:// CORS, no key, etc).
@@ -2486,15 +2578,11 @@ function generateFallback(userText, turn) {
   return probes[turn % probes.length];
 }
 
-async function sendChatMsg() {
-  if (chatBusy) return;
-  const input = document.getElementById("chatInput");
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = "";
-  input.style.height = "auto";
+async function sendChatMsg(text) {
+  text = (text || "").trim();
+  if (chatBusy || !text || userMessageCount >= CHAT_LIMIT) return;
   chatBusy = true;
-  document.getElementById("chatSend").disabled = true;
+  if (kcBox) kcBox.busy(true);
 
   addChatMsg("user", text);
   chatHistory.push({ role: "user", content: text });
@@ -2510,38 +2598,64 @@ async function sendChatMsg() {
   hideSmoke();
 
   // If API call failed, use varied fallbacks that probe what they actually said
-  let out;
-  if (reply) {
-    out = reply;
-  } else {
-    out = generateFallback(text, userMessageCount);
-  }
+  const out = reply || generateFallback(text, userMessageCount);
 
   chatHistory.push({ role: "assistant", content: out });
   addChatMsg("psyche", out);
 
   chatBusy = false;
-  document.getElementById("chatSend").disabled = false;
-  input.focus();
+  if (kcBox) kcBox.busy(false);
 
-  // After CHAT_LIMIT messages, show the membership CTA
-  if (userMessageCount >= CHAT_LIMIT) {
-    setTimeout(showChatLimitNotice, 600);
-  }
+  // After CHAT_LIMIT messages the chat ends: the box greys out at once, then the profile is offered
+  if (userMessageCount >= CHAT_LIMIT) { closeChatBox(); setTimeout(showChatLimitNotice, 600); }
+  else if (kcBox) kcBox.focus();
 }
 
 /* ═══════════════════════════════════════════════════════════
-   REVEAL — 12 bars with "where you are" + "new way"
-   ═══════════════════════════════════════════════════════════ */
-function buildReveal() {
-  show("reveal");
-  // Load the two body maps (clogged vs clear)
-  var ci = document.getElementById("cloggedImg");
-  var li = document.getElementById("clearImg");
-  if (ci && !ci.src) ci.src = PSYCHE_IMG_CLOGGED;
-  if (li && !li.src) li.src = PSYCHE_IMG_CLEAR;
-  const dom = getDom();
+   PROFILE — the result name as the page heading, then the twelve as plain lines (name, bar, score).
+   A line opens (arrow down) to its three parts and closes again (arrow up); one line is open at a time.
+   Site walk fixes, 24 Nov 2026.
 
+   The finished profile is kept in this browser under "psyche:assessment" (the key other pages already read:
+   archName, archLine, dims[{key,label,val,lo,hi}], at). Added here: v:2, the three written parts on each dim,
+   the raw scores, and src (picks, answers, chat) so the writing can be tried again later.
+   For a signed-in member a small copy (date, name, the twelve scores) also goes on their account
+   (user_metadata.know_yourself), so the four-week rule holds on another device. No new database table.
+   ═══════════════════════════════════════════════════════════ */
+const KY_KEY = "psyche:assessment";
+const RETAKE_DAYS = 28;   // Know yourself can be taken again four weeks after the profile was made
+const KP_PARTS = [["struggle", "Where you struggle"], ["well", "What you're getting right"], ["improve", "Try this"]];
+const BAR_GROUPS = [["pres", "craving", "dosa"], ["confusion", "comp", "selfcomp"], ["equan", "aware", "depth"], ["warm", "aes", "open2"]];
+const KP_ARROW = '<svg aria-hidden="true" width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M0 7h16M10 1l6 6-6 6"/></svg>';
+let PROFILE = null, kpOpen = null, kpWriting = false, kpShown = false;
+
+// never show a square-bracket note to a member
+function kyClean(t) { return String(t == null ? "" : t).replace(/\s*\[[^\]]*\]/g, "").replace(/[ \t]{2,}/g, " ").trim(); }
+function kyHas(d) { return !!(d && (d.struggle || d.well || d.improve)); }
+function kyDim(k) { return PROFILE ? PROFILE.dims.find(d => d.key === k) : null; }
+function kyDate(d) { return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); }
+function kyRetakeFrom(p) { return new Date(Date.parse(p.at) + RETAKE_DAYS * 864e5); }
+// profiles made before this rule existed (no v:2) do not lock
+function kyLocked(p) { return !!(p && p.v === 2 && Date.now() < kyRetakeFrom(p).getTime()); }
+
+function saveAssessmentResult() {
+  try { if (PROFILE) localStorage.setItem(KY_KEY, JSON.stringify(PROFILE)); } catch (e) {}
+}
+function saveToAccount() {
+  try {
+    const sb = window.__sb, p = PROFILE;
+    if (!sb || !p || window.PSYCHE_PREVIEW) return;
+    sb.auth.getSession().then(({ data }) => {
+      if (!data || !data.session) return;
+      const vals = {}; p.dims.forEach(d => { vals[d.key] = d.val; });
+      sb.auth.updateUser({ data: { know_yourself: { at: p.at, name: p.archName, line: p.archLine, vals } } }).catch(() => {});
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+// "See my profile": the profile is made here, once. From this point the answers cannot be changed.
+function makeProfile() {
+  if (kyLocked(PROFILE)) { showProfile(); return; }
   const names = {
     lobha: { name: "The Seeker", arch: "Reaching, desiring, oriented toward more" },
     dosa: { name: "The Sentinel", arch: "Feeling deeply, protecting, sensitive to what is wrong" },
@@ -2549,120 +2663,163 @@ function buildReveal() {
     equan: { name: "The Witness", arch: "Observing, steady, already closer than you think" },
     mixed: { name: "The Alchemist", arch: "Complex, layered, holding more than one truth" }
   };
-  const prof = names[dom] || names.mixed;
-  document.getElementById("revName").textContent = prof.name;
-  document.getElementById("revArch").textContent = prof.arch;
-
-  // Bar descriptions — "where you are" + "new way" for each dimension
-  // Three intensity levels: low, mid, high — for each of the 12 dims
-  const BAR_CONTENT = {
-    pres:      { expl: "Presence is being fully here — in direct contact with what's actually happening, rather than living one step ahead in plans, memories, or the next thing.", struggle: "You tend to leave the moment you're in, reaching for what's next before this one has finished. [personal — from your responses]", well: "When something truly holds you, you can drop in completely — so you already know what full presence feels like. [personal]", improve: "Pick one ordinary moment a day and stay entirely in it. Presence is rebuilt one returned moment at a time. [personal]" },
-    craving:   { what: "The pull toward more — more comfort, more pleasure, more next — that never quite settles once you get it.", wrong: "Most believe the next thing will finally do it, never seeing the reaching itself is what keeps them unsettled.", improve: "Catch the gap between wanting and grabbing. Let it widen. You can want without being run by the want." },
-    dosa:      { what: "The push against what's unpleasant — irritation, resistance, the urge to fix or flee what you don't like.", wrong: "Most think it's the situation that's the problem, not seeing that pushing-away is craving wearing a different face.", improve: "Craving and aversion are one reflex: grabbing the pleasant, shoving the unpleasant. Both ease the same way — staying." },
-    confusion: { what: "A fog over things — unsure of your direction, your feelings, what's actually true beneath the noise.", wrong: "Most try to think their way out, not seeing that clarity comes from stillness, not more analysis.", improve: "Stop chasing the answer. Sit in silence and let the fog settle. What's true tends to surface on its own." },
-    comp:      { what: "Feeling another's suffering and being moved to help — warmth that reaches outward, beyond yourself.", wrong: "Most either harden to protect their bandwidth, or drown in others' pain and call that caring.", improve: "Real compassion helps without being swept under. Start small: one person, one real moment of attention." },
-    selfcomp:  { what: "Meeting your own struggle with the kindness you'd offer a friend — instead of the usual private cruelty.", wrong: "Most are harder on themselves than they'd ever be on anyone else, and call it being realistic.", improve: "When the harsh voice starts, ask: would I say this to someone I love? If not, change the words." },
-    equan:     { what: "A clear mind and loving heart that stays steady through anything, needing nothing from the outside.", wrong: "Most chase peace by fixing their circumstances — never seeing the steadiness was always within.", improve: "Built last, on top of gratitude, joy and loving-kindness — then practise letting each thing simply be." },
-    aware:     { what: "Seeing your own patterns as they happen — noticing the reaction while you're in it, not days later.", wrong: "Most move through life on autopilot, driven by habits they've never actually turned and looked at.", improve: "Watch one habit today without judging it — just see it. Noticing, in real time, is the whole skill." },
-    depth:     { what: "The capacity to feel fully and go beneath the surface, rather than skating over what's really there.", wrong: "Most protect themselves from their own depths, then wonder why life feels a little flat.", improve: "Once this week, sit with one feeling longer than is comfortable. Don't fix it. Just let it be felt." },
-    warm:      { what: "The ease of genuine connection — openness, affection, letting others actually in.", wrong: "Most keep a guard up they've long forgotten is even there, mistaking distance for safety.", improve: "One unguarded moment a day. The warmth isn't gone — it's under a layer you can choose to lower." },
-    aes:       { what: "Being moved by beauty — light, sound, form — and letting it genuinely stop you.", wrong: "Most rush past beauty as decoration, not realising it's a doorway straight back to presence.", improve: "Notice one beautiful thing a day and let it land. Beauty is medicine, even when it doesn't feel like it." },
-    open2:     { what: "The willingness to be remade — to loosen the familiar and let something new in.", wrong: "Most cling to the known even when it's costing them, calling the cage \"just how I am.\"", improve: "Change one small thing this week. Prove to yourself the ground still holds when you move." }
-  };
-
-  // Render 12 bars — each with 3 tight lines: what it is / what most get wrong / how to improve
-  const sg = document.getElementById("spiritGrid");
-  sg.innerHTML = "";
-  SPIRIT_DIMS.forEach(sd => {
-    const raw = getVal(sd.k, 1, 16, 20, 88);
-    const val = sd.inv ? Math.max(15, 90 - raw) : raw;
-    const content = BAR_CONTENT[sd.k] || BAR_CONTENT.pres;
-
-    const block = document.createElement("div");
-    block.className = "bar-block";
-    block.innerHTML =
-      "<div class='bar-head'>" +
-        "<span class='bar-label'>" + sd.label + "</span>" +
-        "<span class='bar-val' id='sv_" + sd.k + "'>" + val + "<span class='bar-val-max'>/100</span></span>" +
-      "</div>" +
-      "<div class='bar-track'><div class='bar-fill' id='s_" + sd.k + "' style='background:linear-gradient(to right," + sd.col + "99," + sd.col + ");'></div><div class='bar-ceiling'></div></div>" +
-      "<div class='bar-poles'><span>" + sd.lo + "</span><span>" + sd.hi + " · rarely full</span></div>" +
-      "<div class='bar-point struggle'><span class='bar-line-eye'>Where you struggle</span>" + (content.struggle || content.wrong) + "</div>" +
-      "<div class='bar-point well'><span class='bar-line-eye'>What you're getting right</span>" + (content.well || "You have genuine access to this quality — it's present in you and can be strengthened.") + "</div>" +
-      "<div class='bar-point improve'><span class='bar-line-eye'>Your practise</span>" + content.improve + "</div>";
-    sg.appendChild(block);
-  });
-
-  // THE ONE THING — the single core obstruction, named directly
-  // Straight, compassionate, to the point. (Placeholder content — API fills later.)
-  // THE ONE THING — Equanimity, the destination of the whole framework.
-  // The deep teaching. (Will be personalised by API later.)
-  
-  // Animate bars
-  setTimeout(() => {
-    SPIRIT_DIMS.forEach(sd => {
-      const el = document.getElementById("s_" + sd.k);
-      if (el) {
-        const raw = getVal(sd.k, 1, 16, 20, 88);
-        el.style.width = (sd.inv ? Math.max(15, 90 - raw) : raw) + "%";
-      }
-    });
-  }, 400);
-
-  saveAssessmentResult();
-
-  // Now personalise the whole reveal with AI (overwrites generic text when it returns)
-  personalizeReveal();
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PERSIST — save the latest assessment result (archetype + 12
-   dimension bars) so other pages (e.g. practice.html) can read it.
-   ═══════════════════════════════════════════════════════════ */
-function saveAssessmentResult() {
-  try {
-    const dims = SPIRIT_DIMS.map(sd => {
+  const prof = names[getDom()] || names.mixed;
+  PROFILE = {
+    v: 2, at: new Date().toISOString(), archName: prof.name, archLine: prof.arch, named: false,
+    dims: SPIRIT_DIMS.map(sd => {
       const raw = getVal(sd.k, 1, 16, 20, 88);
-      const val = sd.inv ? Math.max(15, 90 - raw) : raw;
-      return { key: sd.k, label: sd.label, val, lo: sd.lo, hi: sd.hi };
-    });
-    const rec = {
-      archName: (document.getElementById("revName") || {}).textContent || "",
-      archLine: (document.getElementById("revArch") || {}).textContent || "",
-      dims,
-      at: new Date().toISOString()
-    };
-    localStorage.setItem("psyche:assessment", JSON.stringify(rec));
-  } catch (e) {}
+      return { key: sd.k, label: sd.label, val: sd.inv ? Math.max(15, 90 - raw) : raw, lo: sd.lo, hi: sd.hi };
+    }),
+    scores: Object.assign({}, scores),
+    src: { picks: userPicks.slice(), answers: convAnswers.filter(Boolean), chat: chatHistory.slice() }
+  };
+  kpOpen = null; kpShown = false;
+  saveAssessmentResult();
+  saveToAccount();
+  showProfile();
+  writeProfile();
+}
+function buildReveal() { makeProfile(); }   // the old name, kept for anything that still calls it
+
+function showProfile() {
+  show("profile");
+  renderProfile();
+}
+
+function renderProfile() {
+  const p = PROFILE; if (!p) return;
+  document.getElementById("revName").textContent = p.archName || "Your profile";
+  document.getElementById("revArch").textContent = p.archLine || "";
+  const host = document.getElementById("spiritGrid");
+  host.innerHTML = "";
+  p.dims.forEach(d => {
+    const has = kyHas(d);
+    const line = document.createElement("div");
+    line.className = "kp-line" + (has && kpOpen === d.key ? " open" : "");
+    const row = document.createElement(has ? "button" : "div");
+    row.className = "kp-row";
+    row.innerHTML = '<span class="kp-name"></span><span class="kp-bar" aria-hidden="true"><i></i><b></b></span><span class="kp-score"></span>' +
+      (has ? '<span class="kp-arrow">' + KP_ARROW + '</span>' : '<span></span>');
+    row.querySelector(".kp-name").textContent = d.label;
+    const sc = row.querySelector(".kp-score"); sc.textContent = d.val; sc.setAttribute("aria-label", d.val + " out of 100");
+    const fill = row.querySelector(".kp-bar i"); fill.dataset.w = d.val; fill.style.width = kpShown ? d.val + "%" : "0";
+    line.appendChild(row);
+    if (has) {
+      row.type = "button";
+      row.setAttribute("aria-expanded", String(kpOpen === d.key));
+      const panel = document.createElement("div"); panel.className = "kp-panel";
+      const poles = document.createElement("div"); poles.className = "kp-poles";
+      const ps = document.createElement("span"), lo = document.createElement("em"), hi = document.createElement("em");
+      lo.textContent = d.lo; hi.textContent = d.hi + " · rarely full";   // the words at each end of the bar
+      ps.appendChild(lo); ps.appendChild(hi); poles.appendChild(ps); panel.appendChild(poles);
+      const parts = document.createElement("div"); parts.className = "kp-parts";
+      KP_PARTS.forEach(pt => {
+        if (!d[pt[0]]) return;
+        const box = document.createElement("div"); box.className = "kp-part";
+        const h = document.createElement("h3"); h.textContent = pt[1];
+        const t = document.createElement("p"); t.textContent = d[pt[0]];
+        box.appendChild(h); box.appendChild(t); parts.appendChild(box);
+      });
+      panel.appendChild(parts); line.appendChild(panel);
+      row.onclick = function() {
+        kpOpen = kpOpen === d.key ? null : d.key;   // one line open at a time
+        host.querySelectorAll(".kp-line").forEach(l => {
+          const on = l === line && kpOpen === d.key;
+          l.classList.toggle("open", on);
+          const r = l.querySelector("button.kp-row"); if (r) r.setAttribute("aria-expanded", String(on));
+        });
+      };
+    }
+    host.appendChild(line);
+  });
+  if (!kpShown) setTimeout(() => { kpShown = true; host.querySelectorAll(".kp-bar i").forEach(i => { i.style.width = i.dataset.w + "%"; }); }, 300);
+
+  // beside the button: when Know yourself can be taken again
+  const again = document.getElementById("kpAgain");
+  again.textContent = "";
+  if (kyLocked(p)) again.textContent = "You can take Know yourself again from " + kyDate(kyRetakeFrom(p)) + ".";
+  else {
+    const a = document.createElement("a"); a.href = "#"; a.textContent = "Take Know yourself again";
+    a.onclick = function(e) { e.preventDefault(); retakeKnowYourself(); };
+    again.appendChild(a);
+  }
+}
+
+// Starting over (only offered once the four weeks are up). The old profile stays until the new one is made.
+function retakeKnowYourself() {
+  scores = {}; applied = {}; userPicks = []; convAnswers = []; chatHistory.length = 0; userMessageCount = 0; chatBusy = false;
+  const ready = document.getElementById("kcReady"); if (ready) ready.remove();
+  if (kcBox) { kcBox.off(false); kcBox.field.placeholder = "Speak freely…"; }
+  show("assess"); loadPage(0);
+}
+
+// the quiet line under the heading: "writing" while the personal writing is on its way, "retry" if it did not arrive
+function kpLoad(mode) {
+  const el = document.getElementById("kpLoad");
+  el.textContent = "";
+  if (!mode) { el.hidden = true; return; }
+  el.hidden = false;
+  if (mode === "writing") { el.textContent = "Reading your responses, writing your profile…"; return; }
+  const a = document.createElement("a"); a.href = "#"; a.textContent = "Try again";
+  a.onclick = function(e) { e.preventDefault(); writeProfile(); };
+  el.appendChild(a);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   PERSONALISE THE REVEAL
-   Sends ALL their data to Claude → personal bars + One Thing.
-   Generic content stays as fallback if the API is unreachable.
+   THE PERSONAL WRITING
+   Sends everything they chose and said to Claude; the name and the three parts of each line arrive as they
+   are written. Until a line's writing arrives it shows its name, bar and score only.
+
+   Why it used to fail (found 24 Nov 2026): the twelve were asked for in two halves of six, each capped at
+   1,200 tokens. With a real conversation behind it the reply runs longer than that, so it was cut off
+   mid-sentence, the cut-off reply could not be read, and the stand-in text (with its "[personal]" notes)
+   stayed on the page. Now: four calls of three lines each with room to finish, a second try for anything
+   missing, whole lines rescued from a reply that is cut short, and no stand-in text at all.
    ═══════════════════════════════════════════════════════════ */
-async function personalizeReveal() {
-  var banner = document.getElementById("personalizingBanner");
-  var regen  = document.getElementById("regenBtn");
-  if (regen)  regen.style.display = "none";
-  if (banner) { banner.style.color = "var(--indigo)"; banner.textContent = "Reading your responses, writing your profile…"; banner.style.display = "block"; }
+function kyParseJSON(raw) {
+  if (!raw) return null;
+  try {
+    let c = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
+    const a = c.indexOf("{"), b = c.lastIndexOf("}");
+    if (a !== -1 && b !== -1 && b > a) c = c.slice(a, b + 1);
+    return JSON.parse(c);
+  } catch (e) { return null; }
+}
+// the lines in a reply, by key. If the reply was cut short, every line that did finish is still used.
+function kyParseBars(raw, keys) {
+  const out = {};
+  if (!raw) return out;
+  const full = kyParseJSON(raw), src = full && (full.bars || full);
+  keys.forEach(k => {
+    let b = src && src[k];
+    if (!b || typeof b !== "object") {
+      const m = raw.match(new RegExp('"' + k + '"\\s*:\\s*(\\{[^{}]*\\})'));
+      b = null;
+      if (m) { try { b = JSON.parse(m[1]); } catch (e) { b = null; } }
+    }
+    if (b && typeof b === "object") out[k] = b;
+  });
+  return out;
+}
+
+async function writeProfile() {
+  const p = PROFILE;
+  if (!p || !p.src || kpWriting) return;
+  kpWriting = true;
+  kpLoad("writing");
 
   // ── Build the shared picture of this person (used by all calls) ──
-  const picks = userPicks.map(p =>
+  const picks = (p.src.picks || []).map(p =>
     p.detail ? `· ${p.theme}: chose "${p.choice}", specifically "${p.detail}"`
              : `· ${p.theme}: chose "${p.choice}"`
   ).join("\n");
-  const answers = convAnswers.map((a, i) =>
+  const answers = (p.src.answers || []).map((a, i) =>
     `· Q${i+1} "${a.q}" → they answered "${a.a}"`
   ).join("\n");
-  const chatLog = chatHistory.length
-    ? chatHistory.map(m => (m.role === "user" ? "Them: " : "Sussuri: ") + m.content).join("\n")
+  const chatLog = (p.src.chat || []).length
+    ? p.src.chat.map(m => (m.role === "user" ? "Them: " : "Sussuri: ") + m.content).join("\n")
     : "(no open conversation yet)";
-  const scoreLines = SPIRIT_DIMS.map(sd => {
-    const raw = getVal(sd.k, 1, 16, 20, 88);
-    const val = sd.inv ? Math.max(15, 90 - raw) : raw;
-    return `· ${sd.label}: ${val}/100 (${sd.lo} → ${sd.hi})`;
-  }).join("\n");
+  const scoreLines = p.dims.map(d => `· ${d.label}: ${d.val}/100 (${d.lo} → ${d.hi})`).join("\n");
 
   const CTX = SYS_BASE + `
 
@@ -2683,31 +2840,16 @@ ${scoreLines}
 
 NON-NEGOTIABLES: No Pali words. No spiritual jargon. No therapy-speak. Warm, precise, direct, never flattering. If a line could sit unchanged on a stranger's profile, rewrite it. Output RAW JSON only — no markdown fences, no preamble.`;
 
-  // ── robust JSON extraction ──
-  function parseJSON(raw) {
-    if (!raw) return null;
-    try {
-      let c = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
-      const a = c.indexOf("{"), b = c.lastIndexOf("}");
-      if (a !== -1 && b !== -1 && b > a) c = c.slice(a, b + 1);
-      return JSON.parse(c);
-    } catch (e) { console.log("[Sussuri] reveal JSON parse failed:", raw); return null; }
-  }
-
-  // ── task 1: archetype + The One Thing (the breakthrough) ──
   const archTask =
 `Return JSON ONLY:
 {"archName":"2-4 word evocative archetype that fits them","archLine":"one short line capturing who they are right now","oneThing":{"title":"one direct sentence naming their core obstruction","body":"2-3 sentences — name it using something specific they chose or said","why":"2-3 sentences — the hidden root beneath it","help":"2-3 sentences — the opening, how it shifts toward steadiness","prac":"one concrete practice for the next 7 days, plain English, genuinely doable"}}
 
 THE ONE THING is the breakthrough. Choose the SINGLE most gripping or most absent dimension for them. Name it plainly. Then show how several of their other patterns all trace back to the SAME underlying engine — the automatic reaching, pushing, or going-dim in response to a feeling-tone — so their many struggles collapse into one mechanism. Then point toward the destination: the steady, clear, loving state that comes from meeting the feeling-tone without grabbing or pushing.`;
 
-  // ── tasks 2 & 3: the twelve bars, split into two parallel halves ──
   function barTask(keys) {
     const list = keys.map(k => {
-      const sd = SPIRIT_DIMS.find(d => d.k === k);
-      const raw = getVal(k, 1, 16, 20, 88);
-      const val = (sd && sd.inv) ? Math.max(15, 90 - raw) : raw;
-      return `· "${k}" = ${sd ? sd.label : k} — ${val}/100 (${sd ? sd.lo + " → " + sd.hi : ""})`;
+      const d = p.dims.find(x => x.key === k);
+      return `· "${k}" = ${d ? d.label : k} — ${d ? d.val : ""}/100 (${d ? d.lo + " → " + d.hi : ""})`;
     }).join("\n");
     const shape = "{" + keys.map(k => `"${k}":{"struggle":"...","well":"...","improve":"..."}`).join(",") + "}";
     return `For EACH bar below, write three short, personal notes addressed to THIS person (1-2 sentences each), tied where natural to something they actually chose or said, varying the rhythm:
@@ -2719,86 +2861,92 @@ Return JSON ONLY: {"bars":${shape}}
 The bars:
 ${list}`;
   }
-  const GROUP_A = ["pres","craving","dosa","confusion","comp","selfcomp"];
-  const GROUP_B = ["equan","aware","depth","warm","aes","open2"];
 
-  // ── apply helpers ──
-  function applyArch(d) {
-    if (!d) return false;
-    if (d.archName) document.getElementById("revName").textContent = d.archName;
-    if (d.archLine) document.getElementById("revArch").textContent = d.archLine;
-    if (d.oneThing) {
-      const o = d.oneThing;
-      var _t=document.getElementById("insightTitle"); if (_t && o.title) _t.textContent = o.title;
-      var _b=document.getElementById("insightBody"); if (_b && o.body) _b.textContent = o.body;
-      var _w=document.getElementById("insightWhy"); if (_w && o.why) _w.textContent = o.why;
-      var _h=document.getElementById("insightHelp"); if (_h && o.help) _h.textContent = o.help;
-      var _p=document.getElementById("insightPrac"); if (_p && o.prac) _p.textContent = o.prac;
+  // the name and its line
+  async function doName() {
+    for (let t = 0; t < 2 && !p.named; t++) {
+      const d = kyParseJSON(await callClaude([{ role: "user", content: archTask }], CTX, 1200));
+      if (PROFILE !== p) return;
+      if (d && (d.archName || d.archLine)) {
+        if (d.archName) p.archName = kyClean(d.archName);
+        if (d.archLine) p.archLine = kyClean(d.archLine);
+        p.named = true;
+        document.getElementById("revName").textContent = p.archName;
+        document.getElementById("revArch").textContent = p.archLine;
+        saveAssessmentResult(); saveToAccount();
+      } else if (t === 0) await delay(1200);
     }
-    return !!(d.archName || d.oneThing);
   }
-  function applyBars(d) {
-    if (!d || !d.bars) return false;
-    let any = false;
-    SPIRIT_DIMS.forEach(sd => {
-      const b = d.bars[sd.k];
-      if (!b) return;
-      const block = document.querySelector(`#s_${sd.k}`)?.closest(".bar-block");
-      if (!block) return;
-      const pts = [
-        [".bar-point.struggle", "Where you struggle", (typeof b === "string" ? null : b.struggle)],
-        [".bar-point.well", "What you're getting right", (typeof b === "string" ? null : b.well)],
-        [".bar-point.improve", "Your practise", (typeof b === "string" ? b : b.improve)]
-      ];
-      pts.forEach(p => { if (!p[2]) return; const el = block.querySelector(p[0]); if (el) { el.innerHTML = "<span class='bar-line-eye'>" + p[1] + "</span>" + p[2]; any = true; } });
-    });
-    return any;
+  // three lines at a time; anything still missing after the first reply is asked for once more
+  async function doBars(keys) {
+    for (let t = 0; t < 2; t++) {
+      const need = keys.filter(k => !kyHas(p.dims.find(d => d.key === k)));
+      if (!need.length) return;
+      const got = kyParseBars(await callClaude([{ role: "user", content: barTask(need) }], CTX, 1500), need);
+      if (PROFILE !== p) return;
+      let any = false;
+      need.forEach(k => {
+        const b = got[k], d = p.dims.find(x => x.key === k);
+        if (!b || !d) return;
+        d.struggle = kyClean(b.struggle); d.well = kyClean(b.well); d.improve = kyClean(b.improve);
+        any = any || kyHas(d);
+      });
+      if (any) { saveAssessmentResult(); renderProfile(); }
+      else if (t === 0) await delay(1200);
+    }
   }
 
-  // ── fire all three in parallel; apply each as it resolves ──
-  const [rArch, rA, rB] = await Promise.allSettled([
-    callClaude([{ role: "user", content: archTask }], CTX, 1200),
-    callClaude([{ role: "user", content: barTask(GROUP_A) }], CTX, 1200),
-    callClaude([{ role: "user", content: barTask(GROUP_B) }], CTX, 1200)
-  ]);
-
-  let ok = false;
-  if (rArch.status === "fulfilled") ok = applyArch(parseJSON(rArch.value)) || ok;
-  if (rA.status === "fulfilled")    ok = applyBars(parseJSON(rA.value))    || ok;
-  if (rB.status === "fulfilled")    ok = applyBars(parseJSON(rB.value))    || ok;
-
-  if (ok) saveAssessmentResult();
-
-  if (ok) {
-    if (banner) banner.style.display = "none";
-  } else {
-    if (banner) { banner.style.display = "block"; banner.style.color = "#a33"; banner.textContent = "Couldn't write your profile just now — " + (lastApiError || "no response") + ". Showing the general version."; }
-  }
-  if (regen) regen.style.display = "inline-block";
+  await Promise.all([doName()].concat(BAR_GROUPS.map(doBars)));
+  kpWriting = false;
+  if (PROFILE !== p) return;
+  saveAssessmentResult();
+  // the loading line goes when the writing is in; if some of it never arrived, a quiet "Try again" takes its place
+  kpLoad(p.dims.some(d => !kyHas(d)) ? "retry" : null);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   WIRE UP CHAT INPUT
+   START — coming back after finishing shows the profile, not the pictures starting over
+   ═══════════════════════════════════════════════════════════ */
+function kyOpenStored(rec) {
+  PROFILE = rec;
+  if (rec.scores) scores = Object.assign({}, rec.scores);
+  kpOpen = null; kpShown = false;
+  showProfile();
+  if (rec.src && rec.dims.some(d => !kyHas(d))) kpLoad("retry"); else kpLoad(null);
+}
+function kyStart() {
+  // preview mode only: assessment.html?preview=1&again=1 starts the pictures over, for checking
+  let again = false;
+  try { again = !!window.PSYCHE_PREVIEW && new URLSearchParams(location.search).get("again") === "1"; } catch (e) {}
+  let rec = null;
+  try { rec = JSON.parse(localStorage.getItem(KY_KEY)); } catch (e) {}
+  if (!again && rec && rec.at && Array.isArray(rec.dims) && rec.dims.length) { kyOpenStored(rec); return; }
+  loadPage(0);
+  if (again) return;
+  // signed in, but finished on another device: the date, name and scores come from the account
+  try {
+    const sb = window.__sb;
+    if (sb && !window.PSYCHE_PREVIEW) sb.auth.getSession().then(({ data }) => {
+      const u = data && data.session && data.session.user, k = u && u.user_metadata && u.user_metadata.know_yourself;
+      if (!k || !k.at || !k.vals || PROFILE || userPicks.length) return;
+      kyOpenStored({ v: 2, at: k.at, archName: k.name || "", archLine: k.line || "", named: true,
+        dims: SPIRIT_DIMS.map(sd => ({ key: sd.k, label: sd.label, val: k.vals[sd.k] || 0, lo: sd.lo, hi: sd.hi })) });
+      saveAssessmentResult();
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   WIRE UP
    ═══════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", function() {
-  loadPage(0);
-  const send = document.getElementById("chatSend");
-  const input = document.getElementById("chatInput");
-  const back = document.getElementById("chatBack");
-  const regen = document.getElementById("regenBtn");
-  if (regen) regen.onclick = function() { personalizeReveal(); };
-  if (send) send.onclick = sendChatMsg;
-  if (input) {
-    input.addEventListener("keydown", e => {
-      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChatMsg(); }
-    });
-    // Auto-grow textarea
-    input.addEventListener("input", function() {
-      this.style.height = "auto";
-      this.style.height = Math.min(120, this.scrollHeight) + "px";
-    });
-  }
-  if (back) back.onclick = function() { buildReveal(); };
+  // the chat's typing box: the Chat page's box, with the microphone (site-chatbox.js)
+  if (window.sussuriBox) kcBox = sussuriBox.mount(document.getElementById("kcBox"), {
+    placeholder: "Speak freely…",
+    onSend: sendChatMsg,
+    onMicBlocked: function() { addChatMsg("psyche", "Couldn't start the microphone — check your microphone permission and try again."); }
+  });
+  kyStart();
 });
 
 /* ═══════════════════════════════════════════════════════════
@@ -2812,7 +2960,8 @@ document.addEventListener("keydown", e => {
     scores = { lobha: 10, dosa: 4, confusion: 3, equan: 5, open: 12, cons: 5, extra: 7, agree: 10, neurot: 4, depth: 9, warm: 8, aes: 7, pres: 6, comp: 9, craving: 8, aware: 6, selfcomp: 5, open2: 7 };
     convAnswers = [{ q: "test", a: "test", p: "lobha" }];
     userPicks = [{ image: "t1_penthouse", theme: "Desire", choice: "Drawn in", detail: "The freedom" }];
-    buildReveal();
+    chatHistory.length = 0; PROFILE = null;
+    makeProfile();
   }
   if (e.key === "C" || e.code === "KeyC") {
     scores = { lobha: 10, dosa: 4, equan: 5, depth: 9, warm: 8, pres: 6, comp: 9, aware: 6 };
@@ -2822,7 +2971,6 @@ document.addEventListener("keydown", e => {
 });
 </script>
 
-<script>(function(){var _b=window.buildReveal;if(typeof _b==="function"){window.buildReveal=function(){var r=_b.apply(this,arguments);try{var inner=document.querySelector('#reveal .rev-inner');if(inner&&!inner.querySelector('.rev-hero')){var fs=inner.querySelector('.rev-sec');if(fs){var h=document.createElement('div');h.className='rev-hero';while(inner.firstChild&&inner.firstChild!==fs){h.appendChild(inner.firstChild);}inner.insertBefore(h,fs);}}}catch(e){}return r;};}})();</script>
 <script>window.addEventListener("load",function(){var cb=document.getElementById("contBtn");if(cb){var prev=cb.onclick;cb.onclick=function(e){if(prev)prev.call(this,e);try{var a=document.getElementById("assess");if(a)a.scrollTop=0;window.scrollTo(0,0);}catch(x){}};}});</script>
 <script>
 (function(){

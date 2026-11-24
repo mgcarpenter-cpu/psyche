@@ -7,7 +7,7 @@
 <title>Meditations · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261124a">
 <link rel="stylesheet" href="meditation-cover.css?v=20261116a">
 <style>
   :root{
@@ -53,7 +53,11 @@
   .tile .cap{display:flex;align-items:flex-start;gap:16px;padding:18px 20px 20px;flex:1;}
   .tile .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
   .tile .tag,.player .tag,.player .time{font-family:var(--font-mono);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .tile .about{font-size:15px;line-height:1.5;color:var(--s-text2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .tile .about{font-size:15px;line-height:1.5;color:var(--s-text2);}   /* one full sentence, never cut off */
+  /* the label keeps to one line across the whole card; the sentence and the play button sit under it */
+  .tile .cap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:start;align-content:start;}
+  .tile .txt{display:contents;}
+  .tile .tag{grid-column:1/-1;white-space:nowrap;}
   .round{flex:0 0 auto;width:44px;height:44px;border:1px solid #fff;border-radius:50%;background:transparent;color:#fff;display:flex;align-items:center;justify-content:center;}
   .round svg{width:14px;height:14px;fill:currentColor;}
   .tile.on .round{background:#fff;color:#000;}
@@ -72,14 +76,14 @@
   .player .scrub::before{content:"";position:absolute;left:0;right:0;height:2px;background:#4a4a4a;}
   .player .scrub i{position:relative;display:block;height:2px;width:0;background:#fff;}
   .player .credit{font-size:13px;color:var(--s-label);}
-  .player .credit b{font-weight:400;color:var(--s-text2);}
+  .player .credit b{font-weight:400;color:#fff;}
+  .head .lede{font-size:var(--s-read);line-height:1.5;color:var(--s-label);} .head .lede b{font-weight:300;color:#fff;}
   .player .time{flex:0 0 auto;white-space:nowrap;}
 
   /* tablet and phone: the player keeps to two lines */
   @media (max-width:1023px){
     main{padding:36px 20px 0;}
     .head{gap:10px;padding-bottom:24px;}
-    .lede{font-size:16px;}
     .tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:30px 0 40px;}   /* tablet: two to a row */
     .cats{padding:14px 0;margin:0 -20px;padding-left:20px;padding-right:20px;}
     .cat{height:44px;}
@@ -94,10 +98,10 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261121a"></script>
+<script src="site-header.js?v=20261124a"></script>
 
 <main>
-  <header class="head"><h1 class="page-title">Meditations</h1><p class="lede">Guided meditations. Written and narrated by <b>Mark Carpenter</b></p></header>
+  <header class="head"><h1 class="page-title">Meditations</h1><p class="lede">Written by <b>Mark Carpenter</b>. Spoken in his voice, made with AI.</p></header>
   <div class="cats" id="cats" role="group" aria-label="Category"></div>
   <div class="tiles" id="tiles"></div>
   <div class="player" id="player" hidden>
@@ -106,7 +110,7 @@
     <div class="mid">
       <div class="now"><span class="ttl" id="plTitle"></span><span class="tag" id="plTag"></span></div>
       <div class="scrub" id="plScrub" role="slider" aria-label="Position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i id="plBar"></i></div>
-      <div class="credit">Written and narrated by <b>Mark Carpenter</b><span id="plExtra"></span></div>
+      <div class="credit">Written by <b>Mark Carpenter</b>. Spoken in his voice, made with AI.<span id="plExtra"></span></div>
     </div>
     <span class="time"><span id="plCur">0:00</span> / <span id="plDur">0:00</span></span>
     <audio id="plAudio" preload="none"></audio>
@@ -126,7 +130,7 @@
 </div>
 
 <!-- The finished sessions, and the cover each one gets from its title, live in meditation-sessions.js (shared with the Meditation library). -->
-<script src="meditation-sessions.js?v=20261116a"></script>
+<script src="meditation-sessions.js?v=20261124a"></script>
 <script>
 (function(){
   var S=window.SUSSURI_SESSIONS;
@@ -140,7 +144,8 @@
   function tag(it){ return [it.label,it.length].filter(Boolean).join(' \u00b7 '); }            // player bar: GUIDED MEDITATION · NN MINS
   var cardTag=window.sussuriCardTag, short=window.sussuriShort, cover=window.sussuriCover;   // shared with the Meditation library
   // category row: All first, then each category in the order it first appears below
-  var ORDER=window.SUSSURI_CATEGORIES.slice(), cats=document.getElementById('cats'), showing='All';
+  // the row follows the library: a category shows only when a meditation carries that label
+  var ORDER=window.SUSSURI_CATEGORIES.filter(function(c){ return S.some(function(it){ return it.category===c; }); }), cats=document.getElementById('cats'), showing='All';
   S.forEach(function(it){ if(it.category && ORDER.indexOf(it.category)<0) ORDER.push(it.category); });
   ['All'].concat(ORDER).forEach(function(c){
     var b=document.createElement('button'); b.type='button'; b.className='cat'+(c==='All'?' on':''); b.textContent=c; b.setAttribute('aria-pressed',String(c==='All'));
@@ -155,7 +160,7 @@
     var t=document.createElement('button');
     t.type='button'; t.className='tile'; t.setAttribute('aria-label','Play '+it.title);
     t.innerHTML=cover(it)+
-      '<span class="cap"><span class="txt"><span class="tag">'+esc(cardTag(it))+'</span><span class="about">'+esc(short(it.about))+'</span></span>'+
+      '<span class="cap"><span class="txt"><span class="tag">'+esc(cardTag(it))+'</span><span class="about">'+esc(window.sussuriCardLine(it))+'</span></span>'+
       '<span class="round" aria-hidden="true"><svg viewBox="0 0 20 20">'+PLAY+'</svg></span></span>';
     t.onclick=function(){ pick(i); };
     tiles.appendChild(t);
@@ -177,7 +182,7 @@
     document.getElementById('plCover').innerHTML=cover(it);
     document.getElementById('plTitle').textContent=it.title;
     document.getElementById('plTag').textContent=tag(it);
-    document.getElementById('plExtra').textContent=it.extra_credit?' \u00b7 '+it.extra_credit:'';
+    document.getElementById('plExtra').textContent=it.extra_credit?' '+it.extra_credit+'.':'';
     bar.style.width='0'; cur.textContent='0:00'; dur.textContent='0:00';
     player.hidden=false;
     a.src=it.audio; a.play().catch(function(){});
@@ -198,7 +203,7 @@
     document.getElementById('plCover').innerHTML=cover(it);
     document.getElementById('plTitle').textContent=it.title;
     document.getElementById('plTag').textContent=tag(it);
-    document.getElementById('plExtra').textContent=it.extra_credit?' · '+it.extra_credit:'';
+    document.getElementById('plExtra').textContent=it.extra_credit?' '+it.extra_credit+'.':'';
     player.hidden=false; a.preload='metadata'; a.src=it.audio; mark();
     if(tiles.children[wi]) tiles.children[wi].scrollIntoView({block:'center'});
   }

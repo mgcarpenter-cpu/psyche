@@ -15,6 +15,26 @@
       "source": "/how-it-works.html",
       "destination": "/give-a-gift",
       "permanent": false
+    },
+    {
+      "source": "/practice",
+      "destination": "/goals-schedule",
+      "permanent": false
+    },
+    {
+      "source": "/practice.html",
+      "destination": "/goals-schedule",
+      "permanent": false
+    },
+    {
+      "source": "/your-plan",
+      "destination": "/give-a-gift",
+      "permanent": false
+    },
+    {
+      "source": "/your-plan.html",
+      "destination": "/give-a-gift",
+      "permanent": false
     }
   ],
   "functions": {
@@ -22,7 +42,7 @@
       "maxDuration": 60
     },
     "api/g.js": {
-      "includeFiles": "{gift.html,meditation-sessions.js}"
+      "includeFiles": "{front-v2.html,meditation-sessions.js}"
     },
     "api/gift.js": {
       "includeFiles": "meditation-sessions.js"

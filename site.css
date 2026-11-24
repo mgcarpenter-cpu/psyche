@@ -189,3 +189,56 @@ nav#nav.site-nav.site-drawer.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,
   font-size:72px !important;letter-spacing:.05em !important;line-height:1.05 !important;text-align:left !important;text-transform:none !important;
   margin-left:0 !important;margin-right:0 !important;color:#fff;}
 @media (max-width:1023px){ .page-title{font-size:38px !important;letter-spacing:.04em !important;} }
+
+/* ==========================================================================
+   Site walk fixes, 24 Nov 2026: one set of sizes, one focus ring, one typing box
+   ========================================================================== */
+:root{
+  --s-read:20px;        /* the one reading size for sentences */
+  --s-small:15px;       /* small print under a control */
+  --s-btn:12.5px;       /* the one button size (Jost 500, capitals, .2em) */
+  --s-lab:12px;         /* the one small-label size (JetBrains Mono, capitals, .14em) */
+  --s-arrow:20px;       /* arrows: Jost 300 at this size, everywhere */
+}
+@media (max-width:1023px){ :root{ --s-read:17px; --s-small:14px; --s-btn:11.5px; --s-lab:11px; --s-arrow:18px; } }
+.s-read{font-family:var(--font-jost);font-weight:300;font-size:var(--s-read);line-height:1.5;color:var(--s-text2);}
+.s-small{font-family:var(--font-jost);font-weight:300;font-size:var(--s-small);line-height:1.5;color:var(--s-label);}
+.s-arrow{font-family:var(--font-jost);font-weight:300;font-size:var(--s-arrow);line-height:1;font-style:normal;letter-spacing:0;}
+.s-btn{font-size:var(--s-btn);}
+.s-label{font-size:var(--s-lab);}
+
+/* no blue ring: a selected button or box gets a white ring in the site's own style (black on the white menu) */
+:focus{outline:none;}
+:focus-visible{outline:2px solid #fff !important;outline-offset:3px;}
+.site-nav :focus-visible{outline-color:#000 !important;outline-offset:-3px;}
+textarea:focus-visible,input:focus-visible,select:focus-visible{outline-offset:0;}
+.s-box textarea:focus-visible{outline:0 !important;}
+
+/* ---------- the one typing box (the Chat page's), used wherever Sussuri chats: site-chatbox.js ---------- */
+.s-box{box-sizing:border-box;display:flex;flex-direction:column;gap:8px;background:#000;border:1px solid var(--s-border);border-radius:8px;padding:20px 24px 16px;}
+.s-box:focus-within{border-color:#fff;}
+.s-box textarea{box-sizing:border-box;width:100%;min-height:62px;background:none;border:0;padding:0;margin:0;resize:none;overflow-y:hidden;display:block;color:#fff;
+  font-family:var(--font-jost);font-weight:300;font-size:20px;line-height:1.5;outline:none;max-height:calc(20px * 1.5 * 6);}
+.s-box textarea::placeholder{color:var(--s-label);font-style:normal;opacity:1;}
+.s-box-tools{display:flex;align-items:center;justify-content:flex-end;gap:10px;}
+.s-box .s-box-btn{flex:0 0 auto;width:44px;height:44px;padding:0;display:flex;align-items:center;justify-content:center;cursor:pointer;border:0;border-radius:8px;background:transparent;color:#fff;}
+.s-box .s-box-btn svg{fill:none;stroke:currentColor;}
+.s-box .s-box-btn.send{background:#fff;color:#000;}
+.s-box .s-box-btn.mic.live{background:#fff;color:#000;}
+.s-box .s-box-btn[hidden],.s-box .s-box-rec[hidden]{display:none;}
+.s-box .s-box-btn:disabled{opacity:.5;cursor:default;}
+.s-box-rec{margin-right:auto;font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fff;}
+.s-box.off{opacity:.45;}
+.s-box.off textarea,.s-box.off .s-box-btn{cursor:default;}
+/* messages, as on the Chat page */
+.s-you{align-self:flex-end;box-sizing:border-box;width:fit-content;max-width:70%;overflow-wrap:anywhere;white-space:pre-wrap;font-family:var(--font-jost);font-weight:300;font-style:normal;font-size:18px;line-height:1.5;color:#fff;background:transparent;border:1px solid var(--s-border);border-radius:8px;text-align:left;padding:10px 16px;}
+.s-sus{max-width:100%;overflow-wrap:anywhere;font-family:var(--font-jost);font-weight:300;font-style:normal;font-size:26px;line-height:1.45;color:#fff;text-align:left;}
+.s-sus::before{content:'Sussuri';display:block;margin-bottom:14px;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+@media (max-width:1023px){
+  .s-box{padding:16px 16px 14px;}
+  .s-box textarea{min-height:52px;font-size:17px;max-height:calc(17px * 1.5 * 6);}
+  .s-sus{font-size:20px;}
+  .s-you{font-size:16px;max-width:85%;}
+}
+
+.site-nav a.signin-row{text-decoration:none;padding-left:24px;margin-top:-4px;}

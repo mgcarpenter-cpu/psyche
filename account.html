@@ -7,7 +7,7 @@
 <title>Account · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261124a">
 <style>
   /* ===== psyche-account-earnings-v12 (verbatim values; --creamtxt = mock's --cream,
      renamed so the shared nav tokens keep their own cream) ===== */
@@ -174,7 +174,6 @@ main{height:auto !important;min-height:0;}
 .ydd{position:relative;}
 .ybtn{display:flex;align-items:center;gap:10px;height:36px;padding:0 12px;border:1px solid var(--s-border);border-radius:8px;background:transparent;color:#fff;font-family:var(--font-jost);font-weight:300;font-size:15px;cursor:pointer;}
 .ybtn::after{content:"";width:10px;height:6px;background:no-repeat center/10px 6px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23d6d6d6' stroke-width='1.2'/%3E%3C/svg%3E");}
-.ybtn:focus{outline:none;} .ybtn:focus-visible{outline:2px solid #808080;outline-offset:3px;}
 .ylist{position:absolute;right:0;top:calc(100% + 6px);z-index:20;min-width:100%;max-height:220px;overflow-y:auto;padding:6px 0;background:#000;border:1px solid #d6d6d6;border-radius:8px;box-shadow:0 14px 40px rgba(0,0,0,.7);scrollbar-width:thin;scrollbar-color:#666 transparent;}
 .ylist[hidden]{display:none;}
 .ylist .yo{display:flex;align-items:center;min-height:38px;padding:0 14px;font-size:15px;color:#d6d6d6;cursor:pointer;white-space:nowrap;}
@@ -188,11 +187,32 @@ main{height:auto !important;min-height:0;}
 .mrow-link{font-size:15px;color:#fff;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;}
 .listrow.plain{cursor:default;} .listrow.plain:hover{background:none;}
 @media (max-width:1023px){ .hrow{grid-template-columns:minmax(0,1fr) 78px 86px;} .earn-gate .site-cta{flex:1 1 100%;} }
+
+/* ════════ Site walk fixes, 24 Nov 2026: the one set of sizes (site.css), and links big enough for a thumb ════════ */
+.acct-name,.earn-line,.earn-signin,.earn-gate,.listrow,.yr summary{font-size:var(--s-read);}
+.acct-email,.rowval,.link-note,.stat-note,.inline-link,.mrow-link,.yr-row,.yr-empty,.inline-form input,.ybtn,.ylist .yo{font-size:var(--s-small);}
+.tab,.copybtn,.inline-form button{font-size:var(--s-btn);letter-spacing:.2em;}
+.sect,.stat-label{font-size:var(--s-lab);}
+.linktext{font-size:var(--s-read);}
+.inline-link,.mrow-link{display:inline-flex;align-items:center;min-height:44px;}
+.rowval{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;white-space:normal;text-align:right;}
+.listrow{padding-top:4px;padding-bottom:4px;min-height:56px;}
+.ybtn{height:44px;}
+.copybtn{min-width:96px;}
+.linkbox.off .linktext{color:#8f8f8f;}
+@media (max-width:1023px){
+  .tab{min-height:48px;}
+  .listrow{flex-wrap:wrap;gap:0 14px;}
+  .hrow{font-size:var(--s-small);}
+  .linktext{padding:0 14px;} .copybtn{padding:0 18px;min-width:84px;}
+  .hist-head{flex-wrap:wrap;}
+  .inline-form{flex-wrap:wrap;} .inline-form input{flex:1 1 100%;} .inline-form button{flex:1 1 100%;}
+}
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261121a"></script>
+<script src="site-header.js?v=20261124a"></script>
 
 <main>
   <div class="scroll">
@@ -225,29 +245,18 @@ main{height:auto !important;min-height:0;}
           <div class="listrow"><span>Sign out of Sussuri</span><span class="rowval"><span class="inline-link" id="signOutLink">Sign out</span></span></div>
         </div>
 
-        <details class="danger-zone">
-          <summary>Close my account</summary>
-          <div class="danger-body">
-            <p>Closing your account ends your membership, removes your conversations, and stops your referral link working. Anyone who joined through it stops earning for you.</p>
-            <p>Any earnings that are ready are paid out. Anything still pending is forfeited.</p>
-            <div class="inline-form" style="padding:0;border:0;">
-              <input type="text" id="closeConf" placeholder="Type CLOSE to confirm" autocomplete="off">
-              <button id="closeBtn" class="danger-btn" disabled>Close my account</button>
-            </div>
-          </div>
-        </details>
       </div>
 
       <!-- ================= EARNINGS ================= -->
       <div id="pane-earn" style="display:none">
-        <div class="earn-gate" id="earnGate" hidden><span>Earning starts when you become a member.</span><a class="site-cta" id="earnGateBtn" href="pricing.html">Start free month</a></div>
+        <div class="earn-gate" id="earnGate" hidden><span>Earning starts when you become a paying member.</span><a class="site-cta" id="earnGateBtn" href="pricing.html">Start free month</a></div>
         <p class="sect">Your link</p>
         <div class="linkbox" id="linkBox">
           <span class="linktext" id="refLink">&hellip;</span>
           <button class="copybtn" id="copyLinkBtn">Copy</button>
         </div>
-        <p class="link-note" id="linkNote" hidden>Your link switches on when you become a member.</p>
-        <p class="earn-line">Everything you share carries your link. When someone joins through it, you earn $10 a month for a monthly member, or $100 a year for an annual member, for as long as they stay.</p>
+        <p class="link-note" id="linkNote" hidden>Your link works now. Earning starts when you become a paying member.</p>
+        <p class="earn-line">Everything you share carries your link. When someone joins through it and becomes a paying member, you earn $10 a month for a monthly paying member, or $100 a year for an annual paying member, for as long as they stay.</p>
 
         <p class="sect">Your balance</p>
         <div class="stats">
@@ -283,7 +292,7 @@ main{height:auto !important;min-height:0;}
         <div style="margin-bottom:48px"></div>
 
         <p class="sect">How payouts work</p>
-        <p class="earn-line" style="margin-bottom:0">You earn $10 a month for every monthly member, and $100 a year for every annual member, who joined through your link — for as long as they stay. New earnings are held for 30 days while the payment clears, then they are ready. Ready earnings of $50 or more are paid to your account on the 1st of each month. If a payment behind your commission is refunded or reversed, that commission is removed. You're responsible for any tax on your earnings — your statements above are your record, ready for your accountant.</p>
+        <p class="earn-line" style="margin-bottom:0">You earn $10 a month for every monthly paying member, and $100 a year for every annual paying member, who joined through your link, for as long as they stay. Earning starts when you are a paying member yourself. New earnings are held for 30 days while the payment clears, then they are ready. Ready earnings of $50 or more are paid to your account on the 1st of each month. If a payment behind your commission is refunded or reversed, that commission is removed. You're responsible for any tax on your earnings — your statements above are your record, ready for your accountant.</p>
       </div>
 
     </div>
@@ -303,6 +312,7 @@ main{height:auto !important;min-height:0;}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="member-link.js?v=20261124a"></script>
 <script>
   const $=id=>document.getElementById(id);
   const nav=$("nav");
@@ -429,52 +439,29 @@ main{height:auto !important;min-height:0;}
     btn.textContent="Saved ✓"; setTimeout(()=>btn.textContent=label,1800);
   };
 
-  // ================= CLOSE ACCOUNT (typed CLOSE -> same API as delete-account.html) =================
-  $("closeConf").addEventListener('input', function(){
-    $("closeBtn").disabled = this.value.trim().toUpperCase()!=='CLOSE';
-  });
-  $("closeBtn").onclick=async()=>{
-    if($("closeBtn").disabled) return;
-    if(window.PSYCHE_PREVIEW){ alert("Preview mode — no account is actually closed."); return; }
-    if(!acctUid){ location.href="auth.html"; return; }
-    const btn=$("closeBtn"), label=btn.textContent;
-    btn.textContent="Closing…"; btn.disabled=true;
-    try{
-      const res=await fetch("/api/delete-account",{
-        method:"POST",
-        headers:{ Authorization:"Bearer "+(acctToken||"") }
-      });
-      const data=await res.json();
-      if(!res.ok || !data.ok) throw new Error(data.error||"delete failed");
-      try{
-        Object.keys(localStorage).filter(k=>k.indexOf("psyche:")===0).forEach(k=>localStorage.removeItem(k));
-      }catch(e){}
-      try{ await sb.auth.signOut(); }catch(e){}
-      location.href="index.html";
-    }catch(err){
-      btn.textContent=label; btn.disabled=false;
-      alert("Couldn't close your account just now — please try again or contact support.");
-    }
-  };
-
   // ================= YOUR LINK =================
   // The link uses the site's own address (never the address this page happens to be served from).
   const SITE="sussuri.com";
-  function slugify(s){ return (s||"").toLowerCase().replace(/[^a-z0-9]+/g,"").slice(0,20)||"you"; }
-  function refSlug(){ return slugify((acctProfile&&acctProfile.display_name)||(acctEmail?acctEmail.split("@")[0]:"")); }
+  // ONE LINK PER MEMBER: the link name comes from member-link.js (the same file Give a gift uses), never from the
+  // name shown on this page or typed on the gift card.
+  let acctUser=null;   // the signed-in Supabase user (id, email, user_metadata)
+  // EVERYONE CAN SHARE FROM DAY ONE (site walk fixes, 24 Nov 2026): the link works for anyone signed in, and friends
+  // who join through it stay linked to that member. Earning starts only once the member is a paying member.
+  function linkOn(){ return person()!=="visitor"; }
   function renderRefLink(){
-    const on=paid();
-    $("refLink").textContent = SITE+"/j/"+refSlug();
+    const on=linkOn(), earning=paid();
+    $("refLink").textContent = on ? window.sussuriLink.text(acctUser) : SITE+"/j/you";
     $("linkBox").classList.toggle("off",!on);
     $("copyLinkBtn").disabled=!on; $("copyLinkBtn").setAttribute("aria-disabled",String(!on));
-    $("linkNote").hidden=on;
-    // anyone who is not a paid member: one line at the top, with the same button as the top right of the page
-    $("earnGate").hidden=on;
-    if(!on && window.sussuriAccount){ const c=window.sussuriAccount.cta(); $("earnGateBtn").textContent=c.label; $("earnGateBtn").href=c.href; }
+    $("linkNote").hidden=earning;
+    $("linkNote").textContent = on ? "Your link works now. Earning starts when you become a paying member." : "Sign in to use your link.";
+    // anyone who is not a paying member: one line at the top, with the same button as the top right of the page
+    $("earnGate").hidden=earning;
+    if(!earning && window.sussuriAccount){ const c=window.sussuriAccount.cta(); $("earnGateBtn").textContent=c.label; $("earnGateBtn").href=c.href; }
   }
   $("copyLinkBtn").onclick=async()=>{
-    if(!paid()) return;
-    try{ await navigator.clipboard.writeText("https://"+SITE+"/j/"+refSlug()); }catch(e){}
+    if(!linkOn()) return;
+    try{ await navigator.clipboard.writeText(window.sussuriLink.url(acctUser)); }catch(e){}
     const btn=$("copyLinkBtn"), label=btn.textContent;
     btn.textContent="Copied"; setTimeout(()=>btn.textContent=label,1400);
   };
@@ -514,7 +501,7 @@ main{height:auto !important;min-height:0;}
     setTimeout(()=>URL.revokeObjectURL(url),4000);
   };
   function loadEarnings(){
-    const d = paid() ? EARN : ZERO;   // anyone who is not a paid member sees noughts
+    const d = paid() ? EARN : ZERO;   // anyone who is not a paying member sees noughts
     $("earnArrived").textContent=(d.arrived||0).toLocaleString("en-US");
     $("earnJoined").textContent=(d.joined||0).toLocaleString("en-US");
     $("earnRetained").textContent=(d.retained||0).toLocaleString("en-US");
@@ -556,7 +543,8 @@ main{height:auto !important;min-height:0;}
     sb.auth.getSession().then(async({data})=>{
       const s=data.session;
       if(s && s.user){
-        acctUid=s.user.id; acctToken=s.access_token; acctEmail=s.user.email||"";
+        acctUid=s.user.id; acctToken=s.access_token; acctEmail=s.user.email||""; acctUser=s.user;
+        window.sussuriLink.keep(sb, s.user);   // the link name is saved to the account the first time, and never changes after
         window.__provider = (s.user.app_metadata && s.user.app_metadata.provider) || "email";
         planInterval = (s.user.user_metadata && s.user.user_metadata.plan_interval) || "";
         const {data:p,error}=await sb.from("profiles").select("*").eq("id",acctUid).single();
@@ -570,7 +558,7 @@ main{height:auto !important;min-height:0;}
       const s=session;
       acctUid = s&&s.user ? s.user.id : null;
       acctToken = s ? s.access_token : null;
-      acctEmail = s&&s.user ? (s.user.email||"") : null;
+      acctEmail = s&&s.user ? (s.user.email||"") : null; acctUser = s&&s.user ? s.user : null;
       window.__provider = s&&s.user ? ((s.user.app_metadata&&s.user.app_metadata.provider)||"email") : null;
       if(!acctUid) acctProfile=null;
       renderAll();

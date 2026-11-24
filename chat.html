@@ -4,10 +4,10 @@
 <script src="preview.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sussuri — Sanctuary</title>
+<title>Chat · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261124a">
 <style>
   :root{
     /* black and white only (design rules, 14 Nov 2026); old names kept so the scripts' inline styles still resolve */
@@ -98,8 +98,11 @@
   .psy .msg.more{margin-top:.7em;}
   .psy .vbtn{align-self:flex-start;margin-top:22px;}
   .trail:disabled{opacity:.5;cursor:default;}
-  /* Create a practice: a bar the full width of the typing box, directly under it */
-  .genrow{display:flex;}
+  /* two bars under the typing box, side by side: Set your goals, Create a personal meditation (one column on a phone) */
+  .genrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .genbtn{box-sizing:border-box;text-decoration:none;white-space:nowrap;min-width:0;}
+  .inrow:focus-within{border-color:#fff;}
+  .inrow textarea:focus-visible{outline:0 !important;}
   .genbtn{width:100%;height:50px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:transparent;border:1px solid #fff;border-radius:8px;color:#fff;font-family:var(--font-jost);font-size:12.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;}
   .genbtn:disabled{opacity:.5;cursor:default;}
 
@@ -110,7 +113,8 @@
     .usr{font-size:16px;max-width:85%;}
     .inrow{padding:16px 16px 14px;}
     .inrow textarea{min-height:52px;font-size:17px;max-height:calc(17px * 1.5 * 6);}
-    .genbtn{padding:0 16px;font-size:11.5px;}
+    .genbtn{padding:0 16px;font-size:11.5px;letter-spacing:.14em;}
+    .genrow{grid-template-columns:1fr;gap:8px;}
   }
 
   /* ===== CRISIS SUPPORT MODAL (unchanged — safety-critical, preserved as-is) ===== */
@@ -138,7 +142,7 @@
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261121a"></script>
+<script src="site-header.js?v=20261124a"></script>
 
 <main>
   <div class="frame">
@@ -170,13 +174,13 @@
           <span class="rec" id="recLabel" hidden>Recording</span>
           <button class="trail clear" id="liveEnd" type="button" title="End the spoken conversation" aria-label="End the spoken conversation" hidden><svg aria-hidden="true" width="16" height="16" viewBox="0 0 18 18" stroke-width="1.4"><path d="M2 2l14 14M16 2L2 16"/></svg></button>
           <button class="trail mic" id="micBtn" type="button" title="Speak, and your words become text" aria-label="Speak, and your words become text" aria-pressed="false" hidden><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.4" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21.5"/></svg></button>
-          <button class="trail voice" id="trail" type="button" title="Talk with Sussuri out loud" aria-label="Talk with Sussuri out loud">
+          <button class="trail voice" id="trail" type="button" hidden title="Talk with Sussuri out loud" aria-label="Talk with Sussuri out loud">
             <svg id="tvoice" aria-hidden="true" width="26" height="22" viewBox="0 0 26 22" stroke-width="1.4"><path d="M3 8v6M8 4v14M13 1v20M18 4v14M23 8v6"/></svg>
           </button>
           <button class="trail sendmode" id="sendBtn" type="button" title="Send" aria-label="Send"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.6"><line x1="12" y1="19" x2="12" y2="6"/><polyline points="6,12 12,5.5 18,12"/></svg></button>
         </div>
       </div>
-      <div class="genrow"><button class="genbtn" id="genBtn" type="button"><span>Create a practice</span><span aria-hidden="true">&rarr;</span></button></div>
+      <div class="genrow"><a class="genbtn" href="your-goals.html"><span>Set your goals</span><span class="s-arrow" aria-hidden="true">&rarr;</span></a><a class="genbtn" href="personal-meditations.html"><span>Create a personal meditation</span><span class="s-arrow" aria-hidden="true">&rarr;</span></a></div>
     </div>
   </div>
 </main>
@@ -326,7 +330,7 @@
     d.innerHTML='<div class="msg"></div>';
     d.querySelector('.msg').textContent=message;
     const btn=document.createElement('button');
-    btn.className='esc-btn'; btn.textContent='✦ Send to Mark';
+    btn.className='esc-btn'; btn.textContent='Send to Mark';
     btn.onclick=()=>sendToMark(forQuestion, d, btn);
     d.appendChild(btn);
     thread.appendChild(d);
@@ -348,15 +352,15 @@
       note.textContent="Sent — Mark will follow up if there's more to it.";
       wrap.appendChild(note);
     }catch(e){
-      btn.disabled=false; btn.textContent='✦ Send to Mark';
+      btn.disabled=false; btn.textContent='Send to Mark';
       alert("Couldn't send that just now — please try again in a moment.");
     }
   }
 
   function greetingText(){
     const n=(profile&&profile.display_name)?profile.display_name:"";
-    return n ? ("Welcome, "+n+". It's good to see you. Type below, or tap the waveform to speak.")
-             : "Welcome. It's good to see you. Type below, or tap the waveform to speak.";
+    return n ? ("Welcome, "+n+". It's good to see you. Type below, or tap the microphone to speak.")
+             : "Welcome. It's good to see you. Type below, or tap the microphone to speak.";
   }
   let offered=false, userCount=0;
   function renderThread(){
@@ -406,8 +410,9 @@
 
   // ================= REVEAL / CIRCLING OFFER (unchanged logic, reskinned card) =================
   const OFFER_AFTER = 3;
+  const OFFER_ON = false;   // 24 Nov 2026: the Practice & schedule page was removed and this offer led only there. Code kept.
   function maybeOffer(){
-    if(offered || userCount < OFFER_AFTER) return;
+    if(!OFFER_ON || offered || userCount < OFFER_AFTER) return;
     offered=true;
     const div=document.createElement('div');
     div.className='reveal-offer';
@@ -443,7 +448,6 @@
       alert("Couldn’t generate just now — please try again in a moment.");
     }
   }
-  $("genBtn").onclick=()=>generateReveal($("genBtn"));
 
   // ================= SHARED TURN BOOKKEEPING (used by typed + spoken turns alike, so the
   // thread, message limits, reveal-offer and Supabase message_count all stay one system) =================
@@ -563,6 +567,7 @@
   //
   // WHO GETS WHAT. Typed and microphone messages share the message allowance (PLAN_LIMITS further down; visitors
   // get VISITOR_MAX). Spoken conversation is capped in minutes a month, per kind of person. PLACEHOLDER NUMBERS.
+  const SPEECH_TO_SPEECH=false;   // 24 Nov 2026: set true to bring the waveform (spoken conversation) back
   const VOICE_MINUTES={ visitor:0, trial:10, member:60 };
   const VUK="sussuri:voice";   // { month:"2026-11", sec:123 }, kept in this browser
   function person(){ return window.sussuriAccount ? window.sussuriAccount.get().state : 'visitor'; }
@@ -616,7 +621,7 @@
   function syncTools(){
     $("liveEnd").hidden=!voiceActive;
     micBtn.hidden=voiceActive || !SR;
-    trail.hidden=voiceActive || dictating || !(VOICE_MINUTES[person()]>0);
+    trail.hidden=!SPEECH_TO_SPEECH || voiceActive || dictating || !(VOICE_MINUTES[person()]>0);
     sendBtn.hidden=voiceActive;
   }
 

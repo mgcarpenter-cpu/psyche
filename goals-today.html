@@ -7,8 +7,8 @@
 <title>Goals · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261118g">
-<link rel="stylesheet" href="goals.css?v=20261119a">
+<link rel="stylesheet" href="site.css?v=20261124a">
+<link rel="stylesheet" href="goals.css?v=20261124a">
 <style>
   /* Goals 4: Today. The page a member opens each day once the plan is running. */
   *{margin:0;padding:0;}
@@ -41,7 +41,10 @@
   .strip{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:6px;}
   .goals main .dp{border:1px solid #4a4a4a;border-radius:6px;padding:10px 12px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:2px;}
   .goals main .dp:hover{border-color:#fff;}
-  .dp b{font-weight:400;font-size:17px;}
+  .dp b{font-weight:400;font-size:17px;white-space:nowrap;line-height:1.25;}
+  .dp b i{font-style:normal;}
+  .dp small .sh{display:none;}
+  .goals main .dp{min-width:0;overflow:hidden;}
   .dp small{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--dim);min-height:14px;}
   .goals main .dp.on{background:#fff;color:#000;border-color:#fff;}
   .dp.on small{color:#444;}
@@ -63,6 +66,7 @@
   .well[hidden]{display:none;}
   @media (max-width:1100px){ .strip{grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;} .goals main .dp{padding:8px;} .dp b{font-size:15px;} }
   @media (max-width:760px){
+    .strip{gap:4px;} .goals main .dp{padding:8px 2px;align-items:center;text-align:center;min-height:74px;} .dp b{font-size:14px;} .dp b i{display:none;} .dp small .lg{display:none;} .dp small .sh{display:inline;}
     .toprow{flex-direction:column;align-items:flex-start;gap:14px;} .datew{align-self:flex-start;} .cal{left:0;right:auto;width:min(330px,calc(100vw - 40px));}
     .strip{grid-template-columns:repeat(4,minmax(0,1fr));}
     .thd{display:none;}
@@ -73,7 +77,7 @@
 </style>
 </head>
 <body class="site-shell goals">
-<script src="site-header.js?v=20261121a" data-toggle></script>
+<script src="site-header.js?v=20261124a" data-toggle></script>
 <main>
   <nav class="topnav" id="gnav" aria-label="Goals steps"></nav>
   <div class="toprow"><h1 class="ptitle" id="dt">Today</h1><div class="datew"><button type="button" class="dateb" id="dateb" aria-haspopup="dialog"><span id="dl"></span><i aria-hidden="true">&#9662;</i></button><div class="cal" id="cal" hidden></div></div></div>
@@ -87,8 +91,8 @@
   <audio id="aud" preload="none"></audio>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="meditation-sessions.js?v=20261118g"></script>
-<script src="goals.js?v=20261119b"></script>
+<script src="meditation-sessions.js?v=20261124a"></script>
+<script src="goals.js?v=20261124a"></script>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -130,8 +134,12 @@
     var i = idx(sel), now = same(sel, TODAY), past = sel < TODAY, mon = G.add(sel, -wd(sel)), rv = G.add(START, RUN);
     $('dl').textContent = DAYN[sel.getDay()] + ' ' + sel.getDate() + ' ' + MON[sel.getMonth()] + ' ' + sel.getFullYear();
     var rl = $('runl'); rl.innerHTML = '';
+    var LEN = { 1: 'week starts', 2: 'two weeks start', 4: 'four weeks start' };
+    if (!rows.length) rl.appendChild(document.createTextNode('Your ' + LEN[G.data.sched.run] + ' when your schedule is set.'));   // no plan yet: no day count, no review date
+    else {
     rl.appendChild(document.createTextNode(i < 0 ? 'Your plan starts on ' + sd(START) + '. ' : i >= RUN ? 'This ' + WORD[G.data.sched.run] + ' plan has finished. ' : 'Day ' + (i + 1) + ' of ' + RUN + '. '));
     rl.appendChild(document.createTextNode('Review with Sussuri on ')); rl.appendChild(el('b', '', sd(rv))); rl.appendChild(document.createTextNode('.'));
+    }
     // the review page is not built yet: on (and after) the review date, just say it is due
     var due = $('due'); due.hidden = TODAY < rv || !rows.length; due.innerHTML = '';
     due.appendChild(document.createTextNode('Your ' + WORD[G.data.sched.run] + ' review is due. '));
@@ -140,8 +148,12 @@
     var st = $('strip'); st.innerHTML = '';
     for (var d = 0; d < 7; d++) (function (dt) {
       var c = count(dt), b = el('button', 'dp' + (same(dt, sel) ? ' on' : '')); b.type = 'button';
-      b.appendChild(el('b', '', sd(dt)));
-      b.appendChild(el('small', '', !c[1] ? '' : dt <= TODAY ? c[0] + ' of ' + c[1] : c[1] + (c[1] === 1 ? ' thing' : ' things')));
+      // every box is two lines the same way: the day, then the date (the month drops off on a phone)
+      var nm = el('b', '', SHORT[dt.getDay()]), dn = el('b', 'dn', String(dt.getDate())); dn.appendChild(el('i', '', ' ' + MS[dt.getMonth()]));
+      b.appendChild(nm); b.appendChild(dn);
+      var sm = el('small', ''); sm.appendChild(el('span', 'lg', !c[1] ? '' : dt <= TODAY ? c[0] + ' of ' + c[1] : c[1] + (c[1] === 1 ? ' thing' : ' things')));
+      sm.appendChild(el('span', 'sh', !c[1] ? '' : dt <= TODAY ? c[0] + '/' + c[1] : String(c[1]))); b.appendChild(sm);
+      b.setAttribute('aria-label', DAYN[dt.getDay()] + ' ' + dt.getDate() + ' ' + MON[dt.getMonth()]);
       b.setAttribute('aria-pressed', same(dt, sel) ? 'true' : 'false');
       b.addEventListener('click', function () { sel = dt; draw(); });
       st.appendChild(b);

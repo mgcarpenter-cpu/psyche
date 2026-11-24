@@ -40,9 +40,8 @@
   // layout closes up by itself, and a group with nothing showing loses its title.
   // (Hiding an item only takes the link away. Its page still exists.)
   var MENU = [
-    { title:'Chats &amp; practice', items:[
-      { show:true,  id:'newChat', route:'chat.html',       icon:'chat',     label:'New conversation' },
-      { show:true,  route:'practice.html',                 icon:'calendar', label:'Practice &amp; schedule' }
+    { title:'Chats', items:[
+      { show:true,  id:'newChat', route:'chat.html',       icon:'chat',     label:'New conversation' }
     ]},
     { title:'Your path', items:[
       { show:true,  route:'assessment.html',               icon:'chart',    label:'Know yourself' },
@@ -52,7 +51,7 @@
       { show:true,  route:'education.html',                icon:'doc',      label:'Education' }
     ]},
     { title:'Affiliate program', items:[
-      { show:true,  route:'your-plan.html',                icon:'list',     label:'Your plan' },
+      { show:false, route:'your-plan.html',                icon:'list',     label:'Your plan' },
       { show:true,  route:'give-a-gift.html',              icon:'share',    label:'Give a gift' },
       { show:false, route:'library.html',                  icon:'cards',    label:'Avatar library' },
       { show:false, route:'teaching-library.html',         icon:'openbook', label:'Teaching library' }
@@ -107,21 +106,18 @@
   var drawerOnly = document.currentScript.hasAttribute('data-drawer');
   var initial = (desktop && !drawerOnly) ? 'open' : 'hidden';
 
-  // top bar: tabs on Chat / Practice, otherwise the section name (or the page's own name)
-  var section = {
-    assessment:'Your path', meditations:'Your path', education:'Your path',
-    'your-plan':'Affiliate program', 'give-a-gift':'Affiliate program', 'share-cards':'Affiliate program',
-    library:'Affiliate program', 'teaching-library':'Affiliate program', 'meditation-library':'Affiliate program',
-    help:'Help &amp; FAQ', urgent:'Urgent support', pricing:'Join', membership:'Membership', signup:'Start free month', 'youre-in':"You're in", welcome:'Welcome', account:'Your account', settings:'Your account', 'delete-account':'Your account', creator:'Your account'
+  // top bar, left: the page's own name, on every page (site walk fixes, 24 Nov 2026)
+  var NAMES = {
+    chat:'Chat', assessment:'Know yourself', 'your-goals':'Goals', 'goals-plan':'Goals', 'goals-schedule':'Goals', 'goals-today':'Goals', 'goals-review':'Goals',
+    'personal-meditations':'Personal meditations', meditations:'Meditations', education:'Education', 'give-a-gift':'Give a gift',
+    library:'Avatar library', 'teaching-library':'Teaching library', 'meditation-library':'Meditation library',
+    help:'Help &amp; FAQ', urgent:'Urgent support', pricing:'Join', membership:'Membership', signup:'Start free month', 'youre-in':"You're in", welcome:'Welcome',
+    account:'Account &amp; earnings', settings:'Settings', 'delete-account':'Close my account', privacy:'Private &amp; secure', terms:'Terms &amp; conditions', 'payment-terms':'Payment terms'
   };
   function pageName(){
     return (document.title || '').replace(/sussuri/i, '').replace(/[\u00b7\u2014\u2013|-]/g, ' ').replace(/\s+/g, ' ').trim();
   }
-  var barLeft = (here === 'chat' || here === 'practice')
-    ? '<a class="tab' + (here === 'chat' ? ' on' : '') + '" href="chat.html">Chat</a>' +
-      '<a class="tab' + (here === 'practice' ? ' on' : '') + '" href="practice.html">Practice &amp; schedule</a>'
-    : '<span class="sb-name">' + (section[here] || pageName()) + '</span>' +
-      ((section[here] && parentOf[here]) ? '<span class="sb-sep" aria-hidden="true">/</span><span class="sb-here">' + pageName() + '</span>' : '');
+  var barLeft = '<span class="sb-name">' + (NAMES[here] || pageName()) + '</span>';
   // WHO IS LOOKING. Four kinds of person, worked out once here for every page:
   //   visitor = not signed in
   //   nocard  = signed in, but no card given yet: the free month has not started (same limits as a visitor)
@@ -167,7 +163,7 @@
 
   // the one sales button: what it says and where it goes, for each kind of person
   function ctaFor(w){
-    if (w.state === 'member') return { label:'Give a free month', href:'account.html' };       // until the share-link page exists
+    if (w.state === 'member') return { label:'Give a free month', href:'give-a-gift.html' };
     if (w.state === 'trial') return { label:'Become a member', href:'pricing.html' };
     if (w.state === 'nocard') return { label:'Start free month', href:'pricing.html' };        // signed in, no card yet: straight to the Join page
     return { label:'Start free month', href:'signup.html' };                                   // not signed in: the Sign-up page first
@@ -194,6 +190,7 @@
       '<div class="nav-scroll">' +
         '<div class="nav-top"><a class="side-mark wordmark-side" href="/" aria-label="sussuri, front page">sussuri</a>' +   // the name leads back to the front page
           '<button class="collapse" id="collapseBtn" title="Close menu" aria-label="Close menu">&#10094;</button></div>' +
+        '<a class="navitem row signin-row" id="navSignin" href="auth.html" style="display:none"><span class="side-icon">' + svg('person') + '</span><span class="row-label">Sign in</span></a>' +
         MENU.map(function (g, gi) {
           if (g.foot) return '';
           var its = gi === 0 ? g.items : shown(g);   // the first group always draws: it also holds Recents
@@ -275,6 +272,9 @@
         jrow.classList.toggle('active', here === (paid ? 'membership' : 'pricing'));
       }
       if (box.innerHTML !== a) box.innerHTML = a;
+      var si = document.getElementById('navSignin'), vis = w.state === 'visitor';
+      if (si) si.style.display = vis ? '' : 'none';
+      box.parentNode.style.display = vis ? 'none' : '';
       if (slot) { var h = norm(slotHTML(w)); if (slot.innerHTML !== h) slot.innerHTML = h; slot.style.display = h ? '' : 'none'; }
       listeners.forEach(function (f) { f(w); });
     }
@@ -316,6 +316,22 @@
       more.innerHTML = (open ? 'Show less ' : 'Show more ') + '<span class="arrow">' + (open ? '&#9652;' : '&#9662;') + '</span>';
     }
     more.addEventListener('click', function () { open = !open; sync(); });
+    // the Recents line itself opens (and closes) the full list of past chats
+    var label = document.getElementById('recentsLabel');
+    label.style.cursor = 'pointer'; label.setAttribute('role', 'button'); label.setAttribute('tabindex', '0');
+    label.addEventListener('click', function () { open = !open; sync(); });
+    label.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open = !open; sync(); } });
+    // pages other than Chat have no chat code of their own, so the past chats are listed from here; a click opens that chat
+    if (here !== 'chat' && !drawerOnly) window.addEventListener('load', function () {
+      if (box.children.length) return;   // the page drew its own list
+      var list = (stored('psyche:chats') || []).slice().reverse();
+      if (!list.length) label.style.display = 'none';
+      list.forEach(function (c) {
+        var d = document.createElement('div'); d.className = 'recent'; d.textContent = c.title || 'New conversation'; d.title = c.title || '';
+        d.addEventListener('click', function () { try { localStorage.setItem('psyche:current', c.id); } catch (e) {} location.href = 'chat.html'; });
+        box.appendChild(d);
+      });
+    });
     new MutationObserver(sync).observe(box, { childList: true });
     sync();
   })();

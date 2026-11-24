@@ -55,6 +55,9 @@ export default async function handler(req, res) {
       sys += `\n\nThe person you are speaking with is called "${who}". Address them by name naturally and sparingly — when it feels warm, not in every message.`;
     }
 
+    // No emoji from Sussuri, anywhere (site walk fixes, 24 Nov 2026): asked for here, and stripped from the reply below.
+    sys += "\n\nNever use emoji or emoticons.";
+
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -71,6 +74,13 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+    if (data && Array.isArray(data.content)) {
+      data.content.forEach((part) => {
+        if (part && part.type === "text" && typeof part.text === "string") {
+          part.text = part.text.replace(/(?![\u00a9\u00ae\u2122])[\p{Extended_Pictographic}\u{FE0F}\u{200D}\u{1F3FB}-\u{1F3FF}]/gu, "").replace(/[ \t]{2,}/g, " ");
+        }
+      });
+    }
     return res.status(200).json(data);
   } catch (err) {
     return res.status(500).json({ error: "Request failed", detail: String(err) });

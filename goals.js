@@ -55,6 +55,37 @@
   function got(a) { return a.lines.filter(Boolean).length; }
   function state(a) { return a.left ? 'left for now' : got(a) === 4 ? 'done' : got(a) ? 'part done' : 'not started'; }
 
+  // ==== PREVIEW SAMPLE PLAN: REMOVE BEFORE LAUNCH (start) ====================================================
+  // Site walk fixes, 24 Nov 2026. For the Preview account only (?preview=1), so Plan, Schedule, Today and Review
+  // can be checked with real lines in them. It fills in three areas, a plan, a schedule started five days ago and
+  // some ticks, but only while the Preview account has no plan of its own. Nothing here runs for a real member.
+  // To remove: delete this block and the samplePlan(G.data) call in G.ready below.
+  function samplePlan(d) {
+    if (!window.PSYCHE_PREVIEW || (d.plan && d.plan.items && d.plan.items.length)) return;
+    var LINES = [
+      ['I want to feel strong and rested, because I am tired of being tired.', 'I stay up late and skip the walk.', 'I used to run, and my partner walks with me.', 'About half an hour a day.'],
+      ['I want to read again, because it calms me and I learn.', 'My phone, in the evenings.', 'A shelf of books I chose myself.', 'Fifteen minutes before bed.'],
+      ['I want to worry less, because it wears me out.', 'I go over things again and again.', 'I can calm down when I breathe slowly.', 'Ten minutes each morning.']
+    ];
+    LINES.forEach(function (l, i) { var a = d.areas[i]; if (a.lines.filter(Boolean).length < 4) { a.lines = l; a.left = false; } });
+    d.plan = { built: [0, 1, 2], items: [
+      { id: 'sample1', area: 0, kind: 'outside', what: 'Walk for twenty minutes', often: 0, time: 0, long: 4, keep: true, med: '', made: false },
+      { id: 'sample2', area: 0, kind: 'inside', what: 'Meditation: Fall Asleep', often: 0, time: 4, long: 4, keep: true, med: 'fall-asleep', made: false },
+      { id: 'sample3', area: 1, kind: 'outside', what: 'Read one chapter', often: 1, time: 3, long: 3, keep: true, med: '', made: false },
+      { id: 'sample4', area: 2, kind: 'inside', what: 'Meditation: Calm Anxiety Now', often: 0, time: 0, long: 2, keep: true, med: 'calm-anxiety-now', made: false },
+      { id: 'sample5', area: 2, kind: 'outside', what: 'Write down one thing that went well', often: 2, time: 3, long: 0, keep: true, med: '', made: false }
+    ] };
+    var t0 = new Date(), today = new Date(t0.getFullYear(), t0.getMonth(), t0.getDate());
+    function ymd(x) { return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); }
+    d.sched.start = ymd(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 5)); d.sched.run = 2;
+    for (var k = 5; k >= 1; k--) {   // the days so far: most things ticked, a few missed
+      var day = {}; ['sample1', 'sample2', 'sample3', 'sample4', 'sample5'].forEach(function (id, n) { if ((k + n) % 4 !== 0) day[id] = 1; });
+      d.ticks[ymd(new Date(today.getFullYear(), today.getMonth(), today.getDate() - k))] = day;
+    }
+    d.sample = true;
+  }
+  // ==== PREVIEW SAMPLE PLAN: REMOVE BEFORE LAUNCH (end) ======================================================
+
   var G = window.G = {
     AREAS: AREAS, NEED: NEED, PAGES: PAGES, REVIEW_PAGES: [['goals-review.html', 'Review'], PAGES[1], PAGES[2], PAGES[3]], OFTEN: OFTEN, TOD: TOD, LONG: LONG, RUNS: RUNS, EARLY: EARLY, EARLY_MIN: EARLY_MIN, MADE_PER_MONTH: MADE_PER_MONTH,
     data: blank(), got: got, state: state,
@@ -193,7 +224,7 @@
     },
     // ---- start: who is signed in, then their saved goals ----
     ready: function (fn) {
-      if (window.PSYCHE_PREVIEW) { G.data = fix(readLocal()); fn(); return; }
+      if (window.PSYCHE_PREVIEW) { G.data = fix(readLocal()); samplePlan(G.data); fn(); return; }
       sb.auth.getSession().then(function (r) {
         var s = r.data && r.data.session;
         if (!s) { location.replace('auth.html'); return; }

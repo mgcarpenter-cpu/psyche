@@ -5,12 +5,12 @@
     "answer": "Open Sussuri in your phone's browser, tap Share, then Add to Home Screen. Open it from the new icon and switch on reminders when asked.",
     "answerAndroid": "Open Sussuri in your phone's browser, tap the menu button (three dots), then Add to Home screen. Open it from the new icon and switch on reminders when asked." },
   { "id": "reminders", "group": "Getting started", "question": "How do I switch reminders on or off?",
-    "answer": "Go to <a href=\"practice.html\">Practice &amp; schedule</a>. Tick the things you want reminding about and choose the times. Untick to stop them." },
+    "answer": "Go to your <a href=\"goals-schedule.html\">Goals schedule</a>. Tick the things you want reminding about and choose the times. Untick to stop them." },
 
   { "id": "charged", "group": "Your membership", "question": "When will I be charged?",
     "answer": "On the day your free month ends. We email you three days before. The date is on your <a href=\"membership.html\">Membership</a> page." },
   { "id": "cancel", "group": "Your membership", "question": "How do I cancel?",
-    "answer": "Go to <a href=\"membership.html\">Membership</a> and press Cancel membership. It is one click. You keep everything until your next payment date." },
+    "answer": "Go to <a href=\"membership.html\">Membership</a> and press Cancel membership. You stop paying and keep your account. You keep everything until your next payment date." },
   { "id": "changeplan", "group": "Your membership", "question": "How do I change between monthly and annual?",
     "answer": "Go to <a href=\"membership.html\">Membership</a> and press Change to monthly, or Change to annual." },
   { "id": "receipts", "group": "Your membership", "question": "Where are my receipts?",
@@ -18,8 +18,8 @@
   { "id": "refund", "group": "Your membership", "question": "Can I get a refund?",
     "answer": "You have a full free month to try Sussuri, and we email you three days before your first charge. After that, payments aren't refunded, except where the law gives you that right. If you think you were charged by mistake, email hello@sussuri.com." },
 
-  { "id": "textvoice", "group": "Using Sussuri", "question": "What is the difference between text and voice chat?",
-    "answer": "Text chat is for everyone. Voice chat, where you speak and Sussuri speaks back, is for members." },
+  { "id": "textvoice", "group": "Using Sussuri", "question": "Can I speak instead of typing?",
+    "answer": "Yes. Tap the microphone in the typing box and speak. Your words appear as text, and you read Sussuri's reply." },
   { "id": "personal", "group": "Using Sussuri", "question": "How many personal meditations do I get?",
     "answer": "One in your free month. Four a month as a member." },
   { "id": "nextweek", "group": "Using Sussuri", "question": "When does the next course week open?",
@@ -30,7 +30,7 @@
     "answer": "No. Sussuri is a reflection and coaching tool, not therapy or crisis care. If you need help now, go to <a href=\"urgent.html\">Urgent support</a>." },
 
   { "id": "earn", "group": "Earning", "question": "How do I earn $10 a month?",
-    "answer": "Share your link. When someone joins through it and starts paying, you earn $10 a month for a monthly member, or $100 a year for an annual member, for as long as they stay. Nothing is earned during their free month. Earning is for members." },
+    "answer": "Share your link. When someone joins through it and starts paying, you earn $10 a month for a monthly member, or $100 a year for an annual member, for as long as they stay. Nothing is earned during their free month. Anyone can share. You earn while you are a paying member yourself." },
   { "id": "link", "group": "Earning", "question": "Where is my link?",
     "answer": "<a href=\"account.html\">Account &amp; earnings</a>, on the Earnings tab." },
   { "id": "paid", "group": "Earning", "question": "When do I get paid?", "box": "payout",
@@ -45,5 +45,5 @@
   { "id": "whosees", "group": "Privacy", "question": "Who can see my conversations?",
     "answer": "Your conversations are never sold and never shared with advertisers. A person at Sussuri does not read them, with three exceptions: you send one to us in a support or feedback request, the law requires it, or we reasonably believe it is needed to prevent serious harm to you or someone else. More on the <a href=\"privacy.html\">Private &amp; secure</a> page." },
   { "id": "delete", "group": "Privacy", "question": "How do I delete my account?",
-    "answer": "<a href=\"account.html\">Account &amp; earnings</a>, Account tab, Close my account." }
+    "answer": "Go to <a href=\"membership.html\">Membership</a> and press Close my account. This deletes everything. If you only want to stop paying, press Cancel membership and keep your account." }
 ]

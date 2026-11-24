@@ -7,7 +7,7 @@
 <title>Help &amp; FAQ · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261124a">
 <style>
   :root{
     --bg:#000;--surround:#000;--bone:#fff;--bone-dim:#d6d6d6;--bone-faint:#a8a8a8;--gold:#fff;--indigo:#fff;
@@ -159,19 +159,32 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
 .composer input::placeholder{color:var(--s-label);}
 .composer .send{width:46px;height:46px;border-radius:8px;background:#fff;border:1px solid #fff;color:#000;box-shadow:none;font-size:17px;}
 @media (max-width:1023px){ .frame{padding:32px 20px 24px;} .lead{font-size:20px;} .psy .msg{font-size:16px;} }
+/* Site walk fixes, 24 Nov 2026: lined up on the left with the other pages, the one heading style, the Chat page's
+   typing box and message style, and the "Still stuck?" line as small print under the box. */
+main{justify-content:flex-start !important;}
+.frame{max-width:none;padding:56px 72px 40px;}
+.frame>*{width:100%;max-width:860px;}
+.intro .page-title{margin:0 0 14px;}
+.scope{font-size:var(--s-read);line-height:1.5;}
+.thread{gap:22px;}
+.usr{font-size:18px;line-height:1.5;max-width:70%;}
+.psy .who{font-size:12px;margin-bottom:14px;}
+.psy .msg{font-size:26px;line-height:1.45;color:#fff;}
+.composer{border-top:0;padding:0;display:block;}
+@media (max-width:1023px){ .frame{padding:36px 20px 24px;} .psy .msg{font-size:20px;} .usr{font-size:16px;max-width:85%;} }
 /* 15 Nov 2026: page names inside answers are links; one small grey line under the answer area */
 .psy .msg a,.yours a{color:#fff;text-decoration:underline;text-underline-offset:4px;}
-.stuck{flex:0 0 auto;margin:0;padding:8px 0 12px;font-size:14px;line-height:1.5;color:var(--s-label);}
+.stuck{flex:0 0 auto;margin:0;padding:12px 0 0;font-size:var(--s-small);line-height:1.5;color:var(--s-label);}
 </style>
 </head>
 <body class="site-shell">
 
-<script src="site-header.js?v=20261121a"></script>
+<script src="site-header.js?v=20261124a"></script>
 
 <main>
   <div class="frame">
     <div class="intro">
-      <div class="lead">How can we help?</div>
+      <h1 class="page-title">How can we help?</h1>
       <div class="scope">Using Sussuri: finding your way around, your membership, and earning. This isn&rsquo;t the coaching chat, just help with the app. Pick a question, or ask below.</div>
     </div>
 
@@ -186,12 +199,8 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
       <div class="empty" id="empty">Pick a question above &mdash; the answer appears here,<br>and you can keep asking from there.</div>
     </div>
 
+    <div class="composer"><div id="hbox"></div></div>
     <p class="stuck">Still stuck? Email hello@sussuri.com and a person will reply.</p>
-
-    <div class="composer">
-      <input placeholder="Ask about using Sussuri&hellip;" id="inp">
-      <button class="send" id="sendBtn">&#8593;</button>
-    </div>
   </div>
 </main>
 
@@ -207,6 +216,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
   </div>
 </div>
 
+<script src="site-chatbox.js?v=20261124a"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const $=id=>document.getElementById(id);
@@ -345,17 +355,17 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
   }
   // The pages the assistant may name, and the only links it may write.
   const PAGES=[
-    ["chat.html","Chat","the coaching chat: type, dictate, or (members) speak with Sussuri"],
-    ["practice.html","Practice & schedule","tick what to be reminded about and choose the times"],
+    ["chat.html","Chat","the coaching chat: type, or tap the microphone to speak; Sussuri replies in writing"],
+    ["goals-schedule.html","Goals schedule","your week: tick what to be reminded about and choose the times"],
     ["assessment.html","Know yourself","a short picture-based self-assessment"],
     ["your-goals.html","Goals","set your goals through a short chat"],
     ["personal-meditations.html","Personal meditations","meditations made for you: one in the free month, four a month as a member"],
     ["meditations.html","Meditations","the guided meditation library"],
     ["education.html","Education","the course; a new week opens every week"],
-    ["how-it-works.html","How it works","how earning by sharing works"],
+    ["give-a-gift.html","Give a gift","send a friend a month free; how earning by sharing works"],
     ["pricing.html","Join","start the free month; $39 a month or $349 a year afterwards"],
-    ["membership.html","Membership","plan, card and receipts, change plan, cancel"],
-    ["account.html","Account & earnings","Account tab (details, Close my account) and Earnings tab (your link, earnings, Paid into)"],
+    ["membership.html","Membership","plan, card and receipts, change plan, Cancel membership (stop paying, keep your account), Close my account (delete everything)"],
+    ["account.html","Account & earnings","Account tab (details) and Earnings tab (your link, earnings, Paid into)"],
     ["privacy.html","Private & secure","how conversations and data are handled"],
     ["terms.html","Terms & conditions","the terms"],
     ["help.html","Help & FAQ","this page"],
@@ -378,7 +388,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
   }
 
   // Allowlist sanitizer: only <b>, <span class="yours"|"lbl">, and links to Sussuri's own pages.
-  const OK_HREF=/^(chat|practice|assessment|your-goals|personal-meditations|meditations|education|how-it-works|pricing|membership|account|privacy|terms|help|urgent)\.html$/;
+  const OK_HREF=/^(chat|assessment|your-goals|goals-schedule|personal-meditations|meditations|education|give-a-gift|pricing|membership|account|privacy|terms|help|urgent)\.html(#[a-z]+)?$/;
   function sanitizeHelpHTML(html){
     const tmp=document.createElement('div');
     tmp.innerHTML=html;
@@ -430,7 +440,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     wrap.innerHTML='<div class="who">Sussuri help</div><div class="msg">'+esc(message)+'</div>';
     const btn=document.createElement('button');
     btn.className='esc-btn';
-    btn.textContent='✦ Send to Mark';
+    btn.textContent='Send to Mark';
     btn.onclick=()=>sendToMark(forQuestion, source, wrap, btn);
     wrap.appendChild(btn);
     $("thread").appendChild(wrap);
@@ -472,7 +482,7 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
       note.textContent="Sent — Mark will follow up if there's more to it.";
       wrap.appendChild(note);
     }catch(e){
-      btn.disabled=false; btn.textContent='✦ Send to Mark';
+      btn.disabled=false; btn.textContent='Send to Mark';
       alert("Couldn't send that just now — please try again in a moment.");
     }
   }
@@ -504,15 +514,8 @@ main{background:#000 !important;scrollbar-width:thin;scrollbar-color:#666 #000;}
     }
   }
 
-  function askFree(){
-    const inp=$("inp");
-    const q=inp.value;
-    if(!q || !q.trim()) return;
-    inp.value='';
-    askHelp(q.trim());
-  }
-  $("sendBtn").onclick=askFree;
-  $("inp").addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); askFree(); } });
+  // the Chat page's typing box, with the microphone (site-chatbox.js)
+  sussuriBox.mount($("hbox"), { placeholder:"Ask about using Sussuri\u2026", label:"Ask about using Sussuri", onSend:function(q){ askHelp(q); } });
 
   // ================= BOOT =================
   async function boot(){

@@ -7,52 +7,102 @@
 <title>Membership · Sussuri</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="site.css?v=20261116a">
+<link rel="stylesheet" href="site.css?v=20261124a">
 <style>
-  /* Membership: what a paid member sees. One heading, one box of three lines, one cancel line. */
+  /* Membership: one heading, one box of three lines, then the two ways to leave (site walk fixes, 24 Nov 2026).
+     Cancel membership is one window. Close my account is three steps, shown in place of the page (membership.html#close). */
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;}
   main{overflow-y:auto;padding:56px 72px 80px;scrollbar-width:thin;scrollbar-color:#666 #000;}
   .wrap{max-width:1100px;display:flex;flex-direction:column;gap:14px;}
-  .since{margin:0 0 22px;font-size:15px;line-height:1.5;color:var(--s-label);}
+  .wrap[hidden]{display:none;}
+  .since{margin:0 0 22px;font-size:var(--s-small);line-height:1.5;color:var(--s-label);}
   /* the box: thin grey border, three lines divided by thin lines */
   .mbox{border:1px solid var(--s-border);border-radius:8px;}
   .mrow{display:grid;grid-template-columns:140px minmax(0,1fr) auto;align-items:start;gap:8px 24px;padding:22px 24px;border-top:1px solid var(--s-rule);}
   .mrow:first-child{border-top:0;}
-  .mrow .k{padding-top:5px;font-family:var(--font-mono);font-weight:400;font-size:12px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
-  .mrow .d1{display:block;font-weight:400;font-size:19px;line-height:1.4;color:#fff;}
-  .mrow .d2{display:block;margin-top:3px;font-size:15px;line-height:1.5;color:var(--s-text2);}
+  .mrow .k{padding-top:6px;font-family:var(--font-mono);font-weight:400;font-size:var(--s-lab);line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+  .mrow .d1{display:block;font-weight:300;font-size:var(--s-read);line-height:1.4;color:#fff;}
+  .mrow .d2{display:block;margin-top:3px;font-size:var(--s-small);line-height:1.5;color:var(--s-text2);}
   .mrow .d2[hidden]{display:none;}
-  .lnk{display:inline-flex;align-items:center;min-height:32px;padding:0;border:0;background:none;font-family:var(--font-jost);font-weight:300;font-size:15px;line-height:1.4;color:#fff;text-decoration:underline;text-underline-offset:4px;cursor:pointer;white-space:nowrap;}
-  .lnk:focus{outline:none;} .lnk:focus-visible{outline:2px solid #808080;outline-offset:3px;}
-  .cancel{margin:8px 0 0;font-size:14px;line-height:1.6;color:var(--s-label);}
-  .billq{margin:-8px 0 0;font-size:14px;line-height:1.6;color:var(--s-label);}
-  .billq a{color:#fff;text-decoration:underline;text-underline-offset:4px;}
-  .cancel .lnk{display:inline;min-height:0;font-size:14px;color:var(--s-text2);white-space:normal;}
-  /* the one question before cancelling */
+  .lnk{display:inline-flex;align-items:center;min-height:44px;margin:-8px 0;padding:0;border:0;background:none;font-family:var(--font-jost);font-weight:300;font-size:var(--s-small);line-height:1.4;color:#fff;text-decoration:underline;text-underline-offset:4px;cursor:pointer;white-space:nowrap;}
+  /* the two ways to leave: the main one, then a smaller, quieter one under it */
+  .leave{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px;margin:14px 0 0;font-size:var(--s-read);line-height:1.5;color:var(--s-text2);}
+  .leave .lnk{font-size:var(--s-read);margin:0;}
+  .leave .paren{color:var(--s-label);}
+  .leave .tail{flex:1 1 100%;font-size:var(--s-small);color:var(--s-label);}
+  .leave .tail:empty{display:none;}
+  .leave.quiet{margin-top:2px;font-size:var(--s-small);color:var(--s-label);}
+  .leave.quiet .lnk{font-size:var(--s-small);color:var(--s-text2);}
+  .leave.done{display:block;font-size:var(--s-read);color:var(--s-text2);}
+  .billq{margin:18px 0 0;font-size:var(--s-small);line-height:1.6;color:var(--s-label);}
+  .billq a{display:inline-flex;align-items:center;min-height:44px;color:#fff;text-decoration:underline;text-underline-offset:4px;}
+
+  /* Cancel membership: one window */
   .ask{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.78);}
   .ask.open{display:flex;}
-  .askbox{width:100%;max-width:440px;padding:28px 24px 24px;border:1px solid #fff;border-radius:8px;background:#000;}
-  .askbox h2{margin:0 0 22px;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:30px;line-height:1.2;letter-spacing:.03em;color:#fff;}
-  .askbtns{display:flex;flex-wrap:wrap;gap:12px;}
-  .askbtns .s-btn{flex:1 1 180px;}
+  .askbox{width:100%;max-width:520px;max-height:100%;overflow-y:auto;padding:30px 28px 26px;border:1px solid #fff;border-radius:8px;background:#000;}
+  .askbox h2{margin:0 0 16px;font-family:'Poiret One',var(--font-jost);font-weight:400;font-size:34px;line-height:1.15;letter-spacing:.04em;color:#fff;}
+  .askbox p{margin:0 0 10px;font-size:var(--s-read);line-height:1.5;color:var(--s-text2);}
+  .askbox p.first{color:#fff;}
+  .askbox p[hidden]{display:none;}
+  .askbtns{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px;}
+  .askbtns .s-btn{flex:1 1 200px;}
+
+  /* Close my account: three steps */
+  .back{align-self:flex-start;display:inline-flex;align-items:center;min-height:44px;margin:-14px 0 0;padding:0;border:0;background:none;font-family:var(--font-mono);font-weight:400;font-size:var(--s-lab);letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);cursor:pointer;}
+  .gentle{margin:0;font-size:var(--s-read);line-height:1.5;color:var(--s-text2);}
+  .gentle .lnk{font-size:var(--s-read);margin:0;white-space:normal;text-align:left;}
+  .steps{display:flex;gap:8px;margin:14px 0 4px;}
+  .steps i{flex:0 0 56px;height:2px;background:#4a4a4a;}
+  .steps i.on{background:#fff;}
+  .step{display:none;flex-direction:column;gap:16px;max-width:760px;}
+  .step.show{display:flex;}
+  .step .n{font-family:var(--font-mono);font-weight:400;font-size:var(--s-lab);letter-spacing:.14em;text-transform:uppercase;color:var(--s-label);}
+  .step h2{margin:0;font-family:var(--font-jost);font-weight:400;font-size:26px;line-height:1.3;color:#fff;}
+  .step p,.step li{font-size:var(--s-read);line-height:1.5;color:var(--s-text2);}
+  .step ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .step li{padding-left:22px;position:relative;}
+  .step li::before{content:"";position:absolute;left:0;top:.75em;width:10px;height:1px;background:#a8a8a8;}
+  .red{border:1px solid #d01c1c;border-radius:8px;padding:22px 24px;display:flex;flex-direction:column;align-items:flex-start;gap:16px;}
+  .red[hidden]{display:none;}
+  .red p{color:#fff;}
+  .red b{font-weight:400;color:#ff5a5a;}
+  .conf{display:flex;flex-direction:column;gap:8px;max-width:420px;}
+  .conf label{font-size:var(--s-read);color:#fff;}
+  .conf input{height:52px;padding:0 16px;border:1px solid var(--s-border);border-radius:8px;background:#000;color:#fff;font-family:var(--font-jost);font-weight:300;font-size:var(--s-read);letter-spacing:.08em;}
+  .conf input::placeholder{color:#6a6a6a;}
+  .sbtns{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px;}
+  .s-btn.red-btn{background:#d01c1c;border-color:#d01c1c;color:#fff;}
+  .s-btn.red-btn:disabled{background:transparent;border-color:#4a4a4a;color:#6a6a6a;cursor:default;}
+  .err{font-size:var(--s-small);color:#ff5a5a;}
+  .err:empty{display:none;}
+
   /* phone: each line stacks: label, detail, then the link */
   @media (max-width:1023px){
     main{padding:36px 20px 60px;}
     .mrow{grid-template-columns:minmax(0,1fr);gap:6px;padding:18px 16px;}
     .mrow .k{padding-top:0;}
-    .lnk{min-height:44px;white-space:normal;}
-    .askbox h2{font-size:26px;}
+    .lnk{margin:0;white-space:normal;text-align:left;}
+    .askbox{padding:24px 20px 22px;}
+    .askbox h2{font-size:28px;}
+    .askbtns .s-btn,.sbtns .s-btn{flex:1 1 100%;height:48px;}
+    .step h2{font-size:21px;}
+    .red{padding:18px 16px;}
+    .red .s-btn{width:100%;white-space:normal;height:auto;min-height:48px;padding:10px 16px;text-align:center;line-height:1.4;}
+    .conf{max-width:none;}
+    .back{margin-top:-8px;}
   }
 </style>
 </head>
 <body class="site-shell">
-<script src="site-header.js?v=20261121a" data-toggle></script>
-<main>
-  <div class="wrap">
+<script src="site-header.js?v=20261124a" data-toggle></script>
+<main id="main">
+  <!-- ================= YOUR MEMBERSHIP ================= -->
+  <div class="wrap" id="viewMain">
     <h1 class="page-title">Your membership</h1>
-    <p class="since">Member since <span id="mSince">12 November 2026</span>.</p>
+    <p class="since" id="sinceLine">Member since <span id="mSince">12 November 2026</span>.</p>
 
     <div class="mbox">
       <div class="mrow">
@@ -72,17 +122,72 @@
       </div>
     </div>
 
-    <p class="cancel" id="cancelLine"><button type="button" class="lnk" id="cancelLink">Cancel membership</button>.<span id="cancelTail"> You keep everything until your next payment date, and you can come back any time.</span></p>
-    <p class="billq">Billing question? <a href="mailto:hello@sussuri.com">hello@sussuri.com</a></p>
+    <!-- the two ways to leave: both here, and nowhere else on the site -->
+    <p class="leave" id="cancelLine"><button type="button" class="lnk" id="cancelLink">Cancel membership</button><span class="paren">(stop paying, keep your account)</span><span class="tail" id="cancelTail"></span></p>
+    <p class="leave quiet"><button type="button" class="lnk" id="closeLink">Close my account</button><span class="paren">(delete everything)</span></p>
+    <p class="billq">Billing question? <a href="help.html">Help &amp; FAQ</a></p>
+  </div>
+
+  <!-- ================= CLOSE MY ACCOUNT: three steps ================= -->
+  <div class="wrap" id="viewClose" hidden>
+    <button type="button" class="back" id="closeBack">&lsaquo; Back to membership</button>
+    <h1 class="page-title">Close my account</h1>
+    <p class="gentle" id="gentle">Only want to stop paying? <button type="button" class="lnk" id="gentleCancel">Cancel membership</button> and keep your account.</p>
+    <div class="steps" aria-hidden="true"><i class="on" id="dot1"></i><i id="dot2"></i><i id="dot3"></i></div>
+
+    <div class="step show" id="step1">
+      <span class="n">Step 1 of 3</span>
+      <h2>What you will lose</h2>
+      <ul>
+        <li>Your chats, goals, plan and personal meditations, for good.</li>
+        <li>Your link stops working.</li>
+      </ul>
+      <div class="sbtns">
+        <button type="button" class="s-btn" id="keep1">Keep my account</button>
+        <button type="button" class="s-btn o" id="next1">Continue</button>
+      </div>
+    </div>
+
+    <div class="step" id="step2">
+      <span class="n">Step 2 of 3</span>
+      <h2>Your money</h2>
+      <div class="red" id="moneyRed" hidden>
+        <p>Your <b id="pendAmt">$0</b> pending will be forfeited. It pays out on <span id="pendDate"></span>.</p>
+        <button type="button" class="s-btn" id="waitBtn">Wait and get paid first</button>
+      </div>
+      <p id="moneyNone">You have no earnings pending. Nothing will be forfeited.</p>
+      <div class="sbtns">
+        <button type="button" class="s-btn o" id="back2">Back</button>
+        <button type="button" class="s-btn o" id="next2">Continue</button>
+      </div>
+    </div>
+
+    <div class="step" id="step3">
+      <span class="n">Step 3 of 3</span>
+      <h2>Confirm</h2>
+      <p>This cannot be undone. Closing also ends your membership.</p>
+      <div class="conf">
+        <label for="conf">Type CLOSE to confirm</label>
+        <input id="conf" type="text" placeholder="CLOSE" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      </div>
+      <p class="err" id="closeErr" role="alert"></p>
+      <div class="sbtns">
+        <button type="button" class="s-btn o" id="back3">Back</button>
+        <button type="button" class="s-btn red-btn" id="closeGo" disabled>Close my account</button>
+      </div>
+    </div>
   </div>
 </main>
 
 <div class="ask" id="ask" role="dialog" aria-modal="true" aria-labelledby="askH">
   <div class="askbox">
     <h2 id="askH">Cancel your membership?</h2>
+    <p class="first" id="askFirst"></p>
+    <p>Your account, chats and goals stay here, ready if you come back.</p>
+    <p id="askEarn" hidden></p>
     <div class="askbtns">
-      <button type="button" class="s-btn o" id="askYes">Cancel membership</button>
       <button type="button" class="s-btn" id="askNo">Keep membership</button>
+      <button type="button" class="s-btn o" id="askYes">Cancel membership</button>
     </div>
   </div>
 </div>
@@ -90,50 +195,76 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const $=id=>document.getElementById(id);
+  const closing=()=>location.hash==="#close";
 
   // Free-month members and paid members. A visitor, or an account with no card yet, belongs on the Join page.
+  // The one exception: Close my account (membership.html#close) is open to anyone who is signed in.
   function who(){ return window.sussuriAccount ? window.sussuriAccount.get() : {state:"member",days:0}; }
-  function gate(){ const st=who().state; if(st!=="member" && st!=="trial") location.replace("pricing.html"); }
+  function gate(){
+    const st=who().state;
+    if(st==="member" || st==="trial") return;
+    if(st==="nocard" && closing()) return;
+    location.replace("pricing.html");
+  }
   gate(); if(window.sussuriAccount) window.sussuriAccount.onChange(gate);
 
   // ================= SAMPLE VALUES =================
-  // The payment provider is not connected yet, so the plan, next payment, card and earnings below are samples
-  // that show the layout. When it is connected, fill M from the member's real subscription and set SAMPLE to false.
+  // The payment provider is not connected yet, so the plan, next payment, card and the number of members earning
+  // for this person are samples that show the layout. When it is connected, fill M from the member's real
+  // subscription and set SAMPLE to false. The free-month dates are NOT samples: they come from the account.
   const SAMPLE=true;
   const M={ since:"2026-11-12", interval:"annual", next:"2027-11-12", cardType:"Visa", last4:"4242", members:2, cancelled:false };
+  // Earnings waiting to be paid. Nothing records earnings yet (Account & earnings shows noughts for the same reason),
+  // so this is nought. Preview only: membership.html?preview=1&pending=120 shows the red box in step 2.
+  const PENDING={ amount:0, pays:"" };
+  try{ const q=new URLSearchParams(location.search).get("pending"); if(window.PSYCHE_PREVIEW && Number(q)>0){ PENDING.amount=Number(q); const d=new Date(); PENDING.pays=new Date(d.getFullYear(),d.getMonth()+1,1,12).toISOString().slice(0,10); } }catch(e){}
   const PRICE={ monthly:{ words:"Monthly, $39 a month", other:"Change to annual" }, annual:{ words:"Annual, $349 a year", other:"Change to monthly" } };
   const COVER=4;   // members whose $10 a month cover the $39 membership
-  const NUM=["No","One","Two","Three","Four"];
-  function day(iso){ return new Date(iso+"T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}); }
+  const FREE_DAYS=30;   // the same 30 days site-header.js counts down
+  const fmt=d=>d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+  function day(iso){ return fmt(new Date(String(iso).slice(0,10)+"T12:00:00")); }
   const THEN={ monthly:"$39 a month", annual:"$349 a year" };
+  const money=n=>"$"+(Number(n)||0).toLocaleString("en-US");
+
+  // The free month: the day it started and the day it ends, always 30 days apart, so the two dates on this page agree
+  // with each other and with "days left" in the top bar. The start comes from the account (noted when the card was
+  // accepted); if this page cannot read it, it is worked back from the days left.
+  let startedIso="";
+  function trialDates(w){
+    let start = startedIso ? new Date(startedIso) : null;
+    if(!start || isNaN(start)) start=new Date(Date.now()-(FREE_DAYS-(w.days||0))*864e5);
+    return { start, end:new Date(start.getTime()+FREE_DAYS*864e5) };
+  }
+
   function draw(){
     const w=who();
     if(w.state==="trial"){ drawTrial(w); return; }
     $("planSub").hidden=false; $("earnSub").hidden=false;
-    $("mSince").textContent=day(M.since);
+    $("sinceLine").textContent="Member since "+(startedIso ? fmt(new Date(startedIso)) : day(M.since))+".";
     $("planMain").textContent=PRICE[M.interval].words;
     $("planSub").textContent=(M.cancelled?"Ends ":"Next payment ")+day(M.next);
     $("planChange").textContent=PRICE[M.interval].other; $("planChange").hidden=M.cancelled;
     $("cardMain").textContent=M.cardType+" ending "+M.last4;
     if(!M.members){ $("earnMain").textContent="Nothing yet"; $("earnSub").textContent="Four members cover your membership"; }
     else {
-      $("earnMain").textContent="$"+(M.members*10)+" a month from "+M.members+(M.members===1?" member":" members");
+      $("earnMain").textContent=money(M.members*10)+" a month from "+M.members+(M.members===1?" member":" members");
       const more=COVER-M.members;
       $("earnSub").textContent = more>0 ? more+" more cover your membership" : "Your membership is covered";
     }
-    if(M.cancelled) $("cancelLine").textContent="Membership cancelled. You keep everything until "+day(M.next)+", and you can come back any time.";
+    if(M.cancelled){ $("cancelLine").className="leave done"; $("cancelLine").textContent="Membership cancelled. You keep everything until "+day(M.next)+", and you can come back any time."; }
+    else $("cancelTail").textContent="You keep everything until your next payment date, and you can come back any time.";
   }
-  // In the free month: the day it ends, then the price that follows. Nothing has been charged yet.
+  // In the free month: the day it started, the day it ends, then the price that follows. Nothing has been charged yet.
   function drawTrial(w){
-    const end=new Date(Date.now()+(w.days||0)*864e5).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
-    $("mSince").textContent=day(M.since);
+    const t=trialDates(w), end=fmt(t.end);
+    $("sinceLine").textContent="Free month started "+fmt(t.start)+".";
     $("planMain").textContent = M.cancelled ? "Free month. Ends "+end : "Free month. Ends "+end+", then "+THEN[M.interval];
     $("planSub").hidden=true;
     $("planChange").textContent=PRICE[M.interval].other; $("planChange").hidden=M.cancelled;
     $("cardMain").textContent=M.cardType+" ending "+M.last4;
-    $("earnMain").textContent="Starts when your membership does"; $("earnSub").hidden=true;
-    if(M.cancelled) $("cancelLine").textContent="Membership cancelled. You will not be charged.";
-    else if($("cancelTail")) $("cancelTail").textContent=" You will not be charged.";
+    $("earnMain").textContent="Starts when you become a paying member"; $("earnSub").hidden=true;
+    if(M.cancelled){ $("cancelLine").className="leave done"; $("cancelLine").textContent="Membership cancelled. You will not be charged. You keep Sussuri until "+end+"."; }
+    else $("cancelTail").textContent="Cancel before "+end+" and you will not be charged.";
   }
   draw(); if(window.sussuriAccount) window.sussuriAccount.onChange(draw);
 
@@ -141,9 +272,19 @@
   $("planChange").onclick=()=>{
     if(SAMPLE){ M.interval = M.interval==="annual" ? "monthly" : "annual"; M.next = M.interval==="annual" ? "2027-11-12" : "2026-12-12"; draw(); return; }
   };
+  // who is signed in: the token for the two server calls, and the day the free month started
+  let token="", uid="", sb=null;
+  try{
+    sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb");
+    sb.auth.getSession().then(({data})=>{
+      const s=data.session; if(!s||!s.user) return;
+      token=s.access_token||""; uid=s.user.id;
+      let st=(s.user.user_metadata&&s.user.user_metadata.free_month_started)||"";
+      try{ st=st||localStorage.getItem("sussuri:fms:"+uid)||""; }catch(e){}
+      if(st && !window.PSYCHE_PREVIEW){ startedIso=st; draw(); }
+    });
+  }catch(e){}
   // CARD: the payment provider's own customer page (card, receipts)
-  let token="";
-  try{ const sb=supabase.createClient("https://hydzekyzbqhcvajnuegh.supabase.co","sb_publishable_4OMJbKxYkzEapBMABHuThw_E60ZNWEb"); sb.auth.getSession().then(({data})=>{ token=(data.session&&data.session.access_token)||""; }); }catch(e){}
   $("cardLink").onclick=async()=>{
     if(window.PSYCHE_PREVIEW){ alert("Preview mode — the payment provider's page is not opened."); return; }
     try{
@@ -153,16 +294,77 @@
       location.href=data.url;
     }catch(err){ alert("Couldn't open that just now — please try again in a moment."); }
   };
-  // CANCEL: asks once, then cancels. No other steps.
+
+  // ================= CANCEL MEMBERSHIP: one window, and it stays easy =================
   const ask=$("ask");
-  $("cancelLink").onclick=()=>{ ask.classList.add("open"); $("askNo").focus(); };
+  function openCancel(){
+    const w=who();
+    if(w.state==="trial") $("askFirst").textContent="You will not be charged. You keep Sussuri until "+fmt(trialDates(w).end)+".";
+    else $("askFirst").textContent="You keep everything until "+day(M.next)+". You will not be charged again.";
+    const earning = w.state==="member" && M.members>0;   // earning only starts for a paying member
+    $("askEarn").hidden=!earning;
+    if(earning) $("askEarn").textContent="Your "+money(M.members*10)+" a month from "+M.members+(M.members===1?" member":" members")+" stops when your membership ends.";
+    ask.classList.add("open"); $("askNo").focus();
+  }
+  $("cancelLink").onclick=openCancel;
   $("askNo").onclick=()=>ask.classList.remove("open");
   ask.addEventListener("click",e=>{ if(e.target===ask) ask.classList.remove("open"); });
   document.addEventListener("keydown",e=>{ if(e.key==="Escape") ask.classList.remove("open"); });
   $("askYes").onclick=()=>{
     ask.classList.remove("open");
+    // NOT CONNECTED: with no payment provider behind this page, cancelling only changes what the page shows.
+    // Nothing is cancelled anywhere, and reloading the page brings the membership back.
     if(SAMPLE){ M.cancelled=true; draw(); return; }
   };
+
+  // ================= CLOSE MY ACCOUNT: three steps, shown in place of the page =================
+  function showView(){
+    const c=closing();
+    $("viewMain").hidden=c; $("viewClose").hidden=!c;
+    if(c){
+      const st=who().state;
+      $("gentle").hidden = !(st==="member"||st==="trial") || M.cancelled;   // nothing to cancel: the gentler choice is not offered
+      step(1); $("conf").value=""; $("closeGo").disabled=true; $("closeErr").textContent="";
+    }
+    $("main").scrollTop=0;
+  }
+  function step(n){
+    for(let i=1;i<=3;i++){ $("step"+i).classList.toggle("show",i===n); $("dot"+i).classList.toggle("on",i<=n); }
+    if(n===2){
+      const has=PENDING.amount>0;
+      $("moneyRed").hidden=!has; $("moneyNone").hidden=has;
+      if(has){ $("pendAmt").textContent=money(PENDING.amount); $("pendDate").textContent=PENDING.pays?day(PENDING.pays):"its clearing date"; }
+    }
+    $("main").scrollTop=0;
+    if(n===3) setTimeout(()=>{ try{ $("conf").focus(); }catch(e){} },50);
+  }
+  function leaveClose(){ history.replaceState(null,"",location.pathname+location.search); showView(); gate(); }
+  $("closeLink").onclick=()=>{ location.hash="close"; };
+  window.addEventListener("hashchange",showView);
+  $("closeBack").onclick=leaveClose; $("keep1").onclick=leaveClose; $("waitBtn").onclick=leaveClose;
+  $("gentleCancel").onclick=()=>{ leaveClose(); openCancel(); };
+  $("next1").onclick=()=>step(2); $("back2").onclick=()=>step(1); $("next2").onclick=()=>step(3); $("back3").onclick=()=>step(2);
+  $("conf").addEventListener("input",function(){ $("closeGo").disabled = this.value.trim().toUpperCase()!=="CLOSE"; });
+  $("closeGo").onclick=async()=>{
+    const btn=$("closeGo"); if(btn.disabled) return;
+    $("closeErr").textContent="";
+    if(window.PSYCHE_PREVIEW){ $("closeErr").textContent="Preview mode: no account is closed."; return; }
+    if(!token){ location.href="auth.html"; return; }
+    const label=btn.textContent; btn.textContent="Closing…"; btn.disabled=true;
+    try{
+      // the server ends the membership with the payment provider (when one is on file), then deletes the account
+      const res=await fetch("/api/delete-account",{ method:"POST", headers:{ Authorization:"Bearer "+token } });
+      const data=await res.json();
+      if(!res.ok || !data.ok) throw new Error(data.error||"close failed");
+      try{ Object.keys(localStorage).filter(k=>k.indexOf("psyche:")===0||k.indexOf("sussuri:")===0).forEach(k=>localStorage.removeItem(k)); }catch(e){}
+      try{ await sb.auth.signOut(); }catch(e){}
+      location.href="/";
+    }catch(err){
+      btn.textContent=label; btn.disabled=false;
+      $("closeErr").textContent="Could not close your account just now. Please try again, or ask in Help & FAQ.";
+    }
+  };
+  showView();
 </script>
 </body>
 </html>

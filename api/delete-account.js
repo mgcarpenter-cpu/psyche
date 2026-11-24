@@ -50,6 +50,40 @@ export default async function handler(req, res) {
   if (!user || !user.id) return res.status(401).json({ error: "Not signed in" });
   const uid = user.id;
 
+  // 0) Closing the account also ends the membership (site walk fixes, 24 Nov 2026): if this person has a
+  //    subscription with the payment provider, cancel it now, so nothing is charged after the account is gone.
+  //    Needs PADDLE_API_KEY (the same one api/portal.js uses). If the cancel fails the account is NOT deleted,
+  //    so nobody is left paying for an account they can no longer open.
+  try {
+    const sRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}&select=paddle_subscription_id`, {
+      headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` }
+    });
+    const rows = sRes.ok ? await sRes.json() : [];
+    const subId = rows && rows[0] && rows[0].paddle_subscription_id;
+    if (subId) {
+      const paddleKey = process.env.PADDLE_API_KEY;
+      if (!paddleKey) return res.status(500).json({ error: "Could not end the membership (payment provider not configured). The account was not closed." });
+      const base = process.env.PADDLE_ENV === "production" ? "https://api.paddle.com" : "https://sandbox-api.paddle.com";
+      const cRes = await fetch(`${base}/subscriptions/${subId}/cancel`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${paddleKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ effective_from: "immediately" })
+      });
+      if (!cRes.ok) {
+        const body = await cRes.json().catch(() => ({}));
+        const code = body && body.error && body.error.code;
+        // already cancelled is fine; anything else stops here
+        if (code !== "subscription_update_when_canceled" && code !== "subscription_locked_pending_changes") {
+          console.error("delete-account: subscription cancel failed:", cRes.status, code);
+          return res.status(502).json({ error: "Could not end the membership, so the account was not closed. Please try again." });
+        }
+      }
+    }
+  } catch (e) {
+    console.error("delete-account: subscription lookup/cancel error:", e);
+    return res.status(502).json({ error: "Could not end the membership, so the account was not closed. Please try again." });
+  }
+
   // 1) Delete the profile row.
   try {
     const pRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${encodeURIComponent(uid)}`, {

@@ -2,15 +2,15 @@
 //   POST /api/gift   (signed-in member; Authorization: Bearer <supabase access token>)
 //        body { from: name, photo?: "data:image/jpeg;base64,..." }
 //        -> saves a new gift (each press of "Send to a friend" makes a new one), returns { id, url }
-//   GET  /api/gift?id=<id>   (no sign-in) -> what the friend's page needs: { id, from, photo, expired }
+//   GET  /api/gift?id=<id>   (no sign-in) -> what the friend's page needs: { id, from, photo }
 //        The sender's account id is never sent to the browser.
 //
-// A gift link works for 7 days from when it was made (api/_gifts.js expired()).
+// A gift does not run out.
 // Required Vercel env vars: SUPABASE_SERVICE_ROLE_KEY (already set), ANTHROPIC_API_KEY (already set, checks the name).
 // Optional: GIFT_LINK_BASE (e.g. https://www.sussuri.com) — see api/_gifts.js.
 // Table: supabase/gifts.sql (run once in Supabase).
 
-import { verifyUser, memberPlan, getGift, insertGift, newId, wordingOk, cleanLine, cleanPhoto, linkBase, expired, giftName } from "./_gifts.js";
+import { verifyUser, memberPlan, getGift, insertGift, newId, wordingOk, cleanLine, cleanPhoto, linkBase, giftName } from "./_gifts.js";
 
 export const config = { maxDuration: 20 };
 
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     const g = await getGift(req.query && req.query.id);
     if (!g) return res.status(404).json({ error: "not found" });
-    return res.status(200).json({ id: g.id, from: giftName(g), photo: g.photo || null, expired: expired(g) });
+    return res.status(200).json({ id: g.id, from: giftName(g), photo: g.photo || null });
   }
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return res.status(500).json({ error: "The link could not be made just now. Please try again." });

@@ -2,33 +2,37 @@
    Sussuri: the guided meditation sessions, and the one cover every session gets.
    Used by meditations.html (Your path) and meditation-library.html (Affiliate program).
 
-   TO ADD A SESSION: add one entry to the list below (title, category, length, about, audio).
+   TO ADD A SESSION: add one entry to the list below (title, card, category, length, about, audio).
+   "card" is the one sentence on the card: what the meditation helps with, a full sentence, without the length.
    Its cover is built from its title, so nothing else is needed.
    The audio lives on sussuri.com (the files are large).
    ========================================================================== */
 window.SUSSURI_SESSIONS = [
   {
     "slug": "calm-anxiety-now",
+    "card": "Settle anxious feelings and come back to calm.",
     "title": "Calm Anxiety Now",
     "label": "Guided meditation",
     "length": "20 mins",
-    "about": "A gentle twenty-minute guided hypnosis to settle anxious feeling and rest in calm. You'll be guided down into a warm meadow at the edge of an old wood, where calm and peace wash through every part of you.",
+    "about": "A gentle twenty-minute guided meditation to settle anxious feeling and rest in calm. You'll be guided down into a warm meadow at the edge of an old wood, where calm and peace wash through every part of you.",
     "audio": "https://www.sussuri.com/media/calm-anxiety-now-20.mp3",
     "extra_credit": "",
     "category": "Calm"
   },
   {
     "slug": "fall-asleep",
+    "card": "Let your mind go quiet and drift off to sleep.",
     "title": "Fall Asleep",
     "label": "Guided meditation",
     "length": "20 mins",
-    "about": "A gentle twenty-minute guided sleep hypnosis. Let your mind drift into a quiet meadow at night, beside a softly bubbling stream under the moon and stars, and fall asleep within the dream.",
+    "about": "A gentle twenty-minute guided meditation for sleep. Let your mind drift into a quiet meadow at night, beside a softly bubbling stream under the moon and stars, and fall asleep within the dream.",
     "audio": "https://www.sussuri.com/media/fall-asleep-20.mp3",
     "extra_credit": "",
     "category": "Sleep"
   },
   {
     "slug": "let-go-of-the-day",
+    "card": "Put down what you have been carrying and rest at the end of the day.",
     "title": "Let Go of the Day",
     "label": "Guided meditation",
     "length": "30 mins",
@@ -39,6 +43,7 @@ window.SUSSURI_SESSIONS = [
   },
   {
     "slug": "quiet-an-overthinking-mind",
+    "card": "Slow a busy, overthinking mind until it comes to rest.",
     "title": "Quiet an Overthinking Mind",
     "label": "Guided meditation",
     "length": "35 mins",
@@ -49,6 +54,7 @@ window.SUSSURI_SESSIONS = [
   },
   {
     "slug": "settle-the-nervous-system",
+    "card": "Settle your whole body until calm feels like home.",
     "title": "Settle the Nervous System",
     "label": "Guided meditation",
     "length": "35 mins",
@@ -59,6 +65,7 @@ window.SUSSURI_SESSIONS = [
   },
   {
     "slug": "grief",
+    "card": "Find some comfort when you are missing someone you love.",
     "title": "Grief",
     "label": "Guided meditation",
     "length": "38 mins",
@@ -69,6 +76,7 @@ window.SUSSURI_SESSIONS = [
   },
   {
     "slug": "confidence-now",
+    "card": "Build a steady, quiet confidence you can carry into your day.",
     "title": "Confidence Now",
     "label": "Guided meditation",
     "length": "42 mins",
@@ -79,6 +87,7 @@ window.SUSSURI_SESSIONS = [
   },
   {
     "slug": "stop-beating-yourself-up",
+    "card": "Soften your inner voice and be kinder to yourself.",
     "title": "Stop Beating Yourself Up",
     "label": "Guided meditation",
     "length": "41 mins",
@@ -89,6 +98,7 @@ window.SUSSURI_SESSIONS = [
   },
   {
     "slug": "focus-before-work",
+    "card": "Gather your mind before work and begin clear and focused.",
     "title": "Focus Before Work",
     "label": "Guided meditation",
     "length": "20 mins",
@@ -112,7 +122,8 @@ window.SUSSURI_CATEGORIES = ['Sleep','Calm','Confidence','Focus','Grief'];
   };
   // card label: CATEGORY · NN MINS
   window.sussuriCardTag = function (it) { return [it.category, it.length].filter(Boolean).join(' \u00b7 '); };
-  // the card shows the first sentence of the description
+  // the card shows the session's own one-sentence line ("card"): what it helps with, never cut off
+  window.sussuriCardLine = function (it) { return it.card || window.sussuriShort(it.about); };
   window.sussuriShort = function (t) { var m = /^(.*?[.!?])(\s|$)/.exec(String(t||'')); return m ? m[1] : String(t||''); };
 
   // The same cover as a picture file (1920 x 1080), for sharing. Same layout as the cover on the page.

@@ -2,108 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A gift for you · Sussuri</title>
-<!--GIFT_META-->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&family=Jost:wght@300;400;500&family=Poiret+One&display=swap">
-<style>
-/* The page a gift link lands on (21 Nov). Design: gift-card-design.html, "After they tap: the full phone screen".
-   Phone: that screen, filling the window. Computer: the same words in the same order, one column 560px wide,
-   left-aligned at the page's normal left margin (72px), on black. Same words as the wide card (api/gift-image.js). */
-:root{--line:#333;--lead:#d6d6d6;--label:#a8a8a8;--red:#b3261e;
-  --display:"Poiret One","Jost",Arial,sans-serif;--body:"Jost","Helvetica Neue",Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
-*{box-sizing:border-box}
-html,body{margin:0}
-body{background:#000;color:#fff;font-family:var(--body);font-weight:300;font-size:17px;line-height:1.4;-webkit-font-smoothing:antialiased;
-  min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-mark{display:inline-block;background:var(--red);color:#fff;line-height:1;padding:.05em .18em .1em;border-radius:6px;white-space:nowrap;position:relative;top:.05em}
-.lbl{font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase}
-.av{flex:none;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;font-family:var(--display);line-height:1;overflow:hidden}
-.av img{width:100%;height:100%;object-fit:cover;display:block}
-
-/* phone (the design's 390 x 800 screen) */
-.strip{flex:none;height:104px;padding:14px 20px 0;padding-top:calc(14px + env(safe-area-inset-top,0px));display:flex;align-items:center;border-bottom:1px solid var(--line)}
-.strip .nm{font-family:var(--display);font-size:54px;letter-spacing:.05em;line-height:1;position:relative;top:-6px;color:#fff;text-decoration:none}
-.body{flex:1;min-height:0;padding:28px 20px 24px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column}
-.body .av{width:92px;height:92px;font-size:52px}
-.body h1{font-family:var(--display);font-weight:400;font-size:38px;line-height:1.26;letter-spacing:.03em;margin:30px 0 0;overflow-wrap:anywhere}
-.body .lead{font-size:20px;line-height:1.45;color:var(--lead);margin:28px 0 0}
-.btn{border-radius:8px;font-family:var(--body);font-weight:500;letter-spacing:.2em;text-indent:.2em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;justify-content:center;text-decoration:none;
-  background:#fff;color:#000;height:54px;width:100%;font-size:14px;margin-top:auto;flex:none}
-.btn:hover{background:#e6e6e6}
-.btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
-.body .lbl{font-size:12px;color:var(--label);margin:16px 0 0}
-/* the small print says Sussuri is AI-powered and that the sender earns, so it must be easy to read */
-.body .fine{font-size:14px;line-height:1.45;color:#c4c4c4;margin:10px 0 0;overflow-wrap:anywhere}
-.body .gap{margin-top:auto}
-.out .lead,.out .btn,.out .lbl,.out .fine{display:none}
-.hidden{visibility:hidden}
-
-/* computer: one column, 560px, at the normal left margin */
-@media (min-width:768px){
-  .strip{height:104px;padding:0 72px;border-bottom:1px solid var(--line)}
-  .body{flex:none;width:calc(560px + 144px);max-width:100%;padding:56px 72px 64px}
-  .body .av{width:104px;height:104px;font-size:58px}
-  .body h1{font-size:44px;margin-top:34px}
-  .body .lead{font-size:22px;margin-top:28px}
-  .btn{margin-top:40px;height:58px;font-size:15px}
-  .body .lbl{font-size:13px;margin-top:18px}
-  .body .fine{font-size:15px}
-}
-</style>
-</head>
-<body>
-<header class="strip"><a class="nm" href="/">sussuri</a></header>
-<main class="body hidden" id="card">
-  <span class="av" id="av" aria-hidden="true"></span>
-  <h1 id="say"></h1>
-  <p class="lead">Life coaching, in your pocket.<br>Be sure to say thanks!</p>
-  <a class="btn" id="claim" href="/signup">Claim my free month</a>
-  <span class="lbl">Valid for 7 days</span>
-  <p class="fine" id="fine"></p>
-</main>
+<!-- The gift page is now the front page with the friend's small card on it (front-v2.html, 24 Nov 2026).
+     /g/<id> is served by api/g.js. This file only forwards old gift.html?id=<id> addresses there. -->
 <script>
 (function(){
-  var $=function(id){return document.getElementById(id);};
-  // the gift: put in by the server (api/g.js) as window.GIFT, or read from ?id= (gift.html?id=..., e.g. opened as a plain file)
-  function sample(id,from){
-    if(id!=='preview-card'&&id!=='preview-old')return null;
-    return {id:id,from:String(from||'').trim().slice(0,20)||'Mark',photo:null,expired:id==='preview-old'};
-  }
-  async function getGift(){
-    if(window.GIFT)return window.GIFT;
-    var q=new URLSearchParams(location.search);
-    var id=q.get('id')||(location.pathname.match(/\/g\/([^\/?#]+)/)||[])[1]||'';
-    var s=sample(id,q.get('from'));if(s)return s;
-    try{var r=await fetch('/api/gift?id='+encodeURIComponent(id));if(r.ok)return await r.json();}catch(e){}
-    return null;
-  }
-  function text(el,t){el.textContent=t;}
-  (async function(){
-    var g=await getGift();
-    if(!g){location.replace('/');return;}      // a gift that doesn't exist goes to the front page
-    var name=String(g.from||'').trim()||'A friend';
-    var av=$('av');
-    if(g.photo){var im=new Image();im.alt='';im.src=g.photo;av.appendChild(im);}else text(av,name.charAt(0).toUpperCase());
-    if(g.expired){
-      // 7 days have passed: no claim button
-      document.body.classList.add('out');
-      text($('say'),'This gift has run out. Ask '+name+' to send you a new one.');
-    }else{
-      var say=$('say');say.textContent='';
-      say.appendChild(document.createTextNode('Your friend '+name+' gave you a '));
-      var m=document.createElement('mark');m.textContent='free month';say.appendChild(m);
-      say.appendChild(document.createTextNode(' of Sussuri, worth $39.'));
-      text($('fine'),'Sussuri is an AI-powered life coach. '+name+' earns from Sussuri if you become a paying member.');
-      // keep the gift with this visitor through sign-up (signup.html reads it), so the member who sent it is credited
-      var keep=function(){try{localStorage.setItem('sussuri:gift',JSON.stringify({id:g.id,at:new Date().toISOString()}));sessionStorage.setItem('sussuri:gift',g.id);}catch(e){}};
-      keep();$('claim').addEventListener('click',keep);
-    }
-    $('card').classList.remove('hidden');
-  })();
+  var q=new URLSearchParams(location.search),id=q.get('id')||'',from=q.get('from');
+  location.replace(id?'/front-v2?gift='+encodeURIComponent(id)+(from?'&from='+encodeURIComponent(from):''):'/');
 })();
 </script>
-</body>
+</head>
+<body style="background:#000"></body>
 </html>
